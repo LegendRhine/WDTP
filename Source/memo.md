@@ -1,5 +1,6 @@
 ﻿# Write Down, Then Publish (WDTP)
  
+ ### 项目简介
 - 四大主要功能：
     1. 网站（博客）内容管理与静态网页生成
     2. 电子笔记、备忘录与日记本
@@ -14,18 +15,17 @@
     5. 开源项目，所有用户下载并编译源码后均可永久性免费使用（需遵循GPL v2协议）
 
 ### 代码目录结构
-Source
-  |-- BinaryData
-  |     |-- 代码中使用的二进制资源...
-  |-- Guis
-  |     |-- GUI界面方面的代码...
-  |-- InnerProcess
-  |     |-- 数据处理和业务逻辑方面的代码...
-  |-- Main.cpp
-  |-- MainComponent（h和cpp）
-  |-- SwingLookAndFeel（h和cpp）
-  |-- SwingUtilities（h和cpp, 各类常量、静态数据、函数等等）
-  |-- WdtpHeader.h（本程序所需的所有头文件集中于此）
+- Source
+	- 目录
+		- BinaryData（二进制资源）
+		- Gui（GUI界面方面的类）
+		- InnerProcess（数据处理和业务逻辑方面的类）
+	- 文件
+		- Main.cpp
+		- MainComponent类
+		- SwingLookAndFeel类
+		- SwingUtilities类
+		- WdtpHeader.h
   
 ### 用户端磁盘目录结构
 

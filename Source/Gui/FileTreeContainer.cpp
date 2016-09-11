@@ -230,7 +230,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
             if (itemFile.existsAsFile ())
             {
-                if (systemFile->getBoolValue ("clickForEdit"))
+                if (0 == systemFile->getIntValue ("clickForEdit"))
                     editArea->editDoc (itemFile);
                 else
                     editArea->previewDoc (itemFile);

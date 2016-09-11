@@ -63,14 +63,9 @@ void EditAndPreview::previewDoc (const File& docFile)
 //=================================================================================================
 void EditAndPreview::setSystemProperties ()
 {
-    /* SystemSetupPanel* s = static_cast<SystemSetupPanel*>(setupPanel);
-
-    if (s != nullptr) */
-    {
-        setupPanel = new SystemSetupPanel ();
-        addAndMakeVisible (setupPanel);
-        resized ();
-    }
+    setupPanel = new SystemSetupPanel ();
+    addAndMakeVisible (setupPanel);
+    resized ();
 }
 
 //=================================================================================================

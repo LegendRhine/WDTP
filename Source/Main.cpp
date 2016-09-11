@@ -30,10 +30,20 @@ public:
     {
         // initial system properties file
         const File& f (File::getSpecialLocation (File::userDocumentsDirectory).getChildFile ("wdtp.sys"));
-        f.create ();
         PropertiesFile::Options options;
         options.storageFormat = PropertiesFile::storeAsXML; 
         systemFile = new PropertiesFile (f, options);
+
+        // first run this application
+        if (!f.existsAsFile())
+        {
+            systemFile->setValue ("language", "English");
+            systemFile->setValue ("skin", "Elegance");
+            systemFile->setValue ("clickForEdit", "Edit");
+            systemFile->setValue ("fontSize", SwingUtilities::getFontSize());
+
+            systemFile->save ();
+        }
 
         // initial application's GUI
         LookAndFeel::setDefaultLookAndFeel (lnf = new SwingLookAndFeel());

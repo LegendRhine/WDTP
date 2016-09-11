@@ -61,9 +61,12 @@ Source
 - 某个文档也可以单独设置所用的渲染模板，参见文档结构的doc子树类型的相关属性
 
 ### 系统属性文件
-- 系统属性文件为XML文本格式，位于本机“用户-文档”目录下，文件名为：wdtp.sys，属性如下：
+- PropertiesFile (systemFile, 系统属性文件)位于本机“用户-文档”目录下，文件名为：wdtp.sys，属性如下：
 	- recentFiles：最近打开的10个项目
-	- clickForEdit：单击文件树中的某个文档后，自动进入编辑模式，还是预览模式	
+	- language: 界面语言（字符串，语言名称）
+	- skin：系统配色方案（字符串秒数）
+	- clickForEdit：单击文件树中的某个文档后，自动进入编辑模式，还是预览模式	（字符串秒数）
+	- fontSize：文本编辑器的字体大小（double值）
 
 ### 项目文档
 - 项目文档（*.wdtp）采用ValueTree数据模型+TreeView视图+派生的TreeViewItem实现文档的组织管理、显示与交互等功能。

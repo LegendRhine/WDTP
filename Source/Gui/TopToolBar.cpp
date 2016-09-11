@@ -112,7 +112,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                               Image::null, 1.000f, Colour (0x00),
                               Image::null, 1.000f, Colour (0x00));
 
-    bts[system]->setTooltip (TRANS ("Popup system/misc settings menu"));
+    bts[system]->setTooltip (TRANS ("Popup system menu"));
     bts[system]->setImages (false, true, true,
                             ImageCache::getFromMemory (BinaryData::system_png,
                                                        BinaryData::system_pngSize),
@@ -258,7 +258,7 @@ void TopToolBar::createNewProject ()
     ValueTree p ("wdtpProject");
     p.setProperty ("name", projectFile.getFileNameWithoutExtension (), nullptr);
     p.setProperty ("desc", TRANS ("Description of this project..."), nullptr);
-    p.setProperty ("owner", "", nullptr);
+    p.setProperty ("owner", String(), nullptr);
     p.setProperty ("skin", 0, nullptr);
     p.setProperty ("order", 1, nullptr);
     p.setProperty ("render", "themes/theme-1", nullptr);
@@ -285,15 +285,15 @@ void TopToolBar::createNewProject ()
     d.setProperty ("author", p.getProperty ("owner").toString (), nullptr);
     d.setProperty ("createTime", SwingUtilities::getCurrentTimeString (), nullptr);
     d.setProperty ("modifyTime", SwingUtilities::getCurrentTimeString (), nullptr);
-    d.setProperty ("firstPublishTime", "", nullptr);
-    d.setProperty ("lastPublishTime", "", nullptr);
+    d.setProperty ("firstPublishTime", String (), nullptr);
+    d.setProperty ("lastPublishTime", String (), nullptr);
     d.setProperty ("words", 0, nullptr);
     d.setProperty ("encrypt", false, nullptr);
     d.setProperty ("publish", true, nullptr);
     d.setProperty ("webName", docFile.getFileNameWithoutExtension (), nullptr);
     d.setProperty ("tplFile", p.getProperty ("render").toString () + "/article.html", nullptr);
     d.setProperty ("css", p.getProperty ("projectCss").toString (), nullptr);
-    d.setProperty ("js", "", nullptr);
+    d.setProperty ("js", String (), nullptr);
 
     // 5-4: add the new document's info to project file
     p.addChild (d, 0, nullptr);

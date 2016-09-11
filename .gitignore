@@ -1,0 +1,15 @@
+# Common dirs
+Application/
+Builds/
+JuceLibraryCode/
+
+# =========================
+# Operating System Files
+# =========================
+
+.DS_Store
+.AppleDouble
+.LSOverride
+Desktop.ini
+$RECYCLE.BIN/
+*.lnk

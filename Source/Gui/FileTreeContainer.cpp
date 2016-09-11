@@ -12,6 +12,8 @@
 
 extern PropertiesFile* systemFile;
 
+File FileTreeContainer::projectFile;
+
 //==============================================================================
 FileTreeContainer::FileTreeContainer (EditAndPreview* rightArea) :
     editAndPreview (rightArea)
@@ -83,7 +85,7 @@ void FileTreeContainer::openProject (const File& project)
 
     // load the project
     projectFile = project;
-    docTreeItem = new DocTreeViewItem (projectTree, projectFile, this);
+    docTreeItem = new DocTreeViewItem (projectTree, this);
     fileTree.setRootItem (docTreeItem);
     projectloaded = true;
 
@@ -137,13 +139,11 @@ const bool FileTreeContainer::saveDocAndProject () const
 
 //=================================================================================================
 DocTreeViewItem::DocTreeViewItem (const ValueTree& tree_, 
-                                  const File& project,
                                   FileTreeContainer* container) :
     tree (tree_), 
-    projectFile (project),
     treeContainer (container)
 {
-
+    jassert (treeContainer != nullptr);
 }
 
 //=================================================================================================
@@ -166,7 +166,7 @@ void DocTreeViewItem::itemOpennessChanged (bool isNowOpen)
     if (isNowOpen && getNumSubItems () == 0)
     {
         for (int i = 0; i < tree.getNumChildren (); ++i)
-            addSubItem (new DocTreeViewItem (tree.getChild (i), projectFile, treeContainer));
+            addSubItem (new DocTreeViewItem (tree.getChild (i), treeContainer));
     }
 }
 
@@ -185,7 +185,7 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
         g.drawImageAt (ImageCache::getFromMemory (BinaryData::doc_png, BinaryData::doc_pngSize), 
                        4, getItemHeight () / 2 - 8);
 
-        const File itemFile (projectFile.getSiblingFile ("docs").getChildFile (itemPath + ".md"));
+        const File itemFile (treeContainer->projectFile.getSiblingFile ("docs").getChildFile (itemPath + ".md"));
 
         if (!itemFile.existsAsFile ())
             c = Colours::red;
@@ -203,7 +203,7 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
 
         g.drawImageAt (icon, 4, getItemHeight () / 2 - 8);
 
-        const File itemDir (projectFile.getSiblingFile ("docs").getChildFile (itemPath));
+        const File itemDir (treeContainer->projectFile.getSiblingFile ("docs").getChildFile (itemPath));
 
         if (! (itemDir.exists () && itemDir.isDirectory ()))
             c = Colours::red;
@@ -226,7 +226,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         // doc
         if (tree.getType ().toString () == "doc")
         {
-            const File itemFile (projectFile.getSiblingFile ("docs").getChildFile (itemPath + ".md"));
+            const File itemFile (treeContainer->projectFile.getSiblingFile ("docs").getChildFile (itemPath + ".md"));
 
             if (itemFile.existsAsFile ())
             {

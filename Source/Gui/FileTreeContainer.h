@@ -18,8 +18,7 @@ class FileTreeContainer;
 class DocTreeViewItem : public TreeViewItem
 {
 public:
-    DocTreeViewItem (const ValueTree& tree, 
-                     const File& projectFile,
+    DocTreeViewItem (const ValueTree& tree,
                      FileTreeContainer* container);
     ~DocTreeViewItem () { }
 
@@ -32,7 +31,6 @@ public:
 
 private:
     const ValueTree tree; // must NOT be refernce!!
-    const File& projectFile;
     FileTreeContainer* treeContainer;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DocTreeViewItem)
@@ -57,8 +55,10 @@ public:
 
     EditAndPreview* getEditAndPreview () const    { return editAndPreview; }
 
+    static File projectFile;
+
 private:
-    File projectFile;
+    //=========================================================================
     ScopedPointer<DocTreeViewItem> docTreeItem;
     TreeView fileTree;
     ValueTree projectTree;

@@ -15,7 +15,7 @@ extern PropertiesFile* systemFile;
 //==============================================================================
 SystemSetupPanel::SystemSetupPanel() :
     language (systemFile->getValue ("language")), 
-    skin (systemFile->getValue ("skin")), 
+    systemSkin (systemFile->getValue ("skin")), 
     clickForEdit (systemFile->getValue ("clickForEdit")),
     fontSize (systemFile->getDoubleValue ("fontSize"))
 {
@@ -42,7 +42,7 @@ SystemSetupPanel::SystemSetupPanel() :
     skinVar.add ("Elegance");
     skinVar.add ("Meditation");
 
-    systemProperties.add (new ChoicePropertyComponent (skin, TRANS ("Skin scheme: "), skinSa, skinVar));
+    systemProperties.add (new ChoicePropertyComponent (systemSkin, TRANS ("System skin: "), skinSa, skinVar));
 
     // click a doc inside the file-tree
     StringArray clickSa;
@@ -58,9 +58,41 @@ SystemSetupPanel::SystemSetupPanel() :
     // font size
     systemProperties.add (new SliderPropertyComponent (fontSize, TRANS ("Editor font: "), 12.0, 32.0, 0.1));
 
-    // the properties panel
+    // section 1: project setup
+    Array<PropertyComponent*> projectProperties;
+    projectProperties.add (new TextPropertyComponent (projectName, TRANS("Project name: "), 60, false));
+    projectProperties.add (new TextPropertyComponent (projectDesc, TRANS ("Description: "), 0, true));
+    projectProperties.add (new TextPropertyComponent (owner, TRANS ("Owner: "), 30, false));
+    projectProperties.add (new ChoicePropertyComponent (projectSkin, TRANS ("Project skin: "), skinSa, skinVar));
+
+    // themes dirs
+    StringArray themeDirsSa;
+    Array<var> themeDirsVar;
+
+    if (FileTreeContainer::projectFile.existsAsFile())
+    {
+        const File themeDir (FileTreeContainer::projectFile.getSiblingFile ("themes"));
+        Array<File> themeDirs;
+        themeDir.findChildFiles (themeDirs, File::findDirectories, false);
+
+        for (int i = 0; i < themeDirs.size (); ++i)
+        {
+            themeDirsSa.add (themeDirs.getUnchecked (i).getFileName ());
+            themeDirsVar.add (themeDirs.getUnchecked (i).getFileName ());
+        }
+    }
+
+    projectProperties.add (new ChoicePropertyComponent (render, TRANS ("Template: "), themeDirsSa, themeDirsVar));
+    projectProperties.add (new TextPropertyComponent (place, TRANS ("Render to: "), 60, false));
+
+    // section 2: dir setup
+
+    // section 3: doc setup
+
+    // properties panel add sections
     addAndMakeVisible (panel = new PropertyPanel());
     panel->addSection (TRANS ("System Setup"), systemProperties);
+    panel->addSection (TRANS ("Project Setup"), projectProperties);
 }
 
 //=========================================================================

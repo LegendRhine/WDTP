@@ -67,7 +67,7 @@
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="WDTP" binaryPath="Application/Debug"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="WDTP" binaryPath="Application/Release"/>
+                       isDebug="0" optimisation="2" targetName="WDTP" binaryPath="Application/Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../JUCE/modules"/>

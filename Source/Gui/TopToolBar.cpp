@@ -194,9 +194,6 @@ void TopToolBar::popupSystemMenu()
     m.addItem (4, TRANS ("Save As..."), fileTree->hasLoadedProject (), false);
     m.addSeparator ();
 
-    m.addItem (17, TRANS ("System Setup"), true, false);
-    m.addSeparator ();
-
     m.addItem (18, TRANS ("How To..."), true, false);
     m.addItem (19, TRANS ("Check New Version..."), true, false);
     m.addItem (20, TRANS ("About..."), true, false);
@@ -219,8 +216,6 @@ void TopToolBar::menuPerform (const int index)
         openProject ();
     else if (index == 3)  // close current project
         fileTree->closeProject ();
-    else if (index == 17)  // system setup
-        editAndPreview->setSystemProperties ();
     else if (index == 18)  // how to
         NEED_TO_DO ("How to...");
     else if (index == 19)  // check new version
@@ -259,11 +254,10 @@ void TopToolBar::createNewProject ()
     p.setProperty ("name", projectFile.getFileNameWithoutExtension (), nullptr);
     p.setProperty ("desc", TRANS ("Description of this project..."), nullptr);
     p.setProperty ("owner", String(), nullptr);
-    p.setProperty ("skin", 0, nullptr);
+    p.setProperty ("skin", "Elegence", nullptr);
     p.setProperty ("order", 1, nullptr);
     p.setProperty ("render", "themes/theme-1", nullptr);
-    p.setProperty ("projectCss", "themes/theme-1/main.css", nullptr);
-    p.setProperty ("place", "Site", nullptr);
+    p.setProperty ("place", "site", nullptr);
 
     // 5-2 create dirs and default template files
     projectFile.getSiblingFile ("docs").createDirectory ();
@@ -292,7 +286,6 @@ void TopToolBar::createNewProject ()
     d.setProperty ("publish", true, nullptr);
     d.setProperty ("webName", docFile.getFileNameWithoutExtension (), nullptr);
     d.setProperty ("tplFile", p.getProperty ("render").toString () + "/article.html", nullptr);
-    d.setProperty ("css", p.getProperty ("projectCss").toString (), nullptr);
     d.setProperty ("js", String (), nullptr);
 
     // 5-4: add the new document's info to project file

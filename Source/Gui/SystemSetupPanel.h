@@ -26,9 +26,23 @@ public:
     virtual void valueChanged (Value& value) override;
 
 private:
+    //=========================================================================
     ScopedPointer<PropertyPanel> panel;
 
-    Value language, skin, fontSize, clickForEdit;
+    // system properties' values
+    Value language, systemSkin, fontSize, clickForEdit;
+
+    // project properties' values
+    Value projectName, projectDesc, owner, projectSkin, 
+          render, place;
+
+    // dir properties' values
+    Value dirName, dirDesc, isMenu, dirWebName;
+
+    // doc properties' values
+    Value docName, title, author, createTime, modifyTime,
+        firstPublishTime, lastPublishTime, words, encrypt,
+        publish, docWebName, tplFile, js;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SystemSetupPanel)
 };

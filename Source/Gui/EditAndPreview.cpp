@@ -21,7 +21,7 @@ EditAndPreview::EditAndPreview()
     layoutManager.setItemLayout (2, 2, -0.5, -0.28);  // propertiesPanel
 
     addAndMakeVisible (editor = new TextEditor ());
-    addAndMakeVisible (setupPanel = new Component ());
+    addAndMakeVisible (setupPanel = new SystemSetupPanel ());
     addAndMakeVisible (layoutBar = new StretchableLayoutResizerBar (&layoutManager, 1, true));
 
     // editor
@@ -63,9 +63,7 @@ void EditAndPreview::previewDoc (const File& docFile)
 //=================================================================================================
 void EditAndPreview::setSystemProperties ()
 {
-    setupPanel = new SystemSetupPanel ();
-    addAndMakeVisible (setupPanel);
-    resized ();
+   
 }
 
 //=================================================================================================

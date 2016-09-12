@@ -273,7 +273,6 @@ void TopToolBar::createNewProject ()
 
     // 5-2 create dirs and default template files
     projectFile.getSiblingFile ("docs").createDirectory ();
-    projectFile.getSiblingFile ("docs/media").createDirectory ();
     projectFile.getSiblingFile ("site").createDirectory ();
     projectFile.getSiblingFile ("themes").createDirectory ();
 
@@ -304,8 +303,7 @@ void TopToolBar::createNewProject ()
     if (SwingUtilities::writeValueTreeToFile (p, projectFile))
         fileTree->openProject (projectFile); // load the new project file
     else
-        SHOW_MESSAGE (AlertWindow::InfoIcon, TRANS ("Message"),
-                     TRANS ("Something wrong during create this project file."));
+        SHOW_MESSAGE (TRANS ("Something wrong during create this project file."));
 }
 
 //=================================================================================================

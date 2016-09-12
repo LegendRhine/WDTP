@@ -24,7 +24,7 @@
 
 /** Replace AlertWindow::showMessageWindow() */
 #ifndef SHOW_MESSAGE
-#define  SHOW_MESSAGE AlertWindow::showMessageBox
+#define SHOW_MESSAGE(info) AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS("Message"), String(info))
 #endif
 
 /** Use for replace the JUCE DBG(), it'll show the file and line-number in console.

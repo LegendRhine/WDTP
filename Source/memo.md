@@ -108,13 +108,13 @@
 	- ftpPassword: 
 
 - 值树中各个dir（目录）的属性：
-    - name：目录名
+    - name：目录名 (路径相对于Docs目录）
 	- desc：简述
 	- isMenu：是否为网站菜单
 	- webName：html文件名
 
 - 值树中各个doc（文档）的属性：
-    - name：文件名（不含文件扩展名，路径相对于Docs目录）
+    - name：文件名（不含文件扩展名，路径相对于docs目录）
     - title：文章标题
     - author：作者
     - createTime：创建时间

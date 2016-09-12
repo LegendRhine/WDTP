@@ -30,7 +30,10 @@ public:
     virtual void itemClicked (const MouseEvent& e) override;
 
 private:
-    const ValueTree tree; // must NOT be refernce!!
+    const File getFileOfThisItem () const;
+    void menuPerform (const int menuIndex);
+
+    ValueTree tree; // must NOT be refernce!!
     FileTreeContainer* treeContainer;
 
     bool isAscendingOrder = true;

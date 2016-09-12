@@ -11,7 +11,7 @@
 #ifndef EDITANDPREVIEW_H_INCLUDED
 #define EDITANDPREVIEW_H_INCLUDED
 
-class SystemSetupPanel;
+class SetupPanel;
 
 //==============================================================================
 /** Blank in initial, it'll show edit-mode or preview-mode base on user's click.
@@ -44,7 +44,7 @@ public:
 private:
     ScopedPointer<TextEditor> editor;
     ScopedPointer<WebBrowserComponent> htmlPreview;
-    ScopedPointer<SystemSetupPanel> setupPanel;
+    ScopedPointer<SetupPanel> setupPanel;
 
     StretchableLayoutManager layoutManager;
     ScopedPointer<StretchableLayoutResizerBar> layoutBar;

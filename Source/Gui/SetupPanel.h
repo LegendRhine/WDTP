@@ -8,18 +8,18 @@
   ==============================================================================
 */
 
-#ifndef SYSTEMSETUPPANEL_H_INCLUDED
-#define SYSTEMSETUPPANEL_H_INCLUDED
+#ifndef SETUPPANEL_H_INCLUDED
+#define SETUPPANEL_H_INCLUDED
 
 
 //==============================================================================
 /** */
-class SystemSetupPanel    : public Component,
+class SetupPanel    : public Component,
     public Value::Listener
 {
 public:
-    SystemSetupPanel();
-    ~SystemSetupPanel();
+    SetupPanel();
+    ~SetupPanel();
 
     void resized() override;
 
@@ -37,15 +37,14 @@ private:
           render, place;
 
     // dir properties' values
-    Value dirName, dirDesc, isMenu, dirWebName;
+    Value dirDesc, isMenu, dirWebName;
 
     // doc properties' values
-    Value docName, title, author, createTime, modifyTime,
-        firstPublishTime, lastPublishTime, words, encrypt,
+    Value title, author, createTime, modifyTime, words, 
         publish, docWebName, tplFile, js;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SystemSetupPanel)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SetupPanel)
 };
 
 
-#endif  // SYSTEMSETUPPANEL_H_INCLUDED
+#endif  // SETUPPANEL_H_INCLUDED

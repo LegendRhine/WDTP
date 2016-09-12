@@ -17,7 +17,7 @@
 #include "Gui/MainComponent.h"
 #include "Gui/TopToolBar.h"
 #include "Gui/EditAndPreview.h"
-#include "Gui/SystemSetupPanel.h"
+#include "Gui/SetupPanel.h"
 #include "Gui/FileTreeContainer.h"
 #include "InnerProcess/GuiInteract.h"
 

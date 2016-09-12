@@ -112,6 +112,14 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                               Image::null, 1.000f, Colour (0x00),
                               Image::null, 1.000f, Colour (0x00));
 
+    bts[upload]->setTooltip (TRANS ("Upload all modified web-pages to host"));
+    bts[upload]->setImages (false, true, true,
+                              ImageCache::getFromMemory (BinaryData::upload_png,
+                                                         BinaryData::upload_pngSize),
+                              imageTrans, Colour (0x00),
+                              Image::null, 1.000f, Colour (0x00),
+                              Image::null, 1.000f, Colour (0x00));
+
     bts[system]->setTooltip (TRANS ("Popup system menu"));
     bts[system]->setImages (false, true, true,
                             ImageCache::getFromMemory (BinaryData::system_png,
@@ -152,7 +160,7 @@ void TopToolBar::resized()
     searchInDoc->setBounds(getWidth() - 250, 10, 230, 25);
 
     // image buttons
-    int x = getWidth() / 2 - 185;
+    int x = getWidth() / 2 - 235;
 
     for (int i = 0; i < totalBts; ++i)
         bts[i]->setTopLeftPosition (x + i * 50, 12);
@@ -279,10 +287,7 @@ void TopToolBar::createNewProject ()
     d.setProperty ("author", p.getProperty ("owner").toString (), nullptr);
     d.setProperty ("createTime", SwingUtilities::getCurrentTimeString (), nullptr);
     d.setProperty ("modifyTime", SwingUtilities::getCurrentTimeString (), nullptr);
-    d.setProperty ("firstPublishTime", String (), nullptr);
-    d.setProperty ("lastPublishTime", String (), nullptr);
     d.setProperty ("words", 0, nullptr);
-    d.setProperty ("encrypt", false, nullptr);
     d.setProperty ("publish", true, nullptr);
     d.setProperty ("webName", docFile.getFileNameWithoutExtension (), nullptr);
     d.setProperty ("tplFile", p.getProperty ("render").toString () + "/article.html", nullptr);

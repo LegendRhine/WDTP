@@ -67,7 +67,6 @@
 - PropertiesFile (systemFile, 系统属性文件)位于本机“用户-文档”目录下，文件名为：wdtp.sys，属性如下：
 	- recentFiles：最近打开的10个项目
 	- language: 界面语言（字符串，语言名称）
-	- skin：系统配色方案（字符串秒数）
 	- clickForEdit：单击文件树中的某个文档后，自动进入编辑模式，还是预览模式	（字符串秒数）
 	- fontSize：文本编辑器的字体大小（double值）
 
@@ -114,10 +113,7 @@
     - author：作者
     - createTime：创建时间
     - modifyTime：最后修改时间
-    - firstPublishTime：初次发布时间
-    - lastPublishTime：最后发布时间
     - words：字数
-    - encrypt：是否加密
     - publish：是否发布（如果加密属性为true，则此值为false，不发布）
     - webName：发布后的html文件名
     - tplFile：渲染所需的模板文件（默认为项目属性中所设置的模板）

@@ -16,12 +16,12 @@ EditAndPreview::EditAndPreview()
     addChildComponent (htmlPreview = new WebBrowserComponent ());
 
     // stretched layout, arg: index, min-width, max-width£¬default x%
-    layoutManager.setItemLayout (0, -0.5, -1.0, -0.72);  // editor£¬
+    layoutManager.setItemLayout (0, -0.5, -1.0, -0.69);  // editor£¬
     layoutManager.setItemLayout (1, 3, 3, 3);           // layoutBar
-    layoutManager.setItemLayout (2, 2, -0.5, -0.28);  // propertiesPanel
+    layoutManager.setItemLayout (2, 2, -0.5, -0.31);  // propertiesPanel
 
     addAndMakeVisible (editor = new TextEditor ());
-    addAndMakeVisible (setupPanel = new SystemSetupPanel ());
+    addAndMakeVisible (setupPanel = new SetupPanel ());
     addAndMakeVisible (layoutBar = new StretchableLayoutResizerBar (&layoutManager, 1, true));
 
     // editor

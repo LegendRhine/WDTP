@@ -13,7 +13,7 @@
 extern PropertiesFile* systemFile;
 
 //==============================================================================
-SystemSetupPanel::SystemSetupPanel() :
+SetupPanel::SetupPanel() :
     language (systemFile->getValue ("language")), 
     systemSkin (systemFile->getValue ("skin")), 
     clickForEdit (systemFile->getValue ("clickForEdit")),
@@ -33,17 +33,6 @@ SystemSetupPanel::SystemSetupPanel() :
 
     systemProperties.add (new ChoicePropertyComponent (language, TRANS ("Language: "), lanSa, lanVar));
 
-    // skin
-    StringArray skinSa;
-    skinSa.add (TRANS ("Elegance"));
-    skinSa.add (TRANS ("Meditation"));
-
-    Array<var> skinVar;
-    skinVar.add ("Elegance");
-    skinVar.add ("Meditation");
-
-    systemProperties.add (new ChoicePropertyComponent (systemSkin, TRANS ("System skin: "), skinSa, skinVar));
-
     // click a doc inside the file-tree
     StringArray clickSa;
     clickSa.add (TRANS ("Edit"));
@@ -53,17 +42,27 @@ SystemSetupPanel::SystemSetupPanel() :
     clickVar.add ("Edit");
     clickVar.add ("Preview");
 
-    systemProperties.add (new ChoicePropertyComponent (clickForEdit, TRANS ("Doc click: "), clickSa, clickVar));
+    systemProperties.add (new ChoicePropertyComponent (clickForEdit, TRANS ("Doc Click: "), clickSa, clickVar));
 
     // font size
-    systemProperties.add (new SliderPropertyComponent (fontSize, TRANS ("Editor font: "), 12.0, 32.0, 0.1));
+    systemProperties.add (new SliderPropertyComponent (fontSize, TRANS ("Editor Font: "), 12.0, 32.0, 0.1));
 
     // section 1: project setup
     Array<PropertyComponent*> projectProperties;
-    projectProperties.add (new TextPropertyComponent (projectName, TRANS("Project name: "), 60, false));
+    projectProperties.add (new TextPropertyComponent (projectName, TRANS("Project Name: "), 60, false));
     projectProperties.add (new TextPropertyComponent (projectDesc, TRANS ("Description: "), 0, true));
     projectProperties.add (new TextPropertyComponent (owner, TRANS ("Owner: "), 30, false));
-    projectProperties.add (new ChoicePropertyComponent (projectSkin, TRANS ("Project skin: "), skinSa, skinVar));
+
+    // skin
+    StringArray skinSa;
+    skinSa.add (TRANS ("Elegance"));
+    skinSa.add (TRANS ("Meditation"));
+
+    Array<var> skinVar;
+    skinVar.add ("Elegance");
+    skinVar.add ("Meditation");
+
+    projectProperties.add (new ChoicePropertyComponent (projectSkin, TRANS ("Project Skin: "), skinSa, skinVar));
 
     // themes dirs
     StringArray themeDirsSa;
@@ -83,31 +82,47 @@ SystemSetupPanel::SystemSetupPanel() :
     }
 
     projectProperties.add (new ChoicePropertyComponent (render, TRANS ("Template: "), themeDirsSa, themeDirsVar));
-    projectProperties.add (new TextPropertyComponent (place, TRANS ("Render to: "), 60, false));
+    projectProperties.add (new TextPropertyComponent (place, TRANS ("Render To: "), 60, false));
 
     // section 2: dir setup
+    Array<PropertyComponent*> dirProperties;
+    dirProperties.add (new TextPropertyComponent (dirDesc, TRANS ("Description: "), 0, true));
+    dirProperties.add (new BooleanPropertyComponent(isMenu, TRANS("Web Menu: "), TRANS("Yes")));
+    dirProperties.add (new TextPropertyComponent (dirWebName, TRANS ("Web Name: "), 60, false));
 
     // section 3: doc setup
+    Array<PropertyComponent*> docProperties;
+    docProperties.add (new TextPropertyComponent (title, TRANS ("Title: "), 80, false));
+    docProperties.add (new TextPropertyComponent (author, TRANS ("Author: "), 30, false));
+    docProperties.add (new TextPropertyComponent (createTime, TRANS ("Create Time: "), 25, false));
+    docProperties.add (new TextPropertyComponent (modifyTime, TRANS ("Last Modified: "), 25, false));
+    docProperties.add (new TextPropertyComponent (words, TRANS ("Words: "), 10, false));
+    docProperties.add (new BooleanPropertyComponent (publish, TRANS ("Publish: "), TRANS ("Yes")));
+    docProperties.add (new TextPropertyComponent (docWebName, TRANS ("Web Name: "), 80, false));
+    docProperties.add (new TextPropertyComponent (tplFile, TRANS ("Template File: "), 60, false));
+    docProperties.add (new TextPropertyComponent (js, TRANS ("Java Script: "), 0, true));
 
     // properties panel add sections
     addAndMakeVisible (panel = new PropertyPanel());
     panel->addSection (TRANS ("System Setup"), systemProperties);
     panel->addSection (TRANS ("Project Setup"), projectProperties);
+    panel->addSection (TRANS ("Folder Setup"), dirProperties);
+    panel->addSection (TRANS ("Document Setup"), docProperties);
 }
 
 //=========================================================================
-SystemSetupPanel::~SystemSetupPanel()
+SetupPanel::~SetupPanel()
 {
 }
 
 //=========================================================================
-void SystemSetupPanel::resized()
+void SetupPanel::resized()
 {
-    panel->setBounds (0, 0, getWidth() - 2, getHeight());
+    panel->setBounds (0, 0, getWidth() - 1, getHeight());
 }
 
 //=================================================================================================
-void SystemSetupPanel::valueChanged (Value& value)
+void SetupPanel::valueChanged (Value& value)
 {
     // TODO...
 }

@@ -22,9 +22,9 @@ MainContentComponent::MainContentComponent()
     addAndMakeVisible (layoutBar = new StretchableLayoutResizerBar (&layoutManager, 1, true));
 
     // stretched layout. arg: index, min-width, max-width，default x%
-    layoutManager.setItemLayout (0, 2, -0.3, -0.22);  // fileTree
+    layoutManager.setItemLayout (0, 2, -0.3, -0.23);  // fileTree
     layoutManager.setItemLayout (1, 3, 3, 3);            // layoutBar
-    layoutManager.setItemLayout (2, -0.7, -1.0, -0.78);   // editAndPreview
+    layoutManager.setItemLayout (2, -0.7, -1.0, -0.77);   // editAndPreview
 
     setSize (1200, 720);    
 }

@@ -33,6 +33,8 @@ private:
     const ValueTree tree; // must NOT be refernce!!
     FileTreeContainer* treeContainer;
 
+    bool isAscendingOrder = true;
+
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DocTreeViewItem)
 
 };

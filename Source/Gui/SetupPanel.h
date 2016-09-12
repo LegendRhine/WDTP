@@ -30,7 +30,7 @@ private:
     ScopedPointer<PropertyPanel> panel;
 
     // system properties' values
-    Value language, systemSkin, fontSize, clickForEdit;
+    Value language, systemSkin, fontSize, clickForEdit, exEditor;
 
     // project properties' values
     Value projectName, projectDesc, owner, projectSkin, render, place, 

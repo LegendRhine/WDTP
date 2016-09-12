@@ -70,6 +70,7 @@
 	- language: 界面语言（字符串，语言名称）
 	- clickForEdit：单击文件树中的某个文档后，自动进入编辑模式，还是预览模式	（字符串秒数）
 	- fontSize：文本编辑器的字体大小（double值）
+	- exEditor：用于打开本程序所管理的 Markdown 文档的外部编辑器
 
 ### 项目文档
 - 项目文档（*.wdtp）采用ValueTree数据模型+TreeView视图+派生的TreeViewItem实现文档的组织管理、显示与交互等功能。

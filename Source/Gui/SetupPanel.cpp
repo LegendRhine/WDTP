@@ -43,9 +43,8 @@ SetupPanel::SetupPanel() :
     clickVar.add ("Preview");
 
     systemProperties.add (new ChoicePropertyComponent (clickForEdit, TRANS ("Doc Click: "), clickSa, clickVar));
-
-    // font size
     systemProperties.add (new SliderPropertyComponent (fontSize, TRANS ("Editor Font: "), 12.0, 32.0, 0.1));
+    systemProperties.add (new TextPropertyComponent (exEditor, TRANS ("External Editor: "), 200, false));
 
     // section 1: project setup
     Array<PropertyComponent*> projectProperties;

@@ -216,57 +216,74 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
 
 //=================================================================================================
 void DocTreeViewItem::itemClicked (const MouseEvent& e)
-{
-    // left click
-    if (e.mods.isLeftButtonDown())
+{    
+    const String itemPath (tree.getProperty ("name").toString ());
+    EditAndPreview* editArea = treeContainer->getEditAndPreview ();
+
+    // doc
+    if (tree.getType ().toString () == "doc")
     {
-        const String itemPath (tree.getProperty ("name").toString ());
-        EditAndPreview* editArea = treeContainer->getEditAndPreview ();
+        const File itemFile (treeContainer->projectFile.getSiblingFile ("docs").getChildFile (itemPath + ".md"));
 
-        // doc
-        if (tree.getType ().toString () == "doc")
+        if (itemFile.existsAsFile ())
         {
-            const File itemFile (treeContainer->projectFile.getSiblingFile ("docs").getChildFile (itemPath + ".md"));
-
-            if (itemFile.existsAsFile ())
-            {
-                if (0 == systemFile->getIntValue ("clickForEdit"))
-                    editArea->editDoc (itemFile);
-                else
-                    editArea->previewDoc (itemFile);
-
-                editArea->setDocProperties (tree);
-            }
+            if (0 == systemFile->getIntValue ("clickForEdit"))
+                editArea->editDoc (itemFile);
             else
-            {
-                editArea->whenFileOrDirNonexists ();
-            }
+                editArea->previewDoc (itemFile);
+
+            editArea->setDocProperties (tree);
         }
-        // dir
-        else if (tree.getType ().toString () == "dir")
+        else
         {
-            editArea->setDirProperties (tree);
-        }
-        else // root
-        {
-            editArea->setProjectProperties ();
+            editArea->whenFileOrDirNonexists ();
         }
     }
-    // right click
-    else if (e.mods.isPopupMenu())
+    // dir
+    else if (tree.getType ().toString () == "dir")
     {
-        if (tree.getType ().toString () == "doc")
-        {
+        editArea->setDirProperties (tree);
+    }
+    else // root
+    {
+        editArea->setProjectProperties ();
+    }
 
-        }
-        else if (tree.getType ().toString () == "dir")
-        {
+    // right click
+    if (e.mods.isPopupMenu())
+    {
+        PopupMenu m;
+        m.addItem (1, TRANS ("New Folder..."), tree.getType ().toString () != "doc");
+        m.addItem (2, TRANS ("New Document..."), tree.getType ().toString () != "doc");
+        m.addSeparator ();
 
-        }
-        else // root
-        {
+        m.addItem (3, TRANS ("Import..."), tree.getType ().toString () != "doc");
+        m.addItem (4, TRANS ("Export...")); // export as a single markdown file
+        m.addSeparator ();
 
-        }
+        PopupMenu sortMenu;
+        sortMenu.addItem (5, TRANS ("File Name"), true);
+        sortMenu.addItem (6, TRANS ("Title"), true);
+        sortMenu.addItem (7, TRANS ("Web Name"), true);
+        sortMenu.addItem (8, TRANS ("Words Number"), true);
+        sortMenu.addItem (9, TRANS ("Create Time"), true);
+        sortMenu.addItem (10, TRANS ("Modified Time"), true);
+        sortMenu.addSeparator ();
+        sortMenu.addItem (11, TRANS ("Ascending Order"), true, isAscendingOrder);
+
+        m.addSubMenu (TRANS ("Sort by"), sortMenu, tree.getType ().toString () != "doc");
+        m.addSeparator ();
+
+        m.addItem (12, TRANS ("Rename..."), tree.getType ().toString () != "wdtpProject");
+        m.addItem (13, TRANS ("Move To..."), tree.getType ().toString () != "wdtpProject");
+        m.addItem (14, TRANS ("Copy To..."), tree.getType ().toString () == "doc");
+        m.addItem (15, TRANS ("Remove..."), tree.getType ().toString () != "wdtpProject");
+        m.addSeparator ();
+
+        m.addItem (16, TRANS ("Open In External Editor..."), tree.getType ().toString () == "doc");
+
+        const int index = m.show ();
+
     }
 }
 

@@ -33,8 +33,8 @@ private:
     Value language, systemSkin, fontSize, clickForEdit;
 
     // project properties' values
-    Value projectName, projectDesc, owner, projectSkin, 
-          render, place;
+    Value projectName, projectDesc, owner, projectSkin, render, place, 
+        ftpAddress, ftpPort, ftpUserName, ftpPassword;
 
     // dir properties' values
     Value dirDesc, isMenu, dirWebName;

@@ -266,6 +266,10 @@ void TopToolBar::createNewProject ()
     p.setProperty ("order", 1, nullptr);
     p.setProperty ("render", "themes/theme-1", nullptr);
     p.setProperty ("place", "site", nullptr);
+    p.setProperty ("ftpAddress", String (), nullptr);
+    p.setProperty ("ftpPort", "21", nullptr);
+    p.setProperty ("ftpUserName", String (), nullptr);
+    p.setProperty ("ftpPassword", String (), nullptr);
 
     // 5-2 create dirs and default template files
     projectFile.getSiblingFile ("docs").createDirectory ();

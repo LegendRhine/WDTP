@@ -83,6 +83,10 @@ SetupPanel::SetupPanel() :
 
     projectProperties.add (new ChoicePropertyComponent (render, TRANS ("Template: "), themeDirsSa, themeDirsVar));
     projectProperties.add (new TextPropertyComponent (place, TRANS ("Render To: "), 60, false));
+    projectProperties.add (new TextPropertyComponent (ftpAddress, TRANS ("FTP URL: "), 60, false));
+    projectProperties.add (new TextPropertyComponent (ftpPort, TRANS ("FTP port: "), 6, false));
+    projectProperties.add (new TextPropertyComponent (ftpUserName, TRANS ("FTP Account: "), 60, false));
+    projectProperties.add (new TextPropertyComponent (ftpPassword, TRANS ("FTP Password: "), 60, false));
 
     // section 2: dir setup
     Array<PropertyComponent*> dirProperties;
@@ -118,7 +122,9 @@ SetupPanel::~SetupPanel()
 //=========================================================================
 void SetupPanel::resized()
 {
-    panel->setBounds (0, 0, getWidth() - 1, getHeight());
+    // if the panel's width less than 90, it'll hit a jassert when in Debug mode, so...
+    panel->setVisible (getWidth () > 90);
+    panel->setBounds (getLocalBounds ());
 }
 
 //=================================================================================================

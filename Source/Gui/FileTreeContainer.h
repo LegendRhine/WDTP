@@ -30,7 +30,16 @@ public:
     virtual void itemClicked (const MouseEvent& e) override;
 
 private:
+    //=========================================================================
+    /** Note 1: when this item is the root (project item of the top), 
+        this method will return this project's 'docs' dir, 
+        instead of the project file! 
+        
+        Note 2: this method always return a valid file object however it exsits or not, 
+        if to check the file exists or not, use this sentence: getFileOfThisItem().exists();
+        or: getFileOfThisItem().existsAsFile(); or: getFileOfThisItem().isDirectory()*/
     const File getFileOfThisItem () const;
+
     void menuPerform (const int menuIndex);
 
     ValueTree tree; // must NOT be refernce!!

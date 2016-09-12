@@ -291,7 +291,7 @@ const File DocTreeViewItem::getFileOfThisItem () const
         return root.getChildFile (tree.getProperty ("name").toString () + ".md");
 
     else if (tree.getType ().toString () == "wdtpProject")
-        return treeContainer->projectFile;
+        return root;
 
     return File::nonexistent;
 }
@@ -339,9 +339,10 @@ void DocTreeViewItem::menuPerform (const int index)
             dirTree.setProperty ("desc", String(), nullptr);
             dirTree.setProperty ("isMenu", false, nullptr);
             dirTree.setProperty ("webName", dirName.fromLastOccurrenceOf ("/", false, true), nullptr);
-                          
+
             tree.addChild (dirTree, 0, nullptr);
-            itemOpennessChanged (true);
+            addSubItem (new DocTreeViewItem (dirTree, treeContainer), 0);
+            setOpen (true);
 
             // save the data to project file
             ValueTree rootTree = tree;

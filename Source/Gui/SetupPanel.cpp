@@ -107,6 +107,7 @@ SetupPanel::SetupPanel() :
 
     // properties panel add sections
     addAndMakeVisible (panel = new PropertyPanel());
+    panel->getViewport ().setScrollBarThickness (10);
     panel->addSection (TRANS ("System Setup"), systemProperties);
     panel->addSection (TRANS ("Project Setup"), projectProperties);
     panel->addSection (TRANS ("Folder Setup"), dirProperties);
@@ -122,7 +123,7 @@ SetupPanel::~SetupPanel()
 void SetupPanel::resized()
 {
     // if the panel's width less than 90, it'll hit a jassert when in Debug mode, so...
-    panel->setVisible (getWidth () > 90);
+    panel->setVisible (getWidth () > 80);
     panel->setBounds (getLocalBounds ());
 }
 

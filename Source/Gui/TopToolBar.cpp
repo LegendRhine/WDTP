@@ -281,7 +281,7 @@ void TopToolBar::createNewProject ()
     // 5-3: create a index.md and initial its properties
     const File& docFile (projectFile.getSiblingFile ("docs/index.md"));
     docFile.create ();
-    docFile.appendText ("My first document...");
+    docFile.appendText ("Hello World! ");
 
     // doc valueTree
     ValueTree d ("doc");

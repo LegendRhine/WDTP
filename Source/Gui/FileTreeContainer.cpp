@@ -11,7 +11,6 @@
 #include "../WdtpHeader.h"
 
 extern PropertiesFile* systemFile;
-
 File FileTreeContainer::projectFile;
 
 //==============================================================================
@@ -564,4 +563,5 @@ void DocTreeViewItem::exportDocsAsMd (DocTreeViewItem* item,
     }
     
 }
+
 

@@ -14,7 +14,7 @@
 class FileTreeContainer;
 
 //=========================================================================
-/**  */
+/** Repsent a doc, a dir or the project which showed in treeView. */
 class DocTreeViewItem : public TreeViewItem
 {
 public:
@@ -41,14 +41,12 @@ public:
 
 private:
     //=========================================================================
-    void menuPerform (const int menuIndex);
-
     /** export the selected item (all project-docs, a dir-docs or a doc) as a single md file. */
     static void exportDocsAsMd (DocTreeViewItem* item, const File& fileAppendTo);
+    void menuPerform (const int menuIndex);
 
     ValueTree tree; // must NOT be refernce!!
     FileTreeContainer* treeContainer;
-
     bool isAscendingOrder = true;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DocTreeViewItem)

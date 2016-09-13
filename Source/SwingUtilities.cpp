@@ -97,19 +97,24 @@ const ValueTree SwingUtilities::readValueTreeFromFile (const File& fileToReadFro
 }
 
 //=================================================================================================
-const String SwingUtilities::getCurrentTimeString (const int plusDays /*= 0*/)
+const String SwingUtilities::getTimeString (const Time& time)
 {
-    const Time& today (Time::getCurrentTime () + RelativeTime::days (plusDays));
     String s;
 
-    s << String (today.getYear ())
-        << String (today.getMonth () + 1).paddedLeft ('0', 2)
-        << String (today.getDayOfMonth ()).paddedLeft ('0', 2)
-        << String (today.getHours ()).paddedLeft ('0', 2)
-        << String (today.getMinutes ()).paddedLeft ('0', 2)
-        << String (today.getSeconds ()).paddedLeft ('0', 2);
+    s << String (time.getYear ())
+        << String (time.getMonth () + 1).paddedLeft ('0', 2)
+        << String (time.getDayOfMonth ()).paddedLeft ('0', 2)
+        << String (time.getHours ()).paddedLeft ('0', 2)
+        << String (time.getMinutes ()).paddedLeft ('0', 2)
+        << String (time.getSeconds ()).paddedLeft ('0', 2);
 
     return s;
+}
+
+//=================================================================================================
+const String SwingUtilities::getCurrentTimeString (const int plusDays /*= 0*/)
+{
+    return getTimeString (Time::getCurrentTime () + RelativeTime::days (plusDays));
 }
 
 //=================================================================================================

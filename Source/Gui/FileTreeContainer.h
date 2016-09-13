@@ -43,6 +43,9 @@ private:
     //=========================================================================
     void menuPerform (const int menuIndex);
 
+    /** export the selected item (all project-docs, a dir-docs or a doc) as a single md file. */
+    static void exportDocsAsMd (DocTreeViewItem* item, const File& fileAppendTo);
+
     ValueTree tree; // must NOT be refernce!!
     FileTreeContainer* treeContainer;
 

@@ -33,11 +33,11 @@ private:
     Value language, systemSkin, fontSize, clickForEdit, exEditor;
 
     // project properties' values
-    Value projectName, projectDesc, owner, projectSkin, render, place, 
+    Value projectName, projectDesc, owner, projectSkin, projectRenderDir, place, 
         ftpAddress, ftpPort, ftpUserName, ftpPassword;
 
     // dir properties' values
-    Value dirDesc, isMenu, dirWebName;
+    Value dirDesc, isMenu, dirRenderDir, dirWebName;
 
     // doc properties' values
     Value title, author, createTime, modifyTime, words, 

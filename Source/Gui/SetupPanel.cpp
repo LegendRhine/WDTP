@@ -80,7 +80,7 @@ SetupPanel::SetupPanel() :
         }
     }
 
-    projectProperties.add (new ChoicePropertyComponent (render, TRANS ("Template: "), themeDirsSa, themeDirsVar));
+    projectProperties.add (new ChoicePropertyComponent (projectRenderDir, TRANS ("Template: "), themeDirsSa, themeDirsVar));
     projectProperties.add (new TextPropertyComponent (place, TRANS ("Render To: "), 60, false));
     projectProperties.add (new TextPropertyComponent (ftpAddress, TRANS ("FTP URL: "), 60, false));
     projectProperties.add (new TextPropertyComponent (ftpPort, TRANS ("FTP port: "), 6, false));
@@ -91,6 +91,7 @@ SetupPanel::SetupPanel() :
     Array<PropertyComponent*> dirProperties;
     dirProperties.add (new TextPropertyComponent (dirDesc, TRANS ("Description: "), 0, true));
     dirProperties.add (new BooleanPropertyComponent(isMenu, TRANS("Web Menu: "), TRANS("Yes")));
+    dirProperties.add (new ChoicePropertyComponent (dirRenderDir, TRANS ("Template: "), themeDirsSa, themeDirsVar));
     dirProperties.add (new TextPropertyComponent (dirWebName, TRANS ("Web Name: "), 60, false));
 
     // section 3: doc setup

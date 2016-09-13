@@ -59,6 +59,9 @@ struct SwingUtilities
                                                   const bool usingGZipCompresData = false);
 
     //=========================================================================
+    /** Return such as "20150610112523" (year + month + day + hour + minute + second, without " " and "-") */
+    static const String getTimeString (const Time& time);
+
     /** Return such as "20150610112523" (year + month + day + hour + minute + second, without " " and "-")
 
         plusDays: return currentTime + x days */

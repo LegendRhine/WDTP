@@ -53,8 +53,11 @@
 	- themes (模板文件夹，每套模板位于一个独立的子文件夹下)
 		- theme-1 （模板1）
 			- main.css
+			- index.html
 			- page.html
 			- article.html
+			- category.html
+			- 404.html
 		- theme-2 （模板2）
 			- ...
 

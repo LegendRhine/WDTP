@@ -102,7 +102,10 @@
     - desc: 项目简述
 	- owner: 项目所有者（作者）
 	- skin: 软件界面配色
-	- order: 本项目文档和目录的排序方式（此属性决定GUI中的文件树面板显示顺序）
+	- order: 文件树的排序方式。文件名（0）、标题（1）、网页文件名（2）、字数（2）、创建时间（3）、修改时间（4）
+	- isAscending: 升序(true)还是降序(false)
+	- showWhat: TreeView中显示文件名（0）、标题（1），还是网页文件名（2）
+	- tooltip：TreeView中的tooltip显示文件名（0）、标题/简介（1），还是网页文件名（2）
 	- render: 渲染模板（磁盘Themes下的某个子目录，即已安装的某套模板）
 	- place: 渲染后的网页存放于该目录下，默认为Site目录，用户可另外指定
 	- ftpAddress: 

@@ -186,8 +186,8 @@ void TopToolBar::buttonClicked (Button* bt)
 void TopToolBar::popupSystemMenu()
 {
     PopupMenu m;
-    m.addItem (1, TRANS ("New Project..."), true, false);
-    m.addItem (2, TRANS ("Open Project..."), true, false);
+    m.addItem (1, TRANS ("New Project..."), true);
+    m.addItem (2, TRANS ("Open Project..."), true);
 
     // recent files
     RecentlyOpenedFilesList recentFiles;
@@ -198,13 +198,14 @@ void TopToolBar::popupSystemMenu()
     m.addSubMenu (TRANS ("Open Rcent"), recentFilesMenu);
     m.addSeparator ();
 
-    m.addItem (3, TRANS ("Close Project"), fileTree->hasLoadedProject(), false);
-    m.addItem (4, TRANS ("Save As..."), fileTree->hasLoadedProject (), false);
+    m.addItem (3, TRANS ("Close Project"), fileTree->hasLoadedProject());
+    m.addItem (4, TRANS ("Save As..."), fileTree->hasLoadedProject ());
+    m.addItem (5, TRANS ("Clean Up..."), fileTree->hasLoadedProject ());
     m.addSeparator ();
 
-    m.addItem (18, TRANS ("How To..."), true, false);
-    m.addItem (19, TRANS ("Check New Version..."), true, false);
-    m.addItem (20, TRANS ("About..."), true, false);
+    m.addItem (18, TRANS ("How To..."), true);
+    m.addItem (19, TRANS ("Check New Version..."), true);
+    m.addItem (20, TRANS ("About..."), true);
     
     // display the menu
     const int index = m.show ();

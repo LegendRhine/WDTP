@@ -29,7 +29,7 @@ public:
     Note 2: this method always return a valid file object however it exsits or not,
     if to check the file exists or not, use this sentence: getFileOfThisItem().exists();
     or: getFileOfThisItem().existsAsFile(); or: getFileOfThisItem().isDirectory()*/
-    const File getFileOfThisItem () const;
+    const File getFileOrDir () const;
 
     virtual bool mightContainSubItems () override;
     virtual String getUniqueName () const override;

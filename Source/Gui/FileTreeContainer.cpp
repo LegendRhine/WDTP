@@ -201,7 +201,7 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
         g.drawImageAt (icon, 4, getItemHeight () / 2 - 8);
     }  
 
-    if (!getFileOfThisItem().exists())
+    if (!getFileOrDir().exists())
         c = Colours::red;
 
     g.setColour (c);
@@ -210,7 +210,7 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
 }
 
 //=================================================================================================
-const File DocTreeViewItem::getFileOfThisItem () const
+const File DocTreeViewItem::getFileOrDir () const
 {
     const File& root (treeContainer->projectFile.getSiblingFile ("docs"));
 
@@ -236,12 +236,12 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
         // doc
         if (tree.getType ().toString () == "doc")
         {
-            if (getFileOfThisItem ().existsAsFile ())
+            if (getFileOrDir ().existsAsFile ())
             {
                 if (0 == systemFile->getIntValue ("clickForEdit"))
-                    editArea->editDoc (getFileOfThisItem ());
+                    editArea->editDoc (getFileOrDir ());
                 else
-                    editArea->previewDoc (getFileOfThisItem ());
+                    editArea->previewDoc (getFileOrDir ());
 
                 editArea->setDocProperties (tree);
             }
@@ -253,7 +253,7 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
         // dir
         else if (tree.getType ().toString () == "dir")
         {
-            if (getFileOfThisItem ().isDirectory ())
+            if (getFileOrDir ().isDirectory ())
                 editArea->setDirProperties (tree);
             else
                 editArea->whenFileOrDirNonexists ();
@@ -269,7 +269,7 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
 //=================================================================================================
 void DocTreeViewItem::itemClicked (const MouseEvent& e)
 {   
-    const bool exist = getFileOfThisItem ().exists ();
+    const bool exist = getFileOrDir ().exists ();
     const bool isDoc = (tree.getType ().toString () == "doc");
     const bool isDir = (tree.getType ().toString () == "dir");
     const bool isRoot = (tree.getType ().toString () == "wdtpProject");
@@ -287,21 +287,30 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addSeparator ();
 
         PopupMenu sortMenu;
-        sortMenu.addItem (5, TRANS ("File Name"), true);
-        sortMenu.addItem (6, TRANS ("Title"), true);
-        sortMenu.addItem (7, TRANS ("Web Name"), true);
-        sortMenu.addItem (8, TRANS ("Words Number"), true);
-        sortMenu.addItem (9, TRANS ("Create Time"), true);
-        sortMenu.addItem (10, TRANS ("Modified Time"), true);
+        sortMenu.addItem (100, TRANS ("File Name"), true);
+        sortMenu.addItem (101, TRANS ("Title"), true);
+        sortMenu.addItem (102, TRANS ("Web Name"), true);
+        sortMenu.addItem (103, TRANS ("Words Number"), true);
+        sortMenu.addItem (104, TRANS ("Create Time"), true);
+        sortMenu.addItem (105, TRANS ("Modified Time"), true);
         sortMenu.addSeparator ();
-        sortMenu.addItem (11, TRANS ("Ascending Order"), true, isAscendingOrder);
+        sortMenu.addItem (5, TRANS ("Ascending Order"), true, isAscendingOrder);
 
         m.addSubMenu (TRANS ("Sort by"), sortMenu, exist && !isDoc);
+
+        PopupMenu showedAsMenu;
+        showedAsMenu.addItem (200, TRANS ("File Name"), true);
+        showedAsMenu.addItem (201, TRANS ("Title"), true);
+        showedAsMenu.addItem (202, TRANS ("Web Name"), true);
+
+        m.addSubMenu (TRANS ("Showed as"), showedAsMenu, exist && !isRoot);
         m.addSeparator ();
 
-        m.addItem (12, TRANS ("Rename..."), exist && !isRoot);
-        m.addItem (13, TRANS ("Move To..."), exist && !isRoot);
-        m.addItem (14, TRANS ("Delete..."), !isRoot);
+        m.addItem (10, TRANS ("Rename..."), exist && !isRoot);
+        m.addItem (11, TRANS ("Move To..."), exist && !isRoot);
+        m.addSeparator ();
+
+        m.addItem (12, TRANS ("Delete..."), !isRoot);
         m.addSeparator ();
 
         m.addItem (15, TRANS ("Open In External Editor..."), exist && isDoc);
@@ -339,7 +348,7 @@ void DocTreeViewItem::menuPerform (const int index)
                 dirName = TRANS ("New folder");
 
             // create this dir on disk
-            File thisDir (getFileOfThisItem ().getChildFile (dirName));
+            File thisDir (getFileOrDir ().getChildFile (dirName));
             thisDir = thisDir.getNonexistentSibling (true);
             thisDir.createDirectory ();
 
@@ -400,7 +409,7 @@ void DocTreeViewItem::menuPerform (const int index)
                 docName = TRANS ("Untitled");
 
             // create this doc on disk
-            File thisDoc (getFileOfThisItem ().getChildFile (docName + ".md"));
+            File thisDoc (getFileOrDir ().getChildFile (docName + ".md"));
             thisDoc = thisDoc.getNonexistentSibling (true);
             thisDoc.create ();
             thisDoc.appendText (String("Recording and Sharing...")
@@ -455,7 +464,7 @@ void DocTreeViewItem::menuPerform (const int index)
             return;
 
         const Array<File> docFiles (fc.getResults ());
-        const File thisDir (getFileOfThisItem ());
+        const File thisDir (getFileOrDir ());
 
         // can't copy external docs to a nonexists dir
         jassert (thisDir.isDirectory ());
@@ -528,7 +537,7 @@ void DocTreeViewItem::menuPerform (const int index)
 
         // single doc
         if (tree.getType ().toString () == "doc")
-            getFileOfThisItem().copyFileTo (mdFile);
+            getFileOrDir().copyFileTo (mdFile);
      
         else  // dir docs
             exportDocsAsMd (this, mdFile);   
@@ -556,7 +565,7 @@ void DocTreeViewItem::exportDocsAsMd (DocTreeViewItem* item,
     }
     else
     {
-        const File& currentFile (item->getFileOfThisItem ());
+        const File& currentFile (item->getFileOrDir ());
 
         if (currentFile.existsAsFile())
             fileAppendTo.appendText (currentFile.loadFileAsString().trimEnd() + newLine + newLine);

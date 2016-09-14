@@ -38,6 +38,9 @@ public:
                               int insertIndex) override;
 
     static void moveItems (const OwnedArray<ValueTree>& items, ValueTree newParent);
+    
+    virtual void paintHorizontalConnectingLine (Graphics&, const Line<float>& line) override;
+    virtual void paintVerticalConnectingLine (Graphics&, const Line<float>& line) override;
 
 private:
     //=========================================================================

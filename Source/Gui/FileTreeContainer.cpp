@@ -147,7 +147,8 @@ DocTreeViewItem::DocTreeViewItem (const ValueTree& tree_,
     jassert (treeContainer != nullptr);
 
     // highlight for the whole line
-    setDrawsInLeftMargin (true);  
+    setDrawsInLeftMargin (true); 
+    setLinesDrawnForSubItems (true);
     tree.addListener (this);
 }
 
@@ -367,7 +368,12 @@ void DocTreeViewItem::renameSelectedItem ()
 
     if (0 == dialog.runModalLoop ())
     {
-        String newName (SwingUtilities::getValidFileName (dialog.getTextEditor ("name")->getText()));
+        const String inputStr (dialog.getTextEditor ("name")->getText());
+
+        if (inputStr == tree.getProperty ("name").toString())
+            return;
+
+        String newName (SwingUtilities::getValidFileName (inputStr));
 
         if (newName.isEmpty ())
             newName = TRANS ("Untitled");
@@ -379,6 +385,7 @@ void DocTreeViewItem::renameSelectedItem ()
 
         // save the project file
         tree.setProperty ("name", newFile.getFileNameWithoutExtension (), nullptr);
+
         ValueTree rootTree = tree;
 
         while (rootTree.getParent ().isValid ())
@@ -602,7 +609,16 @@ void DocTreeViewItem::createNewFolder ()
 //=================================================================================================
 void DocTreeViewItem::delSelected ()
 {
+    OwnedArray<ValueTree> selectedTrees;
+    TreeView* treeView = getOwnerView ();
 
+    for (int i = 0; i < treeView->getNumSelectedItems (); ++i)
+    {
+        const DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (treeView->getSelectedItem (i));
+        jassert (item != nullptr);
+
+        selectedTrees.add (new ValueTree (item->tree));
+    }
 }
 
 //=================================================================================================
@@ -761,9 +777,9 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items, ValueTree t
 
             if (thisFile.moveFileTo (targetFile))
             {
-                v.getParent().removeChild (v, nullptr);
+                v.setProperty ("name", targetFile.getFileNameWithoutExtension (), nullptr);
+                v.getParent ().removeChild (v, nullptr);
                 thisTree.addChild (v, 0, nullptr);
-                v.setProperty ("name", targetFile.getFileNameWithoutExtension(), nullptr);
             }
             else
             {
@@ -785,4 +801,17 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items, ValueTree t
         SHOW_MESSAGE (TRANS ("Something wrong during this operation."));
 }
 
+//=================================================================================================
+void DocTreeViewItem::paintHorizontalConnectingLine (Graphics& g, const Line<float>& line)
+{
+    g.setColour (Colours::skyblue);
+    g.drawLine (line);
+}
+
+//=================================================================================================
+void DocTreeViewItem::paintVerticalConnectingLine (Graphics& g, const Line<float>& line)
+{
+    g.setColour (Colours::skyblue);
+    g.drawLine (line);
+}
 

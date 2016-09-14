@@ -15,7 +15,8 @@ class FileTreeContainer;
 
 //=========================================================================
 /** Repsent a doc, a dir or the project which showed in treeView. */
-class DocTreeViewItem : public TreeViewItem
+class DocTreeViewItem : public TreeViewItem,
+    private ValueTree::Listener
 {
 public:
     DocTreeViewItem (const ValueTree& tree,
@@ -29,6 +30,14 @@ public:
     virtual void paintItem (Graphics& g, int width, int height) override;
     virtual void itemSelectionChanged (bool isNowSelected) override;
     virtual void itemClicked (const MouseEvent& e) override;
+
+    // for move items
+    virtual var getDragSourceDescription () override;
+    virtual bool isInterestedInDragSource (const DragAndDropTarget::SourceDetails& details) override;
+    virtual void itemDropped (const DragAndDropTarget::SourceDetails& details, 
+                              int insertIndex) override;
+
+    static void moveItems (const OwnedArray<ValueTree>& items, ValueTree newParent);
 
 private:
     //=========================================================================
@@ -47,15 +56,27 @@ private:
                                       const File& fileAppendTo);
 
     //=========================================================================
+    void refreshSubItems();
     void menuPerform (const int menuIndex);
 
-    void renameSelectedItem();
-    void exportAsMdFile();
+    // internal call the static method exportDocsAsMd()
+    void exportAsMdFile ();
+
+    void renameSelectedItem ();
     void importDocuments();
     void createNewDocument();
     void createNewFolder();
-    void moveSelectedTo();
+    void delSelected ();
 
+    //=========================================================================
+    void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
+    void valueTreeChildAdded (ValueTree& parentTree, ValueTree&) override;
+    void valueTreeChildRemoved (ValueTree& parentTree, ValueTree&, int) override;
+    void valueTreeChildOrderChanged (ValueTree& parentTree, int, int) override;
+    void valueTreeParentChanged (ValueTree&) override    { }
+    void treeChildrenChanged (const ValueTree& parentTree);
+
+    //=========================================================================
     ValueTree tree; // must NOT be refernce!!
     FileTreeContainer* treeContainer;
     bool isAscendingOrder = true;

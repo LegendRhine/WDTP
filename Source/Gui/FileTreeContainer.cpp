@@ -23,6 +23,7 @@ FileTreeContainer::FileTreeContainer (EditAndPreview* rightArea) :
     fileTree.setRootItem (nullptr);
     fileTree.setRootItemVisible (true);
     fileTree.setDefaultOpenness (true);
+    fileTree.setMultiSelectEnabled (true);
     fileTree.setOpenCloseButtonsVisible (true);
     fileTree.setIndentSize (15);   
     fileTree.getViewport ()->setScrollBarThickness (10);
@@ -90,7 +91,7 @@ void FileTreeContainer::openProject (const File& project)
     projectloaded = true;
 
     // change the text of main window's title-bar
-    MainWindow* mainWindow = static_cast<MainWindow*>(getTopLevelComponent ());
+    MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent ());
     jassert (mainWindow != nullptr);
     mainWindow->setName (JUCEApplication::getInstance ()->getApplicationName () + " - " +
                          project.getFileNameWithoutExtension ());
@@ -117,7 +118,7 @@ void FileTreeContainer::closeProject ()
         projectloaded = false;
 
         // change the text of main window's title-bar
-        MainWindow* mainWindow = static_cast<MainWindow*>(getTopLevelComponent ());
+        MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent ());
         jassert (mainWindow != nullptr);
         mainWindow->setName (JUCEApplication::getInstance ()->getApplicationName ());
     }
@@ -144,7 +145,10 @@ DocTreeViewItem::DocTreeViewItem (const ValueTree& tree_,
     treeContainer (container)
 {
     jassert (treeContainer != nullptr);
-    setDrawsInLeftMargin (true);
+
+    // highlight for the whole line
+    setDrawsInLeftMargin (true);  
+    tree.addListener (this);
 }
 
 //=================================================================================================
@@ -162,15 +166,10 @@ String DocTreeViewItem::getUniqueName () const
 //=================================================================================================
 void DocTreeViewItem::itemOpennessChanged (bool isNowOpen)
 {
-    clearSubItems ();
-
-    if (isNowOpen && getNumSubItems () == 0)
-    {
-        for (int i = 0; i < tree.getNumChildren (); ++i)
-            // TODO: sort this item
-            // addSubItemSorted (new DocTreeViewItem (tree.getChild (i), treeContainer));
-            addSubItem (new DocTreeViewItem (tree.getChild (i), treeContainer));
-    }
+    if (isNowOpen && getNumSubItems() == 0)
+        refreshSubItems ();
+    else
+        clearSubItems ();
 }
 
 //=================================================================================================
@@ -285,17 +284,18 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
     const bool isDoc = (tree.getType ().toString () == "doc");
     const bool isDir = (tree.getType ().toString () == "dir");
     const bool isRoot = (tree.getType ().toString () == "wdtpProject");
+    const bool onlyOneSelected = getOwnerView()->getNumSelectedItems () == 1;
 
     // right click
     if (e.mods.isPopupMenu())
     {
         PopupMenu m;
-        m.addItem (1, TRANS ("New Folder..."), exist && !isDoc);
-        m.addItem (2, TRANS ("New Document..."), exist && !isDoc);
+        m.addItem (1, TRANS ("New Folder..."), exist && !isDoc && onlyOneSelected);
+        m.addItem (2, TRANS ("New Document..."), exist && !isDoc && onlyOneSelected);
         m.addSeparator ();
 
-        m.addItem (3, TRANS ("Import..."), exist && !isDoc);
-        m.addItem (4, TRANS ("Export..."), exist);
+        m.addItem (3, TRANS ("Import..."), exist && !isDoc && onlyOneSelected);
+        m.addItem (4, TRANS ("Export..."), exist && onlyOneSelected);
         m.addSeparator ();
 
         PopupMenu sortMenu;
@@ -325,14 +325,11 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addSubMenu (TRANS ("Tooltip For"), tooltipAsMenu, exist && !isRoot);
         m.addSeparator ();
 
-        m.addItem (10, TRANS ("Rename..."), exist && !isRoot);
-        m.addItem (11, TRANS ("Move To..."), exist && !isRoot);
-        m.addSeparator ();
-
+        m.addItem (10, TRANS ("Rename..."), !isRoot && onlyOneSelected);
         m.addItem (12, TRANS ("Delete..."), !isRoot);
         m.addSeparator ();
 
-        m.addItem (15, TRANS ("Open In External Editor..."), exist && isDoc);
+        m.addItem (15, TRANS ("Open In External Editor..."), exist && isDoc && onlyOneSelected);
 
         menuPerform (m.show());
     }
@@ -351,15 +348,15 @@ void DocTreeViewItem::menuPerform (const int index)
         exportAsMdFile ();
     else if (index == 10)
         renameSelectedItem ();
-    else if (index == 11)
-        moveSelectedTo ();
+    else if (index == 12)
+        delSelected ();
 }
 
 //=================================================================================================
 void DocTreeViewItem::renameSelectedItem ()
 {
     const File& fileOrDir (getFileOrDir (tree));
-    jassert (tree.getType ().toString () != "wdtpProject" && fileOrDir.exists ());
+    jassert (tree.getType ().toString () != "wdtpProject");
 
     AlertWindow dialog (TRANS ("Rename the selected item"), TRANS ("Please input the new name."),
                         AlertWindow::InfoIcon);
@@ -375,15 +372,13 @@ void DocTreeViewItem::renameSelectedItem ()
         if (newName.isEmpty ())
             newName = TRANS ("Untitled");
 
-        File newFile (getFileOrDir (tree).getSiblingFile (newName + (fileOrDir.isDirectory () ? String () : ".md")));
+        File newFile (getFileOrDir (tree).getSiblingFile (newName + (fileOrDir.isDirectory () ? String () 
+                                                                     : ".md")));
         newFile = newFile.getNonexistentSibling (true);
         fileOrDir.moveFileTo (newFile);
 
-        // update tree and view
-        tree.setProperty ("name", newFile.getFileNameWithoutExtension (), nullptr);
-        repaintItem ();
-
         // save the project file
+        tree.setProperty ("name", newFile.getFileNameWithoutExtension (), nullptr);
         ValueTree rootTree = tree;
 
         while (rootTree.getParent ().isValid ())
@@ -435,7 +430,6 @@ void DocTreeViewItem::exportAsMdFile ()
                                           + newLine + TRANS ("Exported Successful! "),
                                           TRANS ("Open")))
             mdFile.startAsProcess ();
-
     }
     else
     {
@@ -483,9 +477,6 @@ void DocTreeViewItem::importDocuments ()
 
         tree.addChild (docTree, 0, nullptr);
     }
-
-    setOpen (false);
-    setOpen (true);
 
     if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
         SHOW_MESSAGE (TRANS ("Something wrong during this operation."));
@@ -537,7 +528,9 @@ void DocTreeViewItem::createNewDocument ()
         docTree.setProperty ("js", String (), nullptr);
 
         // must update this tree before show this new item
+        tree.removeListener (this);
         tree.addChild (docTree, 0, nullptr);
+        tree.addListener (this);
 
         // select the new item 
         setOpen (true);
@@ -546,8 +539,6 @@ void DocTreeViewItem::createNewDocument ()
         docItem->setSelected (true, true);
 
         // save the data to project file
-        tree.addChild (docTree, 0, nullptr);
-
         if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
             SHOW_MESSAGE (TRANS ("Something wrong during this operation."));
     }
@@ -592,7 +583,9 @@ void DocTreeViewItem::createNewFolder ()
         dirTree.setProperty ("webName", dirName, nullptr);
 
         // must update this tree before show this new item
+        tree.removeListener (this);
         tree.addChild (dirTree, 0, nullptr);
+        tree.addListener (this);
 
         // select the new item 
         setOpen (true);
@@ -607,9 +600,56 @@ void DocTreeViewItem::createNewFolder ()
 }
 
 //=================================================================================================
-void DocTreeViewItem::moveSelectedTo ()
+void DocTreeViewItem::delSelected ()
 {
 
+}
+
+//=================================================================================================
+void DocTreeViewItem::refreshSubItems ()
+{
+    clearSubItems ();
+
+    for (int i = 0; i < tree.getNumChildren (); ++i)
+    {
+        // TODO: sort...
+        addSubItem (new DocTreeViewItem (tree.getChild (i), treeContainer));
+    }
+}
+
+//=================================================================================================
+void DocTreeViewItem::valueTreePropertyChanged (ValueTree&, const Identifier&)
+{
+    repaintItem();
+}
+
+//=================================================================================================
+void DocTreeViewItem::valueTreeChildAdded (ValueTree& parentTree, ValueTree&)
+{
+    treeChildrenChanged (parentTree);
+}
+
+//=================================================================================================
+void DocTreeViewItem::valueTreeChildRemoved (ValueTree& parentTree, ValueTree&, int)
+{
+    treeChildrenChanged (parentTree);
+}
+
+//=================================================================================================
+void DocTreeViewItem::valueTreeChildOrderChanged (ValueTree& parentTree, int, int)
+{
+    treeChildrenChanged (parentTree);
+}
+
+//=================================================================================================
+void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
+{
+    if (parentTree == tree)
+    {
+        refreshSubItems();
+        treeHasChanged();
+        setOpen (true);
+    }
 }
 
 //=================================================================================================
@@ -625,7 +665,7 @@ const bool DocTreeViewItem::exportDocsAsMd (DocTreeViewItem* item,
 
         for (int i = 0; i < item->getNumSubItems (); ++i)
         {
-            DocTreeViewItem* currentItem = static_cast<DocTreeViewItem*> (item->getSubItem (i));
+            DocTreeViewItem* currentItem = dynamic_cast<DocTreeViewItem*> (item->getSubItem (i));
             jassert (currentItem != nullptr);
             
             // recursive traversal
@@ -643,6 +683,106 @@ const bool DocTreeViewItem::exportDocsAsMd (DocTreeViewItem* item,
     }    
 
     return true;
+}
+
+//=================================================================================================
+var DocTreeViewItem::getDragSourceDescription ()
+{
+    if (tree.getType ().toString () != "wdtpProject" && getFileOrDir (tree).exists ())
+        return "dragFileOrDir";
+
+    return String ();
+}
+
+//=================================================================================================
+bool DocTreeViewItem::isInterestedInDragSource (const DragAndDropTarget::SourceDetails& details)
+{
+    if (tree.getType ().toString () != "doc")
+        return details.description == "dragFileOrDir";
+
+    return false;
+}
+
+//=================================================================================================
+void DocTreeViewItem::itemDropped (const DragAndDropTarget::SourceDetails& details, 
+                                   int /*insertIndex*/)
+{
+    if (details.description != "dragFileOrDir")
+        return;
+
+    jassert (getFileOrDir (tree).isDirectory());
+
+    OwnedArray<ValueTree> selectedTrees;
+    TreeView* treeView = getOwnerView();
+
+    for (int i = 0; i < treeView->getNumSelectedItems(); ++i)
+    {
+        const DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (treeView->getSelectedItem (i));
+        jassert (item != nullptr);
+        
+        selectedTrees.add (new ValueTree (item->tree));
+    }
+
+    moveItems (selectedTrees, tree);
+}
+
+//=================================================================================================
+void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items, ValueTree thisTree)
+{
+    if (items.size () < 1)
+        return;
+
+#define CHOICE_BOX AlertWindow::showYesNoCancelBox
+
+    for (int i = items.size (); --i >= 0;)
+    {
+        ValueTree& v = *items.getUnchecked (i);
+
+        if (v.getParent().isValid() && thisTree != v && !thisTree.isAChildOf (v))
+        {
+            const File& thisFile (getFileOrDir (v));
+            File targetFile (getFileOrDir (thisTree).getChildFile (thisFile.getFileName()));
+
+            if (thisFile.exists() && targetFile.exists() && thisFile == targetFile)
+                continue;
+
+            if (targetFile.exists())
+            {
+                const int choice = CHOICE_BOX (AlertWindow::QuestionIcon, TRANS ("Message"),
+                                               "\"" + targetFile.getFullPathName() + "\"\n" +
+                                               TRANS ("already exists. So what do you want? "),
+                                               TRANS ("Keep Both"), TRANS ("Overwrite"));
+
+                if (choice == 0)
+                    continue;
+                else if (choice == 1)
+                    targetFile = targetFile.getNonexistentSibling (true);
+            }
+
+            if (thisFile.moveFileTo (targetFile))
+            {
+                v.getParent().removeChild (v, nullptr);
+                thisTree.addChild (v, 0, nullptr);
+                v.setProperty ("name", targetFile.getFileNameWithoutExtension(), nullptr);
+            }
+            else
+            {
+                SHOW_MESSAGE ("\"" + thisFile.getFullPathName() + "\"\n" + 
+                              TRANS("move failed. "));
+            }
+        }
+    }
+
+#undef CHOICE_BOX
+
+    // save the data to project file
+    ValueTree rootTree = thisTree;
+
+    while (rootTree.getParent().isValid())
+        rootTree = rootTree.getParent();
+
+    if (!SwingUtilities::writeValueTreeToFile (rootTree, FileTreeContainer::projectFile))
+        SHOW_MESSAGE (TRANS ("Something wrong during this operation."));
 }
 
 

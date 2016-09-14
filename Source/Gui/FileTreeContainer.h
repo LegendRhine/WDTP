@@ -22,15 +22,6 @@ public:
                      FileTreeContainer* container);
     ~DocTreeViewItem () { }
 
-    /** Note 1: when this item is the root (project item of the top),
-    this method will return this project's 'docs' dir,
-    instead of the project file!
-
-    Note 2: this method always return a valid file object however it exsits or not,
-    if to check the file exists or not, use this sentence: getFileOfThisItem().exists();
-    or: getFileOfThisItem().existsAsFile(); or: getFileOfThisItem().isDirectory()*/
-    const File getFileOrDir () const;
-
     virtual bool mightContainSubItems () override;
     virtual String getUniqueName () const override;
     virtual void itemOpennessChanged (bool isNowOpen) override;
@@ -41,9 +32,29 @@ public:
 
 private:
     //=========================================================================
+    /** Note 1: when this item is the root (project item of the top),
+    this method will return this project's 'docs' dir,
+    instead of the project file!
+
+    Note 2: this method always return a valid file object however it exsits or not,
+    if to check the file exists or not, use this sentence: getFileOfThisItem().exists();
+    or: getFileOfThisItem().existsAsFile(); or: getFileOfThisItem().isDirectory()*/
+    static const File getFileOrDir (const ValueTree& tree);
+
     /** export the selected item (all project-docs, a dir-docs or a doc) as a single md file. */
-    static void exportDocsAsMd (DocTreeViewItem* item, const File& fileAppendTo);
+    static const bool exportDocsAsMd (DocTreeViewItem* item, 
+                                      const ValueTree& tree,
+                                      const File& fileAppendTo);
+
+    //=========================================================================
     void menuPerform (const int menuIndex);
+
+    void renameSelectedItem();
+    void exportAsMdFile();
+    void importDocuments();
+    void createNewDocument();
+    void createNewFolder();
+    void moveSelectedTo();
 
     ValueTree tree; // must NOT be refernce!!
     FileTreeContainer* treeContainer;

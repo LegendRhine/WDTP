@@ -199,6 +199,18 @@ const bool SwingUtilities::isTimeStringValid (const String& dateAndTimeString)
             dateAndTimeString.substring (14, 16).getIntValue () <= 59);
 }
 
+//=================================================================================================
+const String SwingUtilities::getValidFileName (const String& originalStr)
+{
+    return originalStr.trim()
+        .replaceCharacter ('.', '-').replaceCharacter ('?', '-')
+        .replaceCharacter ('*', '-').replaceCharacter ('/', '-')
+        .replaceCharacter ('~', '-').replaceCharacter (':', '-')
+        .replaceCharacter ('|', '-').replaceCharacter ('<', '-')
+        .replaceCharacter ('>', '-').replaceCharacter ('\"', '-')
+        .replaceCharacter ('\\', '-').replaceCharacter ('\'', '-');
+}
+
 //==============================================================================
 SwingDialog::SwingDialog (const String& description) :
     logo (ImageCache::getFromMemory (BinaryData::logo_png, BinaryData::logo_pngSize))

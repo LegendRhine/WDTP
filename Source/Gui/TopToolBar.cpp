@@ -250,13 +250,18 @@ void TopToolBar::createNewProject ()
 
     // overwrite or not if it has been there
     if (projectFile.existsAsFile () && !AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, 
-        TRANS ("Message"), TRANS ("This project file already exists, want to overwrite it?")))
+        TRANS ("Message"), TRANS ("This project already exists, want to overwrite it?")))
     {
         return;
     }
 
     // 5-1： create and initial project file
-    projectFile.deleteFile ();
+    if (!projectFile.deleteFile ())
+    {
+        SHOW_MESSAGE (TRANS ("Can't overwrite this project! "));
+        return;
+    }
+
     projectFile.create ();
 
     ValueTree p ("wdtpProject");
@@ -289,9 +294,6 @@ void TopToolBar::createNewProject ()
     d.setProperty ("name", docFile.getFileNameWithoutExtension (), nullptr);
     d.setProperty ("title", docFile.getFileNameWithoutExtension (), nullptr);
     d.setProperty ("author", p.getProperty ("owner").toString (), nullptr);
-    d.setProperty ("createTime", SwingUtilities::getCurrentTimeString (), nullptr);
-    d.setProperty ("modifyTime", SwingUtilities::getCurrentTimeString (), nullptr);
-    d.setProperty ("words", 0, nullptr);
     d.setProperty ("publish", true, nullptr);
     d.setProperty ("webName", docFile.getFileNameWithoutExtension (), nullptr);
     d.setProperty ("tplFile", p.getProperty ("render").toString () + "/article.html", nullptr);

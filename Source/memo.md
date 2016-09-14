@@ -114,19 +114,16 @@
 	- ftpPassword: 
 
 - 值树中各个dir（目录）的属性：
-    - name：目录名 (路径相对于Docs目录）
+    - name：目录名 (不包含任何上级路径。上级路径可通过其父节点的name获取）
 	- desc：简述
 	- isMenu：是否为网站菜单
 	- render: 本目录下所有文档的渲染模板（磁盘Themes下的某个子目录，即已安装的某套模板）
 	- webName：html文件名
 
 - 值树中各个doc（文档）的属性：
-    - name：文件名（不含文件扩展名，路径相对于docs目录）
+    - name：文件名（不含文件扩展名，不包含任何上级路径。上级路径可通过其父节点的name获取）
     - title：文章标题
     - author：作者
-    - createTime：创建时间
-    - modifyTime：最后修改时间
-    - words：字数
     - publish：是否发布（如果加密属性为true，则此值为false，不发布）
     - webName：发布后的html文件名
     - tplFile：渲染所需的模板文件（默认为项目属性中所设置的模板）

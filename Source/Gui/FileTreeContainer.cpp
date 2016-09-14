@@ -296,14 +296,21 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         sortMenu.addSeparator ();
         sortMenu.addItem (5, TRANS ("Ascending Order"), true, isAscendingOrder);
 
-        m.addSubMenu (TRANS ("Sort by"), sortMenu, exist && !isDoc);
+        m.addSubMenu (TRANS ("Sort By"), sortMenu, exist && !isDoc);
 
         PopupMenu showedAsMenu;
         showedAsMenu.addItem (200, TRANS ("File Name"), true);
         showedAsMenu.addItem (201, TRANS ("Title"), true);
         showedAsMenu.addItem (202, TRANS ("Web Name"), true);
 
-        m.addSubMenu (TRANS ("Showed as"), showedAsMenu, exist && !isRoot);
+        m.addSubMenu (TRANS ("Showed As"), showedAsMenu, exist && !isRoot);
+
+        PopupMenu tooltipAsMenu;
+        tooltipAsMenu.addItem (300, TRANS ("File Name"), true);
+        tooltipAsMenu.addItem (301, TRANS ("Title / Description"), true);
+        tooltipAsMenu.addItem (302, TRANS ("Web Name"), true);
+
+        m.addSubMenu (TRANS ("Tool-tip For"), tooltipAsMenu, exist && !isRoot);
         m.addSeparator ();
 
         m.addItem (10, TRANS ("Rename..."), exist && !isRoot);

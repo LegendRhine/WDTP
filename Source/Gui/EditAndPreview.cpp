@@ -61,6 +61,14 @@ void EditAndPreview::previewDoc (const File& docFile)
 }
 
 //=================================================================================================
+void EditAndPreview::projectClosed ()
+{
+    editor->setText (String());
+
+    // TODO: ...
+}
+
+//=================================================================================================
 void EditAndPreview::setSystemProperties ()
 {
    

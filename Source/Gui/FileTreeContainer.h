@@ -26,24 +26,27 @@ public:
 
     void setTreeViewItem (DocTreeViewItem* item) { rootItem = item; }
 
+    const int compareElements (TreeViewItem* first,
+                               TreeViewItem* second) const;
+
     const int getOrder() const              { return var (order);     }
     const int getShowWhat() const           { return var (showWhat);  }
     const int getTooltipToShow() const      { return var (tooltip);   }
     const int getAscending()  const         { return var (ascending); }
     const int getWhichFirst()  const        { return var (dirFirst);  }
 
-    void setOrder (const int value)         { order = value;     }
-    void setShowWhat(const int value)       { showWhat = value;  }
-    void setTooltipToShow (const int value) { tooltip = value;   }
-    void setAscending (const int value)     { ascending = value; }
-    void setWhichFirst (const int value)    { dirFirst = value;  }
+    void setOrder (const int value)         { order.setValue (value);     }
+    void setShowWhat(const int value)       { showWhat.setValue (value);  }
+    void setTooltipToShow (const int value) { tooltip.setValue (value);   }
+    void setAscending (const int value)     { ascending.setValue (value); }
+    void setWhichFirst (const int value)    { dirFirst.setValue (value);  }
 
     virtual void valueChanged (Value& value) override;
 
 private:
     //=========================================================================
     ValueTree& tree;
-    DocTreeViewItem* rootItem;
+    DocTreeViewItem* rootItem = nullptr;
 
     Value order;
     Value showWhat;
@@ -65,6 +68,17 @@ public:
                      FileTreeContainer* container, 
                      ItemSorter* itemSorter);
     ~DocTreeViewItem ();
+
+    /** Note 1: when this item is the root (project item of the top),
+        this method will return this project's 'docs' dir,
+        instead of the project file!
+
+        Note 2: this method always return a valid file object however it exsits or not,
+        if to check the file exists or not, use this sentence: getFileOfThisItem().exists();
+        or: getFileOfThisItem().existsAsFile(); or: getFileOfThisItem().isDirectory()
+    */
+    static const File getFileOrDir (const ValueTree& tree);
+    const ValueTree& getTree() const { return tree; }
 
     // static public methods..
     static void moveItems (const OwnedArray<ValueTree>& items, ValueTree newParent);
@@ -93,15 +107,6 @@ public:
 
 private:
     //=========================================================================
-    /** Note 1: when this item is the root (project item of the top),
-    this method will return this project's 'docs' dir,
-    instead of the project file!
-
-    Note 2: this method always return a valid file object however it exsits or not,
-    if to check the file exists or not, use this sentence: getFileOfThisItem().exists();
-    or: getFileOfThisItem().existsAsFile(); or: getFileOfThisItem().isDirectory()*/
-    static const File getFileOrDir (const ValueTree& tree);
-
     /** export the selected item (all project-docs, a dir-docs or a doc) as a single md file. */
     static const bool exportDocsAsMd (DocTreeViewItem* item, 
                                       const ValueTree& tree,

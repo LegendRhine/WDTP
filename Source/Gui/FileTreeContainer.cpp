@@ -86,8 +86,11 @@ void FileTreeContainer::openProject (const File& project)
 
     // load the project
     projectFile = project;
+    
     sorter = new ItemSorter (projectTree);
     docTreeItem = new DocTreeViewItem (projectTree, this, sorter);
+    sorter->setTreeViewItem (docTreeItem);
+
     fileTree.setRootItem (docTreeItem);
     projectloaded = true;
 
@@ -118,6 +121,7 @@ void FileTreeContainer::closeProject ()
         projectTree = ValueTree::invalid;
         projectFile = File::nonexistent;
         projectloaded = false;
+        editAndPreview->projectClosed();
 
         // change the text of main window's title-bar
         MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent ());
@@ -226,7 +230,7 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
         itemName = tree.getProperty ("title").toString ();
     
     else if (sorter->getShowWhat() == 2)  // webpage name
-        itemName = tree.getProperty ("webname").toString ();
+        itemName = tree.getProperty ("webName").toString ();
 
     g.drawText (itemName, leftGap, 0, width - 4, height, Justification::centredLeft, true);
 }
@@ -586,7 +590,7 @@ void DocTreeViewItem::createNewDocument ()
         // select the new item 
         setOpen (true);
         DocTreeViewItem* docItem = new DocTreeViewItem (docTree, treeContainer, sorter);
-        addSubItem (docItem, 0);
+        addSubItemSorted (*sorter, docItem);
         docItem->setSelected (true, true);
 
         // save the data to project file
@@ -641,7 +645,7 @@ void DocTreeViewItem::createNewFolder ()
         // select the new item 
         setOpen (true);
         DocTreeViewItem* dirItem = new DocTreeViewItem (dirTree, treeContainer, sorter);
-        addSubItem (dirItem, 0);
+        addSubItemSorted (*sorter, dirItem);
         dirItem->setSelected (true, true);
 
         // save the data to project file
@@ -703,9 +707,8 @@ void DocTreeViewItem::refreshDisplay()
 
     for (int i = 0; i < tree.getNumChildren(); ++i)
     {
-        // TODO: sort...
         DocTreeViewItem* itm = new DocTreeViewItem (tree.getChild (i), treeContainer, sorter);
-        addSubItem (itm);
+        addSubItemSorted (*sorter, itm);
     }
 }
 
@@ -922,7 +925,7 @@ String DocTreeViewItem::getTooltip ()
     
     // 2 for webpage name
     else if (sorter->getTooltipToShow() == 2)
-        return tree.getProperty ("webname").toString ();
+        return tree.getProperty ("webName").toString ();
 
     return String();
 }
@@ -933,11 +936,11 @@ ItemSorter::ItemSorter (ValueTree& tree_)
 {
     jassert (tree.isValid());
 
-    order = (int) tree.getProperty ("order");
-    showWhat = (int) tree.getProperty ("showWhat");
-    tooltip = (int) tree.getProperty ("tooltip");
-    ascending = (int) tree.getProperty ("ascending");
-    dirFirst = (int) tree.getProperty ("dirFirst");
+    order.setValue (tree.getProperty ("order"));
+    showWhat.setValue (tree.getProperty ("showWhat"));
+    tooltip.setValue (tree.getProperty ("tooltip"));
+    ascending.setValue (tree.getProperty ("ascending"));
+    dirFirst.setValue (tree.getProperty ("dirFirst"));
 
     order.addListener (this);
     showWhat.addListener (this);
@@ -957,25 +960,102 @@ ItemSorter::~ItemSorter ()
 }
 
 //=================================================================================================
+const int ItemSorter::compareElements (TreeViewItem* first, TreeViewItem* second) const
+{
+    DocTreeViewItem* f = dynamic_cast<DocTreeViewItem*> (first);
+    DocTreeViewItem* s = dynamic_cast<DocTreeViewItem*> (second);
+
+    if (f == nullptr || s == nullptr)
+        return 0;
+
+    const ValueTree& ft (f->getTree());
+    const ValueTree& st (s->getTree());
+
+    // root tree
+    if (ft.getType().toString() == "wdtpProject")
+        return -1;
+
+    if (st.getType().toString() == "wdtpProject")
+        return 1;
+
+    const File& ff (DocTreeViewItem::getFileOrDir (ft));
+    const File& sf (DocTreeViewItem::getFileOrDir (st));
+    const bool isAscending = (ascending.getValue() == var(0));
+    const bool isDirFirst = (dirFirst.getValue() == var(0));
+
+    // one is dir or both are dir, or both are doc. here must use ValueTree rather than file
+    // bacause the file maybe nonexists..
+    if (ft.getType().toString() == "dir" && st.getType().toString() == "doc")
+    {
+        return isDirFirst ? -1 : 1;
+    }
+    else if (ft.getType().toString() == "doc" && st.getType().toString() == "dir")
+    {
+        return isDirFirst ? 1 : -1;
+    }
+    else  // doc vs doc and dir vs dir..
+    {        
+        if (0 == order) // file name
+        {
+            const int r = ft.getProperty ("name").toString ().compareIgnoreCase (ft.getProperty ("name").toString ());
+            return isAscending ? r : -r;
+        }
+        else if (1 == order) // title or descrition
+        {
+            const int r = ft.getProperty ("title").toString ().compareIgnoreCase (ft.getProperty ("title").toString ());
+            return isAscending ? r : -r;
+        }
+        else if (2 == order) // webname
+        {
+            const int r = ft.getProperty ("webName").toString ().compareIgnoreCase (ft.getProperty ("webName").toString ());
+            return isAscending ? r : -r;
+        }
+        else if (3 == order) // file size
+        {
+            const int r = int (ff.getSize () - sf.getSize ());
+            return isAscending ? r : -r;
+        }
+        else if (4 == order) // create time
+        {
+            if (!(ff.exists() && sf.exists()))
+                return 0;
+
+            const bool b = (ff.getCreationTime () < sf.getCreationTime ());
+            const int r = b ? -1 : 1;
+            return isAscending ? -r : r;
+        }
+        else if (5 == order) // modified time
+        {
+            if (!(ff.exists() && sf.exists()))
+                return 0;
+
+            const bool b = (ff.getLastModificationTime () < sf.getLastModificationTime ());
+            const int r = b ? -1 : 1;
+            return isAscending ? -r : r;
+        }
+    }
+
+    jassertfalse;  // should never run here..
+    return 0;  
+}
+
+//=================================================================================================
 void ItemSorter::valueChanged (Value& value)
 {
-    // haven't called setTreeViewItem() yet?
-    jassert (rootItem != nullptr);
-    
-    // update and save the project
-    if (value == order)
-        tree.setProperty ("order", order, nullptr);
-    else if (value == showWhat)
-        tree.setProperty ("showWhat", showWhat, nullptr);
-    else if (value == ascending)
-        tree.setProperty ("ascending", ascending, nullptr);
-    else if (value == tooltip)
-        tree.setProperty ("tooltip", tooltip, nullptr);
-    else if (value == dirFirst)
-        tree.setProperty ("dirFirst", dirFirst, nullptr);
-        
-    //rootItem->sortSubItems ();
+    // haven't called setTreeViewItem() yet? See this class' description..
+    jassert (rootItem != nullptr);    
+    rootItem->refreshDisplay();
 
+    // update project-tree
+    if (value == order)           tree.setProperty ("order", order, nullptr);
+    else if (value == showWhat)   tree.setProperty ("showWhat", showWhat, nullptr);
+    else if (value == ascending)  tree.setProperty ("ascending", ascending, nullptr);
+    else if (value == tooltip)    tree.setProperty ("tooltip", tooltip, nullptr);
+    else if (value == dirFirst)   tree.setProperty ("dirFirst", dirFirst, nullptr);    
+
+    // save the project file
     if (!SwingUtilities::writeValueTreeToFile (tree, FileTreeContainer::projectFile))
         SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
 }
+
+

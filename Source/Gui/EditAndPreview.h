@@ -33,6 +33,7 @@ public:
 
     void editDoc (const File& docFile);
     void previewDoc (const File& docFile);
+    void projectClosed ();
 
     void setSystemProperties ();
     void setDocProperties (const ValueTree& docTree);

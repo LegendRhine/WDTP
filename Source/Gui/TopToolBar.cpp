@@ -270,6 +270,9 @@ void TopToolBar::createNewProject ()
     p.setProperty ("owner", String(), nullptr);
     p.setProperty ("skin", "Elegence", nullptr);
     p.setProperty ("order", 0, nullptr);
+    p.setProperty ("isAscending", true, nullptr);
+    p.setProperty ("showWhat", 0, nullptr);
+    p.setProperty ("tooltip", 0, nullptr);
     p.setProperty ("render", "themes/theme-1", nullptr);
     p.setProperty ("place", "site", nullptr);
     p.setProperty ("ftpAddress", String (), nullptr);

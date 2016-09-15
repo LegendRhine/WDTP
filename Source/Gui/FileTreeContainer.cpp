@@ -26,7 +26,7 @@ FileTreeContainer::FileTreeContainer (EditAndPreview* rightArea) :
     fileTree.setMultiSelectEnabled (true);
     fileTree.setOpenCloseButtonsVisible (true);
     fileTree.setIndentSize (15);   
-    fileTree.getViewport ()->setScrollBarThickness (10);
+    fileTree.getViewport()->setScrollBarThickness (10);
 
     addAndMakeVisible (fileTree);
 }
@@ -147,7 +147,7 @@ DocTreeViewItem::DocTreeViewItem (const ValueTree& tree_,
     jassert (treeContainer != nullptr);
 
     // highlight for the whole line
-    setDrawsInLeftMargin (true); 
+    //setDrawsInLeftMargin (true); 
     setLinesDrawnForSubItems (true);
     tree.addListener (this);
 }
@@ -330,6 +330,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addItem (12, TRANS ("Delete..."), !isRoot);
         m.addSeparator ();
 
+        m.addItem (14, TRANS ("Open in Explorer/Finder..."), exist && onlyOneSelected);
         m.addItem (15, TRANS ("Open in External Editor..."), exist && isDoc && onlyOneSelected);
 
         menuPerform (m.show());
@@ -351,6 +352,8 @@ void DocTreeViewItem::menuPerform (const int index)
         renameSelectedItem ();
     else if (index == 12)
         delSelected ();
+    else if (index == 14)
+        getFileOrDir (tree).revealToUser();
     else if (index == 15)
         getFileOrDir (tree).startAsProcess();
 }
@@ -626,7 +629,8 @@ void DocTreeViewItem::delSelected ()
     if (!AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Message"),
                                        TRANS ("Do you really want to delete ") +
                                        String (selectedTrees.size()) +  
-                                       TRANS (" selected item(s)? ") + newLine + newLine +
+                                       TRANS (" selected item(s)? ") + newLine + 
+                                       TRANS("This operation CANNOT be undone! ") + newLine + newLine +
                                        TRANS ("Tips: The deleted items could be found in OS's Recycle Bin. ")))
         return;
 

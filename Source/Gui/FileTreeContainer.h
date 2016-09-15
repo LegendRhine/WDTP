@@ -82,6 +82,10 @@ private:
     //=========================================================================
     ValueTree tree; // must NOT be refernce!!
     FileTreeContainer* treeContainer;
+
+    int order = 0;
+    int showWhat = 0;
+    int tooltip = 0;
     bool isAscendingOrder = true;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DocTreeViewItem)

@@ -45,7 +45,7 @@ public:
 
 private:
     //=========================================================================
-    ValueTree& tree;
+    ValueTree& projectTree;
     DocTreeViewItem* rootItem = nullptr;
 
     Value order;

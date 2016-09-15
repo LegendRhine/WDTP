@@ -81,6 +81,7 @@ SetupPanel::SetupPanel() :
 
     projectProperties.add (new ChoicePropertyComponent (projectRenderDir, TRANS ("Template: "), themeDirsSa, themeDirsVar));
     projectProperties.add (new TextPropertyComponent (place, TRANS ("Render To: "), 60, false));
+    projectProperties.add (new TextPropertyComponent (domain, TRANS ("Domain: "), 100, false));
     projectProperties.add (new TextPropertyComponent (ftpAddress, TRANS ("FTP URL: "), 60, false));
     projectProperties.add (new TextPropertyComponent (ftpPort, TRANS ("FTP Port: "), 6, false));
     projectProperties.add (new TextPropertyComponent (ftpUserName, TRANS ("FTP Account: "), 60, false));

@@ -108,6 +108,7 @@
 	- tooltip：TreeView中的tooltip显示文件名（包括所有路径，0）、标题/简介（1），还是网页文件名（2）
 	- render: 渲染模板（磁盘Themes下的某个子目录，即已安装的某套模板）
 	- place: 渲染后的网页存放于该目录下，默认为Site目录，用户可另外指定
+	- domain: 域名，比如：“http://underwaySoft.com”
 	- ftpAddress: 
 	- ftpPort: 
 	- ftpUserName: 

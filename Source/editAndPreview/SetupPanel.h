@@ -34,7 +34,7 @@ private:
 
     // project properties' values
     Value projectName, projectDesc, owner, projectSkin, projectRenderDir, place, 
-        ftpAddress, ftpPort, ftpUserName, ftpPassword;
+        domain, ftpAddress, ftpPort, ftpUserName, ftpPassword;
 
     // dir properties' values
     Value dirDesc, isMenu, dirRenderDir, dirWebName;

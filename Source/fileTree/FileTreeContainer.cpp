@@ -146,15 +146,15 @@ const bool FileTreeContainer::saveDocAndProject () const
 
 //=================================================================================================
 ItemSorter::ItemSorter (ValueTree& tree_) 
-    : tree(tree_)
+    : projectTree (tree_)
 {
-    jassert (tree.isValid());
+    jassert (projectTree.isValid());
 
-    order.setValue (tree.getProperty ("order"));
-    showWhat.setValue (tree.getProperty ("showWhat"));
-    tooltip.setValue (tree.getProperty ("tooltip"));
-    ascending.setValue (tree.getProperty ("ascending"));
-    dirFirst.setValue (tree.getProperty ("dirFirst"));
+    order.setValue (projectTree.getProperty ("order"));
+    showWhat.setValue (projectTree.getProperty ("showWhat"));
+    tooltip.setValue (projectTree.getProperty ("tooltip"));
+    ascending.setValue (projectTree.getProperty ("ascending"));
+    dirFirst.setValue (projectTree.getProperty ("dirFirst"));
 
     order.addListener (this);
     showWhat.addListener (this);
@@ -211,17 +211,17 @@ const int ItemSorter::compareElements (TreeViewItem* first, TreeViewItem* second
     {        
         if (0 == order) // file name
         {
-            const int r = ft.getProperty ("name").toString ().compareIgnoreCase (ft.getProperty ("name").toString ());
+            const int r = ft.getProperty ("name").toString ().compareIgnoreCase (st.getProperty ("name").toString ());
             return isAscending ? r : -r;
         }
         else if (1 == order) // title or descrition
         {
-            const int r = ft.getProperty ("title").toString ().compareIgnoreCase (ft.getProperty ("title").toString ());
+            const int r = ft.getProperty ("title").toString ().compareIgnoreCase (st.getProperty ("title").toString ());
             return isAscending ? r : -r;
         }
         else if (2 == order) // webname
         {
-            const int r = ft.getProperty ("webName").toString ().compareIgnoreCase (ft.getProperty ("webName").toString ());
+            const int r = ft.getProperty ("webName").toString ().compareIgnoreCase (st.getProperty ("webName").toString ());
             return isAscending ? r : -r;
         }
         else if (3 == order) // file size
@@ -234,7 +234,7 @@ const int ItemSorter::compareElements (TreeViewItem* first, TreeViewItem* second
             if (!(ff.exists() && sf.exists()))
                 return 0;
 
-            const bool b = (ff.getCreationTime () < sf.getCreationTime ());
+            const bool b = (ff.getCreationTime () > sf.getCreationTime ());
             const int r = b ? -1 : 1;
             return isAscending ? -r : r;
         }
@@ -243,7 +243,7 @@ const int ItemSorter::compareElements (TreeViewItem* first, TreeViewItem* second
             if (!(ff.exists() && sf.exists()))
                 return 0;
 
-            const bool b = (ff.getLastModificationTime () < sf.getLastModificationTime ());
+            const bool b = (ff.getLastModificationTime () > sf.getLastModificationTime ());
             const int r = b ? -1 : 1;
             return isAscending ? -r : r;
         }
@@ -261,14 +261,19 @@ void ItemSorter::valueChanged (Value& value)
     rootItem->refreshDisplay();
 
     // update project-tree
-    if (value == order)           tree.setProperty ("order", order, nullptr);
-    else if (value == showWhat)   tree.setProperty ("showWhat", showWhat, nullptr);
-    else if (value == ascending)  tree.setProperty ("ascending", ascending, nullptr);
-    else if (value == tooltip)    tree.setProperty ("tooltip", tooltip, nullptr);
-    else if (value == dirFirst)   tree.setProperty ("dirFirst", dirFirst, nullptr);    
+    if (value.refersToSameSourceAs(order))
+        projectTree.setProperty ("order", order.getValue(), nullptr);
+    else if (value.refersToSameSourceAs (showWhat))
+        projectTree.setProperty ("showWhat", showWhat.getValue(), nullptr);
+    else if (value.refersToSameSourceAs (ascending))
+        projectTree.setProperty ("ascending", ascending.getValue(), nullptr);
+    else if (value.refersToSameSourceAs (tooltip))
+        projectTree.setProperty ("tooltip", tooltip.getValue(), nullptr);
+    else if (value.refersToSameSourceAs (dirFirst))
+        projectTree.setProperty ("dirFirst", dirFirst.getValue(), nullptr);
 
     // save the project file
-    if (!SwingUtilities::writeValueTreeToFile (tree, FileTreeContainer::projectFile))
+    if (!SwingUtilities::writeValueTreeToFile (projectTree, FileTreeContainer::projectFile))
         SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
 }
 

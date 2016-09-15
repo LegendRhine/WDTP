@@ -205,21 +205,21 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         sortMenu.addItem (106, TRANS ("Ascending Order"), true, sorter->getAscending () == 0);
         sortMenu.addItem (107, TRANS ("Folder First"), true, sorter->getWhichFirst () == 0);
 
-        m.addSubMenu (TRANS ("Sort by"), sortMenu, getNumSubItems () > 0);
+        m.addSubMenu (TRANS ("Sort by"), sortMenu);
 
         PopupMenu showedAsMenu;
         showedAsMenu.addItem (200, TRANS ("File Name"), true, sorter->getShowWhat () == 0);
         showedAsMenu.addItem (201, TRANS ("Title / Intro"), true, sorter->getShowWhat () == 1);
         showedAsMenu.addItem (202, TRANS ("Web Name"), true, sorter->getShowWhat () == 2);
 
-        m.addSubMenu (TRANS ("Showed as"), showedAsMenu, getNumSubItems () > 0);
+        m.addSubMenu (TRANS ("Showed as"), showedAsMenu);
 
         PopupMenu tooltipAsMenu;
         tooltipAsMenu.addItem (300, TRANS ("File Path"), true, sorter->getTooltipToShow () == 0);
         tooltipAsMenu.addItem (301, TRANS ("Title / Intro"), true, sorter->getTooltipToShow () == 1);
         tooltipAsMenu.addItem (302, TRANS ("Web Name"), true, sorter->getTooltipToShow () == 2);
 
-        m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu, getNumSubItems () > 0);
+        m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu);
         m.addSeparator ();
 
         m.addItem (10, TRANS ("Rename..."), !isRoot && onlyOneSelected);
@@ -259,9 +259,9 @@ void DocTreeViewItem::menuPerform (const int index)
     else if (index >= 100 && index <= 105)
         sorter->setOrder (index - 100);
     else if (index == 106)
-        sorter->setAscending ((sorter->getAscending () == 0) ? 1 : 0);
+        sorter->setAscending ((sorter->getAscending() == 0) ? 1 : 0);
     else if (index == 107)
-        sorter->setWhichFirst ((sorter->getWhichFirst () == 0) ? 1 : 0);
+        sorter->setWhichFirst ((sorter->getWhichFirst() == 0) ? 1 : 0);
     else if (index >= 200 && index <= 202)
         sorter->setShowWhat (index - 200);
     else if (index >= 300 && index <= 302)
@@ -784,16 +784,21 @@ void DocTreeViewItem::valueChanged (Value& /*value*/)
 String DocTreeViewItem::getTooltip ()
 {
     // full path of file name
-    if (sorter->getTooltipToShow () == 0)
-        return getFileOrDir (tree).getFullPathName ();
+    if (sorter->getTooltipToShow() == 0)
+        return getFileOrDir (tree).getFullPathName();
 
     // title or intro
-    else if (sorter->getTooltipToShow () == 1)
-        return tree.getProperty ("title").toString ();
+    else if (sorter->getTooltipToShow() == 1) 
+        return tree.getProperty ("title").toString();
 
     // 2 for webpage name
-    else if (sorter->getTooltipToShow () == 2)
-        return tree.getProperty ("webName").toString () + ".html";
+    else if (sorter->getTooltipToShow() == 2)
+    {
+        if (tree.getType ().toString () == "wdtpProject")
+            return tree.getProperty ("domain").toString();
+        else
+            return tree.getProperty ("webName").toString() + ".html";
+    }
 
     return String ();
 }

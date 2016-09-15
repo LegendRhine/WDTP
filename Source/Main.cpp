@@ -40,7 +40,6 @@ public:
             systemFile->setValue ("language", "English");
             systemFile->setValue ("clickForEdit", "Edit");
             systemFile->setValue ("fontSize", SwingUtilities::getFontSize());
-            systemFile->setValue ("exEditor", String ());
 
             systemFile->save ();
         }

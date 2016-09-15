@@ -1,4 +1,4 @@
-/*
+﻿/*
   ==============================================================================
 
     FileTreeContainer.cpp
@@ -303,34 +303,34 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         sortMenu.addItem (100, TRANS ("File Name"), true);
         sortMenu.addItem (101, TRANS ("Title"), true);
         sortMenu.addItem (102, TRANS ("Web Name"), true);
-        sortMenu.addItem (103, TRANS ("Words Number"), true);
+        sortMenu.addItem (103, TRANS ("File Size"), true);
         sortMenu.addItem (104, TRANS ("Create Time"), true);
         sortMenu.addItem (105, TRANS ("Modified Time"), true);
         sortMenu.addSeparator ();
         sortMenu.addItem (5, TRANS ("Ascending Order"), true, isAscendingOrder);
 
-        m.addSubMenu (TRANS ("Sort By"), sortMenu, exist && !isDoc);
+        m.addSubMenu (TRANS ("Sort by"), sortMenu, exist && !isDoc);
 
         PopupMenu showedAsMenu;
         showedAsMenu.addItem (200, TRANS ("File Name"), true);
-        showedAsMenu.addItem (201, TRANS ("Title"), true);
+        showedAsMenu.addItem (201, TRANS ("Title/Intro"), true);
         showedAsMenu.addItem (202, TRANS ("Web Name"), true);
 
-        m.addSubMenu (TRANS ("Showed As"), showedAsMenu, exist && !isRoot);
+        m.addSubMenu (TRANS ("Showed as"), showedAsMenu, exist && !isRoot);
 
         PopupMenu tooltipAsMenu;
         tooltipAsMenu.addItem (300, TRANS ("File Name"), true);
-        tooltipAsMenu.addItem (301, TRANS ("Title / Description"), true);
+        tooltipAsMenu.addItem (301, TRANS ("Title/Intro"), true);
         tooltipAsMenu.addItem (302, TRANS ("Web Name"), true);
 
-        m.addSubMenu (TRANS ("Tooltip For"), tooltipAsMenu, exist && !isRoot);
+        m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu, exist && !isRoot);
         m.addSeparator ();
 
         m.addItem (10, TRANS ("Rename..."), !isRoot && onlyOneSelected);
         m.addItem (12, TRANS ("Delete..."), !isRoot);
         m.addSeparator ();
 
-        m.addItem (15, TRANS ("Open In External Editor..."), exist && isDoc && onlyOneSelected);
+        m.addItem (15, TRANS ("Open in External Editor..."), exist && isDoc && onlyOneSelected);
 
         menuPerform (m.show());
     }
@@ -339,18 +339,20 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 //=================================================================================================
 void DocTreeViewItem::menuPerform (const int index)
 {
-    if (index == 1) 
+    if (index == 1)
         createNewFolder ();
-    else if (index == 2) 
+    else if (index == 2)
         createNewDocument ();
-    else if (index == 3) 
+    else if (index == 3)
         importDocuments ();
-    else if (index == 4) 
+    else if (index == 4)
         exportAsMdFile ();
     else if (index == 10)
         renameSelectedItem ();
     else if (index == 12)
         delSelected ();
+    else if (index == 15)
+        getFileOrDir (tree).startAsProcess();
 }
 
 //=================================================================================================
@@ -609,6 +611,7 @@ void DocTreeViewItem::createNewFolder ()
 //=================================================================================================
 void DocTreeViewItem::delSelected ()
 {
+    // get all selected items
     OwnedArray<ValueTree> selectedTrees;
     TreeView* treeView = getOwnerView ();
 
@@ -619,6 +622,35 @@ void DocTreeViewItem::delSelected ()
 
         selectedTrees.add (new ValueTree (item->tree));
     }
+
+    if (!AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Message"),
+                                       TRANS ("Do you really want to delete ") +
+                                       String (selectedTrees.size()) +  
+                                       TRANS (" selected item(s)? ") + newLine + newLine +
+                                       TRANS ("Tips: The deleted items could be found in OS's Recycle Bin. ")))
+        return;
+
+    // MUST get the root before remove the tree!
+    ValueTree rootTree = tree;
+
+    while (rootTree.getParent ().isValid ())
+        rootTree = rootTree.getParent ();
+
+    // delete one by one
+    for (int i = selectedTrees.size(); --i >=0; )
+    {
+        ValueTree& v = *selectedTrees.getUnchecked (i);
+
+        if (v.getParent().isValid())
+        {
+            getFileOrDir (v).moveToTrash();
+            v.getParent().removeChild (v, nullptr);
+        }        
+    }
+
+    // save the data to project file
+    if (!SwingUtilities::writeValueTreeToFile (rootTree, FileTreeContainer::projectFile))
+        SHOW_MESSAGE (TRANS ("Something wrong during this operation."));
 }
 
 //=================================================================================================
@@ -778,7 +810,7 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items, ValueTree t
             if (thisFile.moveFileTo (targetFile))
             {
                 v.setProperty ("name", targetFile.getFileNameWithoutExtension (), nullptr);
-                v.getParent ().removeChild (v, nullptr);
+                v.getParent().removeChild (v, nullptr);
                 thisTree.addChild (v, 0, nullptr);
             }
             else

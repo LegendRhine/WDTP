@@ -12,14 +12,13 @@
 #define WDTPHEADER_H_INCLUDED
 
 #include "JuceHeader.h"
-#include "SwingUtilities.h"
-#include "SwingLookAndFeel.h"
-#include "Gui/MainComponent.h"
-#include "Gui/TopToolBar.h"
-#include "Gui/EditAndPreview.h"
-#include "Gui/SetupPanel.h"
-#include "Gui/FileTreeContainer.h"
-#include "InnerProcess/GuiInteract.h"
+#include "SwingLibrary/SwingUtilities.h"
+#include "SwingLibrary/SwingLookAndFeel.h"
+#include "MainComponent.h"
+#include "toolbar/TopToolBar.h"
+#include "editAndPreview/EditAndPreview.h"
+#include "editAndPreview/SetupPanel.h"
+#include "fileTree/FileTreeContainer.h"
 
 
 #endif  // HEADERGUA

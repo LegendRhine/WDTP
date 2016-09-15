@@ -22,41 +22,45 @@
         <FILE id="WJnq70" name="view.png" compile="0" resource="1" file="Source/BinaryData/view.png"/>
         <FILE id="VMV514" name="system.png" compile="0" resource="1" file="Source/BinaryData/system.png"/>
       </GROUP>
-      <GROUP id="{E8EBB7A3-32FA-FD8E-8204-142F3654F806}" name="Gui">
-        <FILE id="WXMMCK" name="EditAndPreview.cpp" compile="1" resource="0"
-              file="Source/Gui/EditAndPreview.cpp"/>
-        <FILE id="buPk4Q" name="EditAndPreview.h" compile="0" resource="0"
-              file="Source/Gui/EditAndPreview.h"/>
-        <FILE id="WMWqEA" name="FileTreeContainer.cpp" compile="1" resource="0"
-              file="Source/Gui/FileTreeContainer.cpp"/>
-        <FILE id="HNGtPw" name="FileTreeContainer.h" compile="0" resource="0"
-              file="Source/Gui/FileTreeContainer.h"/>
-        <FILE id="rWKwNi" name="MainComponent.cpp" compile="1" resource="0"
-              file="Source/Gui/MainComponent.cpp"/>
-        <FILE id="RDB69h" name="MainComponent.h" compile="0" resource="0" file="Source/Gui/MainComponent.h"/>
-        <FILE id="RdVtvY" name="SetupPanel.cpp" compile="1" resource="0" file="Source/Gui/SetupPanel.cpp"/>
-        <FILE id="aB5R27" name="SetupPanel.h" compile="0" resource="0" file="Source/Gui/SetupPanel.h"/>
-        <FILE id="WaO49Q" name="TopToolBar.cpp" compile="1" resource="0" file="Source/Gui/TopToolBar.cpp"/>
-        <FILE id="ohpSWd" name="TopToolBar.h" compile="0" resource="0" file="Source/Gui/TopToolBar.h"/>
+      <GROUP id="{78DDF5F5-5447-A771-3FDF-FB5C80890F36}" name="editAndPreview">
+        <FILE id="xNGzmM" name="EditAndPreview.cpp" compile="1" resource="0"
+              file="Source/editAndPreview/EditAndPreview.cpp"/>
+        <FILE id="ksgk4B" name="EditAndPreview.h" compile="0" resource="0"
+              file="Source/editAndPreview/EditAndPreview.h"/>
+        <FILE id="eladi5" name="SetupPanel.cpp" compile="1" resource="0" file="Source/editAndPreview/SetupPanel.cpp"/>
+        <FILE id="UkaHhi" name="SetupPanel.h" compile="0" resource="0" file="Source/editAndPreview/SetupPanel.h"/>
       </GROUP>
-      <GROUP id="{CEF0DDB9-3E3A-6CF3-D1B3-CADC709DDADC}" name="InnerProcess">
-        <FILE id="nK5OQw" name="GuiInteract.cpp" compile="1" resource="0" file="Source/InnerProcess/GuiInteract.cpp"/>
-        <FILE id="J0iNuv" name="GuiInteract.h" compile="0" resource="0" file="Source/InnerProcess/GuiInteract.h"/>
-        <FILE id="fcnpKb" name="Html2MD.cpp" compile="1" resource="0" file="Source/InnerProcess/Html2MD.cpp"/>
-        <FILE id="ELeGqw" name="Html2MD.h" compile="0" resource="0" file="Source/InnerProcess/Html2MD.h"/>
-        <FILE id="nz5uKS" name="MD2Html.cpp" compile="1" resource="0" file="Source/InnerProcess/MD2Html.cpp"/>
-        <FILE id="pLchyx" name="MD2Html.h" compile="0" resource="0" file="Source/InnerProcess/MD2Html.h"/>
+      <GROUP id="{3E35F29C-ED85-843B-0669-6F1C0563902E}" name="fileTree">
+        <FILE id="FnYgWl" name="FileTreeContainer.cpp" compile="1" resource="0"
+              file="Source/fileTree/FileTreeContainer.cpp"/>
+        <FILE id="pMFpqW" name="FileTreeContainer.h" compile="0" resource="0"
+              file="Source/fileTree/FileTreeContainer.h"/>
+      </GROUP>
+      <GROUP id="{D3401C39-DE40-D94A-EE8E-147FE211E0D9}" name="render">
+        <FILE id="t6qBTf" name="Html2MD.cpp" compile="1" resource="0" file="Source/render/Html2MD.cpp"/>
+        <FILE id="yd7S2u" name="Html2MD.h" compile="0" resource="0" file="Source/render/Html2MD.h"/>
+        <FILE id="ubZbKd" name="MD2Html.cpp" compile="1" resource="0" file="Source/render/MD2Html.cpp"/>
+        <FILE id="sdSAnu" name="MD2Html.h" compile="0" resource="0" file="Source/render/MD2Html.h"/>
+      </GROUP>
+      <GROUP id="{83694581-DB15-8946-3B2A-EBBCEDD57AAD}" name="SwingLibrary">
+        <FILE id="xPreeF" name="SwingLookAndFeel.cpp" compile="1" resource="0"
+              file="Source/SwingLibrary/SwingLookAndFeel.cpp"/>
+        <FILE id="qeBKcI" name="SwingLookAndFeel.h" compile="0" resource="0"
+              file="Source/SwingLibrary/SwingLookAndFeel.h"/>
+        <FILE id="jy48p9" name="SwingUtilities.cpp" compile="1" resource="0"
+              file="Source/SwingLibrary/SwingUtilities.cpp"/>
+        <FILE id="FxKz0X" name="SwingUtilities.h" compile="0" resource="0"
+              file="Source/SwingLibrary/SwingUtilities.h"/>
+      </GROUP>
+      <GROUP id="{7CC400C2-91B5-0112-110B-A0DDCC90265F}" name="toolbar">
+        <FILE id="Ivqvwu" name="TopToolBar.cpp" compile="1" resource="0" file="Source/toolbar/TopToolBar.cpp"/>
+        <FILE id="aHFLNc" name="TopToolBar.h" compile="0" resource="0" file="Source/toolbar/TopToolBar.h"/>
       </GROUP>
       <FILE id="y8wbbe" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
+      <FILE id="LQFmhv" name="MainComponent.cpp" compile="1" resource="0"
+            file="Source/MainComponent.cpp"/>
+      <FILE id="czsEY9" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="hzPDBZ" name="memo.md" compile="0" resource="0" file="Source/memo.md"/>
-      <FILE id="unI8b2" name="SwingLookAndFeel.cpp" compile="1" resource="0"
-            file="Source/SwingLookAndFeel.cpp"/>
-      <FILE id="sZjAUX" name="SwingLookAndFeel.h" compile="0" resource="0"
-            file="Source/SwingLookAndFeel.h"/>
-      <FILE id="F916He" name="SwingUtilities.cpp" compile="1" resource="0"
-            file="Source/SwingUtilities.cpp"/>
-      <FILE id="qAG9f4" name="SwingUtilities.h" compile="0" resource="0"
-            file="Source/SwingUtilities.h"/>
       <FILE id="PqDad8" name="WdtpHeader.h" compile="0" resource="0" file="Source/WdtpHeader.h"/>
     </GROUP>
   </MAINGROUP>

@@ -337,21 +337,21 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         sortMenu.addItem (106, TRANS ("Ascending Order"), true, sorter->getAscending() == 0);
         sortMenu.addItem (107, TRANS ("Folder First"), true, sorter->getWhichFirst() == 0);
 
-        m.addSubMenu (TRANS ("Sort by"), sortMenu, exist && !isDoc);
+        m.addSubMenu (TRANS ("Sort by"), sortMenu, getNumSubItems() > 0);
 
         PopupMenu showedAsMenu;
         showedAsMenu.addItem (200, TRANS ("File Name"), true, sorter->getShowWhat() == 0);
         showedAsMenu.addItem (201, TRANS ("Title / Intro"), true, sorter->getShowWhat() == 1);
         showedAsMenu.addItem (202, TRANS ("Web Name"), true, sorter->getShowWhat() == 2);
 
-        m.addSubMenu (TRANS ("Showed as"), showedAsMenu, exist && !isRoot);
+        m.addSubMenu (TRANS ("Showed as"), showedAsMenu, getNumSubItems () > 0);
 
         PopupMenu tooltipAsMenu;
         tooltipAsMenu.addItem (300, TRANS ("File Path"), true, sorter->getTooltipToShow() == 0);
         tooltipAsMenu.addItem (301, TRANS ("Title / Intro"), true, sorter->getTooltipToShow() == 1);
         tooltipAsMenu.addItem (302, TRANS ("Web Name"), true, sorter->getTooltipToShow() == 2);
 
-        m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu, exist && !isRoot);
+        m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu, getNumSubItems () > 0);
         m.addSeparator ();
 
         m.addItem (10, TRANS ("Rename..."), !isRoot && onlyOneSelected);
@@ -387,7 +387,7 @@ void DocTreeViewItem::menuPerform (const int index)
     else if (index == 15)
         getFileOrDir (tree).startAsProcess ();
 
-    // sort...
+    // sort and show what...
     else if (index >= 100 && index <= 105)
         sorter->setOrder (index - 100);
     else if (index == 106)
@@ -632,7 +632,7 @@ void DocTreeViewItem::createNewFolder ()
 
         ValueTree dirTree ("dir");
         dirTree.setProperty ("name", dirName, nullptr);
-        dirTree.setProperty ("title", dirName + TRANS ("\'s description"), nullptr);
+        dirTree.setProperty ("title", dirName, nullptr);
         dirTree.setProperty ("isMenu", false, nullptr);
         dirTree.setProperty ("render", rootTree.getProperty ("render").toString (), nullptr);
         dirTree.setProperty ("webName", dirName, nullptr);
@@ -925,7 +925,7 @@ String DocTreeViewItem::getTooltip ()
     
     // 2 for webpage name
     else if (sorter->getTooltipToShow() == 2)
-        return tree.getProperty ("webName").toString ();
+        return tree.getProperty ("webName").toString() + ".html";
 
     return String();
 }

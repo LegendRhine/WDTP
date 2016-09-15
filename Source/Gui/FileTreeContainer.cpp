@@ -149,6 +149,19 @@ DocTreeViewItem::DocTreeViewItem (const ValueTree& tree_,
     // highlight for the whole line
     //setDrawsInLeftMargin (true); 
     setLinesDrawnForSubItems (true);
+
+    order = (int) tree.getProperty ("order");
+    showWhat = (int) tree.getProperty ("showWhat");
+    tooltip = (int) tree.getProperty ("tooltip");
+    isAscending = (int) tree.getProperty ("isAscendingOrder");
+    dirFirst = (int) tree.getProperty ("dirFirst");
+
+    order.addListener (this);
+    showWhat.addListener (this);
+    tooltip.addListener (this);
+    isAscending.addListener (this);
+    dirFirst.addListener (this);
+
     tree.addListener (this);
 }
 
@@ -168,9 +181,9 @@ String DocTreeViewItem::getUniqueName () const
 void DocTreeViewItem::itemOpennessChanged (bool isNowOpen)
 {
     if (isNowOpen && getNumSubItems() == 0)
-        refreshSubItems ();
+        refreshSubItems (this);
     else
-        clearSubItems ();
+        clearSubItems();
 }
 
 //=================================================================================================
@@ -205,7 +218,16 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
         c = Colours::red;
 
     g.setColour (c);
-    const String& itemName (tree.getProperty ("name").toString ());
+    
+    String itemName;
+    
+    if (0 == showWhat)  // file name
+        itemName = tree.getProperty ("name").toString();
+    else if (1 == showWhat) // title or intro
+        itemName = tree.getProperty ("title").toString ();
+    else if (2 == showWhat)  // webpage name
+        itemName = tree.getProperty ("webname").toString ();
+
     g.drawText (itemName, leftGap, 0, width - 4, height, Justification::centredLeft, true);
 }
 
@@ -237,6 +259,7 @@ const File DocTreeViewItem::getFileOrDir (const ValueTree& tree)
 }
 
 //=================================================================================================
+// left click
 void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
 {
     if (isNowSelected)
@@ -277,8 +300,8 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
     }
 }
 
-
 //=================================================================================================
+// right click
 void DocTreeViewItem::itemClicked (const MouseEvent& e)
 {   
     const bool exist = getFileOrDir (tree).exists ();
@@ -300,28 +323,29 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addSeparator ();
 
         PopupMenu sortMenu;
-        sortMenu.addItem (100, TRANS ("File Name"), true);
-        sortMenu.addItem (101, TRANS ("Title"), true);
-        sortMenu.addItem (102, TRANS ("Web Name"), true);
-        sortMenu.addItem (103, TRANS ("File Size"), true);
-        sortMenu.addItem (104, TRANS ("Create Time"), true);
-        sortMenu.addItem (105, TRANS ("Modified Time"), true);
+        sortMenu.addItem (100, TRANS ("File Name"), true, order.getValue() == var(0));
+        sortMenu.addItem (101, TRANS ("Title / Intro"), true, order.getValue() == var(1));
+        sortMenu.addItem (102, TRANS ("Web Name"), true, order.getValue() == var(2));
+        sortMenu.addItem (103, TRANS ("File Size"), true, order.getValue() == var(3));
+        sortMenu.addItem (104, TRANS ("Create Time"), true, order.getValue() == var(4));
+        sortMenu.addItem (105, TRANS ("Modified Time"), true, order.getValue() == var(5));
         sortMenu.addSeparator ();
-        sortMenu.addItem (5, TRANS ("Ascending Order"), true, isAscendingOrder);
+        sortMenu.addItem (106, TRANS ("Ascending Order"), true, isAscending.getValue() == var(0));
+        sortMenu.addItem (107, TRANS ("Folder First"), true, dirFirst.getValue() == var(0));
 
         m.addSubMenu (TRANS ("Sort by"), sortMenu, exist && !isDoc);
 
         PopupMenu showedAsMenu;
-        showedAsMenu.addItem (200, TRANS ("File Name"), true);
-        showedAsMenu.addItem (201, TRANS ("Title/Intro"), true);
-        showedAsMenu.addItem (202, TRANS ("Web Name"), true);
+        showedAsMenu.addItem (200, TRANS ("File Name"), true, showWhat.getValue() == var(0));
+        showedAsMenu.addItem (201, TRANS ("Title / Intro"), true, showWhat.getValue() == var(1));
+        showedAsMenu.addItem (202, TRANS ("Web Name"), true, showWhat.getValue() == var(2));
 
         m.addSubMenu (TRANS ("Showed as"), showedAsMenu, exist && !isRoot);
 
         PopupMenu tooltipAsMenu;
-        tooltipAsMenu.addItem (300, TRANS ("File Name"), true);
-        tooltipAsMenu.addItem (301, TRANS ("Title/Intro"), true);
-        tooltipAsMenu.addItem (302, TRANS ("Web Name"), true);
+        tooltipAsMenu.addItem (300, TRANS ("File Path"), true, tooltip.getValue() == var(0));
+        tooltipAsMenu.addItem (301, TRANS ("Title / Intro"), true, tooltip.getValue() == var(1));
+        tooltipAsMenu.addItem (302, TRANS ("Web Name"), true, tooltip.getValue() == var(2));
 
         m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu, exist && !isRoot);
         m.addSeparator ();
@@ -330,7 +354,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addItem (12, TRANS ("Delete..."), !isRoot);
         m.addSeparator ();
 
-        m.addItem (14, TRANS ("Open in Explorer/Finder..."), exist && onlyOneSelected);
+        m.addItem (14, TRANS ("Open in Explorer / Finder..."), exist && onlyOneSelected);
         m.addItem (15, TRANS ("Open in External Editor..."), exist && isDoc && onlyOneSelected);
 
         menuPerform (m.show());
@@ -353,9 +377,19 @@ void DocTreeViewItem::menuPerform (const int index)
     else if (index == 12)
         delSelected ();
     else if (index == 14)
-        getFileOrDir (tree).revealToUser();
+        getFileOrDir (tree).revealToUser ();
     else if (index == 15)
-        getFileOrDir (tree).startAsProcess();
+        getFileOrDir (tree).startAsProcess ();
+    else if (index >= 100 && index <= 105)
+        order = index - 100;
+    else if (index == 106)
+        isAscending = (isAscending.getValue() == var (0) ? 1 : 0);
+    else if (index == 107)
+        dirFirst = (dirFirst.getValue() == var(0) ? 1 : 0);
+    else if (index >= 200 && index <= 202)
+        showWhat = index - 200;
+    else if (index >= 300 && index <= 302)
+        tooltip = index - 200;
 }
 
 //=================================================================================================
@@ -589,7 +623,7 @@ void DocTreeViewItem::createNewFolder ()
 
         ValueTree dirTree ("dir");
         dirTree.setProperty ("name", dirName, nullptr);
-        dirTree.setProperty ("desc", TRANS ("Description of ") + dirName, nullptr);
+        dirTree.setProperty ("title", dirName + TRANS ("\'s description"), nullptr);
         dirTree.setProperty ("isMenu", false, nullptr);
         dirTree.setProperty ("render", rootTree.getProperty ("render").toString (), nullptr);
         dirTree.setProperty ("webName", dirName, nullptr);
@@ -658,14 +692,15 @@ void DocTreeViewItem::delSelected ()
 }
 
 //=================================================================================================
-void DocTreeViewItem::refreshSubItems ()
+void DocTreeViewItem::refreshSubItems (DocTreeViewItem* item)
 {
-    clearSubItems ();
+    item->clearSubItems ();
 
-    for (int i = 0; i < tree.getNumChildren (); ++i)
+    for (int i = 0; i < item->tree.getNumChildren (); ++i)
     {
         // TODO: sort...
-        addSubItem (new DocTreeViewItem (tree.getChild (i), treeContainer));
+        DocTreeViewItem* itm = new DocTreeViewItem (item->tree.getChild (i), item->treeContainer);
+        item->addSubItem (itm);
     }
 }
 
@@ -698,7 +733,7 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
 {
     if (parentTree == tree)
     {
-        refreshSubItems();
+        refreshSubItems (this);
         treeHasChanged();
         setOpen (true);
     }
@@ -795,6 +830,7 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items, ValueTree t
             const File& thisFile (getFileOrDir (v));
             File targetFile (getFileOrDir (thisTree).getChildFile (thisFile.getFileName()));
 
+            // prevent same-location move. but this will also prevent sort by mannul-mode
             if (thisFile.exists() && targetFile.exists() && thisFile == targetFile)
                 continue;
 
@@ -849,5 +885,23 @@ void DocTreeViewItem::paintVerticalConnectingLine (Graphics& g, const Line<float
 {
     g.setColour (Colours::skyblue);
     g.drawLine (line);
+}
+
+//=================================================================================================
+void DocTreeViewItem::valueChanged (Value& value)
+{
+    // TODO...
+}
+
+//=================================================================================================
+String DocTreeViewItem::getTooltip ()
+{
+    if (0 == tooltip)  // full path of file name
+        return getFileOrDir (tree).getFullPathName();
+    else if (1 == tooltip)  // title or intro
+        return tree.getProperty ("title").toString();
+    
+    // 2 for webpage name
+    return tree.getProperty ("webname").toString();
 }
 

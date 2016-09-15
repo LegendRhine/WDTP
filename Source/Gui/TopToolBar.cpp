@@ -265,12 +265,13 @@ void TopToolBar::createNewProject ()
     projectFile.create ();
 
     ValueTree p ("wdtpProject");
-    p.setProperty ("name", projectFile.getFileNameWithoutExtension (), nullptr);
-    p.setProperty ("desc", TRANS ("Description of this project..."), nullptr);
+    p.setProperty ("name", projectFile.getFileNameWithoutExtension(), nullptr);
+    p.setProperty ("title", TRANS ("Description of this project..."), nullptr);
     p.setProperty ("owner", String(), nullptr);
     p.setProperty ("skin", "Elegence", nullptr);
     p.setProperty ("order", 0, nullptr);
-    p.setProperty ("isAscending", true, nullptr);
+    p.setProperty ("isAscending", 0, nullptr);
+    p.setProperty ("dirFirst", 0, nullptr);
     p.setProperty ("showWhat", 0, nullptr);
     p.setProperty ("tooltip", 0, nullptr);
     p.setProperty ("render", "themes/theme-1", nullptr);

@@ -16,7 +16,8 @@ class FileTreeContainer;
 //=========================================================================
 /** Repsent a doc, a dir or the project which showed in treeView. */
 class DocTreeViewItem : public TreeViewItem,
-    private ValueTree::Listener
+                        private ValueTree::Listener,
+                        private Value::Listener
 {
 public:
     DocTreeViewItem (const ValueTree& tree,
@@ -27,6 +28,7 @@ public:
     virtual String getUniqueName () const override;
     virtual void itemOpennessChanged (bool isNowOpen) override;
 
+    virtual String getTooltip () override;
     virtual void paintItem (Graphics& g, int width, int height) override;
     virtual void itemSelectionChanged (bool isNowSelected) override;
     virtual void itemClicked (const MouseEvent& e) override;
@@ -40,7 +42,7 @@ public:
     static void moveItems (const OwnedArray<ValueTree>& items, ValueTree newParent);
     
     virtual void paintHorizontalConnectingLine (Graphics&, const Line<float>& line) override;
-    virtual void paintVerticalConnectingLine (Graphics&, const Line<float>& line) override;
+    virtual void paintVerticalConnectingLine (Graphics&, const Line<float>& line) override;    
 
 private:
     //=========================================================================
@@ -59,7 +61,7 @@ private:
                                       const File& fileAppendTo);
 
     //=========================================================================
-    void refreshSubItems();
+    static void refreshSubItems (DocTreeViewItem* item);
     void menuPerform (const int menuIndex);
 
     // internal call the static method exportDocsAsMd()
@@ -79,14 +81,18 @@ private:
     void valueTreeParentChanged (ValueTree&) override    { }
     void treeChildrenChanged (const ValueTree& parentTree);
 
+    // for sort
+    virtual void valueChanged (Value& value) override;
+
     //=========================================================================
     ValueTree tree; // must NOT be refernce!!
     FileTreeContainer* treeContainer;
 
-    int order = 0;
-    int showWhat = 0;
-    int tooltip = 0;
-    bool isAscendingOrder = true;
+    Value order;
+    Value showWhat;
+    Value tooltip;
+    Value isAscending;
+    Value dirFirst;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DocTreeViewItem)
 

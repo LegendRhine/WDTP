@@ -86,7 +86,8 @@ void FileTreeContainer::openProject (const File& project)
 
     // load the project
     projectFile = project;
-    docTreeItem = new DocTreeViewItem (projectTree, this);
+    sorter = new ItemSorter (projectTree);
+    docTreeItem = new DocTreeViewItem (projectTree, this, sorter);
     fileTree.setRootItem (docTreeItem);
     projectloaded = true;
 
@@ -113,6 +114,7 @@ void FileTreeContainer::closeProject ()
     {
         fileTree.setRootItem (nullptr);
         docTreeItem = nullptr;
+        sorter = nullptr;
         projectTree = ValueTree::invalid;
         projectFile = File::nonexistent;
         projectloaded = false;
@@ -140,29 +142,25 @@ const bool FileTreeContainer::saveDocAndProject () const
 
 //=================================================================================================
 DocTreeViewItem::DocTreeViewItem (const ValueTree& tree_, 
-                                  FileTreeContainer* container) :
+                                  FileTreeContainer* container,
+                                  ItemSorter* itemSorter) :
     tree (tree_), 
-    treeContainer (container)
+    treeContainer (container),
+    sorter (itemSorter)
 {
     jassert (treeContainer != nullptr);
+    jassert (sorter != nullptr);
 
     // highlight for the whole line
     //setDrawsInLeftMargin (true); 
     setLinesDrawnForSubItems (true);
-
-    order = (int) tree.getProperty ("order");
-    showWhat = (int) tree.getProperty ("showWhat");
-    tooltip = (int) tree.getProperty ("tooltip");
-    isAscending = (int) tree.getProperty ("isAscendingOrder");
-    dirFirst = (int) tree.getProperty ("dirFirst");
-
-    order.addListener (this);
-    showWhat.addListener (this);
-    tooltip.addListener (this);
-    isAscending.addListener (this);
-    dirFirst.addListener (this);
-
     tree.addListener (this);
+}
+
+//=================================================================================================
+DocTreeViewItem::~DocTreeViewItem ()
+{
+    tree.removeListener (this);
 }
 
 //=================================================================================================
@@ -181,7 +179,7 @@ String DocTreeViewItem::getUniqueName () const
 void DocTreeViewItem::itemOpennessChanged (bool isNowOpen)
 {
     if (isNowOpen && getNumSubItems() == 0)
-        refreshSubItems (this);
+        refreshDisplay();
     else
         clearSubItems();
 }
@@ -221,11 +219,13 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
     
     String itemName;
     
-    if (0 == showWhat)  // file name
+    if (sorter->getShowWhat() == 0)  // file name
         itemName = tree.getProperty ("name").toString();
-    else if (1 == showWhat) // title or intro
+
+    else if (sorter->getShowWhat() == 1) // title or intro
         itemName = tree.getProperty ("title").toString ();
-    else if (2 == showWhat)  // webpage name
+    
+    else if (sorter->getShowWhat() == 2)  // webpage name
         itemName = tree.getProperty ("webname").toString ();
 
     g.drawText (itemName, leftGap, 0, width - 4, height, Justification::centredLeft, true);
@@ -323,29 +323,29 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addSeparator ();
 
         PopupMenu sortMenu;
-        sortMenu.addItem (100, TRANS ("File Name"), true, order.getValue() == var(0));
-        sortMenu.addItem (101, TRANS ("Title / Intro"), true, order.getValue() == var(1));
-        sortMenu.addItem (102, TRANS ("Web Name"), true, order.getValue() == var(2));
-        sortMenu.addItem (103, TRANS ("File Size"), true, order.getValue() == var(3));
-        sortMenu.addItem (104, TRANS ("Create Time"), true, order.getValue() == var(4));
-        sortMenu.addItem (105, TRANS ("Modified Time"), true, order.getValue() == var(5));
+        sortMenu.addItem (100, TRANS ("File Name"), true, sorter->getOrder() == 0);
+        sortMenu.addItem (101, TRANS ("Title / Intro"), true, sorter->getOrder () == 1);
+        sortMenu.addItem (102, TRANS ("Web Name"), true, sorter->getOrder () == 2);
+        sortMenu.addItem (103, TRANS ("File Size"), true, sorter->getOrder () == 3);
+        sortMenu.addItem (104, TRANS ("Create Time"), true, sorter->getOrder () == 4);
+        sortMenu.addItem (105, TRANS ("Modified Time"), true, sorter->getOrder () == 5);
         sortMenu.addSeparator ();
-        sortMenu.addItem (106, TRANS ("Ascending Order"), true, isAscending.getValue() == var(0));
-        sortMenu.addItem (107, TRANS ("Folder First"), true, dirFirst.getValue() == var(0));
+        sortMenu.addItem (106, TRANS ("Ascending Order"), true, sorter->getAscending() == 0);
+        sortMenu.addItem (107, TRANS ("Folder First"), true, sorter->getWhichFirst() == 0);
 
         m.addSubMenu (TRANS ("Sort by"), sortMenu, exist && !isDoc);
 
         PopupMenu showedAsMenu;
-        showedAsMenu.addItem (200, TRANS ("File Name"), true, showWhat.getValue() == var(0));
-        showedAsMenu.addItem (201, TRANS ("Title / Intro"), true, showWhat.getValue() == var(1));
-        showedAsMenu.addItem (202, TRANS ("Web Name"), true, showWhat.getValue() == var(2));
+        showedAsMenu.addItem (200, TRANS ("File Name"), true, sorter->getShowWhat() == 0);
+        showedAsMenu.addItem (201, TRANS ("Title / Intro"), true, sorter->getShowWhat() == 1);
+        showedAsMenu.addItem (202, TRANS ("Web Name"), true, sorter->getShowWhat() == 2);
 
         m.addSubMenu (TRANS ("Showed as"), showedAsMenu, exist && !isRoot);
 
         PopupMenu tooltipAsMenu;
-        tooltipAsMenu.addItem (300, TRANS ("File Path"), true, tooltip.getValue() == var(0));
-        tooltipAsMenu.addItem (301, TRANS ("Title / Intro"), true, tooltip.getValue() == var(1));
-        tooltipAsMenu.addItem (302, TRANS ("Web Name"), true, tooltip.getValue() == var(2));
+        tooltipAsMenu.addItem (300, TRANS ("File Path"), true, sorter->getTooltipToShow() == 0);
+        tooltipAsMenu.addItem (301, TRANS ("Title / Intro"), true, sorter->getTooltipToShow() == 1);
+        tooltipAsMenu.addItem (302, TRANS ("Web Name"), true, sorter->getTooltipToShow() == 2);
 
         m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu, exist && !isRoot);
         m.addSeparator ();
@@ -376,20 +376,25 @@ void DocTreeViewItem::menuPerform (const int index)
         renameSelectedItem ();
     else if (index == 12)
         delSelected ();
+
+    // open in external app..
     else if (index == 14)
         getFileOrDir (tree).revealToUser ();
     else if (index == 15)
         getFileOrDir (tree).startAsProcess ();
+
+    // sort...
     else if (index >= 100 && index <= 105)
-        order = index - 100;
+        sorter->setOrder (index - 100);
     else if (index == 106)
-        isAscending = (isAscending.getValue() == var (0) ? 1 : 0);
+        sorter->setAscending ((sorter->getAscending() == 0) ? 1 : 0);
     else if (index == 107)
-        dirFirst = (dirFirst.getValue() == var(0) ? 1 : 0);
+        sorter->setWhichFirst ((sorter->getWhichFirst() == 0) ? 1 : 0);
     else if (index >= 200 && index <= 202)
-        showWhat = index - 200;
+        sorter->setShowWhat (index - 200);
     else if (index >= 300 && index <= 302)
-        tooltip = index - 200;
+        sorter->setTooltipToShow (index - 300);
+
 }
 
 //=================================================================================================
@@ -431,7 +436,7 @@ void DocTreeViewItem::renameSelectedItem ()
             rootTree = rootTree.getParent ();
 
         if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
-            SHOW_MESSAGE (TRANS ("Something wrong during this operation."));
+            SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
     }
 }
 
@@ -525,7 +530,7 @@ void DocTreeViewItem::importDocuments ()
     }
 
     if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
-        SHOW_MESSAGE (TRANS ("Something wrong during this operation."));
+        SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
 }
 
 //=================================================================================================
@@ -580,13 +585,13 @@ void DocTreeViewItem::createNewDocument ()
 
         // select the new item 
         setOpen (true);
-        DocTreeViewItem* docItem = new DocTreeViewItem (docTree, treeContainer);
+        DocTreeViewItem* docItem = new DocTreeViewItem (docTree, treeContainer, sorter);
         addSubItem (docItem, 0);
         docItem->setSelected (true, true);
 
         // save the data to project file
         if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
-            SHOW_MESSAGE (TRANS ("Something wrong during this operation."));
+            SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
     }
 }
 
@@ -635,13 +640,13 @@ void DocTreeViewItem::createNewFolder ()
 
         // select the new item 
         setOpen (true);
-        DocTreeViewItem* dirItem = new DocTreeViewItem (dirTree, treeContainer);
+        DocTreeViewItem* dirItem = new DocTreeViewItem (dirTree, treeContainer, sorter);
         addSubItem (dirItem, 0);
         dirItem->setSelected (true, true);
 
         // save the data to project file
         if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
-            SHOW_MESSAGE (TRANS ("Something wrong during this operation."));
+            SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
     }
 }
 
@@ -688,19 +693,19 @@ void DocTreeViewItem::delSelected ()
 
     // save the data to project file
     if (!SwingUtilities::writeValueTreeToFile (rootTree, FileTreeContainer::projectFile))
-        SHOW_MESSAGE (TRANS ("Something wrong during this operation."));
+        SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
 }
 
 //=================================================================================================
-void DocTreeViewItem::refreshSubItems (DocTreeViewItem* item)
+void DocTreeViewItem::refreshDisplay()
 {
-    item->clearSubItems ();
+    clearSubItems ();
 
-    for (int i = 0; i < item->tree.getNumChildren (); ++i)
+    for (int i = 0; i < tree.getNumChildren(); ++i)
     {
         // TODO: sort...
-        DocTreeViewItem* itm = new DocTreeViewItem (item->tree.getChild (i), item->treeContainer);
-        item->addSubItem (itm);
+        DocTreeViewItem* itm = new DocTreeViewItem (tree.getChild (i), treeContainer, sorter);
+        addSubItem (itm);
     }
 }
 
@@ -733,7 +738,7 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
 {
     if (parentTree == tree)
     {
-        refreshSubItems (this);
+        refreshDisplay();
         treeHasChanged();
         setOpen (true);
     }
@@ -770,6 +775,17 @@ const bool DocTreeViewItem::exportDocsAsMd (DocTreeViewItem* item,
     }    
 
     return true;
+}
+
+//=================================================================================================
+DocTreeViewItem* DocTreeViewItem::getRootItem (DocTreeViewItem* subItem)
+{
+    DocTreeViewItem* item = subItem;
+
+    while (item->getParentItem() != nullptr)
+        item = dynamic_cast<DocTreeViewItem*>(item->getParentItem());
+
+    return item;
 }
 
 //=================================================================================================
@@ -870,7 +886,7 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items, ValueTree t
         rootTree = rootTree.getParent();
 
     if (!SwingUtilities::writeValueTreeToFile (rootTree, FileTreeContainer::projectFile))
-        SHOW_MESSAGE (TRANS ("Something wrong during this operation."));
+        SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
 }
 
 //=================================================================================================
@@ -888,20 +904,78 @@ void DocTreeViewItem::paintVerticalConnectingLine (Graphics& g, const Line<float
 }
 
 //=================================================================================================
-void DocTreeViewItem::valueChanged (Value& value)
+void DocTreeViewItem::valueChanged (Value& /*value*/)
 {
-    // TODO...
+    getRootItem (this)->refreshDisplay();
 }
 
 //=================================================================================================
 String DocTreeViewItem::getTooltip ()
 {
-    if (0 == tooltip)  // full path of file name
+    // full path of file name
+    if (sorter->getTooltipToShow() == 0)  
         return getFileOrDir (tree).getFullPathName();
-    else if (1 == tooltip)  // title or intro
+
+    // title or intro
+    else if (sorter->getTooltipToShow() == 1)  
         return tree.getProperty ("title").toString();
     
     // 2 for webpage name
-    return tree.getProperty ("webname").toString();
+    else if (sorter->getTooltipToShow() == 2)
+        return tree.getProperty ("webname").toString ();
+
+    return String();
 }
 
+//=================================================================================================
+ItemSorter::ItemSorter (ValueTree& tree_) 
+    : tree(tree_)
+{
+    jassert (tree.isValid());
+
+    order = (int) tree.getProperty ("order");
+    showWhat = (int) tree.getProperty ("showWhat");
+    tooltip = (int) tree.getProperty ("tooltip");
+    ascending = (int) tree.getProperty ("ascending");
+    dirFirst = (int) tree.getProperty ("dirFirst");
+
+    order.addListener (this);
+    showWhat.addListener (this);
+    ascending.addListener (this);
+    tooltip.addListener (this);
+    dirFirst.addListener (this);
+}
+
+//=========================================================================
+ItemSorter::~ItemSorter ()
+{
+    order.removeListener (this);
+    showWhat.removeListener (this);
+    tooltip.removeListener (this);
+    ascending.removeListener (this);
+    dirFirst.removeListener (this);
+}
+
+//=================================================================================================
+void ItemSorter::valueChanged (Value& value)
+{
+    // haven't called setTreeViewItem() yet?
+    jassert (rootItem != nullptr);
+    
+    // update and save the project
+    if (value == order)
+        tree.setProperty ("order", order, nullptr);
+    else if (value == showWhat)
+        tree.setProperty ("showWhat", showWhat, nullptr);
+    else if (value == ascending)
+        tree.setProperty ("ascending", ascending, nullptr);
+    else if (value == tooltip)
+        tree.setProperty ("tooltip", tooltip, nullptr);
+    else if (value == dirFirst)
+        tree.setProperty ("dirFirst", dirFirst, nullptr);
+        
+    //rootItem->sortSubItems ();
+
+    if (!SwingUtilities::writeValueTreeToFile (tree, FileTreeContainer::projectFile))
+        SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
+}

@@ -12,6 +12,47 @@
 #define FILETREECONTAINER_H_INCLUDED
 
 class FileTreeContainer;
+class DocTreeViewItem;
+
+//=========================================================================
+/** For sort items of class DocTreeViewItem. 
+    Usage: create object, then call setTreeViewItem().
+*/
+class ItemSorter : public Value::Listener
+{
+public:
+    ItemSorter (ValueTree& tree);
+    ~ItemSorter();
+
+    void setTreeViewItem (DocTreeViewItem* item) { rootItem = item; }
+
+    const int getOrder() const              { return var (order);     }
+    const int getShowWhat() const           { return var (showWhat);  }
+    const int getTooltipToShow() const      { return var (tooltip);   }
+    const int getAscending()  const         { return var (ascending); }
+    const int getWhichFirst()  const        { return var (dirFirst);  }
+
+    void setOrder (const int value)         { order = value;     }
+    void setShowWhat(const int value)       { showWhat = value;  }
+    void setTooltipToShow (const int value) { tooltip = value;   }
+    void setAscending (const int value)     { ascending = value; }
+    void setWhichFirst (const int value)    { dirFirst = value;  }
+
+    virtual void valueChanged (Value& value) override;
+
+private:
+    //=========================================================================
+    ValueTree& tree;
+    DocTreeViewItem* rootItem;
+
+    Value order;
+    Value showWhat;
+    Value tooltip;
+    Value ascending;
+    Value dirFirst;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ItemSorter)
+};
 
 //=========================================================================
 /** Repsent a doc, a dir or the project which showed in treeView. */
@@ -20,10 +61,17 @@ class DocTreeViewItem : public TreeViewItem,
                         private Value::Listener
 {
 public:
-    DocTreeViewItem (const ValueTree& tree,
-                     FileTreeContainer* container);
-    ~DocTreeViewItem () { }
+    DocTreeViewItem (const ValueTree& tree, 
+                     FileTreeContainer* container, 
+                     ItemSorter* itemSorter);
+    ~DocTreeViewItem ();
 
+    // static public methods..
+    static void moveItems (const OwnedArray<ValueTree>& items, ValueTree newParent);
+
+    void refreshDisplay ();
+
+    // override...
     virtual bool mightContainSubItems () override;
     virtual String getUniqueName () const override;
     virtual void itemOpennessChanged (bool isNowOpen) override;
@@ -33,14 +81,13 @@ public:
     virtual void itemSelectionChanged (bool isNowSelected) override;
     virtual void itemClicked (const MouseEvent& e) override;
 
-    // for move items
+    // for move items..
     virtual var getDragSourceDescription () override;
     virtual bool isInterestedInDragSource (const DragAndDropTarget::SourceDetails& details) override;
     virtual void itemDropped (const DragAndDropTarget::SourceDetails& details, 
                               int insertIndex) override;
-
-    static void moveItems (const OwnedArray<ValueTree>& items, ValueTree newParent);
     
+    // draw line..
     virtual void paintHorizontalConnectingLine (Graphics&, const Line<float>& line) override;
     virtual void paintVerticalConnectingLine (Graphics&, const Line<float>& line) override;    
 
@@ -60,13 +107,13 @@ private:
                                       const ValueTree& tree,
                                       const File& fileAppendTo);
 
+    static DocTreeViewItem* getRootItem (DocTreeViewItem* subItem);
+
     //=========================================================================
-    static void refreshSubItems (DocTreeViewItem* item);
     void menuPerform (const int menuIndex);
 
     // internal call the static method exportDocsAsMd()
     void exportAsMdFile ();
-
     void renameSelectedItem ();
     void importDocuments();
     void createNewDocument();
@@ -86,13 +133,8 @@ private:
 
     //=========================================================================
     ValueTree tree; // must NOT be refernce!!
-    FileTreeContainer* treeContainer;
-
-    Value order;
-    Value showWhat;
-    Value tooltip;
-    Value isAscending;
-    Value dirFirst;
+    FileTreeContainer* treeContainer;    
+    ItemSorter* sorter;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DocTreeViewItem)
 
@@ -101,7 +143,7 @@ private:
 //==============================================================================
 /**  */
 class FileTreeContainer    : public Component,
-    public DragAndDropContainer
+                             public DragAndDropContainer
 {
 public:
     FileTreeContainer (EditAndPreview* editAndPreview);
@@ -121,6 +163,7 @@ public:
 private:
     //=========================================================================
     ScopedPointer<DocTreeViewItem> docTreeItem;
+    ScopedPointer<ItemSorter> sorter;
     TreeView fileTree;
     ValueTree projectTree;
     EditAndPreview* editAndPreview;

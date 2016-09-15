@@ -31,6 +31,10 @@
         <FILE id="UkaHhi" name="SetupPanel.h" compile="0" resource="0" file="Source/editAndPreview/SetupPanel.h"/>
       </GROUP>
       <GROUP id="{3E35F29C-ED85-843B-0669-6F1C0563902E}" name="fileTree">
+        <FILE id="pCuEtC" name="DocTreeViewItem.cpp" compile="1" resource="0"
+              file="Source/fileTree/DocTreeViewItem.cpp"/>
+        <FILE id="SrZmuv" name="DocTreeViewItem.h" compile="0" resource="0"
+              file="Source/fileTree/DocTreeViewItem.h"/>
         <FILE id="FnYgWl" name="FileTreeContainer.cpp" compile="1" resource="0"
               file="Source/fileTree/FileTreeContainer.cpp"/>
         <FILE id="pMFpqW" name="FileTreeContainer.h" compile="0" resource="0"

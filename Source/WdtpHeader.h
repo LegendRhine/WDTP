@@ -19,6 +19,7 @@
 #include "editAndPreview/EditAndPreview.h"
 #include "editAndPreview/SetupPanel.h"
 #include "fileTree/FileTreeContainer.h"
+#include "fileTree/DocTreeViewItem.h"
 
 
 #endif  // HEADERGUA

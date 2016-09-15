@@ -270,7 +270,7 @@ void TopToolBar::createNewProject ()
     p.setProperty ("owner", String(), nullptr);
     p.setProperty ("skin", "Elegence", nullptr);
     p.setProperty ("order", 0, nullptr);
-    p.setProperty ("isAscending", 0, nullptr);
+    p.setProperty ("ascending", 0, nullptr);
     p.setProperty ("dirFirst", 0, nullptr);
     p.setProperty ("showWhat", 0, nullptr);
     p.setProperty ("tooltip", 0, nullptr);

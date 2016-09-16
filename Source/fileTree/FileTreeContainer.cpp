@@ -11,6 +11,7 @@
 #include "../WdtpHeader.h"
 
 extern PropertiesFile* systemFile;
+
 File FileTreeContainer::projectFile;
 
 //==============================================================================
@@ -75,24 +76,15 @@ void FileTreeContainer::openProject (const File& project)
         return;
     }
 
-    // if there's a project alreay opened, save it and clear the treeView    
-    if (hasLoadedProject() && !saveDocAndProject())
-    {
-        AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS ("Message"),
-                                     TRANS ("Something wrong when saving the current document.") + newLine +
-                                     TRANS ("Please check it out, then open the new project again."));
-        return;
-    }
-
     // load the project
     projectFile = project;
     
     sorter = new ItemSorter (projectTree);
     docTreeItem = new DocTreeViewItem (projectTree, this, sorter);
     sorter->setTreeViewItem (docTreeItem);
-
     fileTree.setRootItem (docTreeItem);
-    projectloaded = true;
+    lastItem = projectTree.getProperty ("identityOfLastSelectedItem").toString();
+    selectIdentityItem ();
 
     // change the text of main window's title-bar
     MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent ());
@@ -120,7 +112,6 @@ void FileTreeContainer::closeProject ()
         sorter = nullptr;
         projectTree = ValueTree::invalid;
         projectFile = File::nonexistent;
-        projectloaded = false;
         editAndPreview->projectClosed();
 
         // change the text of main window's title-bar
@@ -131,17 +122,13 @@ void FileTreeContainer::closeProject ()
 }
 
 //=================================================================================================
-const bool FileTreeContainer::hasLoadedProject () const
-{
-    return projectloaded;
-}
-
-//=================================================================================================
-const bool FileTreeContainer::saveDocAndProject () const
+const bool FileTreeContainer::saveDocAndProject()
 {
     //NEED_TO_DO ("saveDocAndProject");
 
-    return true;
+    projectTree.setProperty ("identityOfLastSelectedItem", lastItem, nullptr);
+    
+    return SwingUtilities::writeValueTreeToFile (projectTree, projectFile);
 }
 
 //=================================================================================================
@@ -258,7 +245,12 @@ void ItemSorter::valueChanged (Value& value)
 {
     // haven't called setTreeViewItem() yet? See this class' description..
     jassert (rootItem != nullptr);    
+
+    ScopedPointer<XmlElement> treeViewState (rootItem->getOwnerView()->getOpennessState (true));
     rootItem->refreshDisplay();
+
+    if (treeViewState != nullptr)
+        rootItem->getOwnerView()->restoreOpennessState (*treeViewState, true);
 
     // update project-tree
     if (value.refersToSameSourceAs(order))
@@ -277,4 +269,12 @@ void ItemSorter::valueChanged (Value& value)
         SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
 }
 
+//=================================================================================================
+void FileTreeContainer::selectIdentityItem ()
+{
+    TreeViewItem* item = fileTree.findItemFromIdentifierString (lastItem);
+
+    if (item != nullptr)
+        item->setSelected (true, false);
+}
 

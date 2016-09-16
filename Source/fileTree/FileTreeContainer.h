@@ -71,10 +71,12 @@ public:
 
     void openProject (const File& projectFile);
     void closeProject ();
-    const bool hasLoadedProject () const;
-    const bool saveDocAndProject () const;
+    const bool hasLoadedProject () const        { return projectTree.isValid(); }
+    const bool saveDocAndProject ();
 
-    EditAndPreview* getEditAndPreview () const    { return editAndPreview; }
+    EditAndPreview* getEditAndPreview () const                { return editAndPreview; }
+    void setIdentityOfLastSelectedItem (const String& str)    { lastItem = str; }
+    void selectIdentityItem();
 
     static File projectFile;
 
@@ -86,7 +88,7 @@ private:
     ValueTree projectTree;
     EditAndPreview* editAndPreview;
 
-    bool projectloaded = false;
+    String lastItem;  // identity of last selected item
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (FileTreeContainer)
 

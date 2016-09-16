@@ -21,7 +21,6 @@ DocTreeViewItem::DocTreeViewItem (const ValueTree& tree_,
     sorter (itemSorter)
 {
     jassert (treeContainer != nullptr);
-    jassert (sorter != nullptr);
 
     // highlight for the whole line
     //setDrawsInLeftMargin (true); 
@@ -33,6 +32,7 @@ DocTreeViewItem::DocTreeViewItem (const ValueTree& tree_,
 DocTreeViewItem::~DocTreeViewItem ()
 {
     tree.removeListener (this);
+    treeContainer = nullptr;
 }
 
 //=================================================================================================
@@ -44,16 +44,16 @@ bool DocTreeViewItem::mightContainSubItems ()
 //=================================================================================================
 String DocTreeViewItem::getUniqueName () const
 {
-    return getFileOrDir (tree).getFullPathName ();
+    return tree.getProperty("name").toString();
 }
 
 //=================================================================================================
 void DocTreeViewItem::itemOpennessChanged (bool isNowOpen)
 {
-    if (isNowOpen && getNumSubItems () == 0)
-        refreshDisplay ();
+    if (isNowOpen && getNumSubItems() == 0)
+        refreshDisplay();
     else
-        clearSubItems ();
+        clearSubItems();
 }
 
 //=================================================================================================
@@ -90,6 +90,7 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
     g.setColour (c);
 
     String itemName;
+    jassert (sorter != nullptr);
 
     if (sorter->getShowWhat () == 0)  // file name
         itemName = tree.getProperty ("name").toString ();
@@ -134,42 +135,43 @@ const File DocTreeViewItem::getFileOrDir (const ValueTree& tree)
 // left click
 void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
 {
-    if (isNowSelected)
+    if (!isNowSelected)    return;
+
+    EditAndPreview* editArea = treeContainer->getEditAndPreview ();
+
+    // doc
+    if (tree.getType ().toString () == "doc")
     {
-        EditAndPreview* editArea = treeContainer->getEditAndPreview ();
-
-        // doc
-        if (tree.getType ().toString () == "doc")
+        if (getFileOrDir (tree).existsAsFile ())
         {
-            if (getFileOrDir (tree).existsAsFile ())
-            {
-                if (0 == systemFile->getIntValue ("clickForEdit"))
-                    editArea->editDoc (getFileOrDir (tree));
-                else
-                    editArea->previewDoc (getFileOrDir (tree));
-
-                editArea->setDocProperties (tree);
-            }
+            if (0 == systemFile->getIntValue ("clickForEdit"))
+                editArea->editDoc (getFileOrDir (tree));
             else
-            {
-                //editArea->whenFileOrDirNonexists ();
-                SHOW_MESSAGE (getFileOrDir (tree).getFullPathName ());
-            }
+                editArea->previewDoc (getFileOrDir (tree));
+
+            editArea->setDocProperties (tree);
         }
-        // dir
-        else if (tree.getType ().toString () == "dir")
+        else
         {
-            if (getFileOrDir (tree).isDirectory ())
-                editArea->setDirProperties (tree);
-            else
-                //editArea->whenFileOrDirNonexists ();
-                SHOW_MESSAGE (getFileOrDir (tree).getFullPathName ());
-        }
-        else // root
-        {
-            editArea->setProjectProperties ();
+            //editArea->whenFileOrDirNonexists ();
+            SHOW_MESSAGE (getFileOrDir (tree).getFullPathName ());
         }
     }
+    // dir
+    else if (tree.getType ().toString () == "dir")
+    {
+        if (getFileOrDir (tree).isDirectory ())
+            editArea->setDirProperties (tree);
+        else
+            //editArea->whenFileOrDirNonexists ();
+            SHOW_MESSAGE (getFileOrDir (tree).getFullPathName ());
+    }
+    else // root
+    {
+        editArea->setProjectProperties ();
+    }
+        
+    treeContainer->setIdentityOfLastSelectedItem (getItemIdentifierString());
 }
 
 //=================================================================================================
@@ -181,6 +183,8 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
     const bool isDir = (tree.getType ().toString () == "dir");
     const bool isRoot = (tree.getType ().toString () == "wdtpProject");
     const bool onlyOneSelected = getOwnerView ()->getNumSelectedItems () == 1;
+
+    jassert (sorter != nullptr);
 
     // right click
     if (e.mods.isPopupMenu ())
@@ -236,6 +240,8 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 //=================================================================================================
 void DocTreeViewItem::menuPerform (const int index)
 {
+    jassert (sorter != nullptr);
+
     if (index == 1)
         createNewFolder ();
     else if (index == 2)
@@ -571,9 +577,9 @@ void DocTreeViewItem::delSelected ()
 //=================================================================================================
 void DocTreeViewItem::refreshDisplay ()
 {
-    clearSubItems ();
+    clearSubItems();
 
-    for (int i = 0; i < tree.getNumChildren (); ++i)
+    for (int i = 0; i < tree.getNumChildren(); ++i)
     {
         DocTreeViewItem* itm = new DocTreeViewItem (tree.getChild (i), treeContainer, sorter);
         addSubItemSorted (*sorter, itm);
@@ -587,7 +593,7 @@ void DocTreeViewItem::valueTreePropertyChanged (ValueTree&, const Identifier&)
 }
 
 //=================================================================================================
-void DocTreeViewItem::valueTreeChildAdded (ValueTree& parentTree, ValueTree&)
+void DocTreeViewItem::valueTreeChildAdded (ValueTree& parentTree, ValueTree& /*childTree*/)
 {
     treeChildrenChanged (parentTree);
 }
@@ -684,12 +690,12 @@ void DocTreeViewItem::itemDropped (const DragAndDropTarget::SourceDetails& detai
     if (details.description != "dragFileOrDir")
         return;
 
-    jassert (getFileOrDir (tree).isDirectory ());
+    jassert (getFileOrDir (tree).isDirectory());
 
     OwnedArray<ValueTree> selectedTrees;
-    TreeView* treeView = getOwnerView ();
+    TreeView* treeView = getOwnerView();
 
-    for (int i = 0; i < treeView->getNumSelectedItems (); ++i)
+    for (int i = 0; i < treeView->getNumSelectedItems(); ++i)
     {
         const DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (treeView->getSelectedItem (i));
         jassert (item != nullptr);
@@ -701,7 +707,8 @@ void DocTreeViewItem::itemDropped (const DragAndDropTarget::SourceDetails& detai
 }
 
 //=================================================================================================
-void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items, ValueTree thisTree)
+void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items, 
+                                 ValueTree thisTree)
 {
     if (items.size () < 1)
         return;
@@ -775,12 +782,6 @@ void DocTreeViewItem::paintVerticalConnectingLine (Graphics& g, const Line<float
 }
 
 //=================================================================================================
-void DocTreeViewItem::valueChanged (Value& /*value*/)
-{
-    getRootItem (this)->refreshDisplay ();
-}
-
-//=================================================================================================
 String DocTreeViewItem::getTooltip ()
 {
     // full path of file name
@@ -802,3 +803,4 @@ String DocTreeViewItem::getTooltip ()
 
     return String ();
 }
+

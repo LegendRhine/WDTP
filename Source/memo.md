@@ -113,6 +113,8 @@
 	- ftpPort: 
 	- ftpUserName: 
 	- ftpPassword: 
+	- identityOfLastSelectedItem: 文件树中最后一次选择的文档的标示，可由TreeView的findItemFromIdentifierString()找到对应的item，
+	  此值用于文件树中移动项目、打开项目时自动选择最后一次点选的item
 
 - 值树中各个dir（目录）的属性：
     - name：目录名 (不包含任何上级路径。上级路径可通过其父节点的name获取）

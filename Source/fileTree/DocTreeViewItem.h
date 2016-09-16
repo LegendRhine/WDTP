@@ -13,8 +13,7 @@
 
 /** Repsent a doc, a dir or the project which showed in treeView. */
 class DocTreeViewItem : public TreeViewItem,
-    private ValueTree::Listener,
-    private Value::Listener
+    private ValueTree::Listener
 {
 public:
     DocTreeViewItem (const ValueTree& tree,
@@ -31,12 +30,13 @@ public:
     or: getFileOfThisItem().existsAsFile(); or: getFileOfThisItem().isDirectory()
     */
     static const File getFileOrDir (const ValueTree& tree);
-    const ValueTree& getTree () const    { return tree;  }
 
-    // static public methods..
-    static void moveItems (const OwnedArray<ValueTree>& items, ValueTree newParent);
+    // static public methods for drag-drop moving items..
+    static void moveItems (const OwnedArray<ValueTree>& items, 
+                           ValueTree newParent);
 
     void refreshDisplay ();
+    const ValueTree& getTree () const    { return tree; }
 
     // override...
     virtual bool mightContainSubItems () override;
@@ -86,13 +86,10 @@ private:
     void valueTreeParentChanged (ValueTree&) override    { }
     void treeChildrenChanged (const ValueTree& parentTree);
 
-    // for sort
-    virtual void valueChanged (Value& value) override;
-
     //=========================================================================
     ValueTree tree; // must NOT be refernce!!
     FileTreeContainer* treeContainer;
-    ItemSorter* sorter;
+    ItemSorter* sorter = nullptr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DocTreeViewItem)
 

@@ -52,9 +52,8 @@ void MainContentComponent::resized()
 }
 
 //=================================================================================================
-MainWindow::MainWindow (String name) : DocumentWindow (name,
-                                                       Colours::lightgrey,
-                                                       DocumentWindow::allButtons)
+MainWindow::MainWindow (String name) : 
+    DocumentWindow (name, Colours::lightgrey, DocumentWindow::allButtons)
 {
     setUsingNativeTitleBar (true);
     setContentOwned (mainComp = new MainContentComponent (), true);
@@ -68,12 +67,24 @@ MainWindow::MainWindow (String name) : DocumentWindow (name,
 //=================================================================================================
 void MainWindow::closeButtonPressed ()
 {
-    mainComp->getFileTree ()->saveDocAndProject ();
-    JUCEApplication::getInstance ()->systemRequestedQuit ();
+    if (mainComp->getFileTree()->saveDocAndProject())
+    {
+        JUCEApplication::getInstance()->systemRequestedQuit();        
+    }
+    else
+    {
+        if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Message"),
+                                          TRANS ("Something wrong during saving project.") +
+                                          newLine + newLine +
+                                          TRANS ("Do you really want to quit?")))
+        {
+            JUCEApplication::getInstance()->systemRequestedQuit();
+        }
+    }
 }
 
 //=================================================================================================
 void MainWindow::openProject (const File& projectFile)
 {
-    mainComp->getFileTree ()->openProject (projectFile);
+    mainComp->getFileTree()->openProject (projectFile);
 }

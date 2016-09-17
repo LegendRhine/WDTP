@@ -198,12 +198,12 @@ void TopToolBar::popupSystemMenu()
     m.addSubMenu (TRANS ("Open Rcent"), recentFilesMenu);
     m.addSeparator ();
 
-    m.addItem (3, TRANS ("Close Project"), fileTree->hasLoadedProject ());
-    m.addItem (4, TRANS ("Project Save As..."), fileTree->hasLoadedProject ());
+    m.addItem (3, TRANS ("Close Project"), fileTree->hasLoadedProject());
+    m.addItem (4, TRANS ("Project Save As..."), fileTree->hasLoadedProject());
     m.addSeparator ();
 
-    m.addItem (5, TRANS ("Project Clean-up..."), fileTree->hasLoadedProject ());
-    m.addItem (6, TRANS ("Project Backup..."), fileTree->hasLoadedProject ());
+    m.addItem (5, TRANS ("Project Clean-up..."), fileTree->hasLoadedProject());
+    m.addItem (6, TRANS ("Project Backup..."), fileTree->hasLoadedProject());
     m.addSeparator ();
 
     m.addItem (17, TRANS ("System Setup"), true);
@@ -214,7 +214,7 @@ void TopToolBar::popupSystemMenu()
     m.addItem (20, TRANS ("About..."), true);
     
     // display the menu
-    const int index = m.show ();
+    const int index = m.show();
 
     if (index >= 100 && index < 200)   // recently opened files..
         fileTree->openProject (recentFiles.getFile (index - 100));

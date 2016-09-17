@@ -14,7 +14,7 @@
 EditAndPreview::EditAndPreview()
 {
     // web browser
-    addChildComponent (htmlPreview = new WebBrowserComponent ());
+    addChildComponent (webView = new WebBrowserComponent ());
 
     // stretched layout, arg: index, min-width, max-width£¬default x%
     layoutManager.setItemLayout (0, -0.5, -1.0, -0.69);  // editor£¬
@@ -45,29 +45,28 @@ EditAndPreview::~EditAndPreview()
 void EditAndPreview::resized()
 {
     // layout
-    Component* comps[] = { editor, layoutBar, setupPanel };
-    layoutManager.layOutComponents (comps, 3, 0, 0, getWidth(), getHeight(), false, true);
+    Component* comps[] = { (webView->isVisible ()) ? 
+        static_cast<Component*>(webView) : static_cast<Component*>(editor), 
+        layoutBar, setupPanel };
 
-    // web browser
-    if (htmlPreview->isVisible())
-        htmlPreview->setBounds (getLocalBounds());
+    layoutManager.layOutComponents (comps, 3, 0, 0, getWidth(), getHeight(), false, true);
 }
 
 //=================================================================================================
 void EditAndPreview::editDoc (const File& docFile)
 {
-    htmlPreview->setVisible (false);
+    webView->setVisible (false);
     editor->setText (docFile.loadFileAsString ());
+    resized ();
 }
 
 //=================================================================================================
 void EditAndPreview::previewDoc (const File& docFile)
 {
-    htmlPreview->setVisible (true);
-    htmlPreview->broughtToFront();
-    htmlPreview->setBounds (getLocalBounds ());
-
-    htmlPreview->goToURL (docFile.getFullPathName());
+    webView->setVisible (true);
+    //webView->goToURL (docFile.getFullPathName ());
+    webView->goToURL ("e:/temp/test.html");
+    resized ();
 }
 
 //=================================================================================================
@@ -75,7 +74,7 @@ void EditAndPreview::projectClosed ()
 {
     editor->setText (String());
     setupPanel->projectClosed ();
-    htmlPreview->setVisible (false);
+    webView->setVisible (false);
 
     // TODO: ...
 }

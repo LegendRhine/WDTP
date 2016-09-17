@@ -45,7 +45,7 @@ public:
 private:
     //=========================================================================
     ScopedPointer<TextEditor> editor;
-    ScopedPointer<WebBrowserComponent> htmlPreview;
+    ScopedPointer<WebBrowserComponent> webView;
     ScopedPointer<SetupPanel> setupPanel;
 
     StretchableLayoutManager layoutManager;
@@ -54,5 +54,16 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditAndPreview)
 };
 
+//=========================================================================
+class EditorForMd : public TextEditor
+{
+public:
+    EditorForMd ();
+    ~EditorForMd ();
+
+private:
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditorForMd)
+};
 
 #endif  // EDITANDPREVIEW_H_INCLUDED

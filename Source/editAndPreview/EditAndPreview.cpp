@@ -28,6 +28,7 @@ EditAndPreview::EditAndPreview()
     // editor
     editor->setMultiLine (true);
     editor->setReturnKeyStartsNewLine (true);
+    editor->setTabKeyUsedAsCharacter (true);
     editor->setColour (TextEditor::textColourId, Colour(0xff303030));
     editor->setColour (TextEditor::focusedOutlineColourId, Colour(0xffb4b4b4));
     editor->setColour (TextEditor::backgroundColourId, Colour(0xffededed));
@@ -119,14 +120,37 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
     {
         PopupMenu insertMenu;
         insertMenu.addItem (1, TRANS ("Image"));
-        insertMenu.addItem (2, TRANS ("Table") + " (2x2)");
-        insertMenu.addItem (3, TRANS ("Table") + " (3x3)");
-        insertMenu.addItem (4, TRANS ("Hyperlink"));
+        insertMenu.addItem (2, TRANS ("Hyperlink"));
+        insertMenu.addSeparator();
 
+        insertMenu.addItem (3, TRANS ("Table") + " (2x2)");
+        insertMenu.addItem (4, TRANS ("Table") + " (3x3)");
+        insertMenu.addSeparator ();
+
+        insertMenu.addItem (5, TRANS ("Code Block"));
+        insertMenu.addItem (6, TRANS ("Reference"));
+        insertMenu.addSeparator ();
+
+        // list and title
+        insertMenu.addItem (7, TRANS ("Unordered List"));
+        insertMenu.addItem (8, TRANS ("Ordered List"));
+        insertMenu.addSeparator ();
+
+        insertMenu.addItem (9, TRANS ("Secondary Heading"));
+        insertMenu.addItem (10, TRANS ("Tertiary Heading"));
+        insertMenu.addSeparator ();
+
+        insertMenu.addItem (11, TRANS ("Separator"));
         menu.addSubMenu (TRANS ("Insert"), insertMenu, docFile.existsAsFile());
 
+        PopupMenu formatMenu;
+        formatMenu.addItem (30, TRANS ("Bold"), getHighlightedText().isNotEmpty());
+        formatMenu.addItem (31, TRANS ("Italic"), getHighlightedText().isNotEmpty());
+        formatMenu.addItem (32, TRANS ("Bold + Italic"), getHighlightedText().isNotEmpty());
+        formatMenu.addItem (33, TRANS ("Code Inline"), getHighlightedText().isNotEmpty());
 
-        menu.addSeparator();
+        menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile());
+        menu.addSeparator ();
 
         TextEditor::addPopupMenuItems (menu, e);
     }
@@ -136,6 +160,7 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 void EditorForMd::performPopupMenuAction (int index)
 {
     TextEditor::performPopupMenuAction (index);
+
     String content;
 
     if (1 == index) // image
@@ -143,9 +168,10 @@ void EditorForMd::performPopupMenuAction (int index)
         FileChooser fc (TRANS ("Select Images..."), File::nonexistent, "*.jpg;*.png;*.gif", false);
         Array<File> imageFiles;
 
-        if (fc.browseForMultipleFilesToOpen())
-            imageFiles = fc.getResults ();
+        if (!fc.browseForMultipleFilesToOpen())
+            return;
 
+        imageFiles = fc.getResults();
         const File imgPath (docFile.getSiblingFile ("media"));
 
         for (auto f : imageFiles)
@@ -154,29 +180,14 @@ void EditorForMd::performPopupMenuAction (int index)
             targetFile.create();
 
             if (f.copyFileTo (targetFile))
-                content << newLine << "![](media/" << targetFile.getFileName () << ")" << newLine;
+                content << newLine 
+                << "![](media/" << targetFile.getFileName() << ")" << newLine
+                << newLine;
             else
                 SHOW_MESSAGE (TRANS ("Can't insert this image: ") + newLine + f.getFullPathName());
         }
     }
-    else if (2 == index) // table 2*2
-    {
-        content << newLine
-            << "|  |  |" << newLine
-            << "| --: | :-- |" << newLine
-            << "|  |  |" << newLine
-            << "|  |  |" << newLine;
-    }
-    else if (3 == index) // table 3*3
-    {
-        content << newLine
-            << "|  |  |  |" << newLine
-            << "| --: | :--: | :-- |" << newLine
-            << "|  |  |  |" << newLine
-            << "|  |  |  |" << newLine
-            << "|  |  |  |" << newLine;        
-    }
-    else if (4 ==index) // hyperlink
+    else if (2 == index) // hyperlink
     {
         AlertWindow dialog (TRANS ("Insert Hyperlink"), TRANS ("Please input the url."),
                             AlertWindow::InfoIcon);
@@ -190,7 +201,109 @@ void EditorForMd::performPopupMenuAction (int index)
             const String inputStr (dialog.getTextEditor ("name")->getText().trim());
             content << " [](" << inputStr << ") ";
         }
+        else
+        {
+            return;
+        }
+    }    
+    else if (3 == index) // table 2*2
+    {
+        content << newLine
+            << "|  |  |" << newLine
+            << "| --: | :-- |" << newLine
+            << "|  |  |" << newLine
+            << "|  |  |" << newLine
+            << newLine;
+    }
+    else if (4 == index) // table 3*3
+    {
+        content << newLine
+            << "|  |  |  |" << newLine
+            << "| --: | :--: | :-- |" << newLine
+            << "|  |  |  |" << newLine
+            << "|  |  |  |" << newLine
+            << "|  |  |  |" << newLine
+            << newLine;        
+    }    
+    else if (5 == index) // code
+    {
+        content << newLine
+            << "``` c++" << newLine 
+            << newLine
+            << "```"  << newLine;
+    }   
+    else if (6 == index) // reference
+    {
+        content << newLine << "> ";
+    }
+    else if (7 == index)  // unordered list
+    {
+        content << newLine 
+            << "- " << newLine
+            << "- " << newLine
+            << "- " << newLine;
+    }
+    else if (8 == index)  // ordered list
+    {
+        content << newLine
+            << "1. " << newLine
+            << "2. " << newLine
+            << "3. " << newLine;
+    }
+    else if (9 == index)  // second heading
+    {
+        content << newLine << "## ";
+    }
+    else if (10 == index) // third heading
+    {
+        content << newLine << "### ";
+    }
+    else if (11 == index) // separator
+    {
+        content << newLine << "----" << newLine << newLine;
+    }
+    else if (30 == index) // bold
+    {
+        content << " **" << getHighlightedText() << "** ";
+    }
+    else if (31 == index) // italic
+    {
+        content << " *" << getHighlightedText() << "* ";
+    }
+    else if (32 == index) // bold + italic
+    {
+        content << " ***" << getHighlightedText() << "*** ";
+    }
+    else if (33 == index) // code inline
+    {
+        content << "`" << getHighlightedText() << "`";
+    }
+    
+    insertTextAtCaret (content);
+
+    // move up the currsor...
+    if (5 == index)  
+    {
+        moveCaretUp (false);
+        moveCaretUp (false);
+    }
+    else if (7 == index || 8 == index)
+    {
+        moveCaretUp (false);
+        moveCaretUp (false);
+        moveCaretUp (false);
+        moveCaretToEndOfLine (false);
+    }
+}
+
+//=================================================================================================
+bool EditorForMd::keyPressed (const KeyPress& key)
+{
+    if (key == KeyPress(KeyPress::tabKey))
+    {
+        insertTextAtCaret ("    ");
+        return true;
     }
 
-    insertTextAtCaret (content);
+    return TextEditor::keyPressed (key);
 }

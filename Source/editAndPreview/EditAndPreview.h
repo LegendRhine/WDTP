@@ -67,6 +67,9 @@ public:
     virtual void addPopupMenuItems (PopupMenu& menuToAddTo, const MouseEvent* mouseClickEvent) override;
     virtual void performPopupMenuAction (int menuItemID) override;
 
+    // for solve the TAB key (somehow it can't input spaces, instead of the caret doesn't move)
+    bool keyPressed (const KeyPress& key) override;
+
 private:
     const File& docFile;
 

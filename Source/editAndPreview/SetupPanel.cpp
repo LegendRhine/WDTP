@@ -277,23 +277,28 @@ void SetupPanel::resized()
 {
     // if the panel's width less than 90, it'll hit a jassert when in Debug mode, so...
     panel->setVisible (getWidth() > 80);
-    panel->setBounds (getLocalBounds());
+    panel->setBounds (getLocalBounds().reduced (2));
 }
 
 //=========================================================================
 void SetupPanel::valueChanged (Value & value)
 {
-    if (value.refersToSameSourceAs (*values[language]))
+    if (value == *values[language])
+    {
         systemFile->setValue ("language", value);
-
-    else if (value.refersToSameSourceAs (*values[clickForEdit]))
+    }
+    else if (value == *values[clickForEdit])
+    {
         systemFile->setValue ("clickForEdit", value);
-    
-    else if (value.refersToSameSourceAs (*values[fontSize]))
+    }    
+    else if (value == *values[fontSize])
+    {
         systemFile->setValue ("fontSize", value);
-    
+    }    
     else
+    {
         projectHasChanged = true;
+    }
 
     startTimer (2000);
 }

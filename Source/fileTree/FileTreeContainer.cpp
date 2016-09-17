@@ -125,11 +125,16 @@ void FileTreeContainer::closeProject ()
 //=================================================================================================
 const bool FileTreeContainer::saveDocAndProject()
 {
-    //NEED_TO_DO ("saveDocAndProject");
+    // Here must check to prevent invalid assert 
+    // eg. when quit this application after closed project..
+    if (projectTree.isValid()) 
+    {
+        projectTree.setProperty ("identityOfLastSelectedItem", lastItem, nullptr);
 
-    projectTree.setProperty ("identityOfLastSelectedItem", lastItem, nullptr);
-    
-    return SwingUtilities::writeValueTreeToFile (projectTree, projectFile);
+        return SwingUtilities::writeValueTreeToFile (projectTree, projectFile);
+    }
+
+    return true;
 }
 
 //=================================================================================================

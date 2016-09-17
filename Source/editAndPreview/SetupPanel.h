@@ -23,25 +23,31 @@ public:
     SetupPanel();
     ~SetupPanel();
 
-    void showSystemProperties();
+    void resized () override;
+    void showSystemProperties ();
+    
     void showProjectProperties (ValueTree& projectTree);
     void showDirProperties (ValueTree& dirTree);
     void showDocProperties (ValueTree& docTree);
-
+    
     void projectClosed();
-    void resized() override;
 
+    /** only add some relative value which current showing */
+    void valuesAddListener (const int startIndex, const int endIndex);
+    void valuesRemoveListener ();
+    
 private:
     //=========================================================================
-    void valuesAddListener();
-    void valuesRemoveListener();
+    
     virtual void valueChanged (Value & value) override;
 
     virtual void timerCallback () override;
     void savePropertiesIfNeeded ();
 
     //=========================================================================
-    enum
+    // NOTE: must keep the first and the last name of each group!
+    // see: valuesAddListener()
+    enum  
     { 
         // system properties' values, panel group 0
         language = 0, clickForEdit, fontSize,  
@@ -62,7 +68,10 @@ private:
 
     ScopedPointer<PropertyPanel> panel;
     OwnedArray<Value> values;
-    ValueTree projectTree;
+
+    ValueTree projectTree = ValueTree::invalid;
+    ValueTree dirTree = ValueTree::invalid;
+    ValueTree docTree = ValueTree::invalid;
     bool projectHasChanged = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SetupPanel)

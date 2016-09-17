@@ -144,7 +144,7 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
     {
         if (getFileOrDir (tree).existsAsFile ())
         {
-            if (0 == systemFile->getIntValue ("clickForEdit"))
+            if (systemFile->getValue ("clickForEdit") == "Edit")
                 editArea->editDoc (getFileOrDir (tree));
             else
                 editArea->previewDoc (getFileOrDir (tree));
@@ -153,8 +153,7 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
         }
         else
         {
-            //editArea->whenFileOrDirNonexists ();
-            SHOW_MESSAGE (getFileOrDir (tree).getFullPathName ());
+            editArea->whenFileOrDirNonexists ();
         }
     }
     // dir
@@ -163,12 +162,11 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
         if (getFileOrDir (tree).isDirectory ())
             editArea->setDirProperties (tree);
         else
-            //editArea->whenFileOrDirNonexists ();
-            SHOW_MESSAGE (getFileOrDir (tree).getFullPathName ());
+            editArea->whenFileOrDirNonexists ();
     }
     else // root
     {
-        editArea->setProjectProperties ();
+        editArea->setProjectProperties (tree);
     }
         
     treeContainer->setIdentityOfLastSelectedItem (getItemIdentifierString());

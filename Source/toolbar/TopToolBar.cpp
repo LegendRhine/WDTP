@@ -196,14 +196,17 @@ void TopToolBar::popupSystemMenu()
     recentFiles.createPopupMenuItems (recentFilesMenu, 100, true, true);
 
     m.addSubMenu (TRANS ("Open Rcent"), recentFilesMenu);
+    m.addItem (3, TRANS ("Close Project"), fileTree->hasLoadedProject());
     m.addSeparator ();
 
-    m.addItem (3, TRANS ("Close Project"), fileTree->hasLoadedProject());
     m.addItem (4, TRANS ("Save As..."), fileTree->hasLoadedProject ());
     m.addItem (5, TRANS ("Clean Up..."), fileTree->hasLoadedProject ());
     m.addSeparator ();
 
+    m.addItem (17, TRANS ("System Setup..."), true);
     m.addItem (18, TRANS ("How To..."), true);
+    m.addSeparator ();
+
     m.addItem (19, TRANS ("Check New Version..."), true);
     m.addItem (20, TRANS ("About..."), true);
     
@@ -219,18 +222,20 @@ void TopToolBar::popupSystemMenu()
 //=================================================================================================
 void TopToolBar::menuPerform (const int index)
 {
-    if (index == 1)  // create a new project
-        createNewProject ();
-    else if (index == 2)  // open an existed project
-        openProject ();
-    else if (index == 3)  // close current project
-        fileTree->closeProject ();
-    else if (index == 18)  // how to
-        NEED_TO_DO ("How to...");
-    else if (index == 19)  // check new version
-        URL ("http://underwaySoft.com").launchInDefaultBrowser ();
-    else if (index == 20)  // about
-        SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2016");
+    // create a new project
+    if (index == 1)         createNewProject ();
+    // open an existed project
+    else if (index == 2)    openProject ();
+    // close current project
+    else if (index == 3)    fileTree->closeProject ();
+    // system setup
+    else if (index == 17)   editAndPreview->setSystemProperties();
+    // how to
+    else if (index == 18)   NEED_TO_DO ("How to...");
+    // check new version
+    else if (index == 19)   URL ("http://underwaySoft.com").launchInDefaultBrowser ();
+    // about
+    else if (index == 20)   SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2016");
     
 }
 

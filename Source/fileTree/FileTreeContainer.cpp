@@ -259,7 +259,7 @@ void ItemSorter::valueChanged (Value& value)
         rootItem->getOwnerView()->restoreOpennessState (*treeViewState, true);
 
     // update project-tree
-    if (value.refersToSameSourceAs(order))
+    if (value.refersToSameSourceAs (order))
         projectTree.setProperty ("order", order.getValue(), nullptr);
     else if (value.refersToSameSourceAs (showWhat))
         projectTree.setProperty ("showWhat", showWhat.getValue(), nullptr);

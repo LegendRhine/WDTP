@@ -36,13 +36,14 @@ public:
     void projectClosed ();
 
     void setSystemProperties ();
-    void setDocProperties (const ValueTree& docTree);
-    void setDirProperties (const ValueTree& dirTree);
-    void setProjectProperties ();
+    void setProjectProperties (ValueTree& projectTree);
+    void setDirProperties (ValueTree& dirTree);
+    void setDocProperties (ValueTree& docTree);
 
     void whenFileOrDirNonexists ();
 
 private:
+    //=========================================================================
     ScopedPointer<TextEditor> editor;
     ScopedPointer<WebBrowserComponent> htmlPreview;
     ScopedPointer<SetupPanel> setupPanel;

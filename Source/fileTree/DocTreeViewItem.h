@@ -13,7 +13,7 @@
 
 /** Repsent a doc, a dir or the project which showed in treeView. */
 class DocTreeViewItem : public TreeViewItem,
-    private ValueTree::Listener
+                        private ValueTree::Listener
 {
 public:
     DocTreeViewItem (const ValueTree& tree,

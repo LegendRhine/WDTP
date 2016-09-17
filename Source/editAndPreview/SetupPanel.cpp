@@ -16,70 +16,83 @@ extern PropertiesFile* systemFile;
 SetupPanel::SetupPanel()
 {
     jassert (systemFile != nullptr);
+    for (int i = totalValues; --i >= 0; )   values.add (new Value());
+     
+    addAndMakeVisible (panel = new PropertyPanel());
+    panel->getViewport().setScrollBarThickness (10);   
+    showSystemProperties();
+}
 
-    for (int i = totalValues; --i >= 0; )
-    {
-        values.add (new Value());
-    }
-    
+//=========================================================================
+SetupPanel::~SetupPanel()
+{
+    valuesRemoveListener();
+    stopTimer();
+    savePropertiesIfNeeded();
+}
+
+//=================================================================================================
+void SetupPanel::showSystemProperties()
+{
+    valuesRemoveListener ();
+    panel->clear ();
+
     // assign system properties
-    values[language]->setValue (systemFile->getValue ("language"));
-    values[clickForEdit]->setValue (systemFile->getValue ("clickForEdit"));
-    values[fontSize]->setValue (systemFile->getDoubleValue ("fontSize"));
+    values[language]->setValue (var (systemFile->getValue ("language")));
+    values[clickForEdit]->setValue (var (systemFile->getValue ("clickForEdit")));
+    values[fontSize]->setValue (var (systemFile->getDoubleValue ("fontSize")));
 
-    // 4 sections
     Array<PropertyComponent*> systemProperties;
-    Array<PropertyComponent*> projectProperties;
-    Array<PropertyComponent*> dirProperties;
-    Array<PropertyComponent*> docProperties;
 
-    // section 0: system setup
     // language
     StringArray lanSa;
     lanSa.add (TRANS ("English"));
     lanSa.add (TRANS ("Simplified Chinese"));
-
     Array<var> lanVar;
     lanVar.add ("English");
     lanVar.add ("Simplified Chinese");
-
-    systemProperties.add (new ChoicePropertyComponent (*values[language], TRANS ("Language: "), 
-                                                       lanSa, lanVar));
+    systemProperties.add (new ChoicePropertyComponent (*values[language], TRANS ("Language: "), lanSa, lanVar));
 
     // click a doc inside the file-tree
     StringArray clickSa;
     clickSa.add (TRANS ("Edit"));
     clickSa.add (TRANS ("Preview"));
-
     Array<var> clickVar;
     clickVar.add ("Edit");
     clickVar.add ("Preview");
 
-    systemProperties.add (new ChoicePropertyComponent (*values[clickForEdit], TRANS ("Doc Click: "), 
-                                                       clickSa, clickVar));
+    systemProperties.add (new ChoicePropertyComponent (*values[clickForEdit], TRANS ("Doc Click: "), clickSa, clickVar));
+    systemProperties.add (new SliderPropertyComponent (*values[fontSize], TRANS ("Editor Font: "), 12.0, 32.0, 0.1));
+        
+    for (auto p : systemProperties)   p->setPreferredHeight (28);
 
-    struct SliderProperty : public SliderPropertyComponent
-    {
-        SliderProperty (const Value& v) : 
-            SliderPropertyComponent (v, TRANS ("Editor Font: "), 12.0, 32.0, 0.1)
-        {     
-            slider.setChangeNotificationOnlyOnRelease (true);
-        }
+    panel->addSection (TRANS ("System Setup"), systemProperties);
+    valuesAddListener (language, fontSize);
+}
 
-        double getValue () const
-        {
-            if (!slider.isMouseButtonDown())
-                return slider.getValue ();
+//=================================================================================================
+void SetupPanel::showProjectProperties (ValueTree& pTree)
+{
+    valuesRemoveListener ();
+    projectTree = pTree;
+    panel->clear ();
+    jassert (projectTree.isValid () && projectTree.getType ().toString () == "wdtpProject");
 
-            return 20.0;
-        }
+    values[projectName]->setValue (pTree.getProperty ("name"));
+    values[projectDesc]->setValue (pTree.getProperty ("title"));
+    values[owner]->setValue (pTree.getProperty ("owner"));
+    values[projectSkin]->setValue (pTree.getProperty ("skin"));
+    values[projectRenderDir]->setValue (pTree.getProperty ("render"));
+    values[place]->setValue (pTree.getProperty ("place"));
+    values[domain]->setValue (pTree.getProperty ("domain"));
+    values[ftpAddress]->setValue (pTree.getProperty ("ftpAddress"));
+    values[ftpPort]->setValue (pTree.getProperty ("ftpPort"));
+    values[ftpUserName]->setValue (pTree.getProperty ("ftpUserName"));
+    values[ftpPassword]->setValue (pTree.getProperty ("ftpPassword"));
 
-    };
+    Array<PropertyComponent*> projectProperties;
 
-    systemProperties.add (new SliderProperty (*values[fontSize]));
-
-    // section 1: project setup
-    projectProperties.add (new TextPropertyComponent (*values[projectName], TRANS("Project Name: "), 60, false));
+    projectProperties.add (new TextPropertyComponent (*values[projectName], TRANS ("Project Name: "), 60, false));
     projectProperties.add (new TextPropertyComponent (*values[projectDesc], TRANS ("Description: "), 0, true));
     projectProperties.add (new TextPropertyComponent (*values[owner], TRANS ("Owner: "), 30, false));
 
@@ -98,7 +111,7 @@ SetupPanel::SetupPanel()
     StringArray themeDirsSa;
     Array<var> themeDirsVar;
 
-    if (FileTreeContainer::projectFile.existsAsFile())
+    if (FileTreeContainer::projectFile.existsAsFile ())
     {
         const File themeDir (FileTreeContainer::projectFile.getSiblingFile ("themes"));
         Array<File> themeDirs;
@@ -111,7 +124,7 @@ SetupPanel::SetupPanel()
         }
     }
 
-    projectProperties.add (new ChoicePropertyComponent (*values[projectRenderDir], TRANS ("Template: "), 
+    projectProperties.add (new ChoicePropertyComponent (*values[projectRenderDir], TRANS ("Template: "),
                                                         themeDirsSa, themeDirsVar));
     projectProperties.add (new TextPropertyComponent (*values[place], TRANS ("Render To: "), 60, false));
     projectProperties.add (new TextPropertyComponent (*values[domain], TRANS ("Domain: "), 100, false));
@@ -120,14 +133,74 @@ SetupPanel::SetupPanel()
     projectProperties.add (new TextPropertyComponent (*values[ftpUserName], TRANS ("FTP Account: "), 60, false));
     projectProperties.add (new TextPropertyComponent (*values[ftpPassword], TRANS ("FTP Password: "), 60, false));
 
-    // section 2: dir setup
+    for (auto p : projectProperties)  p->setPreferredHeight (28);
+    projectProperties[1]->setPreferredHeight (28 * 3);
+    
+    panel->addSection (TRANS ("Project Setup"), projectProperties);
+    valuesAddListener (projectName, ftpPassword);
+}
+
+//=================================================================================================
+void SetupPanel::showDirProperties (ValueTree& dTree)
+{
+    valuesRemoveListener ();
+    panel->clear ();
+    dirTree = dTree;
+    jassert (dirTree.isValid () && dirTree.getType ().toString () == "dir");
+
+    values[dirDesc]->setValue (dirTree.getProperty ("title"));
+    values[isMenu]->setValue (dirTree.getProperty ("isMenu"));
+    values[dirRenderDir]->setValue (dirTree.getProperty ("render"));
+    values[dirWebName]->setValue (dirTree.getProperty ("webName"));
+
+    Array<PropertyComponent*> dirProperties;
     dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Description: "), 0, true));
-    dirProperties.add (new BooleanPropertyComponent(*values[isMenu], TRANS("Web Menu: "), TRANS("Yes")));
-    dirProperties.add (new ChoicePropertyComponent (*values[dirRenderDir], TRANS ("Template: "), 
+    dirProperties.add (new BooleanPropertyComponent (*values[isMenu], TRANS ("Web Menu: "), TRANS ("Yes")));
+
+    // themes dirs
+    StringArray themeDirsSa;
+    Array<var> themeDirsVar;
+
+    if (FileTreeContainer::projectFile.existsAsFile ())
+    {
+        const File themeDir (FileTreeContainer::projectFile.getSiblingFile ("themes"));
+        Array<File> themeDirs;
+        themeDir.findChildFiles (themeDirs, File::findDirectories, false);
+
+        for (int i = 0; i < themeDirs.size (); ++i)
+        {
+            themeDirsSa.add (themeDirs.getUnchecked (i).getFileName ());
+            themeDirsVar.add (themeDirs.getUnchecked (i).getFileName ());
+        }
+    }
+
+    dirProperties.add (new ChoicePropertyComponent (*values[dirRenderDir], TRANS ("Template: "),
                                                     themeDirsSa, themeDirsVar));
     dirProperties.add (new TextPropertyComponent (*values[dirWebName], TRANS ("Web Name: "), 60, false));
 
-    // section 3: doc setup    
+    for (auto p : dirProperties)      p->setPreferredHeight (28);
+    dirProperties[0]->setPreferredHeight (28 * 3);
+    
+    panel->addSection (TRANS ("Folder Setup"), dirProperties);
+    valuesAddListener (dirDesc, dirWebName);
+}
+
+//=================================================================================================
+void SetupPanel::showDocProperties (ValueTree& dTree)
+{
+    valuesRemoveListener ();
+    panel->clear ();
+    docTree = dTree;
+    jassert (docTree.isValid () && docTree.getType ().toString () == "doc");
+
+    values[title]->setValue (docTree.getProperty ("title"));
+    values[author]->setValue (docTree.getProperty ("author"));
+    values[publish]->setValue (docTree.getProperty ("publish"));
+    values[docWebName]->setValue (docTree.getProperty ("webName"));
+    values[tplFile]->setValue (docTree.getProperty ("tplFile"));
+    values[js]->setValue (docTree.getProperty ("js"));
+
+    Array<PropertyComponent*> docProperties;
     docProperties.add (new TextPropertyComponent (*values[title], TRANS ("Title: "), 80, false));
     docProperties.add (new TextPropertyComponent (*values[author], TRANS ("Author: "), 30, false));
     docProperties.add (new BooleanPropertyComponent (*values[publish], TRANS ("Publish: "), TRANS ("Yes")));
@@ -135,101 +208,11 @@ SetupPanel::SetupPanel()
     docProperties.add (new TextPropertyComponent (*values[tplFile], TRANS ("Template File: "), 60, false));
     docProperties.add (new TextPropertyComponent (*values[js], TRANS ("Java Script: "), 0, true));
 
-    const int h = 28; // set property-component's height
-    for (auto p : systemProperties)   p->setPreferredHeight (h);
-    for (auto p : projectProperties)  p->setPreferredHeight (h);
-    for (auto p : dirProperties)      p->setPreferredHeight (h);
-    for (auto p : docProperties)      p->setPreferredHeight (h);
+    for (auto p : docProperties)      p->setPreferredHeight (28);
+    docProperties[5]->setPreferredHeight (28 * 4);
 
-    // properties panel add sections
-    addAndMakeVisible (panel = new PropertyPanel());
-    panel->getViewport().setScrollBarThickness (10);   
-
-    panel->addSection (TRANS ("System Setup"), systemProperties);
-    panel->addSection (TRANS ("Project Setup"), projectProperties);
-    panel->addSection (TRANS ("Folder Setup"), dirProperties);
     panel->addSection (TRANS ("Document Setup"), docProperties);
-
-    showSystemProperties();
-}
-
-//=========================================================================
-SetupPanel::~SetupPanel()
-{
-    valuesRemoveListener();
-    stopTimer();
-}
-
-//=================================================================================================
-void SetupPanel::showSystemProperties()
-{
-    valuesRemoveListener ();
-
-    panel->setSectionEnabled (0, true);
-    panel->setSectionEnabled (1, false);
-    panel->setSectionEnabled (2, false);
-    panel->setSectionEnabled (3, false);
-
-    panel->setSectionOpen (0, true);
-    panel->setSectionOpen (1, false);
-    panel->setSectionOpen (2, false);
-    panel->setSectionOpen (3, false);
-
-    valuesAddListener ();
-}
-
-//=================================================================================================
-void SetupPanel::showProjectProperties (ValueTree& pTree)
-{
-    valuesRemoveListener ();
-
-    panel->setSectionEnabled (0, true);
-    panel->setSectionEnabled (1, true);
-    panel->setSectionEnabled (2, false);
-    panel->setSectionEnabled (3, false);
-
-    panel->setSectionOpen (0, false);
-    panel->setSectionOpen (1, true);
-    panel->setSectionOpen (2, false);
-    panel->setSectionOpen (3, false);
-
-    valuesAddListener ();
-}
-
-//=================================================================================================
-void SetupPanel::showDirProperties (ValueTree& dirTree)
-{
-    valuesRemoveListener ();
-
-    panel->setSectionEnabled (0, true);
-    panel->setSectionEnabled (1, true);
-    panel->setSectionEnabled (2, true);
-    panel->setSectionEnabled (3, false);
-
-    panel->setSectionOpen (0, false);
-    panel->setSectionOpen (1, false);
-    panel->setSectionOpen (2, true);
-    panel->setSectionOpen (3, false);
-
-    valuesAddListener ();
-}
-
-//=================================================================================================
-void SetupPanel::showDocProperties (ValueTree& docTree)
-{
-    valuesRemoveListener ();
-
-    panel->setSectionEnabled (0, true);
-    panel->setSectionEnabled (1, true);
-    panel->setSectionEnabled (2, true);
-    panel->setSectionEnabled (3, true);
-
-    panel->setSectionOpen (0, false);
-    panel->setSectionOpen (1, false);
-    panel->setSectionOpen (2, false);
-    panel->setSectionOpen (3, true);
-
-    valuesAddListener ();
+    valuesAddListener (title, js);
 }
 
 //=================================================================================================
@@ -240,29 +223,19 @@ void SetupPanel::projectClosed()
     valuesRemoveListener ();
 
     projectTree = ValueTree::invalid;
+    dirTree = ValueTree::invalid;
+    docTree = ValueTree::invalid;
+
     projectHasChanged = false;
-
-    for (int i = projectName; i < values.size(); ++i)
-        values[i]->setValue (var (0));
-
-    panel->setSectionEnabled (0, true);
-    panel->setSectionEnabled (1, false);
-    panel->setSectionEnabled (2, false);
-    panel->setSectionEnabled (3, false);
-
-    panel->setSectionOpen (0, true);
-    panel->setSectionOpen (1, false);
-    panel->setSectionOpen (2, false);
-    panel->setSectionOpen (3, false);
-
-    valuesAddListener();
+    panel->clear();
+    showSystemProperties();
 }
 
 //=================================================================================================
-void SetupPanel::valuesAddListener ()
+void SetupPanel::valuesAddListener (const int startIndex, const int endIndex)
 {
-    for (auto v : values)
-        v->addListener (this);
+    for (int i = startIndex; i <= endIndex; ++i)
+        values[i]->addListener (this);
 }
 
 //=================================================================================================
@@ -283,21 +256,66 @@ void SetupPanel::resized()
 //=========================================================================
 void SetupPanel::valueChanged (Value & value)
 {
-    if (value == *values[language])
+    if (value.refersToSameSourceAs (*values[language]))
     {
-        systemFile->setValue ("language", value);
+        systemFile->setValue ("language", value.toString());
     }
-    else if (value == *values[clickForEdit])
+    else if (value.refersToSameSourceAs (*values[clickForEdit]))
     {
-        systemFile->setValue ("clickForEdit", value);
+        systemFile->setValue ("clickForEdit", value.toString());
     }    
-    else if (value == *values[fontSize])
+    else if (value.refersToSameSourceAs (*values[fontSize]))
     {
-        systemFile->setValue ("fontSize", value);
+        systemFile->setValue ("fontSize", value.getValue());
     }    
     else
     {
         projectHasChanged = true;
+
+        if (value.refersToSameSourceAs (*values[projectName]))
+            projectTree.setProperty ("name", values[projectName]->getValue(), nullptr);
+        else if (value.refersToSameSourceAs (*values[projectDesc]))
+            projectTree.setProperty ("title", values[projectDesc]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[owner]))
+            projectTree.setProperty ("owner", values[owner]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[projectSkin]))
+            projectTree.setProperty ("skin", values[projectSkin]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[projectRenderDir]))
+            projectTree.setProperty ("render", values[projectRenderDir]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[place]))
+            projectTree.setProperty ("place", values[place]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[domain]))
+            projectTree.setProperty ("domain", values[domain]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[ftpAddress]))
+            projectTree.setProperty ("ftpAddress", values[ftpAddress]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[ftpPort]))
+            projectTree.setProperty ("ftpPort", values[ftpPort]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[ftpUserName]))
+            projectTree.setProperty ("ftpUserName", values[ftpUserName]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[ftpPassword]))
+            projectTree.setProperty ("ftpPassword", values[ftpPassword]->getValue (), nullptr);
+
+        else if (value.refersToSameSourceAs (*values[dirDesc]))
+            dirTree.setProperty ("title", values[dirDesc]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[isMenu]))
+            dirTree.setProperty ("isMenu", values[isMenu]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[dirRenderDir]))
+            dirTree.setProperty ("render", values[dirRenderDir]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[dirWebName]))
+            dirTree.setProperty ("webName", values[dirWebName]->getValue (), nullptr);
+
+        else if (value.refersToSameSourceAs (*values[title]))
+            docTree.setProperty ("title", values[title]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[author]))
+            docTree.setProperty ("author", values[author]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[publish]))
+            docTree.setProperty ("publish", values[publish]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[docWebName]))
+            docTree.setProperty ("webName", values[docWebName]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[tplFile]))
+            docTree.setProperty ("tplFile", values[tplFile]->getValue (), nullptr);
+        else if (value.refersToSameSourceAs (*values[js]))
+            docTree.setProperty ("js", values[js]->getValue (), nullptr);
     }
 
     startTimer (2000);
@@ -315,9 +333,10 @@ void SetupPanel::savePropertiesIfNeeded ()
 //     static int i = 0;
 //     DBG (++i);
 
-    systemFile->saveIfNeeded ();
+    if (systemFile != nullptr)
+        systemFile->saveIfNeeded ();
 
-    if (projectHasChanged &&
+    if (projectHasChanged && projectTree.isValid() && 
         FileTreeContainer::projectFile.existsAsFile () &&
         !SwingUtilities::writeValueTreeToFile (projectTree, FileTreeContainer::projectFile))
         SHOW_MESSAGE (TRANS ("Something wrong during saving project."));

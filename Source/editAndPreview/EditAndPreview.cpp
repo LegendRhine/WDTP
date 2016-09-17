@@ -13,6 +13,7 @@
 //==============================================================================
 EditAndPreview::EditAndPreview()
 {
+    // web browser
     addChildComponent (htmlPreview = new WebBrowserComponent ());
 
     // stretched layout, arg: index, min-width, max-width£¬default x%
@@ -46,55 +47,66 @@ void EditAndPreview::resized()
     // layout
     Component* comps[] = { editor, layoutBar, setupPanel };
     layoutManager.layOutComponents (comps, 3, 0, 0, getWidth(), getHeight(), false, true);
+
+    // web browser
+    if (htmlPreview->isVisible())
+        htmlPreview->setBounds (getLocalBounds());
 }
 
 //=================================================================================================
 void EditAndPreview::editDoc (const File& docFile)
 {
-    editor->setText (docFile.loadFileAsString());
+    htmlPreview->setVisible (false);
+    editor->setText (docFile.loadFileAsString ());
 }
 
 //=================================================================================================
 void EditAndPreview::previewDoc (const File& docFile)
 {
+    htmlPreview->setVisible (true);
+    htmlPreview->broughtToFront();
+    htmlPreview->setBounds (getLocalBounds ());
 
+    htmlPreview->goToURL (docFile.getFullPathName());
 }
 
 //=================================================================================================
 void EditAndPreview::projectClosed ()
 {
     editor->setText (String());
+    setupPanel->projectClosed ();
+    htmlPreview->setVisible (false);
 
     // TODO: ...
 }
 
 //=================================================================================================
-void EditAndPreview::setSystemProperties ()
+void EditAndPreview::setSystemProperties()
 {
-   
+    setupPanel->showSystemProperties();
 }
 
 //=================================================================================================
-void EditAndPreview::setDocProperties (const ValueTree& docTree)
+void EditAndPreview::setProjectProperties (ValueTree& projectTree)
 {
-
+    setupPanel->showProjectProperties (projectTree);
 }
 
 //=================================================================================================
-void EditAndPreview::setDirProperties (const ValueTree& dirTree)
+void EditAndPreview::setDirProperties (ValueTree& dirTree)
 {
-
+    setupPanel->showDirProperties (dirTree);
 }
 
 //=================================================================================================
-void EditAndPreview::setProjectProperties ()
+void EditAndPreview::setDocProperties (ValueTree& docTree)
 {
-
+    setupPanel->showDocProperties (docTree);
 }
 
 //=================================================================================================
 void EditAndPreview::whenFileOrDirNonexists ()
 {
-    NEED_TO_DO ("fileOrDirNonexists");
+    setupPanel->showSystemProperties();
 }
 

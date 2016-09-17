@@ -12,6 +12,7 @@
 #define EDITANDPREVIEW_H_INCLUDED
 
 class SetupPanel;
+class EditorForMd;
 
 //==============================================================================
 /** Blank in initial, it'll show edit-mode or preview-mode base on user's click.
@@ -44,7 +45,9 @@ public:
 
 private:
     //=========================================================================
-    ScopedPointer<TextEditor> editor;
+    ScopedPointer<EditorForMd> editor;
+    File docFile = File::nonexistent;
+
     ScopedPointer<WebBrowserComponent> webView;
     ScopedPointer<SetupPanel> setupPanel;
 
@@ -58,10 +61,14 @@ private:
 class EditorForMd : public TextEditor
 {
 public:
-    EditorForMd ();
-    ~EditorForMd ();
+    EditorForMd (const File& docFile_) : docFile(docFile_) { }
+    ~EditorForMd () { }
+
+    virtual void addPopupMenuItems (PopupMenu& menuToAddTo, const MouseEvent* mouseClickEvent) override;
+    virtual void performPopupMenuAction (int menuItemID) override;
 
 private:
+    const File& docFile;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditorForMd)
 };

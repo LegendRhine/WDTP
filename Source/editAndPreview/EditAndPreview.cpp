@@ -1,4 +1,4 @@
-/*
+ï»¿/*
   ==============================================================================
 
     EditAndPreview.cpp
@@ -16,12 +16,12 @@ EditAndPreview::EditAndPreview()
     // web browser
     addChildComponent (webView = new WebBrowserComponent ());
 
-    // stretched layout, arg: index, min-width, max-width£¬default x%
-    layoutManager.setItemLayout (0, -0.5, -1.0, -0.69);  // editor£¬
+    // stretched layout, arg: index, min-width, max-widthï¼Œdefault x%
+    layoutManager.setItemLayout (0, -0.5, -1.0, -0.69);  // editorï¼Œ
     layoutManager.setItemLayout (1, 3, 3, 3);           // layoutBar
     layoutManager.setItemLayout (2, 2, -0.5, -0.31);  // propertiesPanel
 
-    addAndMakeVisible (editor = new TextEditor ());
+    addAndMakeVisible (editor = new EditorForMd (docFile));
     addAndMakeVisible (setupPanel = new SetupPanel ());
     addAndMakeVisible (layoutBar = new StretchableLayoutResizerBar (&layoutManager, 1, true));
 
@@ -53,17 +53,19 @@ void EditAndPreview::resized()
 }
 
 //=================================================================================================
-void EditAndPreview::editDoc (const File& docFile)
+void EditAndPreview::editDoc (const File& file)
 {
     webView->setVisible (false);
+    docFile = file;
     editor->setText (docFile.loadFileAsString ());
     resized ();
 }
 
 //=================================================================================================
-void EditAndPreview::previewDoc (const File& docFile)
+void EditAndPreview::previewDoc (const File& file)
 {
     webView->setVisible (true);
+    docFile = file;
     //webView->goToURL (docFile.getFullPathName ());
     webView->goToURL ("e:/temp/test.html");
     resized ();
@@ -110,3 +112,85 @@ void EditAndPreview::whenFileOrDirNonexists ()
     setupPanel->showSystemProperties();
 }
 
+//=================================================================================================
+void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
+{
+    if (e->mods.isPopupMenu())
+    {
+        PopupMenu insertMenu;
+        insertMenu.addItem (1, TRANS ("Image"));
+        insertMenu.addItem (2, TRANS ("Table") + " (2x2)");
+        insertMenu.addItem (3, TRANS ("Table") + " (3x3)");
+        insertMenu.addItem (4, TRANS ("Hyperlink"));
+
+        menu.addSubMenu (TRANS ("Insert"), insertMenu, docFile.existsAsFile());
+
+
+        menu.addSeparator();
+
+        TextEditor::addPopupMenuItems (menu, e);
+    }
+}
+
+//=================================================================================================
+void EditorForMd::performPopupMenuAction (int index)
+{
+    TextEditor::performPopupMenuAction (index);
+    String content;
+
+    if (1 == index) // image
+    {
+        FileChooser fc (TRANS ("Select Images..."), File::nonexistent, "*.jpg;*.png;*.gif", false);
+        Array<File> imageFiles;
+
+        if (fc.browseForMultipleFilesToOpen())
+            imageFiles = fc.getResults ();
+
+        const File imgPath (docFile.getSiblingFile ("media"));
+
+        for (auto f : imageFiles)
+        {
+            const File targetFile (imgPath.getChildFile (f.getFileName()).getNonexistentSibling (true));
+            targetFile.create();
+
+            if (f.copyFileTo (targetFile))
+                content << newLine << "![](media/" << targetFile.getFileName () << ")" << newLine;
+            else
+                SHOW_MESSAGE (TRANS ("Can't insert this image: ") + newLine + f.getFullPathName());
+        }
+    }
+    else if (2 == index) // table 2*2
+    {
+        content << newLine
+            << "|  |  |" << newLine
+            << "| --: | :-- |" << newLine
+            << "|  |  |" << newLine
+            << "|  |  |" << newLine;
+    }
+    else if (3 == index) // table 3*3
+    {
+        content << newLine
+            << "|  |  |  |" << newLine
+            << "| --: | :--: | :-- |" << newLine
+            << "|  |  |  |" << newLine
+            << "|  |  |  |" << newLine
+            << "|  |  |  |" << newLine;        
+    }
+    else if (4 ==index) // hyperlink
+    {
+        AlertWindow dialog (TRANS ("Insert Hyperlink"), TRANS ("Please input the url."),
+                            AlertWindow::InfoIcon);
+
+        dialog.addTextEditor ("name", "http://");
+        dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
+        dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
+
+        if (0 == dialog.runModalLoop ())
+        {
+            const String inputStr (dialog.getTextEditor ("name")->getText().trim());
+            content << " [](" << inputStr << ") ";
+        }
+    }
+
+    insertTextAtCaret (content);
+}

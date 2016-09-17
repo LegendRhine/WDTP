@@ -71,7 +71,7 @@
 - PropertiesFile (systemFile, 系统属性文件)位于本机“用户-文档”目录下，文件名为：wdtp.sys，属性如下：
 	- recentFiles：最近打开的10个项目
 	- language: 界面语言（字符串，语言名称）
-	- clickForEdit：单击文件树中的某个文档后，自动进入编辑模式，还是预览模式	（字符串秒数）
+	- clickForEdit：单击文件树中的某个文档后，自动进入编辑模式，还是预览模式	（字符串描述）
 	- fontSize：文本编辑器的字体大小（double值）
 
 ### 项目文档

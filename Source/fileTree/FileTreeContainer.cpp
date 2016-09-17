@@ -19,6 +19,7 @@ FileTreeContainer::FileTreeContainer (EditAndPreview* rightArea) :
     editAndPreview (rightArea)
 {
     jassert (editAndPreview != nullptr);
+    projectFile = File::nonexistent;
 
     // fileTree...
     fileTree.setRootItem (nullptr);

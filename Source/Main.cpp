@@ -59,6 +59,7 @@ public:
     //=========================================================================
     void shutdown() override
     {
+        systemFile->saveIfNeeded();
         deleteAndZero (systemFile);
         mainWindow = nullptr;
     }

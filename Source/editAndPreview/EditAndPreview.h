@@ -23,7 +23,9 @@ class EditorForMd;
     The whole area will be a WebComponent when in preview-mode, which covered the 
     textEditor and the propertiesPanel.
 */
-class EditAndPreview    : public Component
+class EditAndPreview : public Component,
+                       private TextEditor::Listener,
+                       private Timer
 {
 public:
     EditAndPreview();
@@ -32,21 +34,27 @@ public:
     void paint(Graphics&) override {}
     void resized() override;
 
-    void editDoc (const File& docFile);
+    void editNewDoc (const File& docFile);
     void previewDoc (const File& docFile);
-    void projectClosed ();
 
-    void setSystemProperties ();
+    void projectClosed();
+    void setSystemProperties();
+
     void setProjectProperties (ValueTree& projectTree);
     void setDirProperties (ValueTree& dirTree);
     void setDocProperties (ValueTree& docTree);
 
-    void whenFileOrDirNonexists ();
+    const bool saveCurrentDoc();
+    void whenFileOrDirNonexists();
 
 private:
     //=========================================================================
+    virtual void textEditorTextChanged (TextEditor&) override;
+    virtual void timerCallback() override;
+
     ScopedPointer<EditorForMd> editor;
     File docFile = File::nonexistent;
+    bool docHasChanged = false;
 
     ScopedPointer<WebBrowserComponent> webView;
     ScopedPointer<SetupPanel> setupPanel;

@@ -76,7 +76,7 @@ private:
     void importDocuments ();
     void createNewDocument ();
     void createNewFolder ();
-    void delSelected ();
+    void deleteSelected ();
 
     //=========================================================================
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;

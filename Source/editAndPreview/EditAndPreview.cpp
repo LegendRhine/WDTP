@@ -33,13 +33,14 @@ EditAndPreview::EditAndPreview()
     editor->setColour (TextEditor::focusedOutlineColourId, Colour(0xffb4b4b4));
     editor->setColour (TextEditor::backgroundColourId, Colour(0xffededed));
     editor->setScrollBarThickness (10);
-    editor->setIndents(6, 6);
+    editor->setIndents (6, 6);
     editor->setFont (SwingUtilities::getFontSize());
 }
 
 //=========================================================================
 EditAndPreview::~EditAndPreview()
 {
+    saveCurrentDoc();
 }
 
 //=========================================================================
@@ -54,19 +55,29 @@ void EditAndPreview::resized()
 }
 
 //=================================================================================================
-void EditAndPreview::editDoc (const File& file)
+void EditAndPreview::editNewDoc (const File& file)
 {
+    saveCurrentDoc();
+
+    editor->removeListener (this);
+    editor->setEnabled (true);
     webView->setVisible (false);
+    
     docFile = file;
-    editor->setText (docFile.loadFileAsString ());
-    resized ();
+    editor->setText (docFile.loadFileAsString(), false);
+    editor->addListener (this);
+
+    resized();
 }
 
 //=================================================================================================
 void EditAndPreview::previewDoc (const File& file)
 {
+    saveCurrentDoc();
+
     webView->setVisible (true);
     docFile = file;
+
     //webView->goToURL (docFile.getFullPathName ());
     webView->goToURL ("e:/temp/test.html");
     resized ();
@@ -75,7 +86,12 @@ void EditAndPreview::previewDoc (const File& file)
 //=================================================================================================
 void EditAndPreview::projectClosed ()
 {
-    editor->setText (String());
+    saveCurrentDoc();
+
+    editor->removeListener (this);
+    editor->setText (String(), false);
+    editor->setEnabled (false);
+
     setupPanel->projectClosed ();
     webView->setVisible (false);
 
@@ -108,9 +124,50 @@ void EditAndPreview::setDocProperties (ValueTree& docTree)
 }
 
 //=================================================================================================
+const bool EditAndPreview::saveCurrentDoc()
+{
+    stopTimer();
+
+    if (docHasChanged && docFile != File::nonexistent)
+    {
+        TemporaryFile tempFile (docFile);
+        tempFile.getFile().appendText(editor->getText());
+
+        if (tempFile.overwriteTargetFileWithTemporary ())
+        {
+            docHasChanged = false;
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
+    return true;
+}
+
+//=================================================================================================
 void EditAndPreview::whenFileOrDirNonexists ()
 {
     setupPanel->showSystemProperties();
+    editor->removeListener (this);
+    editor->setText (String(), false);
+    editor->setEnabled (false);
+    docHasChanged = false;
+}
+
+//=================================================================================================
+void EditAndPreview::textEditorTextChanged (TextEditor&)
+{
+    docHasChanged = true;
+    startTimer (5000);
+}
+
+//=================================================================================================
+void EditAndPreview::timerCallback ()
+{
+    saveCurrentDoc();
 }
 
 //=================================================================================================

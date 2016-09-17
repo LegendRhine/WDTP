@@ -135,7 +135,7 @@ const File DocTreeViewItem::getFileOrDir (const ValueTree& tree)
 // left click
 void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
 {
-    if (!isNowSelected)    return;
+    if (!isNowSelected)        return;
 
     EditAndPreview* editArea = treeContainer->getEditAndPreview ();
 
@@ -145,7 +145,7 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
         if (getFileOrDir (tree).existsAsFile ())
         {
             if (systemFile->getValue ("clickForEdit") == "Edit")
-                editArea->editDoc (getFileOrDir (tree));
+                editArea->editNewDoc (getFileOrDir (tree));
             else
                 editArea->previewDoc (getFileOrDir (tree));
 
@@ -251,7 +251,7 @@ void DocTreeViewItem::menuPerform (const int index)
     else if (index == 10)
         renameSelectedItem ();
     else if (index == 12)
-        delSelected ();
+        deleteSelected ();
 
     // open in external app..
     else if (index == 14)
@@ -375,8 +375,7 @@ void DocTreeViewItem::importDocuments ()
     // can't import any doc under a doc!
     jassert (tree.getType ().toString () != "doc");
 
-    FileChooser fc (TRANS ("Import document(s)..."), File::nonexistent,
-                    "*.md;*.markdown;*.txt;*.html;*.htm", false);
+    FileChooser fc (TRANS ("Import document(s)..."), File::nonexistent, String(), false);
 
     if (!fc.browseForMultipleFilesToOpen ())
         return;
@@ -539,7 +538,7 @@ void DocTreeViewItem::createNewFolder ()
 }
 
 //=================================================================================================
-void DocTreeViewItem::delSelected ()
+void DocTreeViewItem::deleteSelected ()
 {
     // get all selected items
     OwnedArray<ValueTree> selectedTrees;
@@ -567,6 +566,9 @@ void DocTreeViewItem::delSelected ()
     while (rootTree.getParent ().isValid ())
         rootTree = rootTree.getParent ();
 
+    // here get the EditAndPreview, it must before the delete, otherwise it'll be wild-pointer!
+    EditAndPreview* editor = treeContainer->getEditAndPreview();
+
     // delete one by one
     for (int i = selectedTrees.size (); --i >= 0; )
     {
@@ -581,7 +583,15 @@ void DocTreeViewItem::delSelected ()
 
     // save the data to project file
     if (!SwingUtilities::writeValueTreeToFile (rootTree, FileTreeContainer::projectFile))
+    {
         SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
+    }
+    else
+    {
+        jassert (editor != nullptr);
+        editor->whenFileOrDirNonexists();
+    }
+
 }
 
 //=================================================================================================

@@ -196,11 +196,13 @@ void TopToolBar::popupSystemMenu()
     recentFiles.createPopupMenuItems (recentFilesMenu, 100, true, true);
 
     m.addSubMenu (TRANS ("Open Rcent"), recentFilesMenu);
-    m.addItem (3, TRANS ("Close Project"), fileTree->hasLoadedProject());
     m.addSeparator ();
 
-    m.addItem (4, TRANS ("Save As..."), fileTree->hasLoadedProject ());
-    m.addItem (5, TRANS ("Clean Up..."), fileTree->hasLoadedProject ());
+    m.addItem (3, TRANS ("Close Project"), fileTree->hasLoadedProject ());
+    m.addItem (4, TRANS ("Project Save As..."), fileTree->hasLoadedProject ());
+    m.addSeparator ();
+
+    m.addItem (5, TRANS ("System Clean Up..."), fileTree->hasLoadedProject ());
     m.addSeparator ();
 
     m.addItem (17, TRANS ("System Setup..."), true);
@@ -224,16 +226,25 @@ void TopToolBar::menuPerform (const int index)
 {
     // create a new project
     if (index == 1)         createNewProject ();
+
     // open an existed project
     else if (index == 2)    openProject ();
+
     // close current project
     else if (index == 3)    fileTree->closeProject ();
+
+    // clean useless data
+    else if (index == 5)   NEED_TO_DO ("clean useless data...");
+
     // system setup
     else if (index == 17)   editAndPreview->setSystemProperties();
+
     // how to
     else if (index == 18)   NEED_TO_DO ("How to...");
+
     // check new version
     else if (index == 19)   URL ("http://underwaySoft.com").launchInDefaultBrowser ();
+
     // about
     else if (index == 20)   SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2016");
     

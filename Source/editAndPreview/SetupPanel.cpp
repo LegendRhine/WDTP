@@ -48,6 +48,7 @@ void SetupPanel::showSystemProperties()
     StringArray lanSa;
     lanSa.add (TRANS ("English"));
     lanSa.add (TRANS ("Simplified Chinese"));
+
     Array<var> lanVar;
     lanVar.add ("English");
     lanVar.add ("Simplified Chinese");
@@ -57,6 +58,7 @@ void SetupPanel::showSystemProperties()
     StringArray clickSa;
     clickSa.add (TRANS ("Edit"));
     clickSa.add (TRANS ("Preview"));
+
     Array<var> clickVar;
     clickVar.add ("Edit");
     clickVar.add ("Preview");
@@ -67,6 +69,7 @@ void SetupPanel::showSystemProperties()
     for (auto p : systemProperties)   p->setPreferredHeight (28);
 
     panel->addSection (TRANS ("System Setup"), systemProperties);
+    systemSetupShowing = true;
     valuesAddListener (language, fontSize);
 }
 
@@ -76,6 +79,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     valuesRemoveListener ();
     projectTree = pTree;
     panel->clear ();
+    systemSetupShowing = false;
     jassert (projectTree.isValid () && projectTree.getType ().toString () == "wdtpProject");
 
     values[projectName]->setValue (pTree.getProperty ("name"));
@@ -146,6 +150,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     valuesRemoveListener ();
     panel->clear ();
     dirTree = dTree;
+    systemSetupShowing = false;
     jassert (dirTree.isValid () && dirTree.getType ().toString () == "dir");
 
     values[dirDesc]->setValue (dirTree.getProperty ("title"));
@@ -191,6 +196,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     valuesRemoveListener ();
     panel->clear ();
     docTree = dTree;
+    systemSetupShowing = false;
     jassert (docTree.isValid () && docTree.getType ().toString () == "doc");
 
     values[title]->setValue (docTree.getProperty ("title"));
@@ -254,24 +260,20 @@ void SetupPanel::resized()
 }
 
 //=========================================================================
-void SetupPanel::valueChanged (Value & value)
+void SetupPanel::valueChanged (Value& value)
 {
+    // system properties
     if (value.refersToSameSourceAs (*values[language]))
-    {
         systemFile->setValue ("language", value.toString());
-    }
     else if (value.refersToSameSourceAs (*values[clickForEdit]))
-    {
         systemFile->setValue ("clickForEdit", value.toString());
-    }    
     else if (value.refersToSameSourceAs (*values[fontSize]))
-    {
         systemFile->setValue ("fontSize", value.getValue());
-    }    
     else
     {
         projectHasChanged = true;
 
+        // project properties
         if (value.refersToSameSourceAs (*values[projectName]))
             projectTree.setProperty ("name", values[projectName]->getValue(), nullptr);
         else if (value.refersToSameSourceAs (*values[projectDesc]))
@@ -295,6 +297,7 @@ void SetupPanel::valueChanged (Value & value)
         else if (value.refersToSameSourceAs (*values[ftpPassword]))
             projectTree.setProperty ("ftpPassword", values[ftpPassword]->getValue (), nullptr);
 
+        // dir properties
         else if (value.refersToSameSourceAs (*values[dirDesc]))
             dirTree.setProperty ("title", values[dirDesc]->getValue (), nullptr);
         else if (value.refersToSameSourceAs (*values[isMenu]))
@@ -304,6 +307,7 @@ void SetupPanel::valueChanged (Value & value)
         else if (value.refersToSameSourceAs (*values[dirWebName]))
             dirTree.setProperty ("webName", values[dirWebName]->getValue (), nullptr);
 
+        // doc properties
         else if (value.refersToSameSourceAs (*values[title]))
             docTree.setProperty ("title", values[title]->getValue (), nullptr);
         else if (value.refersToSameSourceAs (*values[author]))

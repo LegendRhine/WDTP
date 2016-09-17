@@ -83,7 +83,8 @@ void EditAndPreview::projectClosed ()
 //=================================================================================================
 void EditAndPreview::setSystemProperties()
 {
-    setupPanel->showSystemProperties();
+    if (!setupPanel->systemPropertiesIsShowing())
+        setupPanel->showSystemProperties();
 }
 
 //=================================================================================================

@@ -131,7 +131,7 @@ const bool FileTreeContainer::saveDocAndProject()
     {
         projectTree.setProperty ("identityOfLastSelectedItem", lastItem, nullptr);
 
-        return editAndPreview->saveCurrentDoc() &&
+        return editAndPreview->saveCurrentDocIfChanged() &&
             SwingUtilities::writeValueTreeToFile (projectTree, projectFile);
     }
 

@@ -44,7 +44,7 @@ public:
     void setDirProperties (ValueTree& dirTree);
     void setDocProperties (ValueTree& docTree);
 
-    const bool saveCurrentDoc();
+    const bool saveCurrentDocIfChanged();
     void whenFileOrDirNonexists();
 
 private:
@@ -55,6 +55,7 @@ private:
     ScopedPointer<EditorForMd> editor;
     File docFile = File::nonexistent;
     bool docHasChanged = false;
+    String currentContent;
 
     ScopedPointer<WebBrowserComponent> webView;
     ScopedPointer<SetupPanel> setupPanel;

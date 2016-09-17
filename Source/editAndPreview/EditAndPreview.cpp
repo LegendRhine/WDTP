@@ -35,12 +35,13 @@ EditAndPreview::EditAndPreview()
     editor->setScrollBarThickness (10);
     editor->setIndents (6, 6);
     editor->setFont (SwingUtilities::getFontSize());
+    editor->setEnabled (false);
 }
 
 //=========================================================================
 EditAndPreview::~EditAndPreview()
 {
-    saveCurrentDoc();
+    stopTimer();
 }
 
 //=========================================================================
@@ -57,24 +58,30 @@ void EditAndPreview::resized()
 //=================================================================================================
 void EditAndPreview::editNewDoc (const File& file)
 {
-    saveCurrentDoc();
+    saveCurrentDocIfChanged();
+    webView->setVisible (false);
 
     editor->removeListener (this);
+    editor->clear();
     editor->setEnabled (true);
-    webView->setVisible (false);
     
     docFile = file;
-    editor->setText (docFile.loadFileAsString(), false);
-    editor->addListener (this);
+    currentContent = docFile.loadFileAsString();
+
+    editor->setText (currentContent, false);
+    editor->grabKeyboardFocus();
+    editor->moveCaretToEnd (false);
 
     resized();
+    editor->addListener (this);
 }
 
 //=================================================================================================
 void EditAndPreview::previewDoc (const File& file)
 {
-    saveCurrentDoc();
+    saveCurrentDocIfChanged();
 
+    editor->setEnabled (false);
     webView->setVisible (true);
     docFile = file;
 
@@ -86,16 +93,18 @@ void EditAndPreview::previewDoc (const File& file)
 //=================================================================================================
 void EditAndPreview::projectClosed ()
 {
-    saveCurrentDoc();
+    saveCurrentDocIfChanged();
 
     editor->removeListener (this);
     editor->setText (String(), false);
     editor->setEnabled (false);
 
+    docFile = File::nonexistent;
+    docHasChanged = false;
+    currentContent = String();
+
     setupPanel->projectClosed ();
     webView->setVisible (false);
-
-    // TODO: ...
 }
 
 //=================================================================================================
@@ -108,12 +117,32 @@ void EditAndPreview::setSystemProperties()
 //=================================================================================================
 void EditAndPreview::setProjectProperties (ValueTree& projectTree)
 {
+    saveCurrentDocIfChanged();
+
+    editor->removeListener (this);
+    editor->setText (String (), false);
+    editor->setEnabled (false);
+
+    docFile = File::nonexistent;
+    docHasChanged = false;
+    currentContent = String ();
+
     setupPanel->showProjectProperties (projectTree);
 }
 
 //=================================================================================================
 void EditAndPreview::setDirProperties (ValueTree& dirTree)
 {
+    saveCurrentDocIfChanged ();
+
+    editor->removeListener (this);
+    editor->setText (String (), false);
+    editor->setEnabled (false);
+
+    docFile = File::nonexistent;
+    docHasChanged = false;
+    currentContent = String ();
+
     setupPanel->showDirProperties (dirTree);
 }
 
@@ -124,14 +153,47 @@ void EditAndPreview::setDocProperties (ValueTree& docTree)
 }
 
 //=================================================================================================
-const bool EditAndPreview::saveCurrentDoc()
+void EditAndPreview::whenFileOrDirNonexists ()
 {
-    stopTimer();
+    editor->removeListener (this);
+    setupPanel->showSystemProperties ();
+    editor->setText (String(), false);
+    editor->setEnabled (false);
+    docHasChanged = false;
+}
+
+//=================================================================================================
+void EditAndPreview::textEditorTextChanged (TextEditor&)
+{
+    // somehow, this method always be called when load a doc, so use this ugly judge...
+    if (currentContent.compareNatural(editor->getText()) != 0)
+    {
+        docHasChanged = true;
+        startTimer (5000);
+    }    
+}
+
+//=================================================================================================
+void EditAndPreview::timerCallback ()
+{
+    saveCurrentDocIfChanged();
+}
+
+//=================================================================================================
+const bool EditAndPreview::saveCurrentDocIfChanged ()
+{
+    /*static int i = 0;
+    DBGX (++i);*/
+
+    stopTimer ();
 
     if (docHasChanged && docFile != File::nonexistent)
     {
+        const String& s (editor->getText());
+        currentContent = s;
+
         TemporaryFile tempFile (docFile);
-        tempFile.getFile().appendText(editor->getText());
+        tempFile.getFile ().appendText (s);
 
         if (tempFile.overwriteTargetFileWithTemporary ())
         {
@@ -145,29 +207,6 @@ const bool EditAndPreview::saveCurrentDoc()
     }
 
     return true;
-}
-
-//=================================================================================================
-void EditAndPreview::whenFileOrDirNonexists ()
-{
-    setupPanel->showSystemProperties();
-    editor->removeListener (this);
-    editor->setText (String(), false);
-    editor->setEnabled (false);
-    docHasChanged = false;
-}
-
-//=================================================================================================
-void EditAndPreview::textEditorTextChanged (TextEditor&)
-{
-    docHasChanged = true;
-    startTimer (5000);
-}
-
-//=================================================================================================
-void EditAndPreview::timerCallback ()
-{
-    saveCurrentDoc();
 }
 
 //=================================================================================================

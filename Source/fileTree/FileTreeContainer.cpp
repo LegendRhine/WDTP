@@ -106,7 +106,7 @@ void FileTreeContainer::openProject (const File& project)
 //=================================================================================================
 void FileTreeContainer::closeProject ()
 {
-    if (hasLoadedProject () && saveDocAndProject ())
+    if (hasLoadedProject() && saveDocAndProject())
     {
         fileTree.setRootItem (nullptr);
         docTreeItem = nullptr;
@@ -116,9 +116,9 @@ void FileTreeContainer::closeProject ()
         editAndPreview->projectClosed();
 
         // change the text of main window's title-bar
-        MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent ());
+        MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent());
         jassert (mainWindow != nullptr);
-        mainWindow->setName (JUCEApplication::getInstance ()->getApplicationName ());
+        mainWindow->setName (JUCEApplication::getInstance ()->getApplicationName());
     }
 }
 
@@ -130,7 +130,6 @@ const bool FileTreeContainer::saveDocAndProject()
     if (projectTree.isValid()) 
     {
         projectTree.setProperty ("identityOfLastSelectedItem", lastItem, nullptr);
-
         return SwingUtilities::writeValueTreeToFile (projectTree, projectFile);
     }
 

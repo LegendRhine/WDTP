@@ -70,7 +70,7 @@ public:
     void resized() override;
 
     void openProject (const File& projectFile);
-    void closeProject ();
+    void closeProject();
     const bool hasLoadedProject () const        { return projectTree.isValid(); }
     const bool saveDocAndProject ();
 

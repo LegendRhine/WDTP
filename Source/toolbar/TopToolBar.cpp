@@ -202,11 +202,12 @@ void TopToolBar::popupSystemMenu()
     m.addItem (4, TRANS ("Project Save As..."), fileTree->hasLoadedProject ());
     m.addSeparator ();
 
-    m.addItem (5, TRANS ("System Clean Up..."), fileTree->hasLoadedProject ());
+    m.addItem (5, TRANS ("Project Clean-up..."), fileTree->hasLoadedProject ());
+    m.addItem (6, TRANS ("Project Backup..."), fileTree->hasLoadedProject ());
     m.addSeparator ();
 
-    m.addItem (17, TRANS ("System Setup..."), true);
-    m.addItem (18, TRANS ("How To..."), true);
+    m.addItem (17, TRANS ("System Setup"), true);
+    m.addItem (18, TRANS ("How To"), true);
     m.addSeparator ();
 
     m.addItem (19, TRANS ("Check New Version..."), true);
@@ -233,8 +234,14 @@ void TopToolBar::menuPerform (const int index)
     // close current project
     else if (index == 3)    fileTree->closeProject ();
 
+    // project save as
+    else if (index == 4)    projectSaveAs();
+
     // clean useless data
-    else if (index == 5)   NEED_TO_DO ("clean useless data...");
+    else if (index == 5)    NEED_TO_DO ("clean useless data...");
+
+    // project backup
+    else if (index == 6)    NEED_TO_DO ("Project backup...");
 
     // system setup
     else if (index == 17)   editAndPreview->setSystemProperties();
@@ -337,5 +344,53 @@ void TopToolBar::openProject ()
 
     if (fc.browseForFileToOpen ())
         fileTree->openProject (fc.getResult ());
+}
+
+//=================================================================================================
+void TopToolBar::projectSaveAs ()
+{    
+    AlertWindow dialog (TRANS ("Project Save As"), TRANS ("Please input the new name."),
+                        AlertWindow::InfoIcon);
+
+    dialog.addTextEditor ("name", fileTree->projectFile.getNonexistentSibling(true).getFileNameWithoutExtension());
+    dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
+    dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
+
+    if (0 == dialog.runModalLoop ())
+    {
+        const String inputStr (dialog.getTextEditor ("name")->getText ());
+        String newName (SwingUtilities::getValidFileName (inputStr));
+
+        if (newName == fileTree->projectFile.getFileNameWithoutExtension())
+            return;
+
+        if (newName.isEmpty ())
+            newName = TRANS ("Untitled");
+
+        File newFile (fileTree->projectFile.getSiblingFile (newName));
+
+        if (!newFile.hasFileExtension ("wdtp"))
+            newFile = newFile.withFileExtension ("wdtp");
+        
+        // overwrite or not if it has been there
+        if (newFile.existsAsFile () &&
+            !AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Message"),
+                                           TRANS ("This project already exists, want to overwrite it?")))
+        {
+            return;
+        }
+
+        if (!newFile.deleteFile ())
+        {
+            SHOW_MESSAGE (TRANS ("Can't overwrite this project. "));
+            return;
+        }
+
+        if (fileTree->projectFile.copyFileTo (newFile))
+            fileTree->openProject (newFile);
+        else
+            SHOW_MESSAGE (TRANS ("Can't save the copy of this project. "));
+    }
+    
 }
 

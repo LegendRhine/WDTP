@@ -289,11 +289,10 @@ void DocTreeViewItem::renameSelectedItem ()
     if (0 == dialog.runModalLoop ())
     {
         const String inputStr (dialog.getTextEditor ("name")->getText ());
-
-        if (inputStr == tree.getProperty ("name").toString ())
-            return;
-
         String newName (SwingUtilities::getValidFileName (inputStr));
+
+        if (newName == tree.getProperty ("name").toString ())
+            return;
 
         if (newName.isEmpty ())
             newName = TRANS ("Untitled");
@@ -301,18 +300,24 @@ void DocTreeViewItem::renameSelectedItem ()
         File newFile (getFileOrDir (tree).getSiblingFile (newName + (fileOrDir.isDirectory () ? String ()
                                                                      : ".md")));
         newFile = newFile.getNonexistentSibling (true);
-        fileOrDir.moveFileTo (newFile);
 
-        // save the project file
-        tree.setProperty ("name", newFile.getFileNameWithoutExtension (), nullptr);
+        if (fileOrDir.moveFileTo (newFile))
+        {
+            // save the project file
+            tree.setProperty ("name", newFile.getFileNameWithoutExtension (), nullptr);
 
-        ValueTree rootTree = tree;
+            ValueTree rootTree = tree;
 
-        while (rootTree.getParent ().isValid ())
-            rootTree = rootTree.getParent ();
+            while (rootTree.getParent ().isValid ())
+                rootTree = rootTree.getParent ();
 
-        if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
-            SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
+            if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
+                SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
+        }
+        else
+        {
+            SHOW_MESSAGE (TRANS ("Can't rename this item. "));
+        }
     }
 }
 
@@ -329,7 +334,7 @@ void DocTreeViewItem::exportAsMdFile ()
     File mdFile (fc.getResult ());
     mdFile = mdFile.getSiblingFile (SwingUtilities::getValidFileName (mdFile.getFileNameWithoutExtension ()));
 
-    if (!mdFile.hasFileExtension (".md"))
+    if (!mdFile.hasFileExtension ("md"))
         mdFile = mdFile.withFileExtension ("md");
 
     // overwrite or not if it has been there
@@ -391,18 +396,25 @@ void DocTreeViewItem::importDocuments ()
         // copy md-file to current dir
         const String& docName (docFiles[i].getFileNameWithoutExtension ());
         const File& targetFile (thisDir.getChildFile (docName + ".md").getNonexistentSibling (true));
-        docFiles[i].copyFileTo (targetFile);
+        
+        if (docFiles[i].copyFileTo (targetFile))
+        {
+            ValueTree docTree ("doc");
+            docTree.setProperty ("name", targetFile.getFileNameWithoutExtension (), nullptr);
+            docTree.setProperty ("title", targetFile.getFileNameWithoutExtension (), nullptr);
+            docTree.setProperty ("author", rootTree.getProperty ("owner").toString (), nullptr);
+            docTree.setProperty ("publish", true, nullptr);
+            docTree.setProperty ("webName", targetFile.getFileNameWithoutExtension (), nullptr);
+            docTree.setProperty ("tplFile", rootTree.getProperty ("render").toString () + "/article.html", nullptr);
+            docTree.setProperty ("js", String (), nullptr);
 
-        ValueTree docTree ("doc");
-        docTree.setProperty ("name", targetFile.getFileNameWithoutExtension (), nullptr);
-        docTree.setProperty ("title", targetFile.getFileNameWithoutExtension (), nullptr);
-        docTree.setProperty ("author", rootTree.getProperty ("owner").toString (), nullptr);
-        docTree.setProperty ("publish", true, nullptr);
-        docTree.setProperty ("webName", targetFile.getFileNameWithoutExtension (), nullptr);
-        docTree.setProperty ("tplFile", rootTree.getProperty ("render").toString () + "/article.html", nullptr);
-        docTree.setProperty ("js", String (), nullptr);
-
-        tree.addChild (docTree, 0, nullptr);
+            tree.addChild (docTree, 0, nullptr);
+        }
+        else
+        {
+            SHOW_MESSAGE (TRANS ("Can't import this document: ") + newLine +
+                          docFiles[i].getFullPathName());
+        }
     }
 
     if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
@@ -432,7 +444,7 @@ void DocTreeViewItem::createNewDocument ()
         // create this doc on disk
         const File& thisDoc (getFileOrDir (tree).getChildFile (docName + ".md")
                              .getNonexistentSibling (true));
-        thisDoc.create ();
+        thisDoc.create();
         thisDoc.appendText (String ("Recording and Sharing...")
                             + newLine + newLine +
                             SwingUtilities::getTimeStringWithSeparator

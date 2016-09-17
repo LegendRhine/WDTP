@@ -36,7 +36,8 @@ private:
     void menuPerform (const int menuIndex);
     
     void createNewProject ();
-    void openProject ();
+    void openProject();
+    void projectSaveAs();
 
     //==========================================================================
     enum { add, del, view, edit, img, table, generate, upload, mdHelp, system, totalBts };

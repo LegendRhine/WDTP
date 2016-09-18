@@ -33,9 +33,10 @@ EditAndPreview::EditAndPreview()
     editor->setColour (TextEditor::focusedOutlineColourId, Colour(0xffb4b4b4));
     editor->setColour (TextEditor::backgroundColourId, Colour(0xffededed));
     editor->setScrollBarThickness (10);
-    editor->setIndents (6, 6);
+    editor->setIndents (10, 10);
     editor->setFont (SwingUtilities::getFontSize());
     editor->setEnabled (false);
+    editor->setBorder (BorderSize<int>(1, 1, 1, 1));
 }
 
 //=========================================================================

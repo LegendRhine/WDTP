@@ -135,7 +135,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     projectProperties.add (new TextPropertyComponent (*values[ftpAddress], TRANS ("FTP URL: "), 60, false));
     projectProperties.add (new TextPropertyComponent (*values[ftpPort], TRANS ("FTP Port: "), 6, false));
     projectProperties.add (new TextPropertyComponent (*values[ftpUserName], TRANS ("FTP Account: "), 60, false));
-    projectProperties.add (new TextPropertyComponent (*values[ftpPassword], TRANS ("FTP Password: "), 60, false));
+    projectProperties.add (new PasswordPropertyComponent (*values[ftpPassword], TRANS ("FTP Password: ")));
 
     for (auto p : projectProperties)  p->setPreferredHeight (28);
     projectProperties[1]->setPreferredHeight (28 * 3);
@@ -271,8 +271,6 @@ void SetupPanel::valueChanged (Value& value)
         systemFile->setValue ("fontSize", value.getValue());
     else
     {
-        projectHasChanged = true;
-
         // project properties
         if (value.refersToSameSourceAs (*values[projectName]))
             projectTree.setProperty ("name", values[projectName]->getValue(), nullptr);
@@ -320,9 +318,11 @@ void SetupPanel::valueChanged (Value& value)
             docTree.setProperty ("tplFile", values[tplFile]->getValue (), nullptr);
         else if (value.refersToSameSourceAs (*values[js]))
             docTree.setProperty ("js", values[js]->getValue (), nullptr);
+
+        projectHasChanged = true;
     }
 
-    startTimer (2000);
+    startTimer (3000);
 }
 
 //=================================================================================================
@@ -334,8 +334,9 @@ void SetupPanel::timerCallback ()
 //=================================================================================================
 void SetupPanel::savePropertiesIfNeeded ()
 {
-//     static int i = 0;
-//     DBG (++i);
+     /*static int i = 0;
+     DBG (++i);*/
+    DBGX (values[ftpPassword]->getValue ().toString ());
 
     if (systemFile != nullptr)
         systemFile->saveIfNeeded ();

@@ -47,6 +47,10 @@
         <FILE id="sdSAnu" name="MD2Html.h" compile="0" resource="0" file="Source/render/MD2Html.h"/>
       </GROUP>
       <GROUP id="{83694581-DB15-8946-3B2A-EBBCEDD57AAD}" name="SwingLibrary">
+        <FILE id="CIuCnt" name="PasswordPropertyComponent.cpp" compile="1"
+              resource="0" file="Source/SwingLibrary/PasswordPropertyComponent.cpp"/>
+        <FILE id="kxeNSX" name="PasswordPropertyComponent.h" compile="0" resource="0"
+              file="Source/SwingLibrary/PasswordPropertyComponent.h"/>
         <FILE id="xPreeF" name="SwingLookAndFeel.cpp" compile="1" resource="0"
               file="Source/SwingLibrary/SwingLookAndFeel.cpp"/>
         <FILE id="qeBKcI" name="SwingLookAndFeel.h" compile="0" resource="0"

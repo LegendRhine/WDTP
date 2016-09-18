@@ -14,6 +14,7 @@
 #include "JuceHeader.h"
 #include "SwingLibrary/SwingUtilities.h"
 #include "SwingLibrary/SwingLookAndFeel.h"
+#include "SwingLibrary/PasswordPropertyComponent.h"
 #include "MainComponent.h"
 #include "toolbar/TopToolBar.h"
 #include "editAndPreview/EditAndPreview.h"

@@ -94,14 +94,7 @@ void EditAndPreview::previewDoc (const File& file)
 void EditAndPreview::projectClosed ()
 {
     saveCurrentDocIfChanged();
-
-    editor->removeListener (this);
-    editor->setText (String(), false);
-    editor->setEnabled (false);
-
-    docFile = File::nonexistent;
-    docHasChanged = false;
-    currentContent = String();
+    editorInitial ();
 
     setupPanel->projectClosed ();
     webView->setVisible (false);
@@ -118,15 +111,7 @@ void EditAndPreview::setSystemProperties()
 void EditAndPreview::setProjectProperties (ValueTree& projectTree)
 {
     saveCurrentDocIfChanged();
-
-    editor->removeListener (this);
-    editor->setText (String (), false);
-    editor->setEnabled (false);
-
-    docFile = File::nonexistent;
-    docHasChanged = false;
-    currentContent = String ();
-
+    editorInitial();
     setupPanel->showProjectProperties (projectTree);
 }
 
@@ -134,15 +119,7 @@ void EditAndPreview::setProjectProperties (ValueTree& projectTree)
 void EditAndPreview::setDirProperties (ValueTree& dirTree)
 {
     saveCurrentDocIfChanged ();
-
-    editor->removeListener (this);
-    editor->setText (String (), false);
-    editor->setEnabled (false);
-
-    docFile = File::nonexistent;
-    docHasChanged = false;
-    currentContent = String ();
-
+    editorInitial();
     setupPanel->showDirProperties (dirTree);
 }
 
@@ -153,13 +130,22 @@ void EditAndPreview::setDocProperties (ValueTree& docTree)
 }
 
 //=================================================================================================
-void EditAndPreview::whenFileOrDirNonexists ()
+void EditAndPreview::whenFileOrDirNonexists()
+{
+    editorInitial();
+    setupPanel->showSystemProperties();
+}
+
+//=================================================================================================
+void EditAndPreview::editorInitial ()
 {
     editor->removeListener (this);
-    setupPanel->showSystemProperties ();
-    editor->setText (String(), false);
+    editor->setText (String (), false);
     editor->setEnabled (false);
+
+    docFile = File::nonexistent;
     docHasChanged = false;
+    currentContent = String ();
 }
 
 //=================================================================================================

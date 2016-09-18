@@ -435,7 +435,7 @@ void DocTreeViewItem::createNewDocument ()
 
     if (0 == dialog.runModalLoop ())
     {
-        String docName (SwingUtilities::getValidFileName (dialog.getTextEditor ("name")->getText ()));
+        String docName (SwingUtilities::getValidFileName (dialog.getTextEditor ("name")->getText()));
 
         if (docName.isEmpty ())
             docName = TRANS ("Untitled");
@@ -462,7 +462,7 @@ void DocTreeViewItem::createNewDocument ()
         docTree.setProperty ("author", rootTree.getProperty ("owner").toString (), nullptr);
         docTree.setProperty ("publish", true, nullptr);
         docTree.setProperty ("webName", docName, nullptr);
-        docTree.setProperty ("tplFile", tree.getProperty ("render").toString () + "/article.html", nullptr);
+        docTree.setProperty ("tplFile", tree.getProperty ("render").toString() + "/article.html", nullptr);
         docTree.setProperty ("js", String (), nullptr);
 
         // must update this tree before show this new item

@@ -46,9 +46,10 @@ public:
 
     const bool saveCurrentDocIfChanged();
     void whenFileOrDirNonexists();
-
+    
 private:
     //=========================================================================
+    void editorInitial();
     virtual void textEditorTextChanged (TextEditor&) override;
     virtual void timerCallback() override;
 

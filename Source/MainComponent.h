@@ -26,7 +26,9 @@ public:
     void paint (Graphics&) override;
     void resized() override;
 
-    FileTreeContainer* getFileTree () const    { return fileTree; }
+    FileTreeContainer* getFileTree () const      { return fileTree; }
+    TopToolBar* getToolbar() const               { return toolBar; }
+    EditAndPreview* getEditAndPreview() const    { return editAndPreview; }
 
 private:
     //=========================================================================

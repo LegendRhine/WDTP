@@ -27,20 +27,20 @@ FileTreeContainer::FileTreeContainer (EditAndPreview* rightArea) :
     fileTree.setDefaultOpenness (true);
     fileTree.setMultiSelectEnabled (true);
     fileTree.setOpenCloseButtonsVisible (true);
-    fileTree.setIndentSize (15);   
-    fileTree.getViewport()->setScrollBarThickness (10);
+    fileTree.setIndentSize (15);
+    fileTree.getViewport ()->setScrollBarThickness (10);
 
     addAndMakeVisible (fileTree);
 }
 
 //=========================================================================
-FileTreeContainer::~FileTreeContainer()
+FileTreeContainer::~FileTreeContainer ()
 {
     fileTree.setRootItem (nullptr);
 }
 
 //=========================================================================
-void FileTreeContainer::resized()
+void FileTreeContainer::resized ()
 {
     fileTree.setVisible (getWidth () > 50);
     fileTree.setBounds (10, 0, getWidth () - 10, getHeight ());
@@ -50,10 +50,10 @@ void FileTreeContainer::resized()
 void FileTreeContainer::openProject (const File& project)
 {
     // check if the file exists and could write
-    if (!(project.existsAsFile() && project.hasWriteAccess()))
+    if (!(project.existsAsFile () && project.hasWriteAccess ()))
     {
         AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS ("Message"),
-                                     TRANS ("Project file \"") + project.getFullPathName() + 
+                                     TRANS ("Project file \"") + project.getFullPathName () +
                                      "\" " + TRANS ("is nonexistent or cannot be written to."));
         return;
     }
@@ -70,7 +70,7 @@ void FileTreeContainer::openProject (const File& project)
     }
 
     // check if this is an vaild project file
-    if (projectTree.getType().toString() != "wdtpProject")
+    if (projectTree.getType ().toString () != "wdtpProject")
     {
         AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS ("Message"),
                                      TRANS ("An invalid project file."));
@@ -79,12 +79,12 @@ void FileTreeContainer::openProject (const File& project)
 
     // load the project
     projectFile = project;
-    
+
     sorter = new ItemSorter (projectTree);
     docTreeItem = new DocTreeViewItem (projectTree, this, sorter);
     sorter->setTreeViewItem (docTreeItem);
     fileTree.setRootItem (docTreeItem);
-    lastItem = projectTree.getProperty ("identityOfLastSelectedItem").toString();
+    lastItem = projectTree.getProperty ("identityOfLastSelectedItem").toString ();
     selectIdentityItem ();
 
     // change the text of main window's title-bar
@@ -106,32 +106,32 @@ void FileTreeContainer::openProject (const File& project)
 //=================================================================================================
 void FileTreeContainer::closeProject ()
 {
-    if (hasLoadedProject() && saveDocAndProject())
+    if (hasLoadedProject () && saveDocAndProject ())
     {
         fileTree.setRootItem (nullptr);
         docTreeItem = nullptr;
         sorter = nullptr;
         projectTree = ValueTree::invalid;
         projectFile = File::nonexistent;
-        editAndPreview->projectClosed();
+        editAndPreview->projectClosed ();
 
         // change the text of main window's title-bar
-        MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent());
+        MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent ());
         jassert (mainWindow != nullptr);
-        mainWindow->setName (JUCEApplication::getInstance ()->getApplicationName());
+        mainWindow->setName (JUCEApplication::getInstance ()->getApplicationName ());
     }
 }
 
 //=================================================================================================
-const bool FileTreeContainer::saveDocAndProject()
+const bool FileTreeContainer::saveDocAndProject ()
 {
     // Here must check to prevent invalid assert 
     // eg. when quit this application after closed project..
-    if (projectTree.isValid()) 
+    if (projectTree.isValid ())
     {
         projectTree.setProperty ("identityOfLastSelectedItem", lastItem, nullptr);
 
-        return editAndPreview->saveCurrentDocIfChanged() &&
+        return editAndPreview->saveCurrentDocIfChanged () &&
             SwingUtilities::writeValueTreeToFile (projectTree, projectFile);
     }
 
@@ -139,10 +139,10 @@ const bool FileTreeContainer::saveDocAndProject()
 }
 
 //=================================================================================================
-ItemSorter::ItemSorter (ValueTree& tree_) 
+ItemSorter::ItemSorter (ValueTree& tree_)
     : projectTree (tree_)
 {
-    jassert (projectTree.isValid());
+    jassert (projectTree.isValid ());
 
     order.setValue (projectTree.getProperty ("order"));
     showWhat.setValue (projectTree.getProperty ("showWhat"));
@@ -176,33 +176,33 @@ const int ItemSorter::compareElements (TreeViewItem* first, TreeViewItem* second
     if (f == nullptr || s == nullptr)
         return 0;
 
-    const ValueTree& ft (f->getTree());
-    const ValueTree& st (s->getTree());
+    const ValueTree& ft (f->getTree ());
+    const ValueTree& st (s->getTree ());
 
     // root tree
-    if (ft.getType().toString() == "wdtpProject")
+    if (ft.getType ().toString () == "wdtpProject")
         return -1;
 
-    if (st.getType().toString() == "wdtpProject")
+    if (st.getType ().toString () == "wdtpProject")
         return 1;
 
     const File& ff (DocTreeViewItem::getFileOrDir (ft));
     const File& sf (DocTreeViewItem::getFileOrDir (st));
-    const bool isAscending = (ascending.getValue() == var(0));
-    const bool isDirFirst = (dirFirst.getValue() == var(0));
+    const bool isAscending = (ascending.getValue () == var (0));
+    const bool isDirFirst = (dirFirst.getValue () == var (0));
 
     // one is dir or both are dir, or both are doc. here must use ValueTree rather than file
     // bacause the file maybe nonexists..
-    if (ft.getType().toString() == "dir" && st.getType().toString() == "doc")
+    if (ft.getType ().toString () == "dir" && st.getType ().toString () == "doc")
     {
         return isDirFirst ? -1 : 1;
     }
-    else if (ft.getType().toString() == "doc" && st.getType().toString() == "dir")
+    else if (ft.getType ().toString () == "doc" && st.getType ().toString () == "dir")
     {
         return isDirFirst ? 1 : -1;
     }
     else  // doc vs doc and dir vs dir..
-    {        
+    {
         if (0 == order) // file name
         {
             const int r = ft.getProperty ("name").toString ().compareIgnoreCase (st.getProperty ("name").toString ());
@@ -225,7 +225,7 @@ const int ItemSorter::compareElements (TreeViewItem* first, TreeViewItem* second
         }
         else if (4 == order) // create time
         {
-            if (!(ff.exists() && sf.exists()))
+            if (!(ff.exists () && sf.exists ()))
                 return 0;
 
             const bool b = (ff.getCreationTime () > sf.getCreationTime ());
@@ -234,7 +234,7 @@ const int ItemSorter::compareElements (TreeViewItem* first, TreeViewItem* second
         }
         else if (5 == order) // modified time
         {
-            if (!(ff.exists() && sf.exists()))
+            if (!(ff.exists () && sf.exists ()))
                 return 0;
 
             const bool b = (ff.getLastModificationTime () > sf.getLastModificationTime ());
@@ -244,32 +244,32 @@ const int ItemSorter::compareElements (TreeViewItem* first, TreeViewItem* second
     }
 
     jassertfalse;  // should never run here..
-    return 0;  
+    return 0;
 }
 
 //=================================================================================================
 void ItemSorter::valueChanged (Value& value)
 {
     // haven't called setTreeViewItem() yet? See this class' description..
-    jassert (rootItem != nullptr);    
+    jassert (rootItem != nullptr);
 
-    ScopedPointer<XmlElement> treeViewState (rootItem->getOwnerView()->getOpennessState (true));
-    rootItem->refreshDisplay();
+    ScopedPointer<XmlElement> treeViewState (rootItem->getOwnerView ()->getOpennessState (true));
+    rootItem->refreshDisplay ();
 
     if (treeViewState != nullptr)
-        rootItem->getOwnerView()->restoreOpennessState (*treeViewState, true);
+        rootItem->getOwnerView ()->restoreOpennessState (*treeViewState, true);
 
     // update project-tree
     if (value.refersToSameSourceAs (order))
-        projectTree.setProperty ("order", order.getValue(), nullptr);
+        projectTree.setProperty ("order", order.getValue (), nullptr);
     else if (value.refersToSameSourceAs (showWhat))
-        projectTree.setProperty ("showWhat", showWhat.getValue(), nullptr);
+        projectTree.setProperty ("showWhat", showWhat.getValue (), nullptr);
     else if (value.refersToSameSourceAs (ascending))
-        projectTree.setProperty ("ascending", ascending.getValue(), nullptr);
+        projectTree.setProperty ("ascending", ascending.getValue (), nullptr);
     else if (value.refersToSameSourceAs (tooltip))
-        projectTree.setProperty ("tooltip", tooltip.getValue(), nullptr);
+        projectTree.setProperty ("tooltip", tooltip.getValue (), nullptr);
     else if (value.refersToSameSourceAs (dirFirst))
-        projectTree.setProperty ("dirFirst", dirFirst.getValue(), nullptr);
+        projectTree.setProperty ("dirFirst", dirFirst.getValue (), nullptr);
 
     // save the project file
     if (!SwingUtilities::writeValueTreeToFile (projectTree, FileTreeContainer::projectFile))
@@ -282,6 +282,18 @@ void FileTreeContainer::selectIdentityItem ()
     TreeViewItem* item = fileTree.findItemFromIdentifierString (lastItem);
 
     if (item != nullptr)
-        item->setSelected (true, false);
+        item->setSelected (true, true);
 }
+
+//=================================================================================================
+void FileTreeContainer::wheatherAnyDocHasBeenSelected (const bool hasBeenSelected)
+{
+    MainContentComponent* mainComp = findParentComponentOfClass<MainContentComponent>();
+
+    if (mainComp != nullptr)
+    {
+        mainComp->getToolbar ()->setViewButtonEnable (hasBeenSelected);
+    }
+}
+
 

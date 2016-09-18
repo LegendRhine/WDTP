@@ -26,6 +26,10 @@ public:
     void paint (Graphics&) override;
     void resized() override;
 
+    /** When selected a dir or root item (project) in the FileTreeContainer,
+        The view button should be disabled. Otherwise, it should be enabled. */
+    void setViewButtonEnable (const bool enableIt);
+
 private:
     //==========================================================================
     virtual void textEditorReturnKeyPressed (TextEditor&) override;
@@ -40,7 +44,7 @@ private:
     void projectSaveAs();
 
     //==========================================================================
-    enum { add, del, view, edit, img, table, generate, upload, mdHelp, system, totalBts };
+    enum { view, generate, upload, system, totalBts };
 
     /** When mouse enter the button, the cursor will change to a finger */
     class MyImageButton : public ImageButton

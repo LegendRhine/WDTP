@@ -71,12 +71,18 @@ public:
 
     void openProject (const File& projectFile);
     void closeProject();
+
     const bool hasLoadedProject () const        { return projectTree.isValid(); }
     const bool saveDocAndProject ();
 
     EditAndPreview* getEditAndPreview () const                { return editAndPreview; }
     void setIdentityOfLastSelectedItem (const String& str)    { lastItem = str; }
     void selectIdentityItem();
+
+    /** This method only judge wheather a doc has been selected.
+        It will be called by DocTreeViewItem when selected any dir or root (project) currently.
+        Then, this method will notice topToolBar to disable the 'view/preview' button.  */
+    void wheatherAnyDocHasBeenSelected (const bool hasBeenSelected);
 
     static File projectFile;
 

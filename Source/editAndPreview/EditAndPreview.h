@@ -35,7 +35,12 @@ public:
     void resized() override;
 
     void editNewDoc (const File& docFile);
+    void editCurrentDoc()                                 { editNewDoc(docFile); }
+    
     void previewDoc (const File& docFile);
+    void previewCurrentDoc()                              { previewDoc(docFile); }
+
+    const File& getCurrentDocFile() const                 { return docFile;}
 
     void projectClosed();
     void setSystemProperties();
@@ -53,7 +58,7 @@ private:
     virtual void textEditorTextChanged (TextEditor&) override;
     virtual void timerCallback() override;
 
-    ScopedPointer<EditorForMd> editor;
+    ScopedPointer<TextEditor> editor;
     File docFile = File::nonexistent;
     bool docHasChanged = false;
     String currentContent;

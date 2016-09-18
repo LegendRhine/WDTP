@@ -56,85 +56,43 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
         addAndMakeVisible (bt);
     }
 
-    bts[add]->setTooltip (TRANS ("Create a new document inside the current folder"));
-    bts[add]->setImages (false, true, true,
-                         ImageCache::getFromMemory (BinaryData::add_png,
-                                                    BinaryData::add_pngSize),
-                         imageTrans, Colour (0x00),
-                         Image::null, 1.000f, Colour (0x00),
-                         Image::null, 1.000f, Colour (0x00));
-
-    bts[del]->setTooltip (TRANS ("Remove the selected document"));
-    bts[del]->setImages (false, true, true,
-                         ImageCache::getFromMemory (BinaryData::del_png,
-                                                    BinaryData::del_pngSize),
-                         imageTrans, Colour (0x00),
-                         Image::null, 1.000f, Colour (0x00),
-                         Image::null, 1.000f, Colour (0x00));
-
-    bts[edit]->setTooltip (TRANS ("Switch work-area to edit mode"));
-    bts[edit]->setImages (false, true, true,
-                          ImageCache::getFromMemory (BinaryData::edit_png,
-                                                     BinaryData::edit_pngSize),
-                          imageTrans, Colour (0x00),
-                          Image::null, 1.000f, Colour (0x00),
-                          Image::null, 1.000f, Colour (0x00));
-
-    bts[img]->setTooltip (TRANS ("Insert an image to current document"));
-    bts[img]->setImages (false, true, true,
-                         ImageCache::getFromMemory (BinaryData::img_png,
-                                                    BinaryData::icon_pngSize),
-                         imageTrans, Colour (0x00),
-                         Image::null, 1.000f, Colour (0x00),
-                         Image::null, 1.000f, Colour (0x00));
-
-    bts[table]->setTooltip (TRANS ("Insert a table to current document"));
-    bts[table]->setImages (false, true, true,
-                           ImageCache::getFromMemory (BinaryData::table_png,
-                                                      BinaryData::table_pngSize),
-                           imageTrans, Colour (0x00),
-                           Image::null, 1.000f, Colour (0x00),
-                           Image::null, 1.000f, Colour (0x00));
-
-    bts[view]->setTooltip (TRANS ("Switch work-area to preview mode"));
+    bts[view]->setTooltip (TRANS ("Switch preview / edit mode"));
     bts[view]->setImages (false, true, true,
                           ImageCache::getFromMemory (BinaryData::view_png,
                                                      BinaryData::view_pngSize),
                           imageTrans, Colour (0x00),
-                          Image::null, 1.000f, Colour (0x00),
-                          Image::null, 1.000f, Colour (0x00));
-
+                          Image::null, 1.000f, Colours::darkcyan,
+                          Image::null, 1.0f, Colours::darkcyan);
+    
     bts[generate]->setTooltip (TRANS ("Generate all associated web-pages locally"));
     bts[generate]->setImages (false, true, true,
                               ImageCache::getFromMemory (BinaryData::generate_png,
                                                          BinaryData::generate_pngSize),
                               imageTrans, Colour (0x00),
-                              Image::null, 1.000f, Colour (0x00),
-                              Image::null, 1.000f, Colour (0x00));
+                              Image::null, 1.000f, Colours::darkcyan,
+                              Image::null, 1.000f, Colours::darkcyan);
 
     bts[upload]->setTooltip (TRANS ("Upload all modified web-pages to host"));
     bts[upload]->setImages (false, true, true,
                               ImageCache::getFromMemory (BinaryData::upload_png,
                                                          BinaryData::upload_pngSize),
                               imageTrans, Colour (0x00),
-                              Image::null, 1.000f, Colour (0x00),
-                              Image::null, 1.000f, Colour (0x00));
+                              Image::null, 1.000f, Colours::darkcyan,
+                              Image::null, 1.000f, Colours::darkcyan);
 
     bts[system]->setTooltip (TRANS ("Popup system menu"));
     bts[system]->setImages (false, true, true,
                             ImageCache::getFromMemory (BinaryData::system_png,
                                                        BinaryData::system_pngSize),
                             imageTrans, Colour (0x00),
-                            Image::null, 1.000f, Colour (0x00),
-                            Image::null, 1.000f, Colour (0x00));
+                            Image::null, 1.000f, Colours::darkcyan,
+                            Image::null, 1.000f, Colours::darkcyan);
 
-    bts[mdHelp]->setTooltip (TRANS ("Review Markdown concise usage"));
-    bts[mdHelp]->setImages (false, true, true,
-                            ImageCache::getFromMemory (BinaryData::mdhelp_png,
-                                                       BinaryData::mdhelp_pngSize),
-                            imageTrans, Colour (0x00),
-                            Image::null, 1.000f, Colour (0x00),
-                            Image::null, 1.000f, Colour (0x00));
+    // edit or preview mode
+    if (systemFile->getValue ("clickForEdit") == "Edit")
+        bts[view]->setToggleState (false, dontSendNotification);
+    else
+        bts[view]->setToggleState (true, dontSendNotification);
 }
 
 //=======================================================================
@@ -160,10 +118,24 @@ void TopToolBar::resized()
     searchInDoc->setBounds(getWidth() - 250, 10, 230, 25);
 
     // image buttons
-    int x = getWidth() / 2 - 235;
+    int x = getWidth() / 2 - 100;
 
     for (int i = 0; i < totalBts; ++i)
-        bts[i]->setTopLeftPosition (x + i * 50, 12);
+        bts[i]->setTopLeftPosition (x + i * 60, 12);
+}
+
+//=================================================================================================
+void TopToolBar::setViewButtonEnable (const bool enableIt)
+{
+    bts[view]->setVisible (enableIt);
+
+    if (enableIt)
+    {
+        if (systemFile->getValue ("clickForEdit") == "Edit")
+            bts[view]->setToggleState (false, dontSendNotification);
+        else
+            bts[view]->setToggleState (true, dontSendNotification);
+    }
 }
 
 //=========================================================================
@@ -178,8 +150,19 @@ void TopToolBar::textEditorEscapeKeyPressed (TextEditor& te)
 //=========================================================================
 void TopToolBar::buttonClicked (Button* bt)
 {
-    if (bt == bts[system])
+    if (bt == bts[view])
+    {
+        bts[view]->setToggleState (!bts[view]->getToggleState(), dontSendNotification);
+
+        if (bts[view]->getToggleState ())
+            editAndPreview->previewCurrentDoc ();
+        else
+            editAndPreview->editCurrentDoc ();
+    }
+    else if (bt == bts[system])
+    {
         popupSystemMenu();
+    }
 }
 
 //=================================================================================================

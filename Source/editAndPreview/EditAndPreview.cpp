@@ -59,36 +59,54 @@ void EditAndPreview::resized()
 //=================================================================================================
 void EditAndPreview::editNewDoc (const File& file)
 {
-    saveCurrentDocIfChanged();
-    webView->setVisible (false);
+    if (file.existsAsFile())
+    {
+        saveCurrentDocIfChanged ();
+        webView->setVisible (false);
 
-    editor->removeListener (this);
-    editor->clear();
-    editor->setEnabled (true);
-    
-    docFile = file;
-    currentContent = docFile.loadFileAsString();
+        editor->removeListener (this);
+        editor->clear ();
+        editor->setEnabled (true);
 
-    editor->setText (currentContent, false);
-    editor->grabKeyboardFocus();
-    editor->moveCaretToEnd (false);
+        docFile = file;
+        currentContent = docFile.loadFileAsString ();
 
-    resized();
-    editor->addListener (this);
+        editor->setText (currentContent, false);
+        editor->grabKeyboardFocus ();
+        editor->moveCaretToEnd (false);
+
+        resized ();
+        editor->addListener (this);
+    }
+    else
+    {
+        whenFileOrDirNonexists();
+        SHOW_MESSAGE (TRANS ("The file") + ": \"" + file.getFullPathName() 
+                      + "\"\n" + TRANS ("is missed or demaged."));
+    }
 }
 
 //=================================================================================================
 void EditAndPreview::previewDoc (const File& file)
 {
-    saveCurrentDocIfChanged();
+    if (file.existsAsFile ())
+    {
+        saveCurrentDocIfChanged ();
 
-    editor->setEnabled (false);
-    webView->setVisible (true);
-    docFile = file;
+        editor->setEnabled (false);
+        webView->setVisible (true);
+        docFile = file;
 
-    //webView->goToURL (docFile.getFullPathName ());
-    webView->goToURL ("e:/temp/test.html");
-    resized ();
+        //webView->goToURL (docFile.getFullPathName ());
+        webView->goToURL ("e:/temp/test.html");
+        resized ();
+    }
+    else
+    {
+        whenFileOrDirNonexists();
+        SHOW_MESSAGE (TRANS ("The file") + ": \"" + file.getFullPathName ()
+                      + "\"\n" + TRANS ("is missed or demaged."));
+    }
 }
 
 //=================================================================================================
@@ -224,6 +242,7 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addSeparator ();
 
         insertMenu.addItem (11, TRANS ("Separator"));
+        insertMenu.addItem (12, TRANS ("Date and Time"));
         menu.addSubMenu (TRANS ("Insert"), insertMenu, docFile.existsAsFile());
 
         PopupMenu formatMenu;
@@ -242,8 +261,6 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 //=================================================================================================
 void EditorForMd::performPopupMenuAction (int index)
 {
-    TextEditor::performPopupMenuAction (index);
-
     String content;
 
     if (1 == index) // image
@@ -345,6 +362,12 @@ void EditorForMd::performPopupMenuAction (int index)
     {
         content << newLine << "----" << newLine << newLine;
     }
+    else if (12 == index) // date and time
+    {
+        content << newLine << newLine <<
+            SwingUtilities::getTimeStringWithSeparator(SwingUtilities::getCurrentTimeString())
+            .dropLastCharacters(3);
+    }
     else if (30 == index) // bold
     {
         content << " **" << getHighlightedText() << "** ";
@@ -360,6 +383,11 @@ void EditorForMd::performPopupMenuAction (int index)
     else if (33 == index) // code inline
     {
         content << "`" << getHighlightedText() << "`";
+    }
+    else
+    {
+        TextEditor::performPopupMenuAction (index);
+        return;
     }
     
     insertTextAtCaret (content);

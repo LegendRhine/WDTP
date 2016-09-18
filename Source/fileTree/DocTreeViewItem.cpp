@@ -149,24 +149,33 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
             else
                 editArea->previewDoc (getFileOrDir (tree));
 
+            treeContainer->wheatherAnyDocHasBeenSelected (true);
             editArea->setDocProperties (tree);
         }
         else
         {
             editArea->whenFileOrDirNonexists ();
         }
+
     }
     // dir
     else if (tree.getType ().toString () == "dir")
     {
         if (getFileOrDir (tree).isDirectory ())
+        {
             editArea->setDirProperties (tree);
+            treeContainer->wheatherAnyDocHasBeenSelected (false);
+        }
         else
+        {
             editArea->whenFileOrDirNonexists ();
+        }
+
     }
     else // root
     {
         editArea->setProjectProperties (tree);
+        treeContainer->wheatherAnyDocHasBeenSelected (false);
     }
         
     treeContainer->setIdentityOfLastSelectedItem (getItemIdentifierString());

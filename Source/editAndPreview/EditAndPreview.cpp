@@ -22,7 +22,7 @@ EditAndPreview::EditAndPreview()
     layoutManager.setItemLayout (2, 2, -0.5, -0.31);  // propertiesPanel
 
     addAndMakeVisible (editor = new EditorForMd (docFile));
-    addAndMakeVisible (setupPanel = new SetupPanel ());
+    addAndMakeVisible (setupPanel = new SetupPanel (this));
     addAndMakeVisible (layoutBar = new StretchableLayoutResizerBar (&layoutManager, 1, true));
 
     // editor
@@ -71,9 +71,10 @@ void EditAndPreview::editNewDoc (const File& file)
         docFile = file;
         currentContent = docFile.loadFileAsString ();
 
+        editor->applyFontToAllText (FileTreeContainer::fontSize);
         editor->setText (currentContent, false);
-        editor->grabKeyboardFocus ();
-        editor->moveCaretToEnd (false);
+        editor->grabKeyboardFocus();
+        //editor->moveCaretToEnd (false);
 
         resized ();
         editor->addListener (this);
@@ -81,8 +82,6 @@ void EditAndPreview::editNewDoc (const File& file)
     else
     {
         whenFileOrDirNonexists();
-        SHOW_MESSAGE (TRANS ("The file") + ": \"" + file.getFullPathName() 
-                      + "\"\n" + TRANS ("is missed or demaged."));
     }
 }
 
@@ -104,8 +103,6 @@ void EditAndPreview::previewDoc (const File& file)
     else
     {
         whenFileOrDirNonexists();
-        SHOW_MESSAGE (TRANS ("The file") + ": \"" + file.getFullPathName ()
-                      + "\"\n" + TRANS ("is missed or demaged."));
     }
 }
 
@@ -129,16 +126,12 @@ void EditAndPreview::setSystemProperties()
 //=================================================================================================
 void EditAndPreview::setProjectProperties (ValueTree& projectTree)
 {
-    saveCurrentDocIfChanged();
-    editorInitial();
     setupPanel->showProjectProperties (projectTree);
 }
 
 //=================================================================================================
 void EditAndPreview::setDirProperties (ValueTree& dirTree)
 {
-    saveCurrentDocIfChanged ();
-    editorInitial();
     setupPanel->showDirProperties (dirTree);
 }
 

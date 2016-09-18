@@ -11,6 +11,7 @@
 #ifndef SETUPPANEL_H_INCLUDED
 #define SETUPPANEL_H_INCLUDED
 
+class EditAndPreview;
 
 //==============================================================================
 /** On the right of main interface. 
@@ -20,7 +21,7 @@ class SetupPanel : public Component,
     private Timer
 {
 public:
-    SetupPanel();
+    SetupPanel (EditAndPreview* editor);
     ~SetupPanel();
 
     void resized () override;
@@ -38,10 +39,8 @@ public:
     void valuesRemoveListener ();
     
 private:
-    //=========================================================================
-    
+    //=========================================================================    
     virtual void valueChanged (Value & value) override;
-
     virtual void timerCallback () override;
     void savePropertiesIfNeeded ();
 
@@ -50,11 +49,11 @@ private:
     enum  
     { 
         // system properties' values
-        language = 0, clickForEdit, fontSize,  
+        language = 0,  
 
         // project properties' values
         projectName, projectDesc, owner, projectSkin, 
-        projectRenderDir, place, domain, 
+        projectRenderDir, place, domain, fontSize, 
         ftpAddress, ftpPort, ftpUserName, ftpPassword, 
 
         // dir properties' values
@@ -68,6 +67,7 @@ private:
 
     ScopedPointer<PropertyPanel> panel;
     OwnedArray<Value> values;
+    EditAndPreview* editor;
 
     ValueTree projectTree = ValueTree::invalid;
     ValueTree dirTree = ValueTree::invalid;

@@ -13,7 +13,8 @@
 extern PropertiesFile* systemFile;
 
 //==============================================================================
-SetupPanel::SetupPanel()
+SetupPanel::SetupPanel (EditAndPreview* ed) :
+    editor (ed)
 {
     jassert (systemFile != nullptr);
     for (int i = totalValues; --i >= 0; )   values.add (new Value());
@@ -39,8 +40,6 @@ void SetupPanel::showSystemProperties()
 
     // assign system properties
     values[language]->setValue (var (systemFile->getValue ("language")));
-    values[clickForEdit]->setValue (var (systemFile->getValue ("clickForEdit")));
-    values[fontSize]->setValue (var (systemFile->getDoubleValue ("fontSize")));
 
     Array<PropertyComponent*> systemProperties;
 
@@ -53,24 +52,13 @@ void SetupPanel::showSystemProperties()
     lanVar.add ("English");
     lanVar.add ("Simplified Chinese");
     systemProperties.add (new ChoicePropertyComponent (*values[language], TRANS ("Language: "), lanSa, lanVar));
-
-    // click a doc inside the file-tree
-    StringArray clickSa;
-    clickSa.add (TRANS ("Edit"));
-    clickSa.add (TRANS ("Preview"));
-
-    Array<var> clickVar;
-    clickVar.add ("Edit");
-    clickVar.add ("Preview");
-
-    systemProperties.add (new ChoicePropertyComponent (*values[clickForEdit], TRANS ("Doc Click: "), clickSa, clickVar));
-    systemProperties.add (new SliderPropertyComponent (*values[fontSize], TRANS ("Editor Font: "), 12.0, 32.0, 0.1));
         
-    for (auto p : systemProperties)   p->setPreferredHeight (28);
+    for (auto p : systemProperties)   
+        p->setPreferredHeight (28);
 
     panel->addSection (TRANS ("System Setup"), systemProperties);
     systemSetupShowing = true;
-    valuesAddListener (language, fontSize);
+    valuesAddListener (language, language);
 }
 
 //=================================================================================================
@@ -93,6 +81,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     values[ftpPort]->setValue (pTree.getProperty ("ftpPort"));
     values[ftpUserName]->setValue (pTree.getProperty ("ftpUserName"));
     values[ftpPassword]->setValue (pTree.getProperty ("ftpPassword"));
+    values[fontSize]->setValue (pTree.getProperty ("fontSize"));
 
     Array<PropertyComponent*> projectProperties;
 
@@ -132,6 +121,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
                                                         themeDirsSa, themeDirsVar));
     projectProperties.add (new TextPropertyComponent (*values[place], TRANS ("Render To: "), 60, false));
     projectProperties.add (new TextPropertyComponent (*values[domain], TRANS ("Domain: "), 100, false));
+    projectProperties.add (new SliderPropertyComponent (*values[fontSize], TRANS ("Editor Font: "), 12.0, 60.0, 0.1));
     projectProperties.add (new TextPropertyComponent (*values[ftpAddress], TRANS ("FTP URL: "), 60, false));
     projectProperties.add (new TextPropertyComponent (*values[ftpPort], TRANS ("FTP Port: "), 6, false));
     projectProperties.add (new TextPropertyComponent (*values[ftpUserName], TRANS ("FTP Account: "), 60, false));
@@ -265,10 +255,7 @@ void SetupPanel::valueChanged (Value& value)
     // system properties
     if (value.refersToSameSourceAs (*values[language]))
         systemFile->setValue ("language", value.toString());
-    else if (value.refersToSameSourceAs (*values[clickForEdit]))
-        systemFile->setValue ("clickForEdit", value.toString());
-    else if (value.refersToSameSourceAs (*values[fontSize]))
-        systemFile->setValue ("fontSize", value.getValue());
+    
     else
     {
         // project properties
@@ -285,7 +272,7 @@ void SetupPanel::valueChanged (Value& value)
         else if (value.refersToSameSourceAs (*values[place]))
             projectTree.setProperty ("place", values[place]->getValue (), nullptr);
         else if (value.refersToSameSourceAs (*values[domain]))
-            projectTree.setProperty ("domain", values[domain]->getValue (), nullptr);
+            projectTree.setProperty ("domain", values[domain]->getValue (), nullptr);        
         else if (value.refersToSameSourceAs (*values[ftpAddress]))
             projectTree.setProperty ("ftpAddress", values[ftpAddress]->getValue (), nullptr);
         else if (value.refersToSameSourceAs (*values[ftpPort]))
@@ -294,6 +281,15 @@ void SetupPanel::valueChanged (Value& value)
             projectTree.setProperty ("ftpUserName", values[ftpUserName]->getValue (), nullptr);
         else if (value.refersToSameSourceAs (*values[ftpPassword]))
             projectTree.setProperty ("ftpPassword", values[ftpPassword]->getValue (), nullptr);
+
+        else if (value.refersToSameSourceAs (*values[fontSize]))
+        {
+            const float fs = values[fontSize]->getValue();
+
+            editor->getEditor()->applyFontToAllText (fs);
+            FileTreeContainer::fontSize = fs;
+            projectTree.setProperty ("fontSize", fs, nullptr);
+        }
 
         // dir properties
         else if (value.refersToSameSourceAs (*values[dirDesc]))
@@ -336,13 +332,13 @@ void SetupPanel::savePropertiesIfNeeded ()
 {
      /*static int i = 0;
      DBG (++i);*/
-    DBGX (values[ftpPassword]->getValue ().toString ());
+    //DBGX (values[ftpPassword]->getValue ().toString ());
 
     if (systemFile != nullptr)
         systemFile->saveIfNeeded ();
 
     if (projectHasChanged && projectTree.isValid() && 
-        FileTreeContainer::projectFile.existsAsFile () &&
+        FileTreeContainer::projectFile.existsAsFile() &&
         !SwingUtilities::writeValueTreeToFile (projectTree, FileTreeContainer::projectFile))
         SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
 

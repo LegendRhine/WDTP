@@ -13,6 +13,7 @@
 extern PropertiesFile* systemFile;
 
 File FileTreeContainer::projectFile;
+float FileTreeContainer::fontSize = SwingUtilities::getFontSize();
 
 //==============================================================================
 FileTreeContainer::FileTreeContainer (EditAndPreview* rightArea) :
@@ -79,10 +80,12 @@ void FileTreeContainer::openProject (const File& project)
 
     // load the project
     projectFile = project;
+    fontSize = projectTree.getProperty ("fontSize");
 
     sorter = new ItemSorter (projectTree);
     docTreeItem = new DocTreeViewItem (projectTree, this, sorter);
     sorter->setTreeViewItem (docTreeItem);
+
     fileTree.setRootItem (docTreeItem);
     lastItem = projectTree.getProperty ("identityOfLastSelectedItem").toString ();
     selectIdentityItem ();
@@ -284,16 +287,4 @@ void FileTreeContainer::selectIdentityItem ()
     if (item != nullptr)
         item->setSelected (true, true);
 }
-
-//=================================================================================================
-void FileTreeContainer::wheatherAnyDocHasBeenSelected (const bool hasBeenSelected)
-{
-    MainContentComponent* mainComp = findParentComponentOfClass<MainContentComponent>();
-
-    if (mainComp != nullptr)
-    {
-        mainComp->getToolbar ()->setViewButtonEnable (hasBeenSelected);
-    }
-}
-
 

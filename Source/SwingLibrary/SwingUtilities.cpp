@@ -21,6 +21,23 @@ const float SwingUtilities::getFontSize ()
   }
 
 //=================================================================================================
+const String SwingUtilities::getFontName ()
+{
+#if JUCE_WINDOWS
+    return "Microsoft YaHei";
+#elif JUCE_MAC
+    return "Hiragino Sans GB";
+#elif JUCE_LINUX
+    return "Droid Sans Fallback";
+#else
+    return "Heiti SC";  // only for iOS
+
+// Android need to be confirm
+
+#endif
+}
+
+//=================================================================================================
 void SwingUtilities::showAbout (const String& shortDescription, const String& copyrightYear)
 {
     SwingDialog* window = new SwingDialog (shortDescription);

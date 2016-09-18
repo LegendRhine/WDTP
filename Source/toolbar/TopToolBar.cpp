@@ -87,12 +87,6 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                             imageTrans, Colour (0x00),
                             Image::null, 1.000f, Colours::darkcyan,
                             Image::null, 1.000f, Colours::darkcyan);
-
-    // edit or preview mode
-    if (systemFile->getValue ("clickForEdit") == "Edit")
-        bts[view]->setToggleState (false, dontSendNotification);
-    else
-        bts[view]->setToggleState (true, dontSendNotification);
 }
 
 //=======================================================================
@@ -124,20 +118,6 @@ void TopToolBar::resized()
         bts[i]->setTopLeftPosition (x + i * 60, 12);
 }
 
-//=================================================================================================
-void TopToolBar::setViewButtonEnable (const bool enableIt)
-{
-    bts[view]->setVisible (enableIt);
-
-    if (enableIt)
-    {
-        if (systemFile->getValue ("clickForEdit") == "Edit")
-            bts[view]->setToggleState (false, dontSendNotification);
-        else
-            bts[view]->setToggleState (true, dontSendNotification);
-    }
-}
-
 //=========================================================================
 void TopToolBar::textEditorReturnKeyPressed (TextEditor& te)
 {
@@ -155,9 +135,9 @@ void TopToolBar::buttonClicked (Button* bt)
         bts[view]->setToggleState (!bts[view]->getToggleState(), dontSendNotification);
 
         if (bts[view]->getToggleState ())
-            editAndPreview->previewCurrentDoc ();
+            editAndPreview->previewCurrentDoc();
         else
-            editAndPreview->editCurrentDoc ();
+            editAndPreview->editCurrentDoc();
     }
     else if (bt == bts[system])
     {
@@ -283,10 +263,12 @@ void TopToolBar::createNewProject ()
     p.setProperty ("render", "themes/theme-1", nullptr);
     p.setProperty ("place", "site", nullptr);
     p.setProperty ("domain", "http://", nullptr);
-    p.setProperty ("ftpAddress", String(), nullptr);
+    p.setProperty ("fontName", SwingUtilities::getFontName (), nullptr);
+    p.setProperty ("fontSize", SwingUtilities::getFontSize (), nullptr);
+    p.setProperty ("ftpAddress", String (), nullptr);
     p.setProperty ("ftpPort", "21", nullptr);
     p.setProperty ("ftpUserName", String(), nullptr);
-    p.setProperty ("ftpPassword", String(), nullptr);
+    p.setProperty ("ftpPassword", String (), nullptr);
 
     // 5-2 create dirs and default template files
     projectFile.getSiblingFile ("docs").createDirectory ();

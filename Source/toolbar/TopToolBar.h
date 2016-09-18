@@ -26,9 +26,7 @@ public:
     void paint (Graphics&) override;
     void resized() override;
 
-    /** When selected a dir or root item (project) in the FileTreeContainer,
-        The view button should be disabled. Otherwise, it should be enabled. */
-    void setViewButtonEnable (const bool enableIt);
+    const bool getStateOfViewButton() const              { return bts[view]->getToggleState(); }
 
 private:
     //==========================================================================

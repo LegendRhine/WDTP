@@ -15,7 +15,7 @@
 //=================================================================================================
 SwingLookAndFeel::SwingLookAndFeel ()
 {
-    setDefaultSansSerifTypefaceName ("Microsoft YaHei");
+    setDefaultSansSerifTypefaceName (SwingUtilities::getFontName());
 }
 
 //=================================================================================================

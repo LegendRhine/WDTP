@@ -31,15 +31,15 @@ public:
     EditAndPreview();
     ~EditAndPreview();
     
-    void paint(Graphics&) override {}
+    void paint (Graphics&) override {}
     void resized() override;
 
     void editNewDoc (const File& docFile);
-    void editCurrentDoc()                                 { editNewDoc(docFile); }
-    
+    void editCurrentDoc()                                 { editNewDoc(docFile); }    
     void previewDoc (const File& docFile);
     void previewCurrentDoc()                              { previewDoc(docFile); }
 
+    TextEditor* getEditor() const                         { return editor; }
     const File& getCurrentDocFile() const                 { return docFile;}
 
     void projectClosed();
@@ -55,14 +55,16 @@ public:
 private:
     //=========================================================================
     void editorInitial();
+
     virtual void textEditorTextChanged (TextEditor&) override;
     virtual void timerCallback() override;
 
-    ScopedPointer<TextEditor> editor;
+    //=========================================================================
     File docFile = File::nonexistent;
     bool docHasChanged = false;
     String currentContent;
 
+    ScopedPointer<TextEditor> editor;
     ScopedPointer<WebBrowserComponent> webView;
     ScopedPointer<SetupPanel> setupPanel;
 

@@ -43,6 +43,9 @@ struct SwingUtilities
     /** Return the platform-special font size */
     static const float getFontSize ();
 
+    /** Return the platform-special font name */
+    static const String getFontName ();
+
     /** Display "About window" which can be used on Android platform.
         Arg 'shortDescription': the first text line inside the box with 
         brown colour and bigger size. */

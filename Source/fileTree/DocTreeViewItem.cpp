@@ -137,19 +137,20 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
 {
     if (!isNowSelected)        return;
 
-    EditAndPreview* editArea = treeContainer->getEditAndPreview ();
+    EditAndPreview* editArea = treeContainer->getEditAndPreview();
+    MainContentComponent* mainComp = editArea->findParentComponentOfClass<MainContentComponent>();
+    TopToolBar* toolbar = mainComp->getToolbar();
 
     // doc
-    if (tree.getType ().toString () == "doc")
+    if (tree.getType().toString() == "doc")
     {
         if (getFileOrDir (tree).existsAsFile ())
         {
-            if (systemFile->getValue ("clickForEdit") == "Edit")
-                editArea->editNewDoc (getFileOrDir (tree));
-            else
+            if (toolbar != nullptr && toolbar->getStateOfViewButton())
                 editArea->previewDoc (getFileOrDir (tree));
+            else
+                editArea->editNewDoc (getFileOrDir (tree));
 
-            treeContainer->wheatherAnyDocHasBeenSelected (true);
             editArea->setDocProperties (tree);
         }
         else
@@ -164,18 +165,15 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
         if (getFileOrDir (tree).isDirectory ())
         {
             editArea->setDirProperties (tree);
-            treeContainer->wheatherAnyDocHasBeenSelected (false);
         }
         else
         {
             editArea->whenFileOrDirNonexists ();
         }
-
     }
     else // root
     {
         editArea->setProjectProperties (tree);
-        treeContainer->wheatherAnyDocHasBeenSelected (false);
     }
         
     treeContainer->setIdentityOfLastSelectedItem (getItemIdentifierString());

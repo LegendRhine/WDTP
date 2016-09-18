@@ -71,8 +71,6 @@
 - PropertiesFile (systemFile, 系统属性文件)位于本机“用户-文档”目录下，文件名为：wdtp.sys，属性如下：
 	- recentFiles：最近打开的10个项目
 	- language: 界面语言（字符串，语言名称）
-	- clickForEdit：单击文件树中的某个文档后，自动进入编辑模式，还是预览模式	（字符串描述）
-	- fontSize：文本编辑器的字体大小（double值）
 
 ### 项目文档
 - 项目文档（*.wdtp）采用ValueTree数据模型+TreeView视图+派生的TreeViewItem实现文档的组织管理、显示与交互等功能。
@@ -109,12 +107,15 @@
 	- render: 渲染模板（磁盘Themes下的某个子目录，即已安装的某套模板）
 	- place: 渲染后的网页存放于该目录下，默认为Site目录，用户可另外指定
 	- domain: 域名，比如：“http://underwaySoft.com”
+	- fontName: 文本编辑器所用的字体
+	- fontSize：文本编辑器的字体大小
 	- ftpAddress: 
 	- ftpPort: 
 	- ftpUserName: 
 	- ftpPassword: 
 	- identityOfLastSelectedItem: 文件树中最后一次选择的文档的标示，可由TreeView的findItemFromIdentifierString()找到对应的item，
 	  此值用于文件树中移动项目、打开项目时自动选择最后一次点选的item
+
 
 - 值树中各个dir（目录）的属性：
     - name：目录名 (不包含任何上级路径。上级路径可通过其父节点的name获取）

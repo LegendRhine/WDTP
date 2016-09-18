@@ -38,10 +38,7 @@ public:
         if (!f.existsAsFile())
         {
             systemFile->setValue ("language", "English");
-            systemFile->setValue ("clickForEdit", "Edit");
-            systemFile->setValue ("fontSize", SwingUtilities::getFontSize());
-
-            systemFile->save ();
+            systemFile->save();
         }
 
         // initial application's GUI

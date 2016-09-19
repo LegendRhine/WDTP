@@ -169,11 +169,15 @@ void TopToolBar::popupSystemMenu()
     m.addItem (6, TRANS ("Project Backup..."), fileTree->hasLoadedProject());
     m.addSeparator ();
 
-    m.addItem (17, TRANS ("System Setup"), true);
+    PopupMenu lanMenu;
+    lanMenu.addItem (30, TRANS ("English"), true, String("English") == systemFile->getValue("language"));
+    lanMenu.addItem (31, TRANS ("Chinese"), true, String("Chinese") == systemFile->getValue("language"));
+
+    m.addSubMenu (TRANS ("UI Language"), lanMenu);
     m.addItem (18, TRANS ("How To"), true);
+    m.addItem (19, TRANS ("Check New Version..."), true);
     m.addSeparator ();
 
-    m.addItem (19, TRANS ("Check New Version..."), true);
     m.addItem (20, TRANS ("About..."), true);
     
     // display the menu
@@ -206,9 +210,6 @@ void TopToolBar::menuPerform (const int index)
     // project backup
     else if (index == 6)    NEED_TO_DO ("Project backup...");
 
-    // system setup
-    else if (index == 17)   editAndPreview->setSystemProperties();
-
     // how to
     else if (index == 18)   NEED_TO_DO ("How to...");
 
@@ -217,7 +218,17 @@ void TopToolBar::menuPerform (const int index)
 
     // about
     else if (index == 20)   SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2016");
-    
+
+    // language
+    else if (index == 30)
+    {
+        systemFile->setValue ("language", "English");
+    }
+
+    else if (index == 31)
+    {
+        systemFile->setValue ("language", "Chinese");
+    }
 }
 
 //=================================================================================================

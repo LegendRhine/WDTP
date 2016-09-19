@@ -25,34 +25,29 @@ public:
     ~SetupPanel();
 
     void resized () override;
-    void showSystemProperties ();
-    const bool systemPropertiesIsShowing () const          { return systemSetupShowing; }
+    void projectClosed();
 
     void showProjectProperties (ValueTree& projectTree);
     void showDirProperties (ValueTree& dirTree);
-    void showDocProperties (ValueTree& docTree);
-    
-    void projectClosed();
+    void showDocProperties (ValueTree& docTree);   
 
-    /** only add some relative value which current showing */
-    void valuesAddListener (const int startIndex, const int endIndex);
-    void valuesRemoveListener ();
+    void showNothing()  { panel->clear(); }
     
 private:
     //=========================================================================    
+    void valuesAddListener ();
+    void valuesRemoveListener ();
+
     virtual void valueChanged (Value & value) override;
     virtual void timerCallback () override;
+    
     void savePropertiesIfNeeded ();
 
     //=========================================================================
-    // NOTE: must keep the first and the last name of each group! see: valuesAddListener()
     enum  
     { 
-        // system properties' values
-        language = 0,  
-
         // project properties' values
-        projectName, projectDesc, owner, projectSkin, 
+        projectName = 0, projectDesc, owner, projectSkin, 
         projectRenderDir, place, domain, fontSize, 
         ftpAddress, ftpPort, ftpUserName, ftpPassword, 
 
@@ -74,7 +69,6 @@ private:
     ValueTree docTree = ValueTree::invalid;
 
     bool projectHasChanged = false;
-    bool systemSetupShowing = true;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SetupPanel)
         

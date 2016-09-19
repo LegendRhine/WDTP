@@ -21,7 +21,6 @@ SetupPanel::SetupPanel (EditAndPreview* ed) :
      
     addAndMakeVisible (panel = new PropertyPanel());
     panel->getViewport().setScrollBarThickness (10);   
-    showSystemProperties();
 }
 
 //=========================================================================
@@ -33,41 +32,11 @@ SetupPanel::~SetupPanel()
 }
 
 //=================================================================================================
-void SetupPanel::showSystemProperties()
-{
-    valuesRemoveListener ();
-    panel->clear ();
-
-    // assign system properties
-    values[language]->setValue (var (systemFile->getValue ("language")));
-
-    Array<PropertyComponent*> systemProperties;
-
-    // language
-    StringArray lanSa;
-    lanSa.add (TRANS ("English"));
-    lanSa.add (TRANS ("Simplified Chinese"));
-
-    Array<var> lanVar;
-    lanVar.add ("English");
-    lanVar.add ("Simplified Chinese");
-    systemProperties.add (new ChoicePropertyComponent (*values[language], TRANS ("Language: "), lanSa, lanVar));
-        
-    for (auto p : systemProperties)   
-        p->setPreferredHeight (28);
-
-    panel->addSection (TRANS ("System Setup"), systemProperties);
-    systemSetupShowing = true;
-    valuesAddListener (language, language);
-}
-
-//=================================================================================================
 void SetupPanel::showProjectProperties (ValueTree& pTree)
 {
     valuesRemoveListener ();
     projectTree = pTree;
     panel->clear ();
-    systemSetupShowing = false;
     jassert (projectTree.isValid () && projectTree.getType ().toString () == "wdtpProject");
 
     values[projectName]->setValue (pTree.getProperty ("name"));
@@ -131,7 +100,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     projectProperties[1]->setPreferredHeight (28 * 3);
     
     panel->addSection (TRANS ("Project Setup"), projectProperties);
-    valuesAddListener (projectName, ftpPassword);
+    valuesAddListener ();
 }
 
 //=================================================================================================
@@ -140,7 +109,6 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     valuesRemoveListener ();
     panel->clear ();
     dirTree = dTree;
-    systemSetupShowing = false;
     jassert (dirTree.isValid () && dirTree.getType ().toString () == "dir");
 
     values[dirDesc]->setValue (dirTree.getProperty ("title"));
@@ -177,7 +145,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     dirProperties[0]->setPreferredHeight (28 * 3);
     
     panel->addSection (TRANS ("Folder Setup"), dirProperties);
-    valuesAddListener (dirDesc, dirWebName);
+    valuesAddListener ();
 }
 
 //=================================================================================================
@@ -186,7 +154,6 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     valuesRemoveListener ();
     panel->clear ();
     docTree = dTree;
-    systemSetupShowing = false;
     jassert (docTree.isValid () && docTree.getType ().toString () == "doc");
 
     values[title]->setValue (docTree.getProperty ("title"));
@@ -208,7 +175,6 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docProperties[5]->setPreferredHeight (28 * 4);
 
     panel->addSection (TRANS ("Document Setup"), docProperties);
-    valuesAddListener (title, js);
 }
 
 //=================================================================================================
@@ -224,14 +190,13 @@ void SetupPanel::projectClosed()
 
     projectHasChanged = false;
     panel->clear();
-    showSystemProperties();
 }
 
 //=================================================================================================
-void SetupPanel::valuesAddListener (const int startIndex, const int endIndex)
+void SetupPanel::valuesAddListener ()
 {
-    for (int i = startIndex; i <= endIndex; ++i)
-        values[i]->addListener (this);
+    for (auto v : values)
+        v->addListener (this);
 }
 
 //=================================================================================================
@@ -251,73 +216,65 @@ void SetupPanel::resized()
 
 //=========================================================================
 void SetupPanel::valueChanged (Value& value)
-{
-    // system properties
-    if (value.refersToSameSourceAs (*values[language]))
-        systemFile->setValue ("language", value.toString());
-    
-    else
+{    
+    // project properties
+    if (value.refersToSameSourceAs (*values[projectName]))
+        projectTree.setProperty ("name", values[projectName]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[projectDesc]))
+        projectTree.setProperty ("title", values[projectDesc]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[owner]))
+        projectTree.setProperty ("owner", values[owner]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[projectSkin]))
+        projectTree.setProperty ("skin", values[projectSkin]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[projectRenderDir]))
+        projectTree.setProperty ("render", values[projectRenderDir]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[place]))
+        projectTree.setProperty ("place", values[place]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[domain]))
+        projectTree.setProperty ("domain", values[domain]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[ftpAddress]))
+        projectTree.setProperty ("ftpAddress", values[ftpAddress]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[ftpPort]))
+        projectTree.setProperty ("ftpPort", values[ftpPort]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[ftpUserName]))
+        projectTree.setProperty ("ftpUserName", values[ftpUserName]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[ftpPassword]))
+        projectTree.setProperty ("ftpPassword", values[ftpPassword]->getValue (), nullptr);
+
+    else if (value.refersToSameSourceAs (*values[fontSize]))
     {
-        // project properties
-        if (value.refersToSameSourceAs (*values[projectName]))
-            projectTree.setProperty ("name", values[projectName]->getValue(), nullptr);
-        else if (value.refersToSameSourceAs (*values[projectDesc]))
-            projectTree.setProperty ("title", values[projectDesc]->getValue (), nullptr);
-        else if (value.refersToSameSourceAs (*values[owner]))
-            projectTree.setProperty ("owner", values[owner]->getValue (), nullptr);
-        else if (value.refersToSameSourceAs (*values[projectSkin]))
-            projectTree.setProperty ("skin", values[projectSkin]->getValue (), nullptr);
-        else if (value.refersToSameSourceAs (*values[projectRenderDir]))
-            projectTree.setProperty ("render", values[projectRenderDir]->getValue (), nullptr);
-        else if (value.refersToSameSourceAs (*values[place]))
-            projectTree.setProperty ("place", values[place]->getValue (), nullptr);
-        else if (value.refersToSameSourceAs (*values[domain]))
-            projectTree.setProperty ("domain", values[domain]->getValue (), nullptr);        
-        else if (value.refersToSameSourceAs (*values[ftpAddress]))
-            projectTree.setProperty ("ftpAddress", values[ftpAddress]->getValue (), nullptr);
-        else if (value.refersToSameSourceAs (*values[ftpPort]))
-            projectTree.setProperty ("ftpPort", values[ftpPort]->getValue (), nullptr);
-        else if (value.refersToSameSourceAs (*values[ftpUserName]))
-            projectTree.setProperty ("ftpUserName", values[ftpUserName]->getValue (), nullptr);
-        else if (value.refersToSameSourceAs (*values[ftpPassword]))
-            projectTree.setProperty ("ftpPassword", values[ftpPassword]->getValue (), nullptr);
+        const float fs = values[fontSize]->getValue ();
 
-        else if (value.refersToSameSourceAs (*values[fontSize]))
-        {
-            const float fs = values[fontSize]->getValue();
-
-            editor->getEditor()->applyFontToAllText (fs);
-            FileTreeContainer::fontSize = fs;
-            projectTree.setProperty ("fontSize", fs, nullptr);
-        }
-
-        // dir properties
-        else if (value.refersToSameSourceAs (*values[dirDesc]))
-            dirTree.setProperty ("title", values[dirDesc]->getValue (), nullptr);
-        else if (value.refersToSameSourceAs (*values[isMenu]))
-            dirTree.setProperty ("isMenu", values[isMenu]->getValue (), nullptr);
-        else if (value.refersToSameSourceAs (*values[dirRenderDir]))
-            dirTree.setProperty ("render", values[dirRenderDir]->getValue (), nullptr);
-        else if (value.refersToSameSourceAs (*values[dirWebName]))
-            dirTree.setProperty ("webName", values[dirWebName]->getValue (), nullptr);
-
-        // doc properties
-        else if (value.refersToSameSourceAs (*values[title]))
-            docTree.setProperty ("title", values[title]->getValue (), nullptr);
-        else if (value.refersToSameSourceAs (*values[author]))
-            docTree.setProperty ("author", values[author]->getValue (), nullptr);
-        else if (value.refersToSameSourceAs (*values[publish]))
-            docTree.setProperty ("publish", values[publish]->getValue (), nullptr);
-        else if (value.refersToSameSourceAs (*values[docWebName]))
-            docTree.setProperty ("webName", values[docWebName]->getValue (), nullptr);
-        else if (value.refersToSameSourceAs (*values[tplFile]))
-            docTree.setProperty ("tplFile", values[tplFile]->getValue (), nullptr);
-        else if (value.refersToSameSourceAs (*values[js]))
-            docTree.setProperty ("js", values[js]->getValue (), nullptr);
-
-        projectHasChanged = true;
+        editor->getEditor ()->applyFontToAllText (fs);
+        FileTreeContainer::fontSize = fs;
+        projectTree.setProperty ("fontSize", fs, nullptr);
     }
 
+    // dir properties
+    else if (value.refersToSameSourceAs (*values[dirDesc]))
+        dirTree.setProperty ("title", values[dirDesc]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[isMenu]))
+        dirTree.setProperty ("isMenu", values[isMenu]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[dirRenderDir]))
+        dirTree.setProperty ("render", values[dirRenderDir]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[dirWebName]))
+        dirTree.setProperty ("webName", values[dirWebName]->getValue (), nullptr);
+
+    // doc properties
+    else if (value.refersToSameSourceAs (*values[title]))
+        docTree.setProperty ("title", values[title]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[author]))
+        docTree.setProperty ("author", values[author]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[publish]))
+        docTree.setProperty ("publish", values[publish]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[docWebName]))
+        docTree.setProperty ("webName", values[docWebName]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[tplFile]))
+        docTree.setProperty ("tplFile", values[tplFile]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[js]))
+        docTree.setProperty ("js", values[js]->getValue (), nullptr);
+
+    projectHasChanged = true;
     startTimer (3000);
 }
 
@@ -330,8 +287,6 @@ void SetupPanel::timerCallback ()
 //=================================================================================================
 void SetupPanel::savePropertiesIfNeeded ()
 {
-     /*static int i = 0;
-     DBG (++i);*/
     //DBGX (values[ftpPassword]->getValue ().toString ());
 
     if (systemFile != nullptr)
@@ -340,10 +295,9 @@ void SetupPanel::savePropertiesIfNeeded ()
     if (projectHasChanged && projectTree.isValid() && 
         FileTreeContainer::projectFile.existsAsFile() &&
         !SwingUtilities::writeValueTreeToFile (projectTree, FileTreeContainer::projectFile))
-        SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
+        SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
 
     projectHasChanged = false;
     stopTimer ();
 }
-
 

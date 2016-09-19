@@ -59,15 +59,15 @@ void EditAndPreview::resized()
 //=================================================================================================
 void EditAndPreview::editNewDoc (const File& file)
 {
+    saveCurrentDocIfChanged();
+    webView->setVisible (false);
+
+    editor->removeListener (this);
+    editor->setText (String (), false);
+    editor->setEnabled (true);
+
     if (file.existsAsFile())
     {
-        saveCurrentDocIfChanged ();
-        webView->setVisible (false);
-
-        editor->removeListener (this);
-        editor->clear ();
-        editor->setEnabled (true);
-
         docFile = file;
         currentContent = docFile.loadFileAsString ();
 
@@ -75,52 +75,38 @@ void EditAndPreview::editNewDoc (const File& file)
         editor->setText (currentContent, false);
         editor->grabKeyboardFocus();
         //editor->moveCaretToEnd (false);
-
-        resized ();
         editor->addListener (this);
-    }
+    }   
     else
     {
-        whenFileOrDirNonexists();
+        editorAndWebInitial();
     }
+
+    resized ();
 }
 
 //=================================================================================================
 void EditAndPreview::previewDoc (const File& file)
 {
-    if (file.existsAsFile ())
-    {
-        saveCurrentDocIfChanged ();
+    saveCurrentDocIfChanged();
+    editor->setEnabled (false);
+    webView->setVisible (true);
+          
+    docFile = file;
 
-        editor->setEnabled (false);
-        webView->setVisible (true);
-        docFile = file;
-
-        //webView->goToURL (docFile.getFullPathName ());
-        webView->goToURL ("e:/temp/test.html");
-        resized ();
-    }
-    else
-    {
-        whenFileOrDirNonexists();
-    }
+    //webView->goToURL (docFile.getFullPathName ());
+    webView->goToURL ("e:/temp/test.html");
+    resized ();
 }
 
 //=================================================================================================
 void EditAndPreview::projectClosed ()
 {
     saveCurrentDocIfChanged();
-    editorInitial ();
+    editorAndWebInitial ();
 
     setupPanel->projectClosed ();
     webView->setVisible (false);
-}
-
-//=================================================================================================
-void EditAndPreview::setSystemProperties()
-{
-    if (!setupPanel->systemPropertiesIsShowing())
-        setupPanel->showSystemProperties();
 }
 
 //=================================================================================================
@@ -142,14 +128,7 @@ void EditAndPreview::setDocProperties (ValueTree& docTree)
 }
 
 //=================================================================================================
-void EditAndPreview::whenFileOrDirNonexists()
-{
-    editorInitial();
-    setupPanel->showSystemProperties();
-}
-
-//=================================================================================================
-void EditAndPreview::editorInitial ()
+void EditAndPreview::editorAndWebInitial ()
 {
     editor->removeListener (this);
     editor->setText (String (), false);
@@ -157,7 +136,7 @@ void EditAndPreview::editorInitial ()
 
     docFile = File::nonexistent;
     docHasChanged = false;
-    currentContent = String ();
+    currentContent = String();
 }
 
 //=================================================================================================

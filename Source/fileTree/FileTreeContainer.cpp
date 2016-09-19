@@ -276,7 +276,7 @@ void ItemSorter::valueChanged (Value& value)
 
     // save the project file
     if (!SwingUtilities::writeValueTreeToFile (projectTree, FileTreeContainer::projectFile))
-        SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
+        SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
 }
 
 //=================================================================================================

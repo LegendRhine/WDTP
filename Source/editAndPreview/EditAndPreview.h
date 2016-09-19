@@ -43,18 +43,15 @@ public:
     const File& getCurrentDocFile() const                 { return docFile;}
 
     void projectClosed();
-    void setSystemProperties();
+    const bool saveCurrentDocIfChanged ();
 
     void setProjectProperties (ValueTree& projectTree);
     void setDirProperties (ValueTree& dirTree);
     void setDocProperties (ValueTree& docTree);
-
-    const bool saveCurrentDocIfChanged();
-    void whenFileOrDirNonexists();
     
 private:
     //=========================================================================
-    void editorInitial();
+    void editorAndWebInitial();
 
     virtual void textEditorTextChanged (TextEditor&) override;
     virtual void timerCallback() override;

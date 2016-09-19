@@ -74,7 +74,7 @@ void MainWindow::closeButtonPressed ()
     else
     {
         if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Message"),
-                                          TRANS ("Something wrong during saving project.") +
+                                          TRANS ("Something wrong during saving this project.") +
                                           newLine + newLine +
                                           TRANS ("Do you really want to quit?")))
         {

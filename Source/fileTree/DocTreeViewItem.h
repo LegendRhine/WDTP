@@ -26,8 +26,8 @@ public:
     instead of the project file!
 
     Note 2: this method always return a valid file object however it exsits or not,
-    if to check the file exists or not, use this sentence: getFileOfThisItem().exists();
-    or: getFileOfThisItem().existsAsFile(); or: getFileOfThisItem().isDirectory()
+    if to check the file exists or not, use this sentence: getFileOrDir().exists();
+    or: getFileOrDir().existsAsFile(); or: getFileOrDir().isDirectory()
     */
     static const File getFileOrDir (const ValueTree& tree);
 

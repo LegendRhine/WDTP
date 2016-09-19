@@ -143,33 +143,18 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
 
     // doc
     if (tree.getType().toString() == "doc")
-    {
-        if (getFileOrDir (tree).existsAsFile ())
-        {
-            if (toolbar != nullptr && toolbar->getStateOfViewButton())
-                editArea->previewDoc (getFileOrDir (tree));
-            else
-                editArea->editNewDoc (getFileOrDir (tree));
-
-            editArea->setDocProperties (tree);
-        }
+    {        
+        if (toolbar != nullptr && toolbar->getStateOfViewButton ())
+            editArea->previewDoc (getFileOrDir (tree));
         else
-        {
-            editArea->whenFileOrDirNonexists ();
-        }
+            editArea->editNewDoc (getFileOrDir (tree));
 
+        editArea->setDocProperties (tree);
     }
     // dir
     else if (tree.getType ().toString () == "dir")
     {
-        if (getFileOrDir (tree).isDirectory ())
-        {
-            editArea->setDirProperties (tree);
-        }
-        else
-        {
-            editArea->whenFileOrDirNonexists ();
-        }
+        editArea->setDirProperties (tree);
     }
     else // root
     {
@@ -319,7 +304,7 @@ void DocTreeViewItem::renameSelectedItem ()
                 rootTree = rootTree.getParent ();
 
             if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
-                SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
+                SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
         }
         else
         {
@@ -424,7 +409,7 @@ void DocTreeViewItem::importDocuments ()
     }
 
     if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
-        SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
+        SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
 }
 
 //=================================================================================================
@@ -485,7 +470,7 @@ void DocTreeViewItem::createNewDocument ()
 
         // save the data to project file
         if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
-            SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
+            SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
     }
 }
 
@@ -540,7 +525,7 @@ void DocTreeViewItem::createNewFolder ()
 
         // save the data to project file
         if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
-            SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
+            SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
     }
 }
 
@@ -570,8 +555,8 @@ void DocTreeViewItem::deleteSelected ()
     // MUST get the root before remove the tree!
     ValueTree rootTree = tree;
 
-    while (rootTree.getParent ().isValid ())
-        rootTree = rootTree.getParent ();
+    while (rootTree.getParent().isValid())
+        rootTree = rootTree.getParent();
 
     // here get the EditAndPreview, it must before the delete, otherwise it'll be wild-pointer!
     EditAndPreview* editor = treeContainer->getEditAndPreview();
@@ -591,14 +576,13 @@ void DocTreeViewItem::deleteSelected ()
     // save the data to project file
     if (!SwingUtilities::writeValueTreeToFile (rootTree, FileTreeContainer::projectFile))
     {
-        SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
+        SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
     }
     else
     {
         jassert (editor != nullptr);
-        editor->whenFileOrDirNonexists();
+        editor->editNewDoc (File::nonexistent);
     }
-
 }
 
 //=================================================================================================
@@ -791,7 +775,7 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items,
         rootTree = rootTree.getParent ();
 
     if (!SwingUtilities::writeValueTreeToFile (rootTree, FileTreeContainer::projectFile))
-        SHOW_MESSAGE (TRANS ("Something wrong during saving project."));
+        SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
 }
 
 //=================================================================================================

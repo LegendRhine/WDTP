@@ -42,7 +42,9 @@ private:
     void projectSaveAs();
 
     //==========================================================================
-    enum { view, generate, upload, system, totalBts };
+    enum { prevAll, nextAll, prevPjt, nextPjt, 
+           view, generate, upload, system, 
+           totalBts };
 
     /** When mouse enter the button, the cursor will change to a finger */
     class MyImageButton : public ImageButton
@@ -57,11 +59,15 @@ private:
         JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(MyImageButton)
     };
 
+    //=========================================================================
+    const bool findInProject (const bool next);
+    const bool findInDoc (const bool next);
+
     OwnedArray<MyImageButton> bts;
     ScopedPointer<TextEditor> searchInProject;
     ScopedPointer<TextEditor> searchInDoc;
 
-    FileTreeContainer* fileTree;
+    FileTreeContainer* fileTreeContainer;
     EditAndPreview* editAndPreview;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TopToolBar)

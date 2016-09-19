@@ -75,6 +75,7 @@ public:
 
     const bool hasLoadedProject () const                      { return projectTree.isValid(); }
     const ValueTree& getProjectValueTree() const              { return projectTree; }
+    TreeView& getTreeView()                                   { return fileTree; }
 
     EditAndPreview* getEditAndPreview () const                { return editAndPreview; }
     void setIdentityOfLastSelectedItem (const String& str)    { lastItem = str; }

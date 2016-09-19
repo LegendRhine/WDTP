@@ -6,6 +6,8 @@
   <MAINGROUP id="dEY4lK" name="WDTP">
     <GROUP id="{24163B05-55E9-9D57-4AF2-ACA9BBF8DA1F}" name="Source">
       <GROUP id="{5C5311BB-5266-DB1B-DE96-35AA97A1E8E3}" name="BinaryData">
+        <FILE id="GiC33W" name="next.png" compile="0" resource="1" file="Source/BinaryData/next.png"/>
+        <FILE id="Vu53va" name="prev.png" compile="0" resource="1" file="Source/BinaryData/prev.png"/>
         <FILE id="a51DTh" name="upload.png" compile="0" resource="1" file="Source/BinaryData/upload.png"/>
         <FILE id="O1smAJ" name="dir-o.png" compile="0" resource="1" file="Source/BinaryData/dir-o.png"/>
         <FILE id="RuGrUI" name="dir.png" compile="0" resource="1" file="Source/BinaryData/dir.png"/>

@@ -16,33 +16,33 @@ const float imageTrans = 1.f;
 
 //==============================================================================
 TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
-    fileTree (f),
+    fileTreeContainer (f),
     editAndPreview (e)
 {
-    jassert (fileTree != nullptr);
+    jassert (fileTreeContainer != nullptr);
     jassert (editAndPreview != nullptr);
 
     // 2 search textEditors..
     addAndMakeVisible (searchInProject = new TextEditor ());
     searchInProject->addListener (this);
 
-    searchInProject->setColour(TextEditor::textColourId, Colour (0xff303030));
-    searchInProject->setColour (TextEditor::focusedOutlineColourId, Colours::lightskyblue); 
-    searchInProject->setColour(TextEditor::backgroundColourId, Colour(0xffededed));
+    searchInProject->setColour (TextEditor::textColourId, Colour (0xff303030));
+    searchInProject->setColour (TextEditor::focusedOutlineColourId, Colours::lightskyblue);
+    searchInProject->setColour (TextEditor::backgroundColourId, Colour (0xffededed));
     searchInProject->setScrollBarThickness (10);
     searchInProject->setFont (SwingUtilities::getFontSize () - 2.f);
-    searchInProject->setTextToShowWhenEmpty (TRANS ("Seach in this project..."), Colour(0xffa0a0a0));
+    searchInProject->setTextToShowWhenEmpty (TRANS ("Seach in this project..."), Colour (0xffa0a0a0));
     //searchEditor->setTabKeyUsedAsCharacter(true);
 
-    addAndMakeVisible(searchInDoc = new TextEditor());
-    searchInDoc->addListener(this);
+    addAndMakeVisible (searchInDoc = new TextEditor ());
+    searchInDoc->addListener (this);
 
-    searchInDoc->setColour(TextEditor::textColourId, Colour(0xff303030));
-    searchInDoc->setColour(TextEditor::focusedOutlineColourId, Colours::lightskyblue);
-    searchInDoc->setColour(TextEditor::backgroundColourId, Colour(0xffededed));
-    searchInDoc->setScrollBarThickness(10);
-    searchInDoc->setFont(SwingUtilities::getFontSize() - 2.f);
-    searchInDoc->setTextToShowWhenEmpty(TRANS("Seach in current document..."), Colour(0xffa0a0a0));
+    searchInDoc->setColour (TextEditor::textColourId, Colour (0xff303030));
+    searchInDoc->setColour (TextEditor::focusedOutlineColourId, Colours::lightskyblue);
+    searchInDoc->setColour (TextEditor::backgroundColourId, Colour (0xffededed));
+    searchInDoc->setScrollBarThickness (10);
+    searchInDoc->setFont (SwingUtilities::getFontSize () - 2.f);
+    searchInDoc->setTextToShowWhenEmpty (TRANS ("Seach in current document..."), Colour (0xffa0a0a0));
     //searchEditor->setTabKeyUsedAsCharacter(true);
 
     // image buttons...
@@ -51,10 +51,42 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
         MyImageButton* bt = new MyImageButton ();
         bt->setSize (20, 20);
         bt->addListener (this);
-     
+
         bts.add (bt);
         addAndMakeVisible (bt);
     }
+
+    bts[prevAll]->setTooltip (TRANS ("Find Previous"));
+    bts[prevAll]->setImages (false, true, true,
+                             ImageCache::getFromMemory (BinaryData::prev_png,
+                                                        BinaryData::prev_pngSize),
+                             imageTrans, Colour (0x00),
+                             Image::null, 1.0f, Colours::darkcyan,
+                             Image::null, 1.0f, Colours::darkcyan);
+
+    bts[nextAll]->setTooltip (TRANS ("Find Next"));
+    bts[nextAll]->setImages (false, true, true,
+                             ImageCache::getFromMemory (BinaryData::next_png,
+                                                        BinaryData::next_pngSize),
+                             imageTrans, Colour (0x00),
+                             Image::null, 1.0f, Colours::darkcyan,
+                             Image::null, 1.0f, Colours::darkcyan);
+
+    bts[prevPjt]->setTooltip (TRANS ("Find Previous"));
+    bts[prevPjt]->setImages (false, true, true,
+                             ImageCache::getFromMemory (BinaryData::prev_png,
+                                                        BinaryData::prev_pngSize),
+                             imageTrans, Colour (0x00),
+                             Image::null, 1.0f, Colours::darkcyan,
+                             Image::null, 1.0f, Colours::darkcyan);
+
+    bts[nextPjt]->setTooltip (TRANS ("Find Next"));
+    bts[nextPjt]->setImages (false, true, true,
+                             ImageCache::getFromMemory (BinaryData::next_png,
+                                                        BinaryData::next_pngSize),
+                             imageTrans, Colour (0x00),
+                             Image::null, 1.0f, Colours::darkcyan,
+                             Image::null, 1.0f, Colours::darkcyan);
 
     bts[view]->setTooltip (TRANS ("Switch preview / edit mode"));
     bts[view]->setImages (false, true, true,
@@ -63,7 +95,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                           imageTrans, Colour (0x00),
                           Image::null, 1.000f, Colours::darkcyan,
                           Image::null, 1.0f, Colours::darkcyan);
-    
+
     bts[generate]->setTooltip (TRANS ("Generate all associated web-pages locally"));
     bts[generate]->setImages (false, true, true,
                               ImageCache::getFromMemory (BinaryData::generate_png,
@@ -74,11 +106,11 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
 
     bts[upload]->setTooltip (TRANS ("Upload all modified web-pages to host"));
     bts[upload]->setImages (false, true, true,
-                              ImageCache::getFromMemory (BinaryData::upload_png,
-                                                         BinaryData::upload_pngSize),
-                              imageTrans, Colour (0x00),
-                              Image::null, 1.000f, Colours::darkcyan,
-                              Image::null, 1.000f, Colours::darkcyan);
+                            ImageCache::getFromMemory (BinaryData::upload_png,
+                                                       BinaryData::upload_pngSize),
+                            imageTrans, Colour (0x00),
+                            Image::null, 1.000f, Colours::darkcyan,
+                            Image::null, 1.000f, Colours::darkcyan);
 
     bts[system]->setTooltip (TRANS ("Popup system menu"));
     bts[system]->setImages (false, true, true,
@@ -90,31 +122,36 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
 }
 
 //=======================================================================
-TopToolBar::~TopToolBar()
+TopToolBar::~TopToolBar ()
 {
 }
 
 //=======================================================================
 void TopToolBar::paint (Graphics& g)
 {
-    g.setColour (Colour(0x00).withAlpha(0.2f));
-    g.drawLine (1.0f, getHeight() - 0.5f, getWidth() - 2.0f, getHeight() - 0.5f, 0.6f);
+    g.setColour (Colour (0x00).withAlpha (0.2f));
+    g.drawLine (1.0f, getHeight () - 0.5f, getWidth () - 2.0f, getHeight () - 0.5f, 0.6f);
 
     // indicate the middle of this component, so that convenient for place imageButtons
-    g.drawVerticalLine(getWidth() / 2, 5, 40.f);
+    g.drawVerticalLine (getWidth () / 2, 5, 40.f);
 }
 
 //=======================================================================
-void TopToolBar::resized()
+void TopToolBar::resized ()
 {
-    // 2 search textEditors
-    searchInProject->setBounds(20, 10, 230, 25);
-    searchInDoc->setBounds(getWidth() - 250, 10, 230, 25);
+    // search textEditors and find buttons
+    bts[prevAll]->setBounds (12, 16, 12, 12);
+    searchInProject->setBounds (bts[prevAll]->getRight () + 10, 10, 220, 25);
+    bts[nextAll]->setBounds (searchInProject->getRight () + 10, 16, 12, 12);
+
+    bts[nextPjt]->setBounds (getWidth () - 25, 16, 12, 12);
+    searchInDoc->setBounds (bts[nextPjt]->getX () - 240, 10, 230, 25);
+    bts[prevPjt]->setBounds (searchInDoc->getX () - 22, 16, 12, 12);
 
     // image buttons
-    int x = getWidth() / 2 - 100;
+    int x = getWidth () / 2 - 345;
 
-    for (int i = 0; i < totalBts; ++i)
+    for (int i = view; i < totalBts; ++i)
         bts[i]->setTopLeftPosition (x + i * 60, 12);
 }
 
@@ -132,21 +169,29 @@ void TopToolBar::buttonClicked (Button* bt)
 {
     if (bt == bts[view])
     {
-        bts[view]->setToggleState (!bts[view]->getToggleState(), dontSendNotification);
+        bts[view]->setToggleState (!bts[view]->getToggleState (), dontSendNotification);
 
         if (bts[view]->getToggleState ())
-            editAndPreview->previewCurrentDoc();
+            editAndPreview->previewCurrentDoc ();
         else
-            editAndPreview->editCurrentDoc();
+            editAndPreview->editCurrentDoc ();
     }
     else if (bt == bts[system])
     {
-        popupSystemMenu();
+        popupSystemMenu ();
     }
+    else if (bt == bts[prevAll])
+        findInProject (false);
+    else if (bt == bts[nextAll])
+        findInProject (true);
+    else if (bt == bts[prevPjt])
+        findInDoc (false);
+    else if (bt == bts[prevPjt])
+        findInDoc (true);
 }
 
 //=================================================================================================
-void TopToolBar::popupSystemMenu()
+void TopToolBar::popupSystemMenu ()
 {
     PopupMenu m;
     m.addItem (1, TRANS ("New Project..."), true);
@@ -161,17 +206,17 @@ void TopToolBar::popupSystemMenu()
     m.addSubMenu (TRANS ("Open Rcent"), recentFilesMenu);
     m.addSeparator ();
 
-    m.addItem (3, TRANS ("Close Project"), fileTree->hasLoadedProject());
-    m.addItem (4, TRANS ("Project Save As..."), fileTree->hasLoadedProject());
+    m.addItem (3, TRANS ("Close Project"), fileTreeContainer->hasLoadedProject ());
+    m.addItem (4, TRANS ("Project Save As..."), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
-    m.addItem (5, TRANS ("Project Clean-up..."), fileTree->hasLoadedProject());
-    m.addItem (6, TRANS ("Project Backup..."), fileTree->hasLoadedProject());
+    m.addItem (5, TRANS ("Project Clean-up..."), fileTreeContainer->hasLoadedProject ());
+    m.addItem (6, TRANS ("Project Backup..."), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
     PopupMenu lanMenu;
-    lanMenu.addItem (30, TRANS ("English"), true, String("English") == systemFile->getValue("language"));
-    lanMenu.addItem (31, TRANS ("Chinese"), true, String("Chinese") == systemFile->getValue("language"));
+    lanMenu.addItem (30, TRANS ("English"), true, String ("English") == systemFile->getValue ("language"));
+    lanMenu.addItem (31, TRANS ("Chinese"), true, String ("Chinese") == systemFile->getValue ("language"));
 
     m.addSubMenu (TRANS ("UI Language"), lanMenu);
     m.addItem (18, TRANS ("How To"), true);
@@ -179,12 +224,12 @@ void TopToolBar::popupSystemMenu()
     m.addSeparator ();
 
     m.addItem (20, TRANS ("About..."), true);
-    
+
     // display the menu
-    const int index = m.show();
+    const int index = m.show ();
 
     if (index >= 100 && index < 200)   // recently opened files..
-        fileTree->openProject (recentFiles.getFile (index - 100));
+        fileTreeContainer->openProject (recentFiles.getFile (index - 100));
     else
         menuPerform (index);
 }
@@ -199,10 +244,10 @@ void TopToolBar::menuPerform (const int index)
     else if (index == 2)    openProject ();
 
     // close current project
-    else if (index == 3)    fileTree->closeProject ();
+    else if (index == 3)    fileTreeContainer->closeProject ();
 
     // project save as
-    else if (index == 4)    projectSaveAs();
+    else if (index == 4)    projectSaveAs ();
 
     // clean useless data
     else if (index == 5)    NEED_TO_DO ("clean useless data...");
@@ -246,8 +291,8 @@ void TopToolBar::createNewProject ()
         projectFile = projectFile.withFileExtension ("wdtp");
 
     // overwrite or not if it has been there
-    if (projectFile.existsAsFile () && !AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, 
-        TRANS ("Message"), TRANS ("This project already exists, want to overwrite it?")))
+    if (projectFile.existsAsFile () && !AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon,
+                                                                      TRANS ("Message"), TRANS ("This project already exists, want to overwrite it?")))
     {
         return;
     }
@@ -262,9 +307,9 @@ void TopToolBar::createNewProject ()
     projectFile.create ();
 
     ValueTree p ("wdtpProject");
-    p.setProperty ("name", projectFile.getFileNameWithoutExtension(), nullptr);
+    p.setProperty ("name", projectFile.getFileNameWithoutExtension (), nullptr);
     p.setProperty ("title", TRANS ("Description of this project..."), nullptr);
-    p.setProperty ("owner", String(), nullptr);
+    p.setProperty ("owner", String (), nullptr);
     p.setProperty ("skin", "Elegence", nullptr);
     p.setProperty ("order", 0, nullptr);
     p.setProperty ("ascending", 0, nullptr);
@@ -278,7 +323,7 @@ void TopToolBar::createNewProject ()
     p.setProperty ("fontSize", SwingUtilities::getFontSize (), nullptr);
     p.setProperty ("ftpAddress", String (), nullptr);
     p.setProperty ("ftpPort", "21", nullptr);
-    p.setProperty ("ftpUserName", String(), nullptr);
+    p.setProperty ("ftpUserName", String (), nullptr);
     p.setProperty ("ftpPassword", String (), nullptr);
 
     // 5-2 create dirs and default template files
@@ -308,7 +353,7 @@ void TopToolBar::createNewProject ()
 
     // 5-5: save the project file
     if (SwingUtilities::writeValueTreeToFile (p, projectFile))
-        fileTree->openProject (projectFile); // load the new project file
+        fileTreeContainer->openProject (projectFile); // load the new project file
     else
         SHOW_MESSAGE (TRANS ("Something wrong during create this project file."));
 }
@@ -319,16 +364,16 @@ void TopToolBar::openProject ()
     FileChooser fc (TRANS ("Open Project..."), File::nonexistent, "*.wdtp", false);
 
     if (fc.browseForFileToOpen ())
-        fileTree->openProject (fc.getResult ());
+        fileTreeContainer->openProject (fc.getResult ());
 }
 
 //=================================================================================================
 void TopToolBar::projectSaveAs ()
-{    
+{
     AlertWindow dialog (TRANS ("Project Save As"), TRANS ("Please input the new name."),
                         AlertWindow::InfoIcon);
 
-    dialog.addTextEditor ("name", fileTree->projectFile.getNonexistentSibling(true).getFileNameWithoutExtension());
+    dialog.addTextEditor ("name", fileTreeContainer->projectFile.getNonexistentSibling (true).getFileNameWithoutExtension ());
     dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
     dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
 
@@ -337,17 +382,17 @@ void TopToolBar::projectSaveAs ()
         const String inputStr (dialog.getTextEditor ("name")->getText ());
         String newName (SwingUtilities::getValidFileName (inputStr));
 
-        if (newName == fileTree->projectFile.getFileNameWithoutExtension())
+        if (newName == fileTreeContainer->projectFile.getFileNameWithoutExtension ())
             return;
 
         if (newName.isEmpty ())
             newName = TRANS ("Untitled");
 
-        File newFile (fileTree->projectFile.getSiblingFile (newName));
+        File newFile (fileTreeContainer->projectFile.getSiblingFile (newName));
 
         if (!newFile.hasFileExtension ("wdtp"))
             newFile = newFile.withFileExtension ("wdtp");
-        
+
         // overwrite or not if it has been there
         if (newFile.existsAsFile () &&
             !AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Message"),
@@ -362,11 +407,67 @@ void TopToolBar::projectSaveAs ()
             return;
         }
 
-        if (fileTree->projectFile.copyFileTo (newFile))
-            fileTree->openProject (newFile);
+        if (fileTreeContainer->projectFile.copyFileTo (newFile))
+            fileTreeContainer->openProject (newFile);
         else
             SHOW_MESSAGE (TRANS ("Can't save the copy of this project. "));
     }
-    
+
+}
+
+//=================================================================================================
+const bool TopToolBar::findInProject (const bool next)
+{
+    const String& keyword (searchInProject->getText().trim());
+
+    if (keyword.isEmpty())
+        return;
+
+    TreeView& treeView (fileTreeContainer->getTreeView());
+    treeView.setDefaultOpenness (true);
+
+    // get start row number
+    int startIndex = 0;
+
+    for (int i = startIndex; i < treeView.getNumRowsInTree (); ++i)
+    {
+        if (treeView.getItemOnRow (i)->isSelected())
+        {
+            startIndex = i;
+            break;
+        }
+    }
+
+    // find and select
+    for (int i = startIndex + 1; i < treeView.getNumRowsInTree(); ++i)
+    {
+        DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (treeView.getItemOnRow (i));
+
+        if (item == nullptr)
+            continue;
+
+        const File& docFile (DocTreeViewItem::getFileOrDir (item->getTree ()));
+        const String& docContent (docFile.loadFileAsString ());
+
+        if (docContent.containsIgnoreCase (keyword))
+        {
+            item->setSelected (true, true);
+            searchInDoc->setText (keyword);
+            findInDoc (next);
+            return;
+        }
+    }
+
+    SHOW_MESSAGE (TRANS ("Nothing could be found."));
+}
+
+//=================================================================================================
+const bool TopToolBar::findInDoc (const bool next)
+{
+    const String& keyword (searchInDoc->getText().trim());
+
+    if (keyword.isEmpty())
+        return;
+
 }
 

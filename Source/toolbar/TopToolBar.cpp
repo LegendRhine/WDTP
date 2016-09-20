@@ -178,7 +178,7 @@ void TopToolBar::textEditorEscapeKeyPressed (TextEditor& te)
 //=================================================================================================
 void TopToolBar::findInProject (const bool next)
 {
-    const String& keyword (searchInProject->getText ().trim ());
+    const String& keyword (searchInProject->getText());
 
     if (keyword.isEmpty ())
         return;
@@ -186,7 +186,7 @@ void TopToolBar::findInProject (const bool next)
     TreeView& treeView (fileTreeContainer->getTreeView ());
     treeView.setDefaultOpenness (true);
 
-    // get start row number
+    // get start (selected) row-number
     int startIndex = 0;
 
     for (int i = startIndex; i < treeView.getNumRowsInTree (); ++i)
@@ -199,15 +199,17 @@ void TopToolBar::findInProject (const bool next)
     }
 
     // find and select
-    for (int i = startIndex + 1; i < treeView.getNumRowsInTree (); ++i)
+    for (int i = startIndex; 
+         next ? (i < treeView.getNumRowsInTree ()) : (i >= 0); 
+         next ? ++i : --i)
     {
         DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (treeView.getItemOnRow (i));
 
         if (item == nullptr)
             continue;
 
-        const File& docFile (DocTreeViewItem::getFileOrDir (item->getTree ()));
-        const String& docContent (docFile.loadFileAsString ());
+        const File& docFile (DocTreeViewItem::getFileOrDir (item->getTree()));
+        const String& docContent (docFile.loadFileAsString());
 
         if (docContent.containsIgnoreCase (keyword))
         {
@@ -226,7 +228,7 @@ void TopToolBar::findInProject (const bool next)
 //=================================================================================================
 void TopToolBar::findInDoc (const bool next)
 {
-    const String& keyword (searchInDoc->getText ().trim ());
+    const String& keyword (searchInDoc->getText());
 
     if (keyword.isEmpty ())
         return;
@@ -238,23 +240,19 @@ void TopToolBar::findInDoc (const bool next)
     int caretIndex = editor->getCaretPosition ();
 
     // place the caret (loop-search mode)
-    if (next && caretIndex >= content.length ())
+    if (next && caretIndex >= editor->getTotalNumChars())
         editor->moveCaretToTop (false);
     else if (!next && caretIndex == 0)
         editor->moveCaretToEnd (false);
 
-    caretIndex = editor->getCaretPosition ();
+    caretIndex = editor->getCaretPosition();
+    //DBGX (String (caretIndex) << " / " << String (editor->getTotalNumChars ()) << " / " << content.length ());
 
     // find the start index of the keyword
     if (next)
-    {
         startIndex = content.indexOfIgnoreCase (caretIndex, keyword);
-    }
     else
-    {
-        const String& theFirstHalfContent = content.substring (0, caretIndex);
-        startIndex = theFirstHalfContent.lastIndexOfIgnoreCase (keyword);
-    }
+        startIndex = content.substring (0, caretIndex).lastIndexOfIgnoreCase (keyword);
 
     // select the keyword
     if (startIndex != -1)
@@ -289,7 +287,7 @@ void TopToolBar::buttonClicked (Button* bt)
         findInProject (true);
     else if (bt == bts[prevPjt])
         findInDoc (false);
-    else if (bt == bts[prevPjt])
+    else if (bt == bts[nextPjt])
         findInDoc (true);
 }
 

@@ -158,10 +158,113 @@ void TopToolBar::resized ()
 //=========================================================================
 void TopToolBar::textEditorReturnKeyPressed (TextEditor& te)
 {
+    if (&te == searchInProject)
+        findInProject (true);
+
+    else if (&te == searchInDoc)
+        findInDoc (true);
 }
 
+//=========================================================================
 void TopToolBar::textEditorEscapeKeyPressed (TextEditor& te)
 {
+    if (&te == searchInProject)
+        searchInProject->setText(String(), false);
+
+    else if (&te == searchInDoc)
+        searchInDoc->setText (String(), false);
+}
+
+//=================================================================================================
+void TopToolBar::findInProject (const bool next)
+{
+    const String& keyword (searchInProject->getText ().trim ());
+
+    if (keyword.isEmpty ())
+        return;
+
+    TreeView& treeView (fileTreeContainer->getTreeView ());
+    treeView.setDefaultOpenness (true);
+
+    // get start row number
+    int startIndex = 0;
+
+    for (int i = startIndex; i < treeView.getNumRowsInTree (); ++i)
+    {
+        if (treeView.getItemOnRow (i)->isSelected ())
+        {
+            startIndex = i;
+            break;
+        }
+    }
+
+    // find and select
+    for (int i = startIndex + 1; i < treeView.getNumRowsInTree (); ++i)
+    {
+        DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (treeView.getItemOnRow (i));
+
+        if (item == nullptr)
+            continue;
+
+        const File& docFile (DocTreeViewItem::getFileOrDir (item->getTree ()));
+        const String& docContent (docFile.loadFileAsString ());
+
+        if (docContent.containsIgnoreCase (keyword))
+        {
+            item->setSelected (true, true);
+            treeView.scrollToKeepItemVisible (item);
+            searchInDoc->setText (keyword);
+
+            findInDoc (next);
+            return;
+        }
+    }
+
+    SHOW_MESSAGE (TRANS ("Nothing could be found."));
+}
+
+//=================================================================================================
+void TopToolBar::findInDoc (const bool next)
+{
+    const String& keyword (searchInDoc->getText ().trim ());
+
+    if (keyword.isEmpty ())
+        return;
+
+    TextEditor* editor = editAndPreview->getEditor ();
+    const String& content = editor->getText ().trim ();
+
+    int startIndex = 0;
+    int caretIndex = editor->getCaretPosition ();
+
+    // place the caret (loop-search mode)
+    if (next && caretIndex >= content.length ())
+        editor->moveCaretToTop (false);
+    else if (!next && caretIndex == 0)
+        editor->moveCaretToEnd (false);
+
+    caretIndex = editor->getCaretPosition ();
+
+    // find the start index of the keyword
+    if (next)
+    {
+        startIndex = content.indexOfIgnoreCase (caretIndex, keyword);
+    }
+    else
+    {
+        const String& theFirstHalfContent = content.substring (0, caretIndex);
+        startIndex = theFirstHalfContent.lastIndexOfIgnoreCase (keyword);
+    }
+
+    // select the keyword
+    if (startIndex != -1)
+    {
+        editor->setHighlightedRegion (Range<int> (startIndex, startIndex + keyword.length()));
+    }
+    else  // loop-mode of search
+    {
+        SHOW_MESSAGE (TRANS ("Nothing could be found."));
+    }
 }
 
 //=========================================================================
@@ -412,62 +515,6 @@ void TopToolBar::projectSaveAs ()
         else
             SHOW_MESSAGE (TRANS ("Can't save the copy of this project. "));
     }
-
-}
-
-//=================================================================================================
-const bool TopToolBar::findInProject (const bool next)
-{
-    const String& keyword (searchInProject->getText().trim());
-
-    if (keyword.isEmpty())
-        return;
-
-    TreeView& treeView (fileTreeContainer->getTreeView());
-    treeView.setDefaultOpenness (true);
-
-    // get start row number
-    int startIndex = 0;
-
-    for (int i = startIndex; i < treeView.getNumRowsInTree (); ++i)
-    {
-        if (treeView.getItemOnRow (i)->isSelected())
-        {
-            startIndex = i;
-            break;
-        }
-    }
-
-    // find and select
-    for (int i = startIndex + 1; i < treeView.getNumRowsInTree(); ++i)
-    {
-        DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (treeView.getItemOnRow (i));
-
-        if (item == nullptr)
-            continue;
-
-        const File& docFile (DocTreeViewItem::getFileOrDir (item->getTree ()));
-        const String& docContent (docFile.loadFileAsString ());
-
-        if (docContent.containsIgnoreCase (keyword))
-        {
-            item->setSelected (true, true);
-            searchInDoc->setText (keyword);
-            findInDoc (next);
-            return;
-        }
-    }
-
-    SHOW_MESSAGE (TRANS ("Nothing could be found."));
-}
-
-//=================================================================================================
-const bool TopToolBar::findInDoc (const bool next)
-{
-    const String& keyword (searchInDoc->getText().trim());
-
-    if (keyword.isEmpty())
-        return;
 
 }
 

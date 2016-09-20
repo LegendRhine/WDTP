@@ -32,8 +32,10 @@ private:
     //==========================================================================
     virtual void textEditorReturnKeyPressed (TextEditor&) override;
     virtual void textEditorEscapeKeyPressed (TextEditor&) override;
-    virtual void buttonClicked (Button*) override;
+    void findInProject (const bool next);
+    void findInDoc (const bool next);
 
+    virtual void buttonClicked (Button*) override;
     void popupSystemMenu();
     void menuPerform (const int menuIndex);
     
@@ -60,9 +62,6 @@ private:
     };
 
     //=========================================================================
-    const bool findInProject (const bool next);
-    const bool findInDoc (const bool next);
-
     OwnedArray<MyImageButton> bts;
     ScopedPointer<TextEditor> searchInProject;
     ScopedPointer<TextEditor> searchInDoc;

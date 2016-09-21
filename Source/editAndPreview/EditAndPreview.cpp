@@ -74,7 +74,6 @@ void EditAndPreview::editNewDoc (const File& file)
         editor->applyFontToAllText (FileTreeContainer::fontSize);
         editor->setText (currentContent, false);
         editor->grabKeyboardFocus();
-        //editor->moveCaretToEnd (false);
         editor->addListener (this);
     }   
     else

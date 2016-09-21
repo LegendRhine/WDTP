@@ -199,7 +199,7 @@ void TopToolBar::findInProject (const bool next)
     }
 
     // find and select
-    for (int i = startIndex; 
+    for (int i = next ? startIndex + 1 : startIndex - 1; 
          next ? (i < treeView.getNumRowsInTree ()) : (i >= 0); 
          next ? ++i : --i)
     {
@@ -214,10 +214,10 @@ void TopToolBar::findInProject (const bool next)
         if (docContent.containsIgnoreCase (keyword))
         {
             item->setSelected (true, true);
-            treeView.scrollToKeepItemVisible (item);
-            searchInDoc->setText (keyword);
+            searchInDoc->setText (keyword, false);
+            findInDoc (true);
 
-            findInDoc (next);
+            treeView.scrollToKeepItemVisible (item);
             return;
         }
     }
@@ -233,36 +233,24 @@ void TopToolBar::findInDoc (const bool next)
     if (keyword.isEmpty ())
         return;
 
-    TextEditor* editor = editAndPreview->getEditor ();
-    const String& content = editor->getText ().trim ();
+    TextEditor* editor = editAndPreview->getEditor();
+    const String& content = editor->getText();
 
     int startIndex = 0;
     int caretIndex = editor->getCaretPosition ();
-
-    // place the caret (loop-search mode)
-    if (next && caretIndex >= editor->getTotalNumChars())
-        editor->moveCaretToTop (false);
-    else if (!next && caretIndex == 0)
-        editor->moveCaretToEnd (false);
-
-    caretIndex = editor->getCaretPosition();
     //DBGX (String (caretIndex) << " / " << String (editor->getTotalNumChars ()) << " / " << content.length ());
 
     // find the start index of the keyword
     if (next)
         startIndex = content.indexOfIgnoreCase (caretIndex, keyword);
     else
-        startIndex = content.substring (0, caretIndex).lastIndexOfIgnoreCase (keyword);
+        startIndex = content.substring (0, caretIndex - 1).lastIndexOfIgnoreCase (keyword);
 
     // select the keyword
     if (startIndex != -1)
-    {
         editor->setHighlightedRegion (Range<int> (startIndex, startIndex + keyword.length()));
-    }
-    else  // loop-mode of search
-    {
+    else 
         SHOW_MESSAGE (TRANS ("Nothing could be found."));
-    }
 }
 
 //=========================================================================

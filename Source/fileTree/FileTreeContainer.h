@@ -74,7 +74,6 @@ public:
     const bool saveDocAndProject ();
 
     const bool hasLoadedProject () const                      { return projectTree.isValid(); }
-    const ValueTree& getProjectValueTree() const              { return projectTree; }
     TreeView& getTreeView()                                   { return fileTree; }
 
     EditAndPreview* getEditAndPreview () const                { return editAndPreview; }
@@ -82,6 +81,7 @@ public:
     void selectIdentityItem();
 
     static File projectFile;
+    static ValueTree projectTree;
     static float fontSize;
 
 private:
@@ -90,7 +90,6 @@ private:
     ScopedPointer<ItemSorter> sorter;
 
     TreeView fileTree;
-    ValueTree projectTree = ValueTree::invalid;
     EditAndPreview* editAndPreview;
 
     String lastItem;  // identity of last selected item

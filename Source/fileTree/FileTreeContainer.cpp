@@ -13,6 +13,7 @@
 extern PropertiesFile* systemFile;
 
 File FileTreeContainer::projectFile;
+ValueTree FileTreeContainer::projectTree = ValueTree::invalid;
 float FileTreeContainer::fontSize = SwingUtilities::getFontSize();
 
 //==============================================================================
@@ -38,6 +39,9 @@ FileTreeContainer::FileTreeContainer (EditAndPreview* rightArea) :
 FileTreeContainer::~FileTreeContainer ()
 {
     fileTree.setRootItem (nullptr);
+
+    projectTree = ValueTree::invalid;
+    projectFile = File::nonexistent;
 }
 
 //=========================================================================

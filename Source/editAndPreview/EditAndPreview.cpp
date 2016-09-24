@@ -9,6 +9,7 @@
 */
 
 #include "../WdtpHeader.h"
+#include <fstream>
 
 //==============================================================================
 EditAndPreview::EditAndPreview()
@@ -69,11 +70,11 @@ void EditAndPreview::editNewDoc (const File& file)
     if (file.existsAsFile())
     {
         docFile = file;
-        currentContent = docFile.loadFileAsString ();
 
         editor->applyFontToAllText (FileTreeContainer::fontSize);
-        editor->setText (currentContent, false);
-        editor->grabKeyboardFocus();
+        editor->setText (docFile.loadFileAsString(), false);
+        currentContent = editor->getText();
+        editor->grabKeyboardFocus ();
         editor->addListener (this);
     }   
     else
@@ -93,9 +94,29 @@ void EditAndPreview::previewDoc (const File& file)
           
     docFile = file;
 
-    //webView->goToURL (docFile.getFullPathName ());
-    webView->goToURL ("e:/temp/test.html");
+    webView->goToURL (String());
+    webView->goToURL (createMatchedHtmlFile().getFullPathName());
     resized ();
+}
+
+//=================================================================================================
+const File EditAndPreview::createMatchedHtmlFile ()
+{
+    jassert (FileTreeContainer::projectTree.isValid());
+
+    const String docPath (docFile.withFileExtension("html").getFullPathName());
+    File htmlFile (docPath.replace("docs", FileTreeContainer::projectTree.getProperty("place").toString()));
+
+    /*if (!htmlFile.existsAsFile() || needCreateHtml)
+    {
+        htmlFile.deleteFile();
+        htmlFile.create();
+
+
+        needCreateHtml = false;
+    }*/
+
+    return htmlFile;
 }
 
 //=================================================================================================
@@ -142,9 +163,10 @@ void EditAndPreview::editorAndWebInitial ()
 void EditAndPreview::textEditorTextChanged (TextEditor&)
 {
     // somehow, this method always be called when load a doc, so use this ugly judge...
-    if (currentContent.compareNatural(editor->getText()) != 0)
+    if (currentContent.compare (editor->getText()) != 0)
     {
         docHasChanged = true;
+        needCreateHtml = true;
         startTimer (5000);
     }    
 }
@@ -165,13 +187,12 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
 
     if (docHasChanged && docFile != File::nonexistent)
     {
-        const String& s (editor->getText());
-        currentContent = s;
+        currentContent = editor->getText ();
 
         TemporaryFile tempFile (docFile);
-        tempFile.getFile ().appendText (s);
+        tempFile.getFile ().appendText (currentContent);
 
-        if (tempFile.overwriteTargetFileWithTemporary ())
+        if (tempFile.overwriteTargetFileWithTemporary())
         {
             docHasChanged = false;
             return true;

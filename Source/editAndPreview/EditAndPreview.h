@@ -35,15 +35,17 @@ public:
     void resized() override;
 
     void editNewDoc (const File& docFile);
-    void editCurrentDoc()                                 { editNewDoc(docFile); }    
+    void editCurrentDoc()                                 { editNewDoc (docFile); }    
     void previewDoc (const File& docFile);
-    void previewCurrentDoc()                              { previewDoc(docFile); }
+    void previewCurrentDoc()                              { previewDoc (docFile); }
 
     TextEditor* getEditor() const                         { return editor; }
     const File& getCurrentDocFile() const                 { return docFile;}
 
+    const File createMatchedHtmlFile();
+
     void projectClosed();
-    const bool saveCurrentDocIfChanged ();
+    const bool saveCurrentDocIfChanged();
 
     void setProjectProperties (ValueTree& projectTree);
     void setDirProperties (ValueTree& dirTree);
@@ -59,8 +61,9 @@ private:
     //=========================================================================
     File docFile = File::nonexistent;
     bool docHasChanged = false;
+    bool needCreateHtml = false;
     String currentContent;
-
+    
     ScopedPointer<TextEditor> editor;
     ScopedPointer<WebBrowserComponent> webView;
     ScopedPointer<SetupPanel> setupPanel;

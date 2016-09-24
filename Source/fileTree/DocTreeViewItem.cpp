@@ -807,9 +807,17 @@ String DocTreeViewItem::getTooltip ()
     else if (sorter->getTooltipToShow() == 2)
     {
         if (tree.getType ().toString () == "wdtpProject")
+        {
             return tree.getProperty ("domain").toString();
+        }
         else
-            return tree.getProperty ("webName").toString() + ".html";
+        {
+            const String docPath (getFileOrDir(tree).getFullPathName());
+            const String& htmlPath (docPath.replace ("docs", FileTreeContainer::projectTree.getProperty ("place").toString()));
+            //DBGX (htmlPath.replace (".md", ".html"));
+
+            return htmlPath.replace (".md", ".html");
+        }
     }
 
     return String ();

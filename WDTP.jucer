@@ -37,12 +37,6 @@
               file="Source/fileTree/FileTreeContainer.h"/>
       </GROUP>
       <GROUP id="{D3401C39-DE40-D94A-EE8E-147FE211E0D9}" name="render">
-        <FILE id="yE56mG" name="markdown-tokens.cpp" compile="1" resource="0"
-              file="Source/render/markdown-tokens.cpp"/>
-        <FILE id="gZ5FFx" name="markdown-tokens.h" compile="0" resource="0"
-              file="Source/render/markdown-tokens.h"/>
-        <FILE id="gqCaFu" name="markdown.cpp" compile="1" resource="0" file="Source/render/markdown.cpp"/>
-        <FILE id="Hnm1Wy" name="markdown.h" compile="0" resource="0" file="Source/render/markdown.h"/>
         <FILE id="ubZbKd" name="MD2Html.cpp" compile="1" resource="0" file="Source/render/MD2Html.cpp"/>
         <FILE id="sdSAnu" name="MD2Html.h" compile="0" resource="0" file="Source/render/MD2Html.h"/>
       </GROUP>

@@ -37,8 +37,12 @@
               file="Source/fileTree/FileTreeContainer.h"/>
       </GROUP>
       <GROUP id="{D3401C39-DE40-D94A-EE8E-147FE211E0D9}" name="render">
-        <FILE id="t6qBTf" name="Html2MD.cpp" compile="1" resource="0" file="Source/render/Html2MD.cpp"/>
-        <FILE id="yd7S2u" name="Html2MD.h" compile="0" resource="0" file="Source/render/Html2MD.h"/>
+        <FILE id="yE56mG" name="markdown-tokens.cpp" compile="1" resource="0"
+              file="Source/render/markdown-tokens.cpp"/>
+        <FILE id="gZ5FFx" name="markdown-tokens.h" compile="0" resource="0"
+              file="Source/render/markdown-tokens.h"/>
+        <FILE id="gqCaFu" name="markdown.cpp" compile="1" resource="0" file="Source/render/markdown.cpp"/>
+        <FILE id="Hnm1Wy" name="markdown.h" compile="0" resource="0" file="Source/render/markdown.h"/>
         <FILE id="ubZbKd" name="MD2Html.cpp" compile="1" resource="0" file="Source/render/MD2Html.cpp"/>
         <FILE id="sdSAnu" name="MD2Html.h" compile="0" resource="0" file="Source/render/MD2Html.h"/>
       </GROUP>
@@ -69,10 +73,12 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <VS2015 targetFolder="Builds/VisualStudio2015" smallIcon="S5pEoV" bigIcon="S5pEoV">
+    <VS2015 targetFolder="Builds/VisualStudio2015" smallIcon="S5pEoV" bigIcon="S5pEoV"
+            externalLibraries="">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="1" optimisation="1" targetName="WDTP" binaryPath="Application/Debug"/>
+                       isDebug="1" optimisation="1" targetName="WDTP" binaryPath="Application/Debug"
+                       headerPath="" libraryPath=""/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="0" optimisation="2" targetName="WDTP" binaryPath="Application/Release"/>
       </CONFIGURATIONS>

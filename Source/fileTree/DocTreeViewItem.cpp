@@ -107,6 +107,9 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
 //=================================================================================================
 const File DocTreeViewItem::getFileOrDir (const ValueTree& tree)
 {
+    if (!tree.isValid())
+        return File::nonexistent;
+    
     const File& root (FileTreeContainer::projectFile.getSiblingFile ("docs"));
 
     if (tree.getType ().toString () == "wdtpProject")
@@ -145,9 +148,9 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
     if (tree.getType().toString() == "doc")
     {        
         if (toolbar != nullptr && toolbar->getStateOfViewButton ())
-            editArea->previewDoc (getFileOrDir (tree));
+            editArea->previewDoc (tree);
         else
-            editArea->editNewDoc (getFileOrDir (tree));
+            editArea->editNewDoc (tree);
 
         editArea->setDocProperties (tree);
     }
@@ -581,7 +584,7 @@ void DocTreeViewItem::deleteSelected ()
     else
     {
         jassert (editor != nullptr);
-        editor->editNewDoc (File::nonexistent);
+        editor->editNewDoc (ValueTree::invalid);
     }
 }
 

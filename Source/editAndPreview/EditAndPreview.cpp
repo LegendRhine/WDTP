@@ -58,7 +58,7 @@ void EditAndPreview::resized()
 }
 
 //=================================================================================================
-void EditAndPreview::editNewDoc (const File& file)
+void EditAndPreview::editNewDoc (const ValueTree& docTree_)
 {
     saveCurrentDocIfChanged();
     webView->setVisible (false);
@@ -67,9 +67,12 @@ void EditAndPreview::editNewDoc (const File& file)
     editor->setText (String (), false);
     editor->setEnabled (true);
 
+    const File& file (DocTreeViewItem::getFileOrDir (docTree_));
+
     if (file.existsAsFile())
     {
         docFile = file;
+        docTree = docTree_;
 
         editor->applyFontToAllText (FileTreeContainer::fontSize);
         editor->setText (docFile.loadFileAsString(), false);
@@ -86,16 +89,19 @@ void EditAndPreview::editNewDoc (const File& file)
 }
 
 //=================================================================================================
-void EditAndPreview::previewDoc (const File& file)
+void EditAndPreview::previewDoc (const ValueTree& docTree_)
 {
     saveCurrentDocIfChanged();
     editor->setEnabled (false);
-    webView->setVisible (true);
           
-    docFile = file;
+    docFile = DocTreeViewItem::getFileOrDir (docTree_);
+    docTree = docTree_;
+    currentContent = docFile.loadFileAsString();
 
-    webView->goToURL (String());
-    webView->goToURL (createMatchedHtmlFile().getFullPathName());
+    // must create a new webBrowserComponent, 
+    // otherwise createMatchedHtmlFile() can't delete the html file
+    addAndMakeVisible (webView = new WebBrowserComponent ());    
+    webView->goToURL (createMatchedHtmlFile ().getFullPathName ());
     resized ();
 }
 
@@ -107,15 +113,20 @@ const File EditAndPreview::createMatchedHtmlFile ()
     const String docPath (docFile.withFileExtension("html").getFullPathName());
     File htmlFile (docPath.replace("docs", FileTreeContainer::projectTree.getProperty("place").toString()));
 
-    /*if (!htmlFile.existsAsFile() || needCreateHtml)
-    {
-        htmlFile.deleteFile();
-        htmlFile.create();
+    if (needCreateHtml || !htmlFile.existsAsFile())
+    {   
+        if (htmlFile.deleteFile())
+        {
+            htmlFile.create ();
+            htmlFile.appendText (Md2Html::mdStringToHtml (currentContent, docTree));
+        }
+        else
+        {
+            SHOW_MESSAGE (TRANS ("Something wrong during create html file."));
+        }        
+    }
 
-
-        needCreateHtml = false;
-    }*/
-
+    needCreateHtml = false;
     return htmlFile;
 }
 
@@ -142,9 +153,9 @@ void EditAndPreview::setDirProperties (ValueTree& dirTree)
 }
 
 //=================================================================================================
-void EditAndPreview::setDocProperties (ValueTree& docTree)
+void EditAndPreview::setDocProperties (ValueTree& docTree_)
 {
-    setupPanel->showDocProperties (docTree);
+    setupPanel->showDocProperties (docTree_);
 }
 
 //=================================================================================================

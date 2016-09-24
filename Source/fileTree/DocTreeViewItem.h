@@ -25,9 +25,7 @@ public:
     this method will return this project's 'docs' dir,
     instead of the project file!
 
-    Note 2: this method always return a valid file object however it exsits or not,
-    if to check the file exists or not, use this sentence: getFileOrDir().exists();
-    or: getFileOrDir().existsAsFile(); or: getFileOrDir().isDirectory()
+    Note 2: this method will return a nonexists file when the arg is invalid
     */
     static const File getFileOrDir (const ValueTree& tree);
 

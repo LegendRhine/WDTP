@@ -34,10 +34,10 @@ public:
     void paint (Graphics&) override {}
     void resized() override;
 
-    void editNewDoc (const File& docFile);
-    void editCurrentDoc()                                 { editNewDoc (docFile); }    
-    void previewDoc (const File& docFile);
-    void previewCurrentDoc()                              { previewDoc (docFile); }
+    void editNewDoc (const ValueTree& docTree);
+    void editCurrentDoc()                                 { editNewDoc (docTree); }    
+    void previewDoc (const ValueTree& docTree);
+    void previewCurrentDoc()                              { previewDoc (docTree); }
 
     TextEditor* getEditor() const                         { return editor; }
     const File& getCurrentDocFile() const                 { return docFile;}
@@ -60,6 +60,8 @@ private:
 
     //=========================================================================
     File docFile = File::nonexistent;
+    ValueTree docTree;
+
     bool docHasChanged = false;
     bool needCreateHtml = false;
     String currentContent;

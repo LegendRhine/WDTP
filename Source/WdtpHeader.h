@@ -21,6 +21,6 @@
 #include "editAndPreview/SetupPanel.h"
 #include "fileTree/FileTreeContainer.h"
 #include "fileTree/DocTreeViewItem.h"
-
+#include "render/MD2Html.h"
 
 #endif  // HEADERGUA

@@ -284,7 +284,7 @@ void EditorForMd::performPopupMenuAction (int index)
 
             if (f.copyFileTo (targetFile))
                 content << newLine 
-                << "![](media/" << targetFile.getFileName() << ")" << newLine
+                << "![ ](media/" << targetFile.getFileName() << ")" << newLine
                 << newLine;
             else
                 SHOW_MESSAGE (TRANS ("Can't insert this image: ") + newLine + f.getFullPathName());
@@ -295,14 +295,14 @@ void EditorForMd::performPopupMenuAction (int index)
         AlertWindow dialog (TRANS ("Insert Hyperlink"), TRANS ("Please input the url."),
                             AlertWindow::InfoIcon);
 
-        dialog.addTextEditor ("name", "http://");
+        dialog.addTextEditor ("name", String());
         dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
         dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
 
         if (0 == dialog.runModalLoop ())
         {
             const String inputStr (dialog.getTextEditor ("name")->getText().trim());
-            content << " [](" << inputStr << ") ";
+            content << " [" << inputStr << "](" << inputStr << ") ";
         }
         else
         {

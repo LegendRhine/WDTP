@@ -10,26 +10,14 @@
 
 #include "JuceHeader.h"
 #include "MD2Html.h"
-#include <sstream>
-#include "markdown.h"
 
 //=================================================================================================
 const String Md2Html::mdStringToHtml (const String& mdString,
                                       const ValueTree& docTree)
 {
-    /*const String& content = mdString.replace (newLine + newLine, "<p>")
-        .replace(newLine, "<br>");*/
-    markdown::Document mdRender;
-    mdRender.read (mdString.toStdString ());
-
-    std::stringstream stream;
-    stream.clear ();
-    std::string stdContent;
-
-    mdRender.write (stream);
-    stream.flush ();
+    const String& content = mdString.replace (newLine + newLine, "<p>")
+        .replace(newLine, "<br>");
     
-    String content (stream.str());
     //DBG (content);
 
     String s;
@@ -47,8 +35,6 @@ const String Md2Html::mdStringToHtml (const String& mdString,
         content << newLine <<
         "</body>" << newLine <<
         "</html>";
-
-    stream.clear ();
 
     return s;
 }

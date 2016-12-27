@@ -331,7 +331,7 @@ void EditorForMd::performPopupMenuAction (int index)
     else if (5 == index) // code
     {
         content << newLine
-            << "``` c++" << newLine 
+            << "```" << newLine 
             << newLine
             << "```"  << newLine;
     }   
@@ -346,12 +346,12 @@ void EditorForMd::performPopupMenuAction (int index)
             << "- " << newLine
             << "- " << newLine;
     }
-    else if (8 == index)  // ordered list
+    else if (8 == index)  // ordered list. it'll parse as "1. 2. 3." etc.
     {
         content << newLine
-            << "1. " << newLine
-            << "2. " << newLine
-            << "3. " << newLine;
+            << "+ " << newLine
+            << "+ " << newLine
+            << "+ " << newLine;
     }
     else if (9 == index)  // second heading
     {

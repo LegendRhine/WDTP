@@ -41,12 +41,10 @@ private:
     
     void createNewProject ();
     void openProject();
-    void projectSaveAs();
 
     //==========================================================================
     enum { prevAll, nextAll, prevPjt, nextPjt, 
-           view, generate, upload, system, 
-           totalBts };
+           view, system, totalBts };
 
     /** When mouse enter the button, the cursor will change to a finger */
     class MyImageButton : public ImageButton

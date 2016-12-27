@@ -48,8 +48,7 @@ private:
     { 
         // project properties' values
         projectName = 0, projectDesc, owner, projectSkin, 
-        projectRenderDir, place, domain, fontSize, 
-        ftpAddress, ftpPort, ftpUserName, ftpPassword, 
+        projectRenderDir, place, fontSize, 
 
         // dir properties' values
         dirDesc, isMenu, dirRenderDir, dirWebName, 

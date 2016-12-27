@@ -96,22 +96,6 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                           Image::null, 1.000f, Colours::darkcyan,
                           Image::null, 1.0f, Colours::darkcyan);
 
-    bts[generate]->setTooltip (TRANS ("Generate all associated web-pages locally"));
-    bts[generate]->setImages (false, true, true,
-                              ImageCache::getFromMemory (BinaryData::generate_png,
-                                                         BinaryData::generate_pngSize),
-                              imageTrans, Colour (0x00),
-                              Image::null, 1.000f, Colours::darkcyan,
-                              Image::null, 1.000f, Colours::darkcyan);
-
-    bts[upload]->setTooltip (TRANS ("Upload all modified web-pages to host"));
-    bts[upload]->setImages (false, true, true,
-                            ImageCache::getFromMemory (BinaryData::upload_png,
-                                                       BinaryData::upload_pngSize),
-                            imageTrans, Colour (0x00),
-                            Image::null, 1.000f, Colours::darkcyan,
-                            Image::null, 1.000f, Colours::darkcyan);
-
     bts[system]->setTooltip (TRANS ("Popup system menu"));
     bts[system]->setImages (false, true, true,
                             ImageCache::getFromMemory (BinaryData::system_png,
@@ -131,9 +115,6 @@ void TopToolBar::paint (Graphics& g)
 {
     g.setColour (Colour (0x00).withAlpha (0.2f));
     g.drawLine (1.0f, getHeight () - 0.5f, getWidth () - 2.0f, getHeight () - 0.5f, 0.6f);
-
-    // indicate the middle of this component, so that convenient for place imageButtons
-    g.drawVerticalLine (getWidth () / 2, 5, 40.f);
 }
 
 //=======================================================================
@@ -149,10 +130,8 @@ void TopToolBar::resized ()
     bts[prevPjt]->setBounds (searchInDoc->getX () - 22, 16, 12, 12);
 
     // image buttons
-    int x = getWidth () / 2 - 345;
-
-    for (int i = view; i < totalBts; ++i)
-        bts[i]->setTopLeftPosition (x + i * 60, 12);
+    bts[view]->setTopRightPosition (getWidth() / 2 - 30, 12);
+    bts[system]->setTopLeftPosition (getWidth () / 2 + 30, 12);
 }
 
 //=========================================================================
@@ -266,9 +245,7 @@ void TopToolBar::buttonClicked (Button* bt)
             editAndPreview->editCurrentDoc ();
     }
     else if (bt == bts[system])
-    {
         popupSystemMenu ();
-    }
     else if (bt == bts[prevAll])
         findInProject (false);
     else if (bt == bts[nextAll])
@@ -293,10 +270,7 @@ void TopToolBar::popupSystemMenu ()
     recentFiles.createPopupMenuItems (recentFilesMenu, 100, true, true);
 
     m.addSubMenu (TRANS ("Open Rcent"), recentFilesMenu);
-    m.addSeparator ();
-
     m.addItem (3, TRANS ("Close Project"), fileTreeContainer->hasLoadedProject ());
-    m.addItem (4, TRANS ("Project Save As..."), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
     m.addItem (5, TRANS ("Project Clean-up..."), fileTreeContainer->hasLoadedProject ());
@@ -334,9 +308,6 @@ void TopToolBar::menuPerform (const int index)
 
     // close current project
     else if (index == 3)    fileTreeContainer->closeProject ();
-
-    // project save as
-    else if (index == 4)    projectSaveAs ();
 
     // clean useless data
     else if (index == 5)    NEED_TO_DO ("clean useless data...");
@@ -380,8 +351,9 @@ void TopToolBar::createNewProject ()
         projectFile = projectFile.withFileExtension ("wdtp");
 
     // overwrite or not if it has been there
-    if (projectFile.existsAsFile () && !AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon,
-                                                                      TRANS ("Message"), TRANS ("This project already exists, want to overwrite it?")))
+    if (projectFile.existsAsFile () && 
+        !AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon,
+                                       TRANS ("Message"), TRANS ("This project already exists, want to overwrite it?")))
     {
         return;
     }
@@ -456,51 +428,4 @@ void TopToolBar::openProject ()
         fileTreeContainer->openProject (fc.getResult ());
 }
 
-//=================================================================================================
-void TopToolBar::projectSaveAs ()
-{
-    AlertWindow dialog (TRANS ("Project Save As"), TRANS ("Please input the new name."),
-                        AlertWindow::InfoIcon);
-
-    dialog.addTextEditor ("name", fileTreeContainer->projectFile.getNonexistentSibling (true).getFileNameWithoutExtension ());
-    dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
-    dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
-
-    if (0 == dialog.runModalLoop ())
-    {
-        const String inputStr (dialog.getTextEditor ("name")->getText ());
-        String newName (SwingUtilities::getValidFileName (inputStr));
-
-        if (newName == fileTreeContainer->projectFile.getFileNameWithoutExtension ())
-            return;
-
-        if (newName.isEmpty ())
-            newName = TRANS ("Untitled");
-
-        File newFile (fileTreeContainer->projectFile.getSiblingFile (newName));
-
-        if (!newFile.hasFileExtension ("wdtp"))
-            newFile = newFile.withFileExtension ("wdtp");
-
-        // overwrite or not if it has been there
-        if (newFile.existsAsFile () &&
-            !AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Message"),
-                                           TRANS ("This project already exists, want to overwrite it?")))
-        {
-            return;
-        }
-
-        if (!newFile.deleteFile ())
-        {
-            SHOW_MESSAGE (TRANS ("Can't overwrite this project. "));
-            return;
-        }
-
-        if (fileTreeContainer->projectFile.copyFileTo (newFile))
-            fileTreeContainer->openProject (newFile);
-        else
-            SHOW_MESSAGE (TRANS ("Can't save the copy of this project. "));
-    }
-
-}
 

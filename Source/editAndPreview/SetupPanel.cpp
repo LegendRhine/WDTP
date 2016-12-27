@@ -45,11 +45,6 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     values[projectSkin]->setValue (pTree.getProperty ("skin"));
     values[projectRenderDir]->setValue (pTree.getProperty ("render"));
     values[place]->setValue (pTree.getProperty ("place"));
-    values[domain]->setValue (pTree.getProperty ("domain"));
-    values[ftpAddress]->setValue (pTree.getProperty ("ftpAddress"));
-    values[ftpPort]->setValue (pTree.getProperty ("ftpPort"));
-    values[ftpUserName]->setValue (pTree.getProperty ("ftpUserName"));
-    values[ftpPassword]->setValue (pTree.getProperty ("ftpPassword"));
     values[fontSize]->setValue (pTree.getProperty ("fontSize"));
 
     Array<PropertyComponent*> projectProperties;
@@ -89,12 +84,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     projectProperties.add (new ChoicePropertyComponent (*values[projectRenderDir], TRANS ("Template: "),
                                                         themeDirsSa, themeDirsVar));
     projectProperties.add (new TextPropertyComponent (*values[place], TRANS ("Render To: "), 60, false));
-    projectProperties.add (new TextPropertyComponent (*values[domain], TRANS ("Domain: "), 100, false));
     projectProperties.add (new SliderPropertyComponent (*values[fontSize], TRANS ("Editor Font: "), 12.0, 60.0, 0.1));
-    projectProperties.add (new TextPropertyComponent (*values[ftpAddress], TRANS ("FTP URL: "), 60, false));
-    projectProperties.add (new TextPropertyComponent (*values[ftpPort], TRANS ("FTP Port: "), 6, false));
-    projectProperties.add (new TextPropertyComponent (*values[ftpUserName], TRANS ("FTP Account: "), 60, false));
-    projectProperties.add (new PasswordPropertyComponent (*values[ftpPassword], TRANS ("FTP Password: ")));
 
     for (auto p : projectProperties)  p->setPreferredHeight (28);
     projectProperties[1]->setPreferredHeight (28 * 3);
@@ -230,16 +220,6 @@ void SetupPanel::valueChanged (Value& value)
         projectTree.setProperty ("render", values[projectRenderDir]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[place]))
         projectTree.setProperty ("place", values[place]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[domain]))
-        projectTree.setProperty ("domain", values[domain]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[ftpAddress]))
-        projectTree.setProperty ("ftpAddress", values[ftpAddress]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[ftpPort]))
-        projectTree.setProperty ("ftpPort", values[ftpPort]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[ftpUserName]))
-        projectTree.setProperty ("ftpUserName", values[ftpUserName]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[ftpPassword]))
-        projectTree.setProperty ("ftpPassword", values[ftpPassword]->getValue (), nullptr);
 
     else if (value.refersToSameSourceAs (*values[fontSize]))
     {

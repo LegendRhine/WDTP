@@ -25,8 +25,7 @@ public:
     this method will return this project's 'docs' dir,
     instead of the project file!
 
-    Note 2: this method will return a nonexists file when the arg is invalid
-    */
+    Note 2: this method will return a nonexists file when the arg is invalid. */
     static const File getFileOrDir (const ValueTree& tree);
 
     // static public methods for drag-drop moving items..

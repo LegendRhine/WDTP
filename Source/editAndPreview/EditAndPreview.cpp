@@ -199,14 +199,19 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
     if (docHasChanged && docFile != File::nonexistent)
     {
         currentContent = editor->getText ();
+        const String tileStr (currentContent.upToFirstOccurrenceOf ("\n", false, true)
+                              .replace("#", String()).trim());
 
         TemporaryFile tempFile (docFile);
         tempFile.getFile ().appendText (currentContent);
 
         if (tempFile.overwriteTargetFileWithTemporary())
         {
+            docTree.setProperty ("title", tileStr, nullptr);
             docHasChanged = false;
-            return true;
+
+            return SwingUtilities::writeValueTreeToFile (FileTreeContainer::projectTree, 
+                                                         FileTreeContainer::projectFile);
         }
         else
         {
@@ -231,27 +236,27 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (4, TRANS ("Table") + " (3x3)");
         insertMenu.addSeparator ();
 
-        insertMenu.addItem (5, TRANS ("Code Block"));
-        insertMenu.addItem (6, TRANS ("Reference"));
+        insertMenu.addItem (5, TRANS ("Align Center"));
+        insertMenu.addItem (6, TRANS ("Align Right"));
         insertMenu.addSeparator ();
 
-        // list and title
         insertMenu.addItem (7, TRANS ("Unordered List"));
         insertMenu.addItem (8, TRANS ("Ordered List"));
         insertMenu.addSeparator ();
 
-        insertMenu.addItem (9, TRANS ("Secondary Heading"));
-        insertMenu.addItem (10, TRANS ("Tertiary Heading"));
+        insertMenu.addItem (9, TRANS ("Primary Heading"));
+        insertMenu.addItem (10, TRANS ("Secondary Heading"));
+        insertMenu.addItem (11, TRANS ("Tertiary Heading"));
         insertMenu.addSeparator ();
 
-        insertMenu.addItem (11, TRANS ("Separator"));
-        insertMenu.addItem (12, TRANS ("Date and Time"));
+        insertMenu.addItem (14, TRANS ("Separator"));
+        insertMenu.addItem (15, TRANS ("Author and Date"));
         menu.addSubMenu (TRANS ("Insert"), insertMenu, docFile.existsAsFile());
 
         PopupMenu formatMenu;
         formatMenu.addItem (30, TRANS ("Bold"), getHighlightedText().isNotEmpty());
         formatMenu.addItem (31, TRANS ("Italic"), getHighlightedText().isNotEmpty());
-        formatMenu.addItem (32, TRANS ("Bold + Italic"), getHighlightedText().isNotEmpty());
+        formatMenu.addItem (32, TRANS ("Code Block"));
         formatMenu.addItem (33, TRANS ("Code Inline"), getHighlightedText().isNotEmpty());
 
         menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile());
@@ -302,7 +307,7 @@ void EditorForMd::performPopupMenuAction (int index)
         if (0 == dialog.runModalLoop ())
         {
             const String inputStr (dialog.getTextEditor ("name")->getText().trim());
-            content << " [" << inputStr << "](" << inputStr << ") ";
+            content << "[" << inputStr << "](" << inputStr << ") ";
         }
         else
         {
@@ -328,14 +333,11 @@ void EditorForMd::performPopupMenuAction (int index)
             << "|  |  |  |" << newLine
             << newLine;        
     }    
-    else if (5 == index) // code
+    else if (5 == index) // align center
     {
-        content << newLine
-            << "```" << newLine 
-            << newLine
-            << "```"  << newLine;
+        content << newLine << "* ";
     }   
-    else if (6 == index) // reference
+    else if (6 == index) // align right
     {
         content << newLine << "> ";
     }
@@ -355,33 +357,45 @@ void EditorForMd::performPopupMenuAction (int index)
     }
     else if (9 == index)  // second heading
     {
+        content << newLine << "# ";
+    }
+    else if (10 == index)  // second heading
+    {
         content << newLine << "## ";
     }
-    else if (10 == index) // third heading
+    else if (11 == index) // third heading
     {
         content << newLine << "### ";
     }
-    else if (11 == index) // separator
+    else if (14 == index) // separator
     {
-        content << newLine << "----" << newLine << newLine;
+        content << newLine << "---" << newLine << newLine;
     }
-    else if (12 == index) // date and time
+    else if (15 == index) // author and date
     {
-        content << newLine << newLine <<
-            SwingUtilities::getTimeStringWithSeparator(SwingUtilities::getCurrentTimeString())
-            .dropLastCharacters(3);
+        content << newLine << newLine 
+            << "> "
+            << TRANS("Author: ")
+            << FileTreeContainer::projectTree.getProperty("owner").toString() 
+            << " " << newLine << "> "
+            << SwingUtilities::getTimeStringWithSeparator(SwingUtilities::getCurrentTimeString()).dropLastCharacters(9)
+            << " ";
+        
     }
     else if (30 == index) // bold
     {
-        content << " **" << getHighlightedText() << "** ";
+        content << "**" << getHighlightedText() << "**";
     }
     else if (31 == index) // italic
     {
-        content << " *" << getHighlightedText() << "* ";
+        content << "*" << getHighlightedText() << "*";
     }
     else if (32 == index) // bold + italic
     {
-        content << " ***" << getHighlightedText() << "*** ";
+        content << newLine
+            << "```" << newLine
+            << getHighlightedText () << newLine
+            << "```" << newLine;
     }
     else if (33 == index) // code inline
     {
@@ -396,12 +410,7 @@ void EditorForMd::performPopupMenuAction (int index)
     insertTextAtCaret (content);
 
     // move up the currsor...
-    if (5 == index)  
-    {
-        moveCaretUp (false);
-        moveCaretUp (false);
-    }
-    else if (7 == index || 8 == index)
+    if (7 == index || 8 == index)
     {
         moveCaretUp (false);
         moveCaretUp (false);

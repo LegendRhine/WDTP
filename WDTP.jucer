@@ -8,12 +8,10 @@
       <GROUP id="{5C5311BB-5266-DB1B-DE96-35AA97A1E8E3}" name="BinaryData">
         <FILE id="GiC33W" name="next.png" compile="0" resource="1" file="Source/BinaryData/next.png"/>
         <FILE id="Vu53va" name="prev.png" compile="0" resource="1" file="Source/BinaryData/prev.png"/>
-        <FILE id="a51DTh" name="upload.png" compile="0" resource="1" file="Source/BinaryData/upload.png"/>
         <FILE id="O1smAJ" name="dir-o.png" compile="0" resource="1" file="Source/BinaryData/dir-o.png"/>
         <FILE id="RuGrUI" name="dir.png" compile="0" resource="1" file="Source/BinaryData/dir.png"/>
         <FILE id="lDEDKx" name="doc.png" compile="0" resource="1" file="Source/BinaryData/doc.png"/>
         <FILE id="UJVgtK" name="logo.png" compile="0" resource="1" file="Source/BinaryData/logo.png"/>
-        <FILE id="yKVglz" name="generate.png" compile="0" resource="1" file="Source/BinaryData/generate.png"/>
         <FILE id="S5pEoV" name="icon.png" compile="0" resource="1" file="Source/BinaryData/icon.png"/>
         <FILE id="WJnq70" name="view.png" compile="0" resource="1" file="Source/BinaryData/view.png"/>
         <FILE id="VMV514" name="system.png" compile="0" resource="1" file="Source/BinaryData/system.png"/>
@@ -47,10 +45,6 @@
         <FILE id="sdSAnu" name="MD2Html.h" compile="0" resource="0" file="Source/render/MD2Html.h"/>
       </GROUP>
       <GROUP id="{83694581-DB15-8946-3B2A-EBBCEDD57AAD}" name="SwingLibrary">
-        <FILE id="CIuCnt" name="PasswordPropertyComponent.cpp" compile="1"
-              resource="0" file="Source/SwingLibrary/PasswordPropertyComponent.cpp"/>
-        <FILE id="kxeNSX" name="PasswordPropertyComponent.h" compile="0" resource="0"
-              file="Source/SwingLibrary/PasswordPropertyComponent.h"/>
         <FILE id="xPreeF" name="SwingLookAndFeel.cpp" compile="1" resource="0"
               file="Source/SwingLibrary/SwingLookAndFeel.cpp"/>
         <FILE id="qeBKcI" name="SwingLookAndFeel.h" compile="0" resource="0"

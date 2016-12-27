@@ -201,7 +201,7 @@ void TopToolBar::findInProject (const bool next)
         }
     }
 
-    SHOW_MESSAGE (TRANS ("Nothing could be found."));
+    LookAndFeel::getDefaultLookAndFeel ().playAlertSound ();
 }
 
 //=================================================================================================
@@ -227,9 +227,9 @@ void TopToolBar::findInDoc (const bool next)
 
     // select the keyword
     if (startIndex != -1)
-        editor->setHighlightedRegion (Range<int> (startIndex, startIndex + keyword.length()));
-    else 
-        SHOW_MESSAGE (TRANS ("Nothing could be found."));
+        editor->setHighlightedRegion (Range<int> (startIndex, startIndex + keyword.length ()));
+    else
+        LookAndFeel::getDefaultLookAndFeel ().playAlertSound ();
 }
 
 //=========================================================================
@@ -353,7 +353,8 @@ void TopToolBar::createNewProject ()
     // overwrite or not if it has been there
     if (projectFile.existsAsFile () && 
         !AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon,
-                                       TRANS ("Message"), TRANS ("This project already exists, want to overwrite it?")))
+                                       TRANS ("Message"), 
+                                       TRANS ("This project already exists, want to overwrite it?")))
     {
         return;
     }
@@ -379,13 +380,8 @@ void TopToolBar::createNewProject ()
     p.setProperty ("tooltip", 0, nullptr);
     p.setProperty ("render", "themes/theme-1", nullptr);
     p.setProperty ("place", "site", nullptr);
-    p.setProperty ("domain", "http://", nullptr);
     p.setProperty ("fontName", SwingUtilities::getFontName (), nullptr);
     p.setProperty ("fontSize", SwingUtilities::getFontSize (), nullptr);
-    p.setProperty ("ftpAddress", String (), nullptr);
-    p.setProperty ("ftpPort", "21", nullptr);
-    p.setProperty ("ftpUserName", String (), nullptr);
-    p.setProperty ("ftpPassword", String (), nullptr);
 
     // 5-2 create dirs and default template files
     projectFile.getSiblingFile ("docs").createDirectory ();
@@ -402,9 +398,8 @@ void TopToolBar::createNewProject ()
     // doc valueTree
     ValueTree d ("doc");
     d.setProperty ("name", docFile.getFileNameWithoutExtension (), nullptr);
-    d.setProperty ("title", docFile.getFileNameWithoutExtension (), nullptr);
-    d.setProperty ("author", p.getProperty ("owner").toString (), nullptr);
-    d.setProperty ("publish", true, nullptr);
+    d.setProperty ("title", "Hello World", nullptr);
+    d.setProperty ("keywords", String (), nullptr);
     d.setProperty ("webName", docFile.getFileNameWithoutExtension (), nullptr);
     d.setProperty ("tplFile", p.getProperty ("render").toString () + "/article.html", nullptr);
     d.setProperty ("js", String (), nullptr);

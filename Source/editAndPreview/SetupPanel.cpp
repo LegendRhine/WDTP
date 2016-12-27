@@ -131,7 +131,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
                                                     themeDirsSa, themeDirsVar));
     dirProperties.add (new TextPropertyComponent (*values[dirWebName], TRANS ("Web Name: "), 60, false));
 
-    for (auto p : dirProperties)      p->setPreferredHeight (28);
+    for (auto p : dirProperties)     p->setPreferredHeight (28);
     dirProperties[0]->setPreferredHeight (28 * 3);
     
     panel->addSection (TRANS ("Folder Setup"), dirProperties);
@@ -146,25 +146,22 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docTree = dTree;
     jassert (docTree.isValid () && docTree.getType ().toString () == "doc");
 
-    values[title]->setValue (docTree.getProperty ("title"));
-    values[author]->setValue (docTree.getProperty ("author"));
-    values[publish]->setValue (docTree.getProperty ("publish"));
+    values[keywords]->setValue (docTree.getProperty ("keywords"));
     values[docWebName]->setValue (docTree.getProperty ("webName"));
     values[tplFile]->setValue (docTree.getProperty ("tplFile"));
     values[js]->setValue (docTree.getProperty ("js"));
 
     Array<PropertyComponent*> docProperties;
-    docProperties.add (new TextPropertyComponent (*values[title], TRANS ("Title: "), 80, false));
-    docProperties.add (new TextPropertyComponent (*values[author], TRANS ("Author: "), 30, false));
-    docProperties.add (new BooleanPropertyComponent (*values[publish], TRANS ("Publish: "), TRANS ("Yes")));
+    docProperties.add (new TextPropertyComponent (*values[keywords], TRANS ("Keywords: "), 80, false));
     docProperties.add (new TextPropertyComponent (*values[docWebName], TRANS ("Web Name: "), 80, false));
     docProperties.add (new TextPropertyComponent (*values[tplFile], TRANS ("Template File: "), 60, false));
     docProperties.add (new TextPropertyComponent (*values[js], TRANS ("Java Script: "), 0, true));
 
-    for (auto p : docProperties)      p->setPreferredHeight (28);
-    docProperties[5]->setPreferredHeight (28 * 4);
+    for (auto p : docProperties)   p->setPreferredHeight (28);
+    docProperties[3]->setPreferredHeight (28 * 4);
 
     panel->addSection (TRANS ("Document Setup"), docProperties);
+    valuesAddListener ();
 }
 
 //=================================================================================================
@@ -241,12 +238,8 @@ void SetupPanel::valueChanged (Value& value)
         dirTree.setProperty ("webName", values[dirWebName]->getValue (), nullptr);
 
     // doc properties
-    else if (value.refersToSameSourceAs (*values[title]))
-        docTree.setProperty ("title", values[title]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[author]))
-        docTree.setProperty ("author", values[author]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[publish]))
-        docTree.setProperty ("publish", values[publish]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[keywords]))
+        docTree.setProperty ("keywords", values[keywords]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[docWebName]))
         docTree.setProperty ("webName", values[docWebName]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[tplFile]))
@@ -267,8 +260,6 @@ void SetupPanel::timerCallback ()
 //=================================================================================================
 void SetupPanel::savePropertiesIfNeeded ()
 {
-    //DBGX (values[ftpPassword]->getValue ().toString ());
-
     if (systemFile != nullptr)
         systemFile->saveIfNeeded ();
 

@@ -22,7 +22,7 @@ const String Md2Html::mdStringToHtml (const String& mdString,
 
     String s;
     s << "<!doctype html>" << newLine <<
-        "<html lang=\"en\">" << newLine <<
+        "<html lang=\"cn\">" << newLine <<
         " <head>" << newLine <<
         "  <meta charset=\"UTF-8\">" << newLine <<
         "  <meta name=\"Generator\" content=\"WDTP\">" << newLine <<

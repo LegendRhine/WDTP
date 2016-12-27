@@ -54,7 +54,7 @@ private:
         dirDesc, isMenu, dirRenderDir, dirWebName, 
 
         // doc properties' values
-        title, author, publish, docWebName, tplFile, js, 
+        keywords, docWebName, tplFile, js, 
 
         totalValues
     };

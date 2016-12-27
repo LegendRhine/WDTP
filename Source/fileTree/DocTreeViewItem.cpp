@@ -439,10 +439,8 @@ void DocTreeViewItem::createNewDocument ()
         const File& thisDoc (getFileOrDir (tree).getChildFile (docName + ".md")
                              .getNonexistentSibling (true));
         thisDoc.create();
-        thisDoc.appendText (String ("Recording and Sharing...")
-                            + newLine + newLine +
-                            SwingUtilities::getTimeStringWithSeparator
-                            (SwingUtilities::getCurrentTimeString ()));
+        thisDoc.appendText (String ("### Title of this article")
+                            + newLine + newLine);
 
         // get the root for get some its properties
         ValueTree rootTree = tree;
@@ -453,9 +451,8 @@ void DocTreeViewItem::createNewDocument ()
         // valueTree of this doc
         ValueTree docTree ("doc");
         docTree.setProperty ("name", thisDoc.getFileNameWithoutExtension (), nullptr);
-        docTree.setProperty ("title", thisDoc.getFileNameWithoutExtension (), nullptr);
-        docTree.setProperty ("author", rootTree.getProperty ("owner").toString (), nullptr);
-        docTree.setProperty ("publish", true, nullptr);
+        docTree.setProperty ("title", "Title of this article", nullptr);
+        docTree.setProperty ("keywords", String (), nullptr);
         docTree.setProperty ("webName", docName, nullptr);
         docTree.setProperty ("tplFile", tree.getProperty ("render").toString() + "/article.html", nullptr);
         docTree.setProperty ("js", String (), nullptr);

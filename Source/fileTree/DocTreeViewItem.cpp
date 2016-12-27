@@ -509,11 +509,11 @@ void DocTreeViewItem::createNewFolder ()
             rootTree = rootTree.getParent ();
 
         ValueTree dirTree ("dir");
-        dirTree.setProperty ("name", dirName, nullptr);
-        dirTree.setProperty ("title", dirName, nullptr);
+        dirTree.setProperty ("name", thisDir.getFileNameWithoutExtension(), nullptr);
+        dirTree.setProperty ("title", thisDir.getFileNameWithoutExtension (), nullptr);
         dirTree.setProperty ("isMenu", false, nullptr);
         dirTree.setProperty ("render", rootTree.getProperty ("render").toString (), nullptr);
-        dirTree.setProperty ("webName", dirName, nullptr);
+        dirTree.setProperty ("webName", thisDir.getFileNameWithoutExtension (), nullptr);
 
         // must update this tree before show this new item
         tree.removeListener (this);

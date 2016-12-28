@@ -273,8 +273,7 @@ void TopToolBar::popupSystemMenu ()
     m.addItem (3, TRANS ("Close Project"), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
-    m.addItem (5, TRANS ("Project Clean-up..."), fileTreeContainer->hasLoadedProject ());
-    m.addItem (6, TRANS ("Project Backup..."), fileTreeContainer->hasLoadedProject ());
+    m.addItem (5, TRANS ("Regenerate All"), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
     PopupMenu lanMenu;
@@ -282,7 +281,7 @@ void TopToolBar::popupSystemMenu ()
     lanMenu.addItem (31, TRANS ("Chinese"), true, String ("Chinese") == systemFile->getValue ("language"));
 
     m.addSubMenu (TRANS ("UI Language"), lanMenu);
-    m.addItem (18, TRANS ("How To"), true);
+    m.addItem (18, TRANS ("Getting Started..."), true);
     m.addItem (19, TRANS ("Check New Version..."), true);
     m.addSeparator ();
 
@@ -309,14 +308,11 @@ void TopToolBar::menuPerform (const int index)
     // close current project
     else if (index == 3)    fileTreeContainer->closeProject ();
 
-    // clean useless data
-    else if (index == 5)    NEED_TO_DO ("clean useless data...");
+    // re-generate the whole site
+    else if (index == 5)    NEED_TO_DO ("Regenerate the whole site...");
 
-    // project backup
-    else if (index == 6)    NEED_TO_DO ("Project backup...");
-
-    // how to
-    else if (index == 18)   NEED_TO_DO ("How to...");
+    // help
+    else if (index == 18)   NEED_TO_DO ("Getting started...");
 
     // check new version
     else if (index == 19)   URL ("http://underwaySoft.com").launchInDefaultBrowser ();

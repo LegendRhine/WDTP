@@ -44,6 +44,7 @@ EditAndPreview::EditAndPreview()
 EditAndPreview::~EditAndPreview()
 {
     stopTimer();
+    webView = nullptr;
 }
 
 //=========================================================================
@@ -99,8 +100,10 @@ void EditAndPreview::previewDoc (const ValueTree& docTree_)
     currentContent = docFile.loadFileAsString();
 
     // must create a new webBrowserComponent, 
-    // otherwise createMatchedHtmlFile() can't delete the html file
-    addAndMakeVisible (webView = new WebBrowserComponent ());    
+    // otherwise createMatchedHtmlFile() can't delete the html file    
+    //addAndMakeVisible (webView = new WebBrowserComponent ());    
+    webView->setVisible (true);
+    webView->stop ();
     webView->goToURL (createMatchedHtmlFile ().getFullPathName ());
     resized ();
 }

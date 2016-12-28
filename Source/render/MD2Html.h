@@ -13,8 +13,29 @@
 
 struct Md2Html
 {
+public:
     static const String mdStringToHtml (const String& mdString, const ValueTree& docTree);
-    static const bool generateHtmlFile (const String& htmlString, const File& htmlFile);
+    static const bool generateHtmlFile (const String& htmlString, const File& tplFile);
+
+private:
+    // call these methods must be ordered just like below order
+    static const String boldParse (const String& mdString);
+    static const String italicParse (const String& mdString);
+    static const String headingThereParse (const String& mdString);
+    static const String headingTwoParse (const String& mdString);
+    static const String headingOneParse (const String& mdString);
+    static const String mdLinkParse (const String& mdString); /**< [](http://xxx.com) */
+    static const String spaceLinkParse (const String& mdString); /**<  http://xxx.com  */
+    static const String imageParse (const String& mdString); /**< ![](media/xxx.jpg) */
+    static const String unorderedListParse (const String& mdString); /**< -  */
+    static const String orderedListParse (const String& mdString); /**< +  */
+    static const String hrParse (const String& mdString); /**< ---  */
+    static const String inlineCodeParse (const String& mdString);
+    static const String codeBlockParse (const String& mdString);
+    static const String alignCenterParse (const String& mdString);
+    static const String alignRightParse (const String& mdString);
+    static const String tableParse (const String& mdString);
+    static const String newLineParse (const String& mdString);
 
 };
 

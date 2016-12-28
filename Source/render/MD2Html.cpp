@@ -22,6 +22,7 @@ const String Md2Html::mdStringToHtml (const String& mdString,
     content = headingThereParse (content);
     content = headingTwoParse (content);
     content = headingOneParse (content);
+    content = spaceLinkParse (content);
 
     content = newLineParse (content);
 
@@ -193,17 +194,25 @@ const String Md2Html::headingOneParse (const String& mdString)
 }
 
 //=================================================================================================
-const String Md2Html::mdLinkParse (const String& mdString)
-{
-    String resultStr (mdString);
-
-    return resultStr;
-}
-
-//=================================================================================================
 const String Md2Html::spaceLinkParse (const String& mdString)
 {
     String resultStr (mdString);
+
+    int indexStart = resultStr.indexOfIgnoreCase (0, " http");
+
+    while (indexStart != -1)
+    {
+        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 10, " ");
+
+        if (indexEnd == -1)
+            break;
+
+        const String linkAddress (resultStr.substring (indexStart, indexEnd));
+        const String linkStr (" <a href=\"" + linkAddress + "\">" + linkAddress + "</a>");
+
+        resultStr = resultStr.replaceSection (indexStart, linkAddress.length(), linkStr); 
+        indexStart = resultStr.indexOfIgnoreCase (indexStart + linkStr.length(), " http");
+    }
 
     return resultStr;
 }
@@ -211,6 +220,15 @@ const String Md2Html::spaceLinkParse (const String& mdString)
 //=================================================================================================
 const String Md2Html::imageParse (const String& mdString)
 {
+    String resultStr (mdString);
+
+    return resultStr;
+}
+
+//=================================================================================================
+const String Md2Html::mdLinkParse (const String& mdString)
+{
+    // [](http://xxx.com)
     String resultStr (mdString);
 
     return resultStr;

@@ -67,7 +67,7 @@ private:
     String currentContent;
     
     ScopedPointer<TextEditor> editor;
-    ScopedPointer<WebBrowserComponent> webView;
+    WebBrowserComponent webView;
     ScopedPointer<SetupPanel> setupPanel;
 
     StretchableLayoutManager layoutManager;

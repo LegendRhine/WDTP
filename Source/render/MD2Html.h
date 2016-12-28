@@ -24,9 +24,12 @@ private:
     static const String headingThereParse (const String& mdString);
     static const String headingTwoParse (const String& mdString);
     static const String headingOneParse (const String& mdString);
-    static const String mdLinkParse (const String& mdString); /**< [](http://xxx.com) */
-    static const String spaceLinkParse (const String& mdString); /**<  http://xxx.com  */
+
+    /**  http://xxx.com  open in new tab/window, 
+        must start with: " http" and end with " "   */
+    static const String spaceLinkParse (const String& mdString); 
     static const String imageParse (const String& mdString); /**< ![](media/xxx.jpg) */
+    static const String mdLinkParse (const String& mdString); /**< [](http://xxx.com) */
     static const String unorderedListParse (const String& mdString); /**< -  */
     static const String orderedListParse (const String& mdString); /**< +  */
     static const String hrParse (const String& mdString); /**< ---  */

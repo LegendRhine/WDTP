@@ -14,8 +14,7 @@
 //==============================================================================
 EditAndPreview::EditAndPreview()
 {
-    // web browser
-    addChildComponent (webView = new WebBrowserComponent ());
+    addAndMakeVisible (webView);
 
     // stretched layout, arg: index, min-width, max-width，default x%
     layoutManager.setItemLayout (0, -0.5, -1.0, -0.69);  // editor，
@@ -44,15 +43,14 @@ EditAndPreview::EditAndPreview()
 EditAndPreview::~EditAndPreview()
 {
     stopTimer();
-    webView = nullptr;
 }
 
 //=========================================================================
 void EditAndPreview::resized()
 {
     // layout
-    Component* comps[] = { (webView->isVisible ()) ? 
-        static_cast<Component*>(webView) : static_cast<Component*>(editor), 
+    Component* comps[] = { (webView.isVisible ()) ? 
+        static_cast<Component*>(&webView) : static_cast<Component*>(editor), 
         layoutBar, setupPanel };
 
     layoutManager.layOutComponents (comps, 3, 0, 0, getWidth(), getHeight(), false, true);
@@ -62,7 +60,7 @@ void EditAndPreview::resized()
 void EditAndPreview::editNewDoc (const ValueTree& docTree_)
 {
     saveCurrentDocIfChanged();
-    webView->setVisible (false);
+    webView.setVisible (false);
 
     editor->removeListener (this);
     editor->setText (String (), false);
@@ -98,13 +96,10 @@ void EditAndPreview::previewDoc (const ValueTree& docTree_)
     docFile = DocTreeViewItem::getFileOrDir (docTree_);
     docTree = docTree_;
     currentContent = docFile.loadFileAsString();
-
-    // must create a new webBrowserComponent, 
-    // otherwise createMatchedHtmlFile() can't delete the html file    
-    //addAndMakeVisible (webView = new WebBrowserComponent ());    
-    webView->setVisible (true);
-    webView->stop ();
-    webView->goToURL (createMatchedHtmlFile ().getFullPathName ());
+  
+    webView.setVisible (true);
+    webView.stop ();
+    webView.goToURL (createMatchedHtmlFile ().getFullPathName ());
     resized ();
 }
 
@@ -140,7 +135,7 @@ void EditAndPreview::projectClosed ()
     editorAndWebInitial ();
 
     setupPanel->projectClosed ();
-    webView->setVisible (false);
+    webView.setVisible (false);
 }
 
 //=================================================================================================

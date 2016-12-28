@@ -117,6 +117,16 @@ const File EditAndPreview::createMatchedHtmlFile ()
         {
             htmlFile.create ();
             htmlFile.appendText (Md2Html::mdStringToHtml (currentContent, File()));
+
+            // here, we copy the doc's media dir to the site's
+            // this is a ugly inplement, need to be improved
+            const File docsMediaDir (docFile.getSiblingFile ("media"));
+
+            if (docsMediaDir.isDirectory())
+            {
+                const File htmlsMediaDir (htmlFile.getSiblingFile ("media"));
+                docsMediaDir.copyDirectoryTo (htmlsMediaDir);
+            }
         }
         else
         {
@@ -226,7 +236,7 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
     if (e->mods.isPopupMenu())
     {
         PopupMenu insertMenu;
-        insertMenu.addItem (1, TRANS ("Image"));
+        insertMenu.addItem (1, TRANS ("Iamge(s)..."));
         insertMenu.addItem (2, TRANS ("Hyperlink"));
         insertMenu.addSeparator();
 
@@ -271,7 +281,8 @@ void EditorForMd::performPopupMenuAction (int index)
 
     if (1 == index) // image
     {
-        FileChooser fc (TRANS ("Select Images..."), File::nonexistent, "*.jpg;*.png;*.gif", false);
+        FileChooser fc (TRANS ("Select Images..."), File::nonexistent,
+                        "*.jpg;*.png;*.gif", true);
         Array<File> imageFiles;
 
         if (!fc.browseForMultipleFilesToOpen())
@@ -282,13 +293,11 @@ void EditorForMd::performPopupMenuAction (int index)
 
         for (auto f : imageFiles)
         {
-            const File targetFile (imgPath.getChildFile (f.getFileName()).getNonexistentSibling (true));
-            targetFile.create();
+            const File targetFile (imgPath.getChildFile (f.getFileName()).getNonexistentSibling (false));
+            //targetFile.create();
 
             if (f.copyFileTo (targetFile))
-                content << newLine 
-                << "![ ](media/" << targetFile.getFileName() << ")" << newLine
-                << newLine;
+                content << newLine << "![ ](media/" << targetFile.getFileName() << ")" << newLine;
             else
                 SHOW_MESSAGE (TRANS ("Can't insert this image: ") + newLine + f.getFullPathName());
         }

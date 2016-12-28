@@ -23,6 +23,7 @@ const String Md2Html::mdStringToHtml (const String& mdString,
     content = headingTwoParse (content);
     content = headingOneParse (content);
     content = spaceLinkParse (content);
+    content = imageParse (content);
 
     content = newLineParse (content);
 
@@ -202,8 +203,10 @@ const String Md2Html::spaceLinkParse (const String& mdString)
         const String linkAddress (resultStr.substring (indexStart, indexEnd));
         const String linkStr (" <a href=\"" + linkAddress + "\">" + linkAddress + "</a>");
 
-        resultStr = resultStr.replaceSection (indexStart, linkAddress.length(), linkStr); 
-        indexStart = resultStr.indexOfIgnoreCase (indexStart + linkStr.length(), " http");
+        if (!linkAddress.contains (newLine) && linkAddress.containsNonWhitespaceChars())
+            resultStr = resultStr.replaceSection (indexStart, linkAddress.length (), linkStr);
+        
+        indexStart = resultStr.indexOfIgnoreCase (indexStart + linkAddress.length(), " http");
     }
 
     return resultStr;
@@ -212,7 +215,28 @@ const String Md2Html::spaceLinkParse (const String& mdString)
 //=================================================================================================
 const String Md2Html::imageParse (const String& mdString)
 {
+    /**< ![](media/xxx.jpg) */
     String resultStr (mdString);
+    int indexStart = resultStr.indexOfIgnoreCase (0, "![");
+
+    while (indexStart != -1)
+    {
+        // get alt content
+        const int altEnd = resultStr.indexOfIgnoreCase (indexStart + 2, "](");
+        if (altEnd == -1)            break;        
+        const String altContent (resultStr.substring (indexStart + 2, altEnd));
+
+        // get img path
+        const int imgEnd = resultStr.indexOfIgnoreCase (altEnd + 2, ")");
+        if (imgEnd == -1)            break;
+        const String imgPath (resultStr.substring (altEnd + 2, imgEnd));
+
+        String imgStr ("<div align=center><img src=\"" + imgPath + "\" alt=\"" 
+                       + altContent + "\" />  <br>" + TRANS ("Illustration: ") + altContent + "</div>");
+
+        resultStr = resultStr.replaceSection (indexStart, imgEnd + 1 - indexStart, imgStr);
+        indexStart = resultStr.indexOfIgnoreCase (indexStart + imgStr.length (), "![");
+    }
 
     return resultStr;
 }

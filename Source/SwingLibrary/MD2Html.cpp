@@ -24,6 +24,8 @@ const String Md2Html::mdStringToHtml (const String& mdString,
     content = headingOneParse (content);
     content = spaceLinkParse (content);
     content = imageParse (content);
+    content = mdLinkParse (content);
+    content = hrParse (content);
 
     content = newLineParse (content);
 
@@ -200,11 +202,12 @@ const String Md2Html::spaceLinkParse (const String& mdString)
         if (indexEnd == -1)
             break;
 
-        const String linkAddress (resultStr.substring (indexStart, indexEnd));
-        const String linkStr (" <a href=\"" + linkAddress + "\">" + linkAddress + "</a>");
+        const String linkAddress (resultStr.substring (indexStart + 1, indexEnd));
+        const String linkStr (" <a href=\"" + linkAddress + "\" target=\"_blank\">" + linkAddress + "</a>");
 
+        //DBG (linkAddress);
         if (!linkAddress.contains (newLine) && linkAddress.containsNonWhitespaceChars())
-            resultStr = resultStr.replaceSection (indexStart, linkAddress.length (), linkStr);
+            resultStr = resultStr.replaceSection (indexStart, linkAddress.length () + 1, linkStr);
         
         indexStart = resultStr.indexOfIgnoreCase (indexStart + linkAddress.length(), " http");
     }
@@ -231,8 +234,9 @@ const String Md2Html::imageParse (const String& mdString)
         if (imgEnd == -1)            break;
         const String imgPath (resultStr.substring (altEnd + 2, imgEnd));
 
-        String imgStr ("<div align=center><img src=\"" + imgPath + "\" alt=\"" 
-                       + altContent + "\" />  <br>" + TRANS ("Illustration: ") + altContent + "</div>");
+        const String imgStr ("<div align=center><img src=\"" + imgPath + "\" alt=\"" 
+                             + altContent + "\" />  <br>" + TRANS ("Illustration: ") 
+                             + altContent + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, imgEnd + 1 - indexStart, imgStr);
         indexStart = resultStr.indexOfIgnoreCase (indexStart + imgStr.length (), "![");
@@ -246,8 +250,46 @@ const String Md2Html::mdLinkParse (const String& mdString)
 {
     // [](http://xxx.com)
     String resultStr (mdString);
+    int midStart = resultStr.indexOfIgnoreCase (0, "](");
+
+    while (midStart != -1)
+    {
+        // get alt content
+        const String splitContent (resultStr.substring (0, midStart));
+        const int altStart = splitContent.lastIndexOfIgnoreCase ("[");
+        if (altStart == -1)            break;
+        const String altContent (resultStr.substring (altStart + 1, midStart));
+
+        // get link path
+        const int pathEnd = resultStr.indexOfIgnoreCase (midStart + 2, ")");
+        if (pathEnd == -1)            break;
+
+        const String linkPath (resultStr.substring (midStart + 2, pathEnd));
+        const String linkStr ("<a href=\"" + linkPath + "\">" + altContent + "</a>");
+
+        resultStr = resultStr.replaceSection (altStart, pathEnd + 1 - altStart, linkStr);
+        midStart = resultStr.indexOfIgnoreCase (midStart + linkStr.length (), "](");
+    }
 
     return resultStr;
+}
+
+//=================================================================================================
+const String Md2Html::hrParse (const String& mdString)
+{
+    StringArray contentByLine;
+    contentByLine.addLines (mdString);
+
+    for (int i = contentByLine.size(); --i >= 0; )
+    {
+        const String currentLine (contentByLine.getReference (i));
+
+        if ('-' == currentLine[0] && '-' == currentLine.getLastCharacter () 
+            && currentLine.contains ("---"))
+            contentByLine.getReference (i) = "<hr>\n";
+    }
+
+    return contentByLine.joinIntoString (newLine);
 }
 
 //=================================================================================================
@@ -260,14 +302,6 @@ const String Md2Html::unorderedListParse (const String& mdString)
 
 //=================================================================================================
 const String Md2Html::orderedListParse (const String& mdString)
-{
-    String resultStr (mdString);
-
-    return resultStr;
-}
-
-//=================================================================================================
-const String Md2Html::hrParse (const String& mdString)
 {
     String resultStr (mdString);
 

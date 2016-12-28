@@ -456,3 +456,25 @@ void SwingDialog::showDialog (const String& windowTitle)
     option.launchAsync ();
     setFocus ();
 }
+
+//=================================================================================================
+void WebBrowserComp::newWindowAttemptingToLoad (const String& newURL)
+{
+    WebBrowserComp* web = new WebBrowserComp ();
+    web->setSize (1000, 600);
+    web->goToURL (newURL);
+
+    OptionalScopedPointer<Component> comp (web, true);
+    DialogWindow::LaunchOptions option;
+
+    option.dialogTitle = newURL;
+    option.dialogBackgroundColour = Colours::black;
+    option.content = comp;
+    option.escapeKeyTriggersCloseButton = true;
+    option.useNativeTitleBar = true;
+    option.resizable = true;
+    option.useBottomRightCornerResizer = false;
+
+    option.launchAsync ();
+}
+

@@ -150,6 +150,7 @@ private:
     then call showDialog().
     
     Note: this class only allows to have one custom component.
+    when add a custom component, must set its size first.
 */
 class SwingDialog : public Component,
                     private Button::Listener
@@ -166,6 +167,7 @@ public:
 
     //=========================================================================
     void addButton (const String& btName, const KeyPress& shortKey);
+
     TextButton* getButton (const String& btName);
 
     //=========================================================================
@@ -203,5 +205,23 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SwingDialog)
 };
+
+//=========================================================================
+/** A WebBrowserComponent, it can load an url which with the tag "target=_blank" 
+    in a new modal window. By default, juce's webBrowser can't load it. 
+
+    Usage: same as JUCE's WebBrowserComponent */
+class WebBrowserComp : public WebBrowserComponent
+{
+public:
+    WebBrowserComp() {}
+    ~WebBrowserComp() {}
+    virtual void newWindowAttemptingToLoad (const String& newURL) override;
+
+private:
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WebBrowserComp)
+};
+
+
 
 #endif  // SWINGUTILITIES_H_INCLUDED

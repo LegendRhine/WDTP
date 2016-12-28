@@ -34,11 +34,9 @@
         <FILE id="pMFpqW" name="FileTreeContainer.h" compile="0" resource="0"
               file="Source/fileTree/FileTreeContainer.h"/>
       </GROUP>
-      <GROUP id="{D3401C39-DE40-D94A-EE8E-147FE211E0D9}" name="render">
-        <FILE id="ubZbKd" name="MD2Html.cpp" compile="1" resource="0" file="Source/render/MD2Html.cpp"/>
-        <FILE id="sdSAnu" name="MD2Html.h" compile="0" resource="0" file="Source/render/MD2Html.h"/>
-      </GROUP>
       <GROUP id="{83694581-DB15-8946-3B2A-EBBCEDD57AAD}" name="SwingLibrary">
+        <FILE id="mijKP1" name="MD2Html.cpp" compile="1" resource="0" file="Source/SwingLibrary/MD2Html.cpp"/>
+        <FILE id="snx2Eb" name="MD2Html.h" compile="0" resource="0" file="Source/SwingLibrary/MD2Html.h"/>
         <FILE id="xPreeF" name="SwingLookAndFeel.cpp" compile="1" resource="0"
               file="Source/SwingLibrary/SwingLookAndFeel.cpp"/>
         <FILE id="qeBKcI" name="SwingLookAndFeel.h" compile="0" resource="0"

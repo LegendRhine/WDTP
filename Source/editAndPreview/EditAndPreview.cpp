@@ -116,7 +116,7 @@ const File EditAndPreview::createMatchedHtmlFile ()
         if (htmlFile.deleteFile())
         {
             htmlFile.create ();
-            htmlFile.appendText (Md2Html::mdStringToHtml (currentContent, docTree));
+            htmlFile.appendText (Md2Html::mdStringToHtml (currentContent, File()));
         }
         else
         {

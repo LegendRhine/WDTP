@@ -11,11 +11,11 @@
 #ifndef MD2HTML_H_INCLUDED
 #define MD2HTML_H_INCLUDED
 
-struct Md2Html
+class Md2Html
 {
 public:
-    static const String mdStringToHtml (const String& mdString, const ValueTree& docTree);
-    static const bool generateHtmlFile (const String& htmlString, const File& tplFile);
+    /** Base on the argu Markdown string and template file, return html string. */
+    static const String mdStringToHtml (const String& mdString, const File& tplFile);
 
 private:
     // call these methods must be ordered just like below order

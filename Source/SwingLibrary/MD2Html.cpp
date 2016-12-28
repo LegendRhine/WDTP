@@ -12,11 +12,11 @@
 #include "MD2Html.h"
 
 //=================================================================================================
-const String Md2Html::mdStringToHtml (const String& mdString,
-                                      const ValueTree& docTree)
+const String Md2Html::mdStringToHtml (const String& mdString, 
+                                      const File& tplFile)
 {
     String content (mdString);
-    
+
     content = boldParse (content);
     content = italicParse (content);
     content = headingThereParse (content);
@@ -45,13 +45,6 @@ const String Md2Html::mdStringToHtml (const String& mdString,
         "</html>";
 
     return s;
-}
-
-//=================================================================================================
-const bool Md2Html::generateHtmlFile (const String& htmlString, const File& tplFile)
-{
-
-    return true;
 }
 
 //=================================================================================================
@@ -197,7 +190,6 @@ const String Md2Html::headingOneParse (const String& mdString)
 const String Md2Html::spaceLinkParse (const String& mdString)
 {
     String resultStr (mdString);
-
     int indexStart = resultStr.indexOfIgnoreCase (0, " http");
 
     while (indexStart != -1)

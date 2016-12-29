@@ -30,6 +30,7 @@ private:
     static const String imageParse (const String& mdString);  /**< ![](media/xxx.jpg) */
     static const String mdLinkParse (const String& mdString); /**< [](http://xxx.com) */
 
+    // These two only support two-level nested lists
     static const String unorderedListParse (const String& mdString); /**< -  */
     static const String orderedListParse (const String& mdString); /**< +  */
 
@@ -37,8 +38,8 @@ private:
     static const String hrParse (const String& mdString);
     static const String inlineCodeParse (const String& mdString);
     static const String codeBlockParse (const String& mdString);
-    static const String alignCenterParse (const String& mdString);
-    static const String alignRightParse (const String& mdString);
+    static const String alignCenterParse (const String& mdString); /**< *  */
+    static const String alignRightParse (const String& mdString);  /**< >  */
     static const String tableParse (const String& mdString);
     static const String newLineParse (const String& mdString);
 

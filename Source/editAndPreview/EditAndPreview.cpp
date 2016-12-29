@@ -92,14 +92,28 @@ void EditAndPreview::previewDoc (const ValueTree& docTree_)
 {
     saveCurrentDocIfChanged();
     editor->setEnabled (false);
-          
-    docFile = DocTreeViewItem::getFileOrDir (docTree_);
-    docTree = docTree_;
-    currentContent = docFile.loadFileAsString();
-  
     webView.setVisible (true);
     webView.stop ();
-    webView.goToURL (createMatchedHtmlFile ().getFullPathName ());
+
+    const File& file = DocTreeViewItem::getFileOrDir (docTree_);
+
+    if (file.existsAsFile())
+    {
+        docFile = file;
+        docTree = docTree_;
+        currentContent = docFile.loadFileAsString ();
+        
+        webView.goToURL (createMatchedHtmlFile ().getFullPathName ());
+    } 
+    else if (file.isDirectory())
+    {
+        editorAndWebInitial ();        
+        const String dirPath (file.getFullPathName ());
+        const File siteDir (dirPath.replace ("docs", FileTreeContainer::projectTree.getProperty ("place").toString ()));
+
+        webView.goToURL (siteDir.getChildFile ("index.html").getFullPathName ());
+    }
+    
     resized ();
 }
 
@@ -174,6 +188,7 @@ void EditAndPreview::editorAndWebInitial ()
     editor->setEnabled (false);
 
     docFile = File::nonexistent;
+    docTree = ValueTree::invalid;
     docHasChanged = false;
     currentContent = String();
 }

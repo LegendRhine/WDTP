@@ -44,7 +44,7 @@ private:
     static const String orderedListParse (const String& mdString); /**< +  */
     
     static const String tableParse (const String& mdString);
-    static const String newLineParse (const String& mdString);
+    static const String cleanUp (const String& mdString);
 
 };
 

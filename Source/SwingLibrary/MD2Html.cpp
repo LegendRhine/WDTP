@@ -15,6 +15,9 @@
 const String Md2Html::mdStringToHtml (const String& mdString, 
                                       const File& tplFile)
 {
+    if (mdString.isEmpty ())
+        return mdString;
+
     String content (mdString);
 
     content = codeBlockParse (content);
@@ -27,8 +30,9 @@ const String Md2Html::mdStringToHtml (const String& mdString,
     content = mdLinkParse (content);
     content = orderedListParse (content);
     content = unorderedListParse (content);
+    content = tableParse (content);
 
-    content = newLineParse (content);
+    content = cleanUp (content);
 
     //DBG (content);
 
@@ -424,6 +428,9 @@ const String Md2Html::unorderedListParse (const String& mdString)
 //=================================================================================================
 const String Md2Html::orderedListParse (const String& mdString)
 {
+    if (mdString.isEmpty ())
+        return mdString;
+
     StringArray contentByLine;
     contentByLine.addLines (mdString);
 
@@ -542,7 +549,7 @@ const String Md2Html::tableParse (const String& mdString)
 }
 
 //=================================================================================================
-const String Md2Html::newLineParse (const String& mdString)
+const String Md2Html::cleanUp (const String& mdString)
 {
     const String resultStr (mdString
                             // for code parse

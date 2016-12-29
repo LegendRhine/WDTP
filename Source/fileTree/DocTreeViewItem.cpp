@@ -135,36 +135,37 @@ const File DocTreeViewItem::getFileOrDir (const ValueTree& tree)
 }
 
 //=================================================================================================
-// left click
+// mouse click
 void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
 {
-    if (!isNowSelected)        return;
+    if (isNowSelected)
+    {
+        EditAndPreview* editArea = treeContainer->getEditAndPreview ();
+        MainContentComponent* mainComp = editArea->findParentComponentOfClass<MainContentComponent> ();
+        TopToolBar* toolbar = mainComp->getToolbar ();
 
-    EditAndPreview* editArea = treeContainer->getEditAndPreview();
-    MainContentComponent* mainComp = editArea->findParentComponentOfClass<MainContentComponent>();
-    TopToolBar* toolbar = mainComp->getToolbar();
-
-    // doc
-    if (tree.getType().toString() == "doc")
-    {        
+        // edit or preview
         if (toolbar != nullptr && toolbar->getStateOfViewButton ())
             editArea->previewDoc (tree);
         else
             editArea->editNewDoc (tree);
 
-        editArea->setDocProperties (tree);
-    }
-    // dir
-    else if (tree.getType ().toString () == "dir")
-    {
-        editArea->setDirProperties (tree);
-    }
-    else // root
-    {
-        editArea->setProjectProperties (tree);
-    }
-        
-    treeContainer->setIdentityOfLastSelectedItem (getItemIdentifierString());
+        // set properties on the right side
+        if (tree.getType ().toString () == "doc")
+        {
+            editArea->setDocProperties (tree);
+        }
+        else if (tree.getType ().toString () == "dir")
+        {
+            editArea->setDirProperties (tree);
+        }
+        else // root
+        {
+            editArea->setProjectProperties (tree);
+        }
+
+        treeContainer->setIdentityOfLastSelectedItem (getItemIdentifierString ());
+    }    
 }
 
 //=================================================================================================
@@ -439,7 +440,7 @@ void DocTreeViewItem::createNewDocument ()
         const File& thisDoc (getFileOrDir (tree).getChildFile (docName + ".md")
                              .getNonexistentSibling (true));
         thisDoc.create();
-        thisDoc.appendText (String ("### Title of this article")
+        thisDoc.appendText (TRANS ("# Title of this article")
                             + newLine + newLine);
 
         // get the root for get some its properties

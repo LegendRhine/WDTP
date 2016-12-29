@@ -17,15 +17,14 @@ const String Md2Html::mdStringToHtml (const String& mdString,
 {
     String content (mdString);
 
+    content = codeBlockParse (content);
+    content = inlineCodeParse (content);
     content = boldParse (content);
     content = italicParse (content);
-    content = headingThereParse (content);
-    content = headingTwoParse (content);
-    content = headingOneParse (content);
+    content = processByLine (content);
     content = spaceLinkParse (content);
     content = imageParse (content);
     content = mdLinkParse (content);
-    content = hrParse (content);
     content = orderedListParse (content);
     content = unorderedListParse (content);
 
@@ -50,6 +49,72 @@ const String Md2Html::mdStringToHtml (const String& mdString,
         "</html>";
 
     return s;
+}
+
+//=================================================================================================
+const String Md2Html::codeBlockParse (const String& mdString)
+{
+    String resultStr (mdString);
+    int indexStart = resultStr.indexOfIgnoreCase (0, "```");
+
+    while (indexStart != -1)
+    {
+        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 4, "```");
+
+        if (indexEnd == -1)
+            break;
+
+        const String mdCode (resultStr.substring (indexStart, indexEnd + 3));
+        const String htmlStr ("<pre><code>" + mdCode.replace ("```", String ())
+                              // for bold and italic parse
+                              .replace ("*", "_%5x|z%!##!_")
+                              /*.replace ("\"", "&quot;")
+                              .replace ("&", "&amp;")
+                              .replace ("<", "&lt;")
+                              .replace (">", "&gt;")
+                              .replace (" ", "&nbsp;")*/
+                              + "</code></pre>");
+
+        //DBG (htmlStr);
+        resultStr = resultStr.replaceSection (indexStart, mdCode.length (), htmlStr);
+        indexStart = resultStr.indexOfIgnoreCase (indexStart + htmlStr.length (), "```");
+    }
+
+    return resultStr;
+}
+
+//=================================================================================================
+const String Md2Html::inlineCodeParse (const String& mdString)
+{
+    String resultStr (mdString);
+    int indexStart = resultStr.indexOfIgnoreCase (0, "`");
+
+    while (indexStart != -1)
+    {
+        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 2, "`");
+
+        if (indexEnd == -1)
+            break;
+
+        const String mdCode (resultStr.substring (indexStart, indexEnd + 1));
+        const String htmlStr ("<code>" + mdCode.replace ("`", String ())
+                              // for bold and italic parse
+                              .replace ("*", "_%5x|z%!##!_")
+                              /*.replace ("\"", "&quot;")
+                              .replace ("&", "&amp;")
+                              .replace ("<", "&lt;")
+                              .replace (">", "&gt;")
+                              .replace (" ", "&nbsp;")*/
+                              + "</code>");
+
+        //DBG (htmlStr);
+        if (!htmlStr.contains (newLine)) // must place in the same line            
+            resultStr = resultStr.replaceSection (indexStart, mdCode.length (), htmlStr);        
+
+        indexStart = resultStr.indexOfIgnoreCase (indexStart + htmlStr.length (), "`");
+    }
+
+    return resultStr;
 }
 
 //=================================================================================================
@@ -117,78 +182,47 @@ const String Md2Html::italicParse (const String& mdString)
 }
 
 //=================================================================================================
-const String Md2Html::headingThereParse (const String& mdString)
+const String Md2Html::processByLine (const String& mdString)
 {
-    String resultStr (mdString);
-    int index = resultStr.indexOfIgnoreCase (0, "### ");
+    StringArray contentByLine;
+    contentByLine.addLines (mdString);
 
-    while (index != -1)
+    for (int i = contentByLine.size (); --i >= 0; )
     {
-        if (resultStr.substring (index - 1, index) != "\\")
-        {
-            resultStr = resultStr.replaceSection (index, 4, "<h3>");
+        String& currentLine (contentByLine.getReference (i));
 
-            const int lineEndIndex = resultStr.indexOfIgnoreCase (index + 4, newLine);
+        // <hr>
+        if (currentLine.substring (0, 3) == "---")
+            currentLine = "<hr>";
 
-            if (lineEndIndex != -1)
-                resultStr = resultStr.replaceSection (lineEndIndex, 2, "</h3>\n");
-        }
+        // <h6> ~ <h1>
+        else if (currentLine.substring (0, 7) == "###### ")
+            currentLine = "<h6>" + currentLine.substring (7) + "</h6>";
 
-        index = resultStr.indexOfIgnoreCase (index + 5, "### ");
+        else if (currentLine.substring (0, 6) == "##### ")
+            currentLine = "<h5>" + currentLine.substring (6) + "</h5>";
+
+        else if (currentLine.substring (0, 5) == "#### ")
+            currentLine = "<h4>" + currentLine.substring (5) + "</h4>";
+
+        else if (currentLine.substring (0, 4) == "### ")
+            currentLine = "<h3>" + currentLine.substring (4) + "</h3>";
+
+        else if (currentLine.substring (0, 3) == "## ")
+            currentLine = "<h2>" + currentLine.substring (3) + "</h2>";
+
+        else if (currentLine.substring (0, 2) == "# ")
+            currentLine = "<div align=center><h1>" + currentLine.substring (2) + "</h1></div>";
+
+        // align
+        else if (currentLine.substring (0, 4) == ">|< ")
+            currentLine = "<div align=center>" + currentLine.substring (4) + "</div>";
+
+        else if (currentLine.substring (0, 4) == ">>> ")
+            currentLine = "<div align=right>" + currentLine.substring (4) + "</div>";
     }
 
-    //DBG (resultStr);
-    return resultStr;
-}
-
-//=================================================================================================
-const String Md2Html::headingTwoParse (const String& mdString)
-{
-    String resultStr (mdString);
-    int index = resultStr.indexOfIgnoreCase (0, "## ");
-
-    while (index != -1)
-    {
-        if (resultStr.substring (index - 1, index) != "\\")
-        {
-            resultStr = resultStr.replaceSection (index, 3, "<h2>");
-
-            const int lineEndIndex = resultStr.indexOfIgnoreCase (index + 4, newLine);
-
-            if (lineEndIndex != -1)
-                resultStr = resultStr.replaceSection (lineEndIndex, 2, "</h2>\n");
-        }
-
-        index = resultStr.indexOfIgnoreCase (index + 5, "## ");
-    }
-
-    //DBG (resultStr);
-    return resultStr;
-}
-
-//=================================================================================================
-const String Md2Html::headingOneParse (const String& mdString)
-{
-    String resultStr (mdString);
-    int index = resultStr.indexOfIgnoreCase (0, "# ");
-
-    while (index != -1)
-    {
-        if (resultStr.substring (index - 1, index) != "\\")
-        {
-            resultStr = resultStr.replaceSection (index, 2, "<div align=center><h1>");
-
-            const int lineEndIndex = resultStr.indexOfIgnoreCase (index + 22, newLine);
-
-            if (lineEndIndex != -1)
-                resultStr = resultStr.replaceSection (lineEndIndex, 2, "</h1></div>\n");
-        }
-
-        index = resultStr.indexOfIgnoreCase (index + 12, "# ");
-    }
-
-    //DBG (resultStr);
-    return resultStr;
+    return contentByLine.joinIntoString (newLine);
 }
 
 //=================================================================================================
@@ -237,8 +271,7 @@ const String Md2Html::imageParse (const String& mdString)
         const String imgPath (resultStr.substring (altEnd + 2, imgEnd));
 
         const String imgStr ("<div align=center><img src=\"" + imgPath + "\" alt=\"" 
-                             + altContent + "\" />  <br>" + TRANS ("Illustration: ") 
-                             + altContent + "</div>");
+                             + altContent + "\" />" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, imgEnd + 1 - indexStart, imgStr);
         indexStart = resultStr.indexOfIgnoreCase (indexStart + imgStr.length (), "![");
@@ -274,24 +307,6 @@ const String Md2Html::mdLinkParse (const String& mdString)
     }
 
     return resultStr;
-}
-
-//=================================================================================================
-const String Md2Html::hrParse (const String& mdString)
-{
-    StringArray contentByLine;
-    contentByLine.addLines (mdString);
-
-    for (int i = contentByLine.size(); --i >= 0; )
-    {
-        const String currentLine (contentByLine.getReference (i));
-
-        if ('-' == currentLine[0] && '-' == currentLine.getLastCharacter () 
-            && currentLine.contains ("---"))
-            contentByLine.getReference (i) = "<hr>";
-    }
-
-    return contentByLine.joinIntoString (newLine);
 }
 
 //=================================================================================================
@@ -519,38 +534,6 @@ const String Md2Html::orderedListParse (const String& mdString)
 }
 
 //=================================================================================================
-const String Md2Html::inlineCodeParse (const String& mdString)
-{
-    String resultStr (mdString);
-
-    return resultStr;
-}
-
-//=================================================================================================
-const String Md2Html::codeBlockParse (const String& mdString)
-{
-    String resultStr (mdString);
-
-    return resultStr;
-}
-
-//=================================================================================================
-const String Md2Html::alignCenterParse (const String& mdString)
-{
-    String resultStr (mdString);
-
-    return resultStr;
-}
-
-//=================================================================================================
-const String Md2Html::alignRightParse (const String& mdString)
-{
-    String resultStr (mdString);
-
-    return resultStr;
-}
-
-//=================================================================================================
 const String Md2Html::tableParse (const String& mdString)
 {
     String resultStr (mdString);
@@ -561,7 +544,11 @@ const String Md2Html::tableParse (const String& mdString)
 //=================================================================================================
 const String Md2Html::newLineParse (const String& mdString)
 {
-    return mdString;
+    const String resultStr (mdString
+                            // for code parse
+                            .replace ("_%5x|z%!##!_", "*")
+    );
+    
     //String resultStr (mdString.replace (newLine + newLine, "<p>\n").replace (newLine, "<br>\n"));
 
     // clean extra "<br>"
@@ -583,5 +570,5 @@ const String Md2Html::newLineParse (const String& mdString)
         .replace("<hr>", "<hr>\n");*/
 
     //DBG (resultStr);
-    //return resultStr;
+    return resultStr;
 }

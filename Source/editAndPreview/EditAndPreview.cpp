@@ -294,7 +294,7 @@ void EditorForMd::performPopupMenuAction (int index)
         for (auto f : imageFiles)
         {
             const File targetFile (imgPath.getChildFile (f.getFileName()).getNonexistentSibling (false));
-            //targetFile.create();
+            targetFile.create();
 
             if (f.copyFileTo (targetFile))
                 content << newLine << "![ ](media/" << targetFile.getFileName() << ")" << newLine;
@@ -342,11 +342,11 @@ void EditorForMd::performPopupMenuAction (int index)
     }    
     else if (5 == index) // align center
     {
-        content << newLine << "* ";
+        content << newLine << ">|< ";
     }   
     else if (6 == index) // align right
     {
-        content << newLine << "> ";
+        content << newLine << ">>> ";
     }
     else if (7 == index)  // unordered list
     {
@@ -381,11 +381,11 @@ void EditorForMd::performPopupMenuAction (int index)
     else if (15 == index) // author and date
     {
         content << newLine << newLine 
-            << "> "
-            << TRANS("Author: ")
-            << FileTreeContainer::projectTree.getProperty("owner").toString() 
-            << " " << newLine << "> "
-            << SwingUtilities::getTimeStringWithSeparator(SwingUtilities::getCurrentTimeString()).dropLastCharacters(9)
+            << ">>> "
+            << TRANS ("Author: ")
+            << FileTreeContainer::projectTree.getProperty ("owner").toString ()
+            << " " << newLine << ">>> "
+            << SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString ()).dropLastCharacters (9)
             << " ";
         
     }

@@ -30,7 +30,6 @@ const String Md2Html::mdStringToHtml (const String& mdString,
     content = mdLinkParse (content);
     content = orderedListParse (content);
     content = unorderedListParse (content);
-    content = tableParse (content);
 
     content = cleanUp (content);
 
@@ -70,8 +69,7 @@ const String Md2Html::codeBlockParse (const String& mdString)
 
         const String mdCode (resultStr.substring (indexStart, indexEnd + 3));
         const String htmlStr ("<pre><code>" + mdCode.replace ("```", String ())
-                              // for bold and italic parse
-                              .replace ("*", "_%5x|z%!##!_")
+                              .replace ("*", "_%5x|z%!##!_") // for bold and italic parse
                               /*.replace ("\"", "&quot;")
                               .replace ("&", "&amp;")
                               .replace ("<", "&lt;")
@@ -102,8 +100,7 @@ const String Md2Html::inlineCodeParse (const String& mdString)
 
         const String mdCode (resultStr.substring (indexStart, indexEnd + 1));
         const String htmlStr ("<code>" + mdCode.replace ("`", String ())
-                              // for bold and italic parse
-                              .replace ("*", "_%5x|z%!##!_")
+                              .replace ("*", "_%5x|z%!##!_") // for bold and italic parse
                               /*.replace ("\"", "&quot;")
                               .replace ("&", "&amp;")
                               .replace ("<", "&lt;")
@@ -538,14 +535,6 @@ const String Md2Html::orderedListParse (const String& mdString)
     }
 
     return contentByLine.joinIntoString (newLine);
-}
-
-//=================================================================================================
-const String Md2Html::tableParse (const String& mdString)
-{
-    String resultStr (mdString);
-
-    return resultStr;
 }
 
 //=================================================================================================

@@ -374,7 +374,7 @@ void DocTreeViewItem::importDocuments ()
     const File thisDir (getFileOrDir (tree));
     jassert (thisDir.isDirectory ()); // can't copy external docs to a nonexists dir
 
-                                      // get the root, here we need some info from it
+    // get the root, here we need some info from it
     ValueTree rootTree = tree;
 
     while (rootTree.getParent ().isValid ())

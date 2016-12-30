@@ -43,7 +43,6 @@ private:
     static const String unorderedListParse (const String& mdString); /**< -  */
     static const String orderedListParse (const String& mdString); /**< +  */
     
-    static const String tableParse (const String& mdString);
     static const String cleanUp (const String& mdString);
 
 };

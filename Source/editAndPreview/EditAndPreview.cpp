@@ -252,11 +252,8 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
     {
         PopupMenu insertMenu;
         insertMenu.addItem (1, TRANS ("Iamge(s)..."));
-        insertMenu.addItem (2, TRANS ("Hyperlink"));
-        insertMenu.addSeparator();
-
-        insertMenu.addItem (3, TRANS ("Table") + " (2x2)");
-        insertMenu.addItem (4, TRANS ("Table") + " (3x3)");
+        insertMenu.addItem (2, TRANS ("Hyperlink..."));
+        insertMenu.addItem (3, TRANS ("Table (4 x 3)"));
         insertMenu.addSeparator ();
 
         insertMenu.addItem (5, TRANS ("Align Center"));
@@ -333,28 +330,20 @@ void EditorForMd::performPopupMenuAction (int index)
         }
         else
         {
-            return;
+            return;  // for: no need to perform other codes below...
         }
     }    
-    else if (3 == index) // table 2*2
+    else if (3 == index) // table (4 x 3)
     {
-        content << newLine
-            << "|  |  |" << newLine
-            << "| --: | :-- |" << newLine
-            << "|  |  |" << newLine
-            << "|  |  |" << newLine
-            << newLine;
+        content << newLine 
+            << "<table width=\"600\" border=\"1\"  align=\"center\">" << newLine
+            << "    <tr><th> H1 </th><th> H2 </th><th> H3 </th></tr>" << newLine
+            << "    <tr><td> 11 </td><td> 12 </td><td> 13 </td></tr>" << newLine
+            << "    <tr><td> 21 </td><td> 22 </td><td> 23 </td></tr>" << newLine
+            << "    <tr><td> 31 </td><td> 32 </td><td> 33 </td></tr>" << newLine
+            << "    <tr><td> 41 </td><td> 42 </td><td> 43 </td></tr>" << newLine
+            << "</table>" << newLine;
     }
-    else if (4 == index) // table 3*3
-    {
-        content << newLine
-            << "|  |  |  |" << newLine
-            << "| --: | :--: | :-- |" << newLine
-            << "|  |  |  |" << newLine
-            << "|  |  |  |" << newLine
-            << "|  |  |  |" << newLine
-            << newLine;        
-    }    
     else if (5 == index) // align center
     {
         content << newLine << ">|< ";

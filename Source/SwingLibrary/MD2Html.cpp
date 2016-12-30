@@ -30,17 +30,16 @@ const String Md2Html::mdStringToHtml (const String& mdString,
     content = mdLinkParse (content);
     content = orderedListParse (content);
     content = unorderedListParse (content);
-
     content = cleanUp (content);
 
     //DBG (content);
 
     String s;
     s << "<!doctype html>" << newLine <<
-        "<html lang=\"cn\">" << newLine <<
+        "<html lang=\"zh-CN\">" << newLine <<
         " <head>" << newLine <<
         "  <meta charset=\"UTF-8\">" << newLine <<
-        "  <meta name=\"Generator\" content=\"WDTP\">" << newLine <<
+        "  <meta name=\"Generator\" content=\"WDTP by SwingCoder\">" << newLine <<
         "  <meta name=\"Author\" content=\"\">" << newLine <<
         "  <meta name=\"Keywords\" content=\"\">" << newLine <<
         "  <meta name=\"Description\" content=\"\">" << newLine <<
@@ -542,7 +541,6 @@ const String Md2Html::cleanUp (const String& mdString)
 {
     // transform newLine to <p> and <br>
     String resultStr (mdString.replace ("_%5x|z%!##!_", "*") // for code parse
-                      .replace (newLine + newLine + newLine, "<p>\n")
                       .replace (newLine + newLine, "<p>\n")
                       .replace (newLine, "<br>\n")                            
     );
@@ -563,7 +561,8 @@ const String Md2Html::cleanUp (const String& mdString)
 
     while (indexP != -1)
     {
-        if (resultStr.substring (indexP - 2, indexP).contains (">"))
+        if (resultStr.substring (indexP - 2, indexP).contains (">")
+            && !resultStr.substring (indexP - 8, indexP).contains ("</div>"))
             resultStr = resultStr.replaceSection (indexP, 4, newLine);
 
         indexP = resultStr.indexOfIgnoreCase (indexP + 3, "<p>");

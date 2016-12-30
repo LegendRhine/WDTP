@@ -68,13 +68,9 @@ const String Md2Html::codeBlockParse (const String& mdString)
             break;
 
         const String mdCode (resultStr.substring (indexStart, indexEnd + 3));
-        const String htmlStr ("<pre><code>" + mdCode.replace ("```", String ())
+        const String htmlStr ("<pre><code>" 
+                              + mdCode.replace ("```", String())
                               .replace ("*", "_%5x|z%!##!_") // for bold and italic parse
-                              /*.replace ("\"", "&quot;")
-                              .replace ("&", "&amp;")
-                              .replace ("<", "&lt;")
-                              .replace (">", "&gt;")
-                              .replace (" ", "&nbsp;")*/
                               + "</code></pre>");
 
         //DBG (htmlStr);
@@ -544,31 +540,61 @@ const String Md2Html::orderedListParse (const String& mdString)
 //=================================================================================================
 const String Md2Html::cleanUp (const String& mdString)
 {
-    const String resultStr (mdString
-                            // for code parse
-                            .replace ("_%5x|z%!##!_", "*")
+    // transform newLine to <p> and <br>
+    String resultStr (mdString.replace ("_%5x|z%!##!_", "*") // for code parse
+                      .replace (newLine + newLine + newLine, "<p>\n")
+                      .replace (newLine + newLine, "<p>\n")
+                      .replace (newLine, "<br>\n")                            
     );
     
-    //String resultStr (mdString.replace (newLine + newLine, "<p>\n").replace (newLine, "<br>\n"));
+    // clean extra <br> when it's after any html-tag
+    int indexBr = resultStr.indexOfIgnoreCase (0, "<br>");
 
-    // clean extra "<br>"
-/*
-    int index = resultStr.indexOfIgnoreCase (0, "<br>");
-
-    while (index != -1)
+    while (indexBr != -1)
     {
-        if (resultStr.substring (index - 2, index).contains (">"))
-            resultStr = resultStr.replaceSection (index, 5, String());
+        if (resultStr.substring (indexBr - 2, indexBr).contains (">"))
+            resultStr = resultStr.replaceSection (indexBr, 5, newLine);
 
-        index = resultStr.indexOfIgnoreCase (index + 4, "<br>");
+        indexBr = resultStr.indexOfIgnoreCase (indexBr + 4, "<br>");
     }
 
-    // clean extra "</li><p>" to "</li>", etc..
-    resultStr = resultStr.replace ("</li><p>", "</li>")
-        .replace ("<ol><p>", "<ol>")
-        .replace ("</ol><p>", "</ol>")
-        .replace("<hr>", "<hr>\n");*/
+    // clean extra <p> when it's after any html-tag
+    int indexP = resultStr.indexOfIgnoreCase (0, "<p>");
+
+    while (indexP != -1)
+    {
+        if (resultStr.substring (indexP - 2, indexP).contains (">"))
+            resultStr = resultStr.replaceSection (indexP, 4, newLine);
+
+        indexP = resultStr.indexOfIgnoreCase (indexP + 3, "<p>");
+    }
+
+    // clean extra <p> and <br> which is in code-block(s)
+    int indexCodeStart = resultStr.indexOfIgnoreCase (0, "<pre><code>");
+
+    while (indexCodeStart != -1 && indexCodeStart + 16 <= resultStr.length())
+    {
+        const int indexCodeEnd = resultStr.indexOfIgnoreCase (indexCodeStart + 16, "</code></pre>");
+
+        if (indexCodeEnd == -1)
+            break;
+
+        const String mdCode (resultStr.substring (indexCodeStart, indexCodeEnd));        
+        const String codeHtml (mdCode.replace ("<p>", "\n").replace ("<br>", ""));
+
+        resultStr = resultStr.replaceSection (indexCodeStart, mdCode.length (), codeHtml);
+        indexCodeStart = resultStr.indexOfIgnoreCase (indexCodeStart + 16, "<pre><code>");
+    }
+
+    // clean extra <br> and <p> which before <pre><code>
+    resultStr = resultStr.replace ("<br>\n<pre>", newLine + "<pre>")
+        .replace ("<p>\n<pre>", newLine + "<pre>");
+
+    // make the <pre><code> at the same line with the code
+    // otherwise the vertical-gap will too wide
+    resultStr = resultStr.replace (String ("<pre><code>") + newLine, "<pre><code>");
 
     //DBG (resultStr);
     return resultStr;
 }
+

@@ -254,6 +254,7 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (1, TRANS ("Iamge(s)..."));
         insertMenu.addItem (2, TRANS ("Hyperlink..."));
         insertMenu.addItem (3, TRANS ("Table (4 x 3)"));
+        insertMenu.addItem (4, TRANS ("Quotation"));
         insertMenu.addSeparator ();
 
         insertMenu.addItem (5, TRANS ("Align Center"));
@@ -336,13 +337,17 @@ void EditorForMd::performPopupMenuAction (int index)
     else if (3 == index) // table (4 x 3)
     {
         content << newLine 
-            << "<table width=\"600\" border=\"1\"  align=\"center\">" << newLine
-            << "    <tr><th> H1 </th><th> H2 </th><th> H3 </th></tr>" << newLine
-            << "    <tr><td> 11 </td><td> 12 </td><td> 13 </td></tr>" << newLine
-            << "    <tr><td> 21 </td><td> 22 </td><td> 23 </td></tr>" << newLine
-            << "    <tr><td> 31 </td><td> 32 </td><td> 33 </td></tr>" << newLine
-            << "    <tr><td> 41 </td><td> 42 </td><td> 43 </td></tr>" << newLine
+            << "<table>" << newLine
+            << "  <tr><th> H1 </th><th> H2 </th><th> H3 </th></tr>" << newLine
+            << "  <tr><td> 11 </td><td> 12 </td><td> 13 </td></tr>" << newLine
+            << "  <tr><td> 21 </td><td> 22 </td><td> 23 </td></tr>" << newLine
+            << "  <tr><td> 31 </td><td> 32 </td><td> 33 </td></tr>" << newLine
+            << "  <tr><td> 41 </td><td> 42 </td><td> 43 </td></tr>" << newLine
             << "</table>" << newLine;
+    }
+    else if (4 == index) // Quotation
+    {
+        content << newLine << "> ";
     }
     else if (5 == index) // align center
     {

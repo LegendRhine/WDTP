@@ -28,10 +28,15 @@ private:
     static const String boldParse (const String& mdString);
     static const String italicParse (const String& mdString);
 
-    /** This method will process: <hr>, <h1> ~ <h6>, <align>
+    /** This method will process: <hr>, <blockquote>, <h1> ~ <h6>, <align>.
+        All of these Markdown-character(s) must at the first of a line.
 
-        <h1> will auto place in center. <hr> must at least 3 "-" and place in a single line.
-        center: ">|<", right: ">>>" */
+        <hr>: "---", must at least 3 "-" and place in a single line.
+        otherwise, all of the characters after it will be replaced to "<hr>".
+
+        <blockquote>: "> " 
+        <h1>: "# " will auto place in center. 
+        My custom define: center: ">|<", right: ">>>" */
     static const String processByLine (const String& mdString);
 
     /** http://xxx.com  open in new tab/window, must start with: " http" and end with " "   */

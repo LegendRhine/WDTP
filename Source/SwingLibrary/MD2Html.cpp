@@ -196,6 +196,10 @@ const String Md2Html::processByLine (const String& mdString)
         if (currentLine.substring (0, 3) == "---")
             currentLine = "<hr>";
 
+        // <blockquote>
+        else if (currentLine.substring (0, 2) == "> ")
+            currentLine = "<blockquote>" + currentLine.substring (2) + "</blockquote>";
+
         // <h6> ~ <h1>
         else if (currentLine.substring (0, 7) == "###### ")
             currentLine = "<h6>" + currentLine.substring (7) + "</h6>";

@@ -48,13 +48,13 @@ private:
     { 
         // project properties' values
         projectName = 0, projectDesc, owner, projectSkin, 
-        projectRenderDir, place, fontSize, 
+        projectRenderDir, fontSize, 
 
         // dir properties' values
-        dirDesc, isMenu, dirRenderDir, dirWebName, 
+        dirDesc, isMenu, dirRenderDir,  
 
         // doc properties' values
-        keywords, docWebName, tplFile, js, 
+        keywords, tplFile, js, 
 
         totalValues
     };

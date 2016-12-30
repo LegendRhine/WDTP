@@ -44,7 +44,6 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     values[owner]->setValue (pTree.getProperty ("owner"));
     values[projectSkin]->setValue (pTree.getProperty ("skin"));
     values[projectRenderDir]->setValue (pTree.getProperty ("render"));
-    values[place]->setValue (pTree.getProperty ("place"));
     values[fontSize]->setValue (pTree.getProperty ("fontSize"));
 
     Array<PropertyComponent*> projectProperties;
@@ -83,7 +82,6 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
 
     projectProperties.add (new ChoicePropertyComponent (*values[projectRenderDir], TRANS ("Template: "),
                                                         themeDirsSa, themeDirsVar));
-    projectProperties.add (new TextPropertyComponent (*values[place], TRANS ("Render To: "), 60, false));
     projectProperties.add (new SliderPropertyComponent (*values[fontSize], TRANS ("Editor Font: "), 12.0, 60.0, 0.1));
 
     for (auto p : projectProperties)  p->setPreferredHeight (28);
@@ -104,7 +102,6 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     values[dirDesc]->setValue (dirTree.getProperty ("title"));
     values[isMenu]->setValue (dirTree.getProperty ("isMenu"));
     values[dirRenderDir]->setValue (dirTree.getProperty ("render"));
-    values[dirWebName]->setValue (dirTree.getProperty ("webName"));
 
     Array<PropertyComponent*> dirProperties;
     dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Description: "), 0, true));
@@ -129,7 +126,6 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
 
     dirProperties.add (new ChoicePropertyComponent (*values[dirRenderDir], TRANS ("Template: "),
                                                     themeDirsSa, themeDirsVar));
-    dirProperties.add (new TextPropertyComponent (*values[dirWebName], TRANS ("Web Name: "), 60, false));
 
     for (auto p : dirProperties)     p->setPreferredHeight (28);
     dirProperties[0]->setPreferredHeight (28 * 3);
@@ -147,18 +143,16 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     jassert (docTree.isValid () && docTree.getType ().toString () == "doc");
 
     values[keywords]->setValue (docTree.getProperty ("keywords"));
-    values[docWebName]->setValue (docTree.getProperty ("webName"));
     values[tplFile]->setValue (docTree.getProperty ("tplFile"));
     values[js]->setValue (docTree.getProperty ("js"));
 
     Array<PropertyComponent*> docProperties;
     docProperties.add (new TextPropertyComponent (*values[keywords], TRANS ("Keywords: "), 80, false));
-    docProperties.add (new TextPropertyComponent (*values[docWebName], TRANS ("Web Name: "), 80, false));
     docProperties.add (new TextPropertyComponent (*values[tplFile], TRANS ("Template File: "), 60, false));
     docProperties.add (new TextPropertyComponent (*values[js], TRANS ("Java Script: "), 0, true));
 
     for (auto p : docProperties)   p->setPreferredHeight (28);
-    docProperties[3]->setPreferredHeight (28 * 4);
+    docProperties[docProperties.size() - 1]->setPreferredHeight (28 * 4);
 
     panel->addSection (TRANS ("Document Setup"), docProperties);
     valuesAddListener ();
@@ -215,8 +209,6 @@ void SetupPanel::valueChanged (Value& value)
         projectTree.setProperty ("skin", values[projectSkin]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[projectRenderDir]))
         projectTree.setProperty ("render", values[projectRenderDir]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[place]))
-        projectTree.setProperty ("place", values[place]->getValue (), nullptr);
 
     else if (value.refersToSameSourceAs (*values[fontSize]))
     {
@@ -234,14 +226,10 @@ void SetupPanel::valueChanged (Value& value)
         dirTree.setProperty ("isMenu", values[isMenu]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[dirRenderDir]))
         dirTree.setProperty ("render", values[dirRenderDir]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[dirWebName]))
-        dirTree.setProperty ("webName", values[dirWebName]->getValue (), nullptr);
 
     // doc properties
     else if (value.refersToSameSourceAs (*values[keywords]))
         docTree.setProperty ("keywords", values[keywords]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[docWebName]))
-        docTree.setProperty ("webName", values[docWebName]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[tplFile]))
         docTree.setProperty ("tplFile", values[tplFile]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[js]))

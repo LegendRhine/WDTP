@@ -109,7 +109,7 @@ void EditAndPreview::previewDoc (const ValueTree& docTree_)
     {
         editorAndWebInitial ();        
         const String dirPath (file.getFullPathName ());
-        const File siteDir (dirPath.replace ("docs", FileTreeContainer::projectTree.getProperty ("place").toString ()));
+        const File siteDir (dirPath.replace ("docs", "site"));
 
         webView.goToURL (siteDir.getChildFile ("index.html").getFullPathName ());
     }
@@ -123,7 +123,7 @@ const File EditAndPreview::createMatchedHtmlFile ()
     jassert (FileTreeContainer::projectTree.isValid());
 
     const String docPath (docFile.withFileExtension("html").getFullPathName());
-    File htmlFile (docPath.replace("docs", FileTreeContainer::projectTree.getProperty("place").toString()));
+    File htmlFile (docPath.replace("docs", "site"));
 
     if (needCreateHtml || !htmlFile.existsAsFile())
     {   

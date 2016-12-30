@@ -61,7 +61,7 @@
 		- theme-2 （模板2）
 			- ...
 
-- Docs、Site、Themes这三个文件夹由用户创建新项目时自动生成，这三个文件夹的名称不可变
+- docs、site、themes这三个文件夹由用户创建新项目时自动生成，这三个文件夹的名称不可变
 - Docs文件夹**必须**与项目文件位于同一个父目录下
 - 程序所创建、管理的所有 Markdown 文档必须位于Docs目录或其某个子目录下，文件扩展名定死为“.md”
 - 项目采用哪套模板渲染，由用户设置。设置办法：指定Themes下的某个子文件夹。设置结果（子文件夹名称）记录在项目文件中
@@ -105,7 +105,6 @@
 	- showWhat: TreeView中显示文件名（0）、标题/简介（1），还是网页文件名（2）
 	- tooltip：TreeView中的tooltip显示文件名（包括所有路径，0）、标题/简介（1），还是网页文件名（2）
 	- render: 渲染模板（磁盘Themes下的某个子目录，即已安装的某套模板）
-	- place: 渲染后的网页存放于该目录下，默认为Site目录，用户可另外指定
 	- fontName: 文本编辑器所用的字体
 	- fontSize：文本编辑器的字体大小
 	- identityOfLastSelectedItem: 文件树中最后一次选择的文档的标示，可由TreeView的findItemFromIdentifierString()找到对应的item，
@@ -117,13 +116,11 @@
 	- title：简述，即网页上所显示的栏目名称
 	- isMenu：是否为网站菜单
 	- render: 本目录下所有文档的渲染模板（磁盘Themes下的某个子目录，即已安装的某套模板）
-	- webName：html文件名
 
 - 值树中各个doc（文档）的属性：
     - name：文件名（不含文件扩展名，不包含任何上级路径。上级路径可通过其父节点的name获取）
 	- title：文章或页面的标题
 	- keywords: 关键字
-    - webName：发布后的html文件名
     - tplFile：渲染所需的模板文件（默认为项目属性中所设置的模板）
     - js：网页head区所执行的js代码
 

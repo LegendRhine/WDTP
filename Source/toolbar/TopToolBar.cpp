@@ -367,7 +367,7 @@ void TopToolBar::createNewProject ()
     ValueTree p ("wdtpProject");
     p.setProperty ("name", projectFile.getFileNameWithoutExtension (), nullptr);
     p.setProperty ("title", TRANS ("Description of this project..."), nullptr);
-    p.setProperty ("owner", String (), nullptr);
+    p.setProperty ("owner", SystemStats::getLogonName() , nullptr);
     p.setProperty ("skin", "Elegence", nullptr);
     p.setProperty ("order", 0, nullptr);
     p.setProperty ("ascending", 0, nullptr);
@@ -375,7 +375,6 @@ void TopToolBar::createNewProject ()
     p.setProperty ("showWhat", 0, nullptr);
     p.setProperty ("tooltip", 0, nullptr);
     p.setProperty ("render", "themes/theme-1", nullptr);
-    p.setProperty ("place", "site", nullptr);
     p.setProperty ("fontName", SwingUtilities::getFontName (), nullptr);
     p.setProperty ("fontSize", SwingUtilities::getFontSize (), nullptr);
 
@@ -396,7 +395,6 @@ void TopToolBar::createNewProject ()
     d.setProperty ("name", docFile.getFileNameWithoutExtension (), nullptr);
     d.setProperty ("title", "Hello World", nullptr);
     d.setProperty ("keywords", String (), nullptr);
-    d.setProperty ("webName", docFile.getFileNameWithoutExtension (), nullptr);
     d.setProperty ("tplFile", p.getProperty ("render").toString () + "/article.html", nullptr);
     d.setProperty ("js", String (), nullptr);
 

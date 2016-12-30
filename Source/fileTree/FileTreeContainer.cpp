@@ -219,12 +219,7 @@ const int ItemSorter::compareElements (TreeViewItem* first, TreeViewItem* second
         {
             const int r = ft.getProperty ("title").toString ().compareIgnoreCase (st.getProperty ("title").toString ());
             return isAscending ? r : -r;
-        }
-        else if (2 == order) // webname
-        {
-            const int r = ft.getProperty ("webName").toString ().compareIgnoreCase (st.getProperty ("webName").toString ());
-            return isAscending ? r : -r;
-        }
+        }        
         else if (3 == order) // file size
         {
             const int r = int (ff.getSize () - sf.getSize ());

@@ -98,9 +98,6 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
     else if (sorter->getShowWhat () == 1) // title or intro
         itemName = tree.getProperty ("title").toString ();
 
-    else if (sorter->getShowWhat () == 2)  // webpage name
-        itemName = tree.getProperty ("webName").toString ();
-
     g.drawText (itemName, leftGap, 0, width - 4, height, Justification::centredLeft, true);
 }
 
@@ -195,7 +192,6 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         PopupMenu sortMenu;
         sortMenu.addItem (100, TRANS ("File Name"), true, sorter->getOrder () == 0);
         sortMenu.addItem (101, TRANS ("Title / Intro"), true, sorter->getOrder () == 1);
-        sortMenu.addItem (102, TRANS ("Web Name"), true, sorter->getOrder () == 2);
         sortMenu.addItem (103, TRANS ("File Size"), true, sorter->getOrder () == 3);
         sortMenu.addItem (104, TRANS ("Create Time"), true, sorter->getOrder () == 4);
         sortMenu.addItem (105, TRANS ("Modified Time"), true, sorter->getOrder () == 5);
@@ -208,14 +204,12 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         PopupMenu showedAsMenu;
         showedAsMenu.addItem (200, TRANS ("File Name"), true, sorter->getShowWhat () == 0);
         showedAsMenu.addItem (201, TRANS ("Title / Intro"), true, sorter->getShowWhat () == 1);
-        showedAsMenu.addItem (202, TRANS ("Web Name"), true, sorter->getShowWhat () == 2);
 
         m.addSubMenu (TRANS ("Showed as"), showedAsMenu);
 
         PopupMenu tooltipAsMenu;
         tooltipAsMenu.addItem (300, TRANS ("File Path"), true, sorter->getTooltipToShow () == 0);
         tooltipAsMenu.addItem (301, TRANS ("Title / Intro"), true, sorter->getTooltipToShow () == 1);
-        tooltipAsMenu.addItem (302, TRANS ("Web Name"), true, sorter->getTooltipToShow () == 2);
 
         m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu);
         m.addSeparator ();
@@ -397,9 +391,6 @@ void DocTreeViewItem::importDocuments ()
             ValueTree docTree ("doc");
             docTree.setProperty ("name", targetFile.getFileNameWithoutExtension (), nullptr);
             docTree.setProperty ("title", targetFile.getFileNameWithoutExtension (), nullptr);
-            docTree.setProperty ("author", rootTree.getProperty ("owner").toString (), nullptr);
-            docTree.setProperty ("publish", true, nullptr);
-            docTree.setProperty ("webName", targetFile.getFileNameWithoutExtension (), nullptr);
             docTree.setProperty ("tplFile", rootTree.getProperty ("render").toString () + "/article.html", nullptr);
             docTree.setProperty ("js", String (), nullptr);
 
@@ -454,7 +445,6 @@ void DocTreeViewItem::createNewDocument ()
         docTree.setProperty ("name", thisDoc.getFileNameWithoutExtension (), nullptr);
         docTree.setProperty ("title", "Title of this article", nullptr);
         docTree.setProperty ("keywords", String (), nullptr);
-        docTree.setProperty ("webName", docName, nullptr);
         docTree.setProperty ("tplFile", tree.getProperty ("render").toString() + "/article.html", nullptr);
         docTree.setProperty ("js", String (), nullptr);
 
@@ -511,7 +501,6 @@ void DocTreeViewItem::createNewFolder ()
         dirTree.setProperty ("title", thisDir.getFileNameWithoutExtension (), nullptr);
         dirTree.setProperty ("isMenu", false, nullptr);
         dirTree.setProperty ("render", rootTree.getProperty ("render").toString (), nullptr);
-        dirTree.setProperty ("webName", thisDir.getFileNameWithoutExtension (), nullptr);
 
         // must update this tree before show this new item
         tree.removeListener (this);
@@ -814,7 +803,7 @@ String DocTreeViewItem::getTooltip ()
         else
         {
             const String docPath (getFileOrDir(tree).getFullPathName());
-            const String& htmlPath (docPath.replace ("docs", FileTreeContainer::projectTree.getProperty ("place").toString()));
+            const String& htmlPath (docPath.replace ("docs","site"));
             //DBGX (htmlPath.replace (".md", ".html"));
 
             return htmlPath.replace (".md", ".html");

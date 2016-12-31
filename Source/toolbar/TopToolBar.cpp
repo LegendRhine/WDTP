@@ -386,13 +386,13 @@ void TopToolBar::createNewProject ()
     // TODO: create template files in 'themes/theme-1'..
 
     // 5-3: create a index.md and initial its properties
-    const File& docFile (projectFile.getSiblingFile ("docs/index.md"));
-    docFile.create ();
-    docFile.appendText ("Hello World! ");
+    const File& indexFile (projectFile.getSiblingFile ("docs/index.md"));
+    indexFile.create ();
+    indexFile.appendText ("Hello World! ");
 
-    // doc valueTree
+    // index valueTree
     ValueTree d ("doc");
-    d.setProperty ("name", docFile.getFileNameWithoutExtension (), nullptr);
+    d.setProperty ("name", indexFile.getFileNameWithoutExtension (), nullptr);
     d.setProperty ("title", "Hello World", nullptr);
     d.setProperty ("keywords", String (), nullptr);
     d.setProperty ("tplFile", p.getProperty ("render").toString () + "/article.html", nullptr);

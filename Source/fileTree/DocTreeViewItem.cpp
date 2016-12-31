@@ -191,7 +191,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
         PopupMenu sortMenu;
         sortMenu.addItem (100, TRANS ("File Name"), true, sorter->getOrder () == 0);
-        sortMenu.addItem (101, TRANS ("Title / Intro"), true, sorter->getOrder () == 1);
+        sortMenu.addItem (101, TRANS ("Desciption"), true, sorter->getOrder () == 1);
         sortMenu.addItem (103, TRANS ("File Size"), true, sorter->getOrder () == 3);
         sortMenu.addItem (104, TRANS ("Create Time"), true, sorter->getOrder () == 4);
         sortMenu.addItem (105, TRANS ("Modified Time"), true, sorter->getOrder () == 5);
@@ -203,13 +203,13 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
         PopupMenu showedAsMenu;
         showedAsMenu.addItem (200, TRANS ("File Name"), true, sorter->getShowWhat () == 0);
-        showedAsMenu.addItem (201, TRANS ("Title / Intro"), true, sorter->getShowWhat () == 1);
+        showedAsMenu.addItem (201, TRANS ("Desciption"), true, sorter->getShowWhat () == 1);
 
         m.addSubMenu (TRANS ("Showed as"), showedAsMenu);
 
         PopupMenu tooltipAsMenu;
         tooltipAsMenu.addItem (300, TRANS ("File Path"), true, sorter->getTooltipToShow () == 0);
-        tooltipAsMenu.addItem (301, TRANS ("Title / Intro"), true, sorter->getTooltipToShow () == 1);
+        tooltipAsMenu.addItem (301, TRANS ("Desciption"), true, sorter->getTooltipToShow () == 1);
 
         m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu);
         m.addSeparator ();
@@ -218,7 +218,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addItem (12, TRANS ("Delete..."), !isRoot);
         m.addSeparator ();
 
-        m.addItem (14, TRANS ("Open in Explorer / Finder..."), exist && onlyOneSelected);
+        m.addItem (14, TRANS ("Open in Explorer/Finder..."), exist && onlyOneSelected);
         m.addItem (15, TRANS ("Open in External Editor..."), exist && isDoc && onlyOneSelected);
 
         menuPerform (m.show ());
@@ -453,7 +453,7 @@ void DocTreeViewItem::createNewDocument ()
         tree.addChild (docTree, 0, nullptr);
         tree.addListener (this);
 
-        // select the new item 
+        // add and select the new item 
         setOpen (true);
         DocTreeViewItem* docItem = new DocTreeViewItem (docTree, treeContainer, sorter);
         addSubItemSorted (*sorter, docItem);
@@ -485,33 +485,49 @@ void DocTreeViewItem::createNewFolder ()
         if (dirName.isEmpty ())
             dirName = TRANS ("New folder");
 
-        // create this dir on disk
+        // create this dir and its index.md on disk
         File thisDir (getFileOrDir (tree).getChildFile (dirName));
         thisDir = thisDir.getNonexistentSibling (true);
         thisDir.createDirectory ();
 
-        // update tree
+        const File& indexFile (thisDir.getChildFile ("index.md"));
+        indexFile.create ();
+        indexFile.appendText (TRANS ("Description of ") + thisDir.getFileName() + ". ");
+
+        // for get the "render" info
         ValueTree rootTree = tree;
 
         while (rootTree.getParent ().isValid ())
             rootTree = rootTree.getParent ();
 
+        // dir tree
         ValueTree dirTree ("dir");
         dirTree.setProperty ("name", thisDir.getFileNameWithoutExtension(), nullptr);
         dirTree.setProperty ("title", thisDir.getFileNameWithoutExtension (), nullptr);
         dirTree.setProperty ("isMenu", false, nullptr);
         dirTree.setProperty ("render", rootTree.getProperty ("render").toString (), nullptr);
 
+        // index tree
+        ValueTree indexTree ("doc");
+        indexTree.setProperty ("name", indexFile.getFileNameWithoutExtension (), nullptr);
+        indexTree.setProperty ("title", thisDir.getFileName(), nullptr);
+        indexTree.setProperty ("keywords", String (), nullptr);
+        indexTree.setProperty ("tplFile", rootTree.getProperty ("render").toString () + "/article.html", nullptr);
+        indexTree.setProperty ("js", String (), nullptr);
+
+        // dir tree add the index tree
+        dirTree.addChild (indexTree, 0, nullptr);
+
         // must update this tree before show this new item
         tree.removeListener (this);
         tree.addChild (dirTree, 0, nullptr);
         tree.addListener (this);
 
-        // select the new item 
+        // this item add the new dir, then select the index item 
         setOpen (true);
         DocTreeViewItem* dirItem = new DocTreeViewItem (dirTree, treeContainer, sorter);
         addSubItemSorted (*sorter, dirItem);
-        dirItem->setSelected (true, true);
+        dirItem->getSubItem(0)->setSelected (true, true);
 
         // save the data to project file
         if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))

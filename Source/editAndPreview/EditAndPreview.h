@@ -41,6 +41,7 @@ public:
 
     TextEditor* getEditor() const                         { return editor; }
     const File& getCurrentDocFile() const                 { return docFile;}
+    ValueTree getCurrentTree() const                      { return docTree; }
 
     const File createMatchedHtmlFile();
 

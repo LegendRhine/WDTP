@@ -129,11 +129,35 @@ const File EditAndPreview::createMatchedHtmlFile ()
     {   
         if (htmlFile.deleteFile())
         {
+            const File tplFile (FileTreeContainer::projectFile
+                                .getSiblingFile (docTree.getProperty ("tplFile").toString()));
+
+            // get the description (the second line which not empty-line)
+            // the first line should be title
+            StringArray contentArray;
+            contentArray.addLines (currentContent);
+            contentArray.removeEmptyStrings ();
+            String description;
+
+            for (int i = 0; i < contentArray.size(); ++i)
+            {
+                if (i > 0 && contentArray.getReference(i).trim().isNotEmpty())
+                {
+                    description = contentArray.getReference (i).trim ();
+                    break;
+                }
+            }
+
+            // generate the doc's html
             htmlFile.create ();
-            htmlFile.appendText (Md2Html::mdStringToHtml (currentContent, File()));
+            htmlFile.appendText (Md2Html::mdStringToHtml (currentContent, 
+                                                          tplFile,
+                                                          docTree.getProperty("keywords").toString(),
+                                                          description, 
+                                                          docTree.getProperty ("title").toString ()));
 
             // here, we copy the doc's media dir to the site's
-            // this is a ugly inplement, need to be improved
+            // maybe this is a ugly implement, need to be improved
             const File docsMediaDir (docFile.getSiblingFile ("media"));
 
             if (docsMediaDir.isDirectory())
@@ -222,7 +246,7 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
     if (docHasChanged && docFile != File::nonexistent)
     {
         currentContent = editor->getText ();
-        const String tileStr (currentContent.upToFirstOccurrenceOf ("\n", false, true)
+        const String tileStr (currentContent.trim().upToFirstOccurrenceOf ("\n", false, true)
                               .replace("#", String()).trim());
 
         TemporaryFile tempFile (docFile);
@@ -250,6 +274,13 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 {
     if (e->mods.isPopupMenu())
     {
+        menu.addItem (20, TRANS ("Pickup Keyword"), getHighlightedText ().isNotEmpty ());
+        menu.addSeparator ();
+
+        menu.addItem (21, TRANS ("Search Selected"), getHighlightedText ().isNotEmpty ());
+        menu.addItem (22, TRANS ("Replace Selected"), getHighlightedText ().isNotEmpty ());
+        menu.addSeparator ();
+
         PopupMenu insertMenu;
         insertMenu.addItem (1, TRANS ("Iamge(s)..."));
         insertMenu.addItem (2, TRANS ("Hyperlink..."));
@@ -292,7 +323,22 @@ void EditorForMd::performPopupMenuAction (int index)
 {
     String content;
 
-    if (1 == index) // image
+    if (20 == index)  // add the selected to this doc's keywords
+    {
+        const String selectedStr (getHighlightedText ());
+
+        return;  // don't insert anything in current content
+
+    }
+    else if (21 == index)  // search by selected
+    {
+        return;  // don't insert anything in current content
+    }
+    else if (22 == index)  // replace selected to something else
+    {
+        return;  // don't insert anything in current content
+    }
+    else if (1 == index) // image
     {
         FileChooser fc (TRANS ("Select Images..."), File::nonexistent,
                         "*.jpg;*.png;*.gif", true);

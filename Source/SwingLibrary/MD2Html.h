@@ -15,7 +15,11 @@ class Md2Html
 {
 public:
     /** Base on the argu Markdown string and template file, return html string. */
-    static const String mdStringToHtml (const String& mdString, const File& tplFile);
+    static const String mdStringToHtml (const String& mdString, 
+                                        const File& tplFile,
+                                        const String& htmlKeywords,
+                                        const String& htmlDescription,
+                                        const String& htmlTitle);
 
 private:
     // call these methods must be ordered just like below order

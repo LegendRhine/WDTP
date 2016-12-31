@@ -510,7 +510,7 @@ void DocTreeViewItem::createNewFolder ()
         // index tree
         ValueTree indexTree ("doc");
         indexTree.setProperty ("name", indexFile.getFileNameWithoutExtension (), nullptr);
-        indexTree.setProperty ("title", thisDir.getFileName(), nullptr);
+        indexTree.setProperty ("title", TRANS ("Tile of this article"), nullptr);
         indexTree.setProperty ("keywords", String (), nullptr);
         indexTree.setProperty ("tplFile", rootTree.getProperty ("render").toString () + "/article.html", nullptr);
         indexTree.setProperty ("js", String (), nullptr);

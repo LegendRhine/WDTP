@@ -147,8 +147,8 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     values[js]->setValue (docTree.getProperty ("js"));
 
     Array<PropertyComponent*> docProperties;
-    docProperties.add (new TextPropertyComponent (*values[keywords], TRANS ("Keywords: "), 80, false));
-    docProperties.add (new TextPropertyComponent (*values[tplFile], TRANS ("Template File: "), 60, false));
+    docProperties.add (new TextPropertyComponent (*values[keywords], TRANS ("Keywords: "), 120, false));
+    docProperties.add (new TextPropertyComponent (*values[tplFile], TRANS ("Template File: "), 90, false));
     docProperties.add (new TextPropertyComponent (*values[js], TRANS ("Java Script: "), 0, true));
 
     for (auto p : docProperties)   p->setPreferredHeight (28);
@@ -236,7 +236,7 @@ void SetupPanel::valueChanged (Value& value)
         docTree.setProperty ("js", values[js]->getValue (), nullptr);
 
     projectHasChanged = true;
-    startTimer (3000);
+    startTimer (500);
 }
 
 //=================================================================================================

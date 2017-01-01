@@ -40,7 +40,7 @@ private:
 
         <blockquote>: "> " 
         <h1>: "# " will auto place in center. 
-        My custom define: center: ">|<", right: ">>>" */
+        My custom define: center: ">|< ", right: ">>> " */
     static const String processByLine (const String& mdString);
 
     /** http://xxx.com  open in new tab/window, must start with: " http" and end with " "   */

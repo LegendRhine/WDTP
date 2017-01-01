@@ -145,7 +145,19 @@ const File EditAndPreview::createMatchedHtmlFile ()
             {
                 if (i > 0 && contentArray.getReference(i).trim().isNotEmpty())
                 {
-                    description = contentArray.getReference (i).trim ();
+                    description = contentArray.getReference (i).trim ()
+                        .replace ("+", String ())
+                        .replace ("-", String ())
+                        .replace ("*", String ())
+                        .replace ("#", String ())
+                        .replace ("`", String ())
+                        .replace (">", String ())
+                        .replace ("|", String ())
+                        .replace ("<", String ())
+                        .replace ("!", String ())
+                        .replace ("[", String ())
+                        .replace ("]", String ());
+
                     break;
                 }
             }
@@ -155,7 +167,7 @@ const File EditAndPreview::createMatchedHtmlFile ()
             htmlFile.appendText (Md2Html::mdStringToHtml (currentContent, 
                                                           tplFile,
                                                           docTree.getProperty("keywords").toString(),
-                                                          description, 
+                                                          description.trim(), 
                                                           docTree.getProperty ("title").toString ()));
 
             // here, we copy the doc's media dir to the site's

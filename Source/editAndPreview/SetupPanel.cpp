@@ -236,6 +236,7 @@ void SetupPanel::valueChanged (Value& value)
         docTree.setProperty ("js", values[js]->getValue (), nullptr);
 
     projectHasChanged = true;
+    editor->needRecreateHtml (true);
     startTimer (500);
 }
 

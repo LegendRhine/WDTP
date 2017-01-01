@@ -21,7 +21,7 @@ EditAndPreview::EditAndPreview()
     layoutManager.setItemLayout (1, 3, 3, 3);           // layoutBar
     layoutManager.setItemLayout (2, 2, -0.5, -0.31);  // propertiesPanel
 
-    addAndMakeVisible (editor = new EditorForMd (docFile));
+    addAndMakeVisible (editor = new EditorForMd (this));
     addAndMakeVisible (setupPanel = new SetupPanel (this));
     addAndMakeVisible (layoutBar = new StretchableLayoutResizerBar (&layoutManager, 1, true));
 
@@ -84,6 +84,7 @@ void EditAndPreview::editNewDoc (const ValueTree& docTree_)
         editorAndWebInitial();
     }
 
+    setupPanel->setEnabled (true);
     resized ();
 }
 
@@ -114,6 +115,7 @@ void EditAndPreview::previewDoc (const ValueTree& docTree_)
         webView.goToURL (siteDir.getChildFile ("index.html").getFullPathName ());
     }
     
+    setupPanel->setEnabled (false);
     resized ();
 }
 
@@ -272,6 +274,8 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
 //=================================================================================================
 void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 {
+    const File& docFile (parent->getCurrentDocFile ());
+
     if (e->mods.isPopupMenu())
     {
         menu.addItem (20, TRANS ("Pickup Keyword"), getHighlightedText ().isNotEmpty ());
@@ -322,10 +326,43 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 void EditorForMd::performPopupMenuAction (int index)
 {
     String content;
+    ValueTree& docTree = parent->getCurrentTree ();
 
     if (20 == index)  // add the selected to this doc's keywords
     {
         const String selectedStr (getHighlightedText ());
+        const String currentKeyWords (docTree.getProperty ("keywords").toString().trim());
+
+        String keyWords (currentKeyWords);
+        bool needRecreateHtm = true;
+
+        // update the doc-tree
+        if (currentKeyWords.isNotEmpty ())
+        {
+            if (!currentKeyWords.containsIgnoreCase (selectedStr))
+                keyWords = currentKeyWords + ", " + selectedStr;
+            else
+                needRecreateHtm = false;
+        }
+        else
+        {
+            keyWords = selectedStr;
+        }
+
+        docTree.setProperty ("keywords", keyWords, nullptr);
+        parent->needRecreateHtml (needRecreateHtm);
+
+        // save the project
+        ValueTree rootTree = docTree.getParent();
+
+        while (rootTree.getParent ().isValid ())
+            rootTree = rootTree.getParent ();
+
+        if (!SwingUtilities::writeValueTreeToFile (rootTree, FileTreeContainer::projectFile))
+            SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
+
+        // then update the setup panel
+        parent->getSetupPanel()->showDocProperties (docTree);
 
         return;  // don't insert anything in current content
 
@@ -348,7 +385,7 @@ void EditorForMd::performPopupMenuAction (int index)
             return;
 
         imageFiles = fc.getResults();
-        const File imgPath (docFile.getSiblingFile ("media"));
+        const File imgPath (DocTreeViewItem::getFileOrDir (docTree).getSiblingFile ("media"));
 
         for (auto f : imageFiles)
         {

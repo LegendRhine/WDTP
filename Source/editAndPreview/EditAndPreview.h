@@ -38,10 +38,12 @@ public:
     void editCurrentDoc()                                 { editNewDoc (docTree); }    
     void previewDoc (const ValueTree& docTree);
     void previewCurrentDoc()                              { previewDoc (docTree); }
+    void needRecreateHtml (const bool recreate)           { needCreateHtml = recreate; }
 
     TextEditor* getEditor() const                         { return editor; }
     const File& getCurrentDocFile() const                 { return docFile;}
-    ValueTree getCurrentTree() const                      { return docTree; }
+    ValueTree& getCurrentTree()                           { return docTree; }
+    SetupPanel* getSetupPanel () const                    { return setupPanel; }
 
     const File createMatchedHtmlFile();
 
@@ -81,7 +83,7 @@ private:
 class EditorForMd : public TextEditor
 {
 public:
-    EditorForMd (const File& docFile_) : docFile(docFile_) { }
+    EditorForMd (EditAndPreview* parent_) : parent (parent_) { }
     ~EditorForMd () { }
 
     virtual void addPopupMenuItems (PopupMenu& menuToAddTo, const MouseEvent* mouseClickEvent) override;
@@ -91,7 +93,7 @@ public:
     bool keyPressed (const KeyPress& key) override;
 
 private:
-    const File& docFile;
+    EditAndPreview* parent;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditorForMd)
 };

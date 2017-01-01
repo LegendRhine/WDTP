@@ -14,7 +14,7 @@
 //==============================================================================
 EditAndPreview::EditAndPreview()
 {
-    addAndMakeVisible (webView);
+    addChildComponent (webView);
 
     // stretched layout, arg: index, min-width, max-width，default x%
     layoutManager.setItemLayout (0, -0.5, -1.0, -0.69);  // editor，
@@ -57,64 +57,67 @@ void EditAndPreview::resized()
 }
 
 //=================================================================================================
-void EditAndPreview::editNewDoc (const ValueTree& docTree_)
+void EditAndPreview::startWork (ValueTree& newDocTree, const bool enterEditState)
 {
-    saveCurrentDocIfChanged();
-    webView.setVisible (false);
+    saveCurrentDocIfChanged ();
 
-    editor->removeListener (this);
-    editor->setText (String (), false);
-    editor->setEnabled (true);
-
-    const File& file (DocTreeViewItem::getFileOrDir (docTree_));
-
-    if (file.existsAsFile())
+    if (newDocTree != docTree)
     {
-        docFile = file;
-        docTree = docTree_;
+        const File& file (DocTreeViewItem::getFileOrDir (newDocTree));
 
-        editor->applyFontToAllText (FileTreeContainer::fontSize);
-        editor->setText (docFile.loadFileAsString(), false);
-        currentContent = editor->getText();
-        editor->grabKeyboardFocus ();
-        editor->addListener (this);
-    }   
-    else
-    {
-        editorAndWebInitial();
+        if (file.existsAsFile ())
+        {
+            docFile = file;
+            docTree = newDocTree;
+
+            editor->removeListener (this);
+            editor->applyFontToAllText (FileTreeContainer::fontSize);
+            editor->setText (docFile.loadFileAsString (), false);
+
+            currentContent = editor->getText ();
+            editor->grabKeyboardFocus ();
+            editor->addListener (this);
+        }
+        else
+        {
+            editorAndWebInitial ();
+        }
     }
+
+    enterEditState ? previewCurrentDoc () : editCurrentDoc ();
+}
+
+//=================================================================================================
+void EditAndPreview::editCurrentDoc ()
+{
+    webView.setVisible (false);
+    editor->setEnabled (true);
+    editor->grabKeyboardFocus ();
 
     setupPanel->setEnabled (true);
     resized ();
 }
 
 //=================================================================================================
-void EditAndPreview::previewDoc (const ValueTree& docTree_)
+void EditAndPreview::previewCurrentDoc ()
 {
-    saveCurrentDocIfChanged();
     editor->setEnabled (false);
     webView.setVisible (true);
     webView.stop ();
 
-    const File& file = DocTreeViewItem::getFileOrDir (docTree_);
-
-    if (file.existsAsFile())
+    if (docFile.existsAsFile ())
     {
-        docFile = file;
-        docTree = docTree_;
-        currentContent = docFile.loadFileAsString ();
-        
         webView.goToURL (createMatchedHtmlFile ().getFullPathName ());
-    } 
-    else if (file.isDirectory())
+    }
+    else if (docFile.isDirectory ())
     {
-        editorAndWebInitial ();        
-        const String dirPath (file.getFullPathName ());
+        editorAndWebInitial ();
+        const String dirPath (docFile.getFullPathName ());
         const File siteDir (dirPath.replace ("docs", "site"));
 
         webView.goToURL (siteDir.getChildFile ("index.html").getFullPathName ());
     }
-    
+
     setupPanel->setEnabled (false);
     resized ();
 }

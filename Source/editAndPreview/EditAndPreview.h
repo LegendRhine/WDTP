@@ -30,19 +30,20 @@ class EditAndPreview : public Component,
 public:
     EditAndPreview();
     ~EditAndPreview();
-    
+
+    void startWork (ValueTree& newDocTree, const bool enterEditState);
+
     void paint (Graphics&) override {}
     void resized() override;
-
-    void editNewDoc (const ValueTree& docTree);
-    void editCurrentDoc()                                 { editNewDoc (docTree); }    
-    void previewDoc (const ValueTree& docTree);
-    void previewCurrentDoc()                              { previewDoc (docTree); }
+    
     void needRecreateHtml (const bool recreate)           { needCreateHtml = recreate; }
 
     TextEditor* getEditor() const                         { return editor; }
     const File& getCurrentDocFile() const                 { return docFile;}
     ValueTree& getCurrentTree()                           { return docTree; }
+
+    /** return true if current is preview state, flase for edit state. */
+    const bool getCureentState() const                    { return webView.isVisible(); }
     SetupPanel* getSetupPanel () const                    { return setupPanel; }
 
     const File createMatchedHtmlFile();
@@ -57,6 +58,9 @@ public:
 private:
     //=========================================================================
     void editorAndWebInitial();
+
+    void editCurrentDoc ();
+    void previewCurrentDoc ();
 
     virtual void textEditorTextChanged (TextEditor&) override;
     virtual void timerCallback() override;

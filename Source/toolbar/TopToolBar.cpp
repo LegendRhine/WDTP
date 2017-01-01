@@ -238,11 +238,7 @@ void TopToolBar::buttonClicked (Button* bt)
     if (bt == bts[view])
     {
         bts[view]->setToggleState (!bts[view]->getToggleState (), dontSendNotification);
-
-        if (bts[view]->getToggleState ())
-            editAndPreview->previewCurrentDoc ();
-        else
-            editAndPreview->editCurrentDoc ();
+        editAndPreview->startWork (editAndPreview->getCurrentTree(), bts[view]->getToggleState());
     }
     else if (bt == bts[system])
         popupSystemMenu ();

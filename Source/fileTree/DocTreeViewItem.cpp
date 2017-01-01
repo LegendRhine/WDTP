@@ -138,28 +138,15 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
     if (isNowSelected)
     {
         EditAndPreview* editArea = treeContainer->getEditAndPreview ();
-        MainContentComponent* mainComp = editArea->findParentComponentOfClass<MainContentComponent> ();
-        TopToolBar* toolbar = mainComp->getToolbar ();
-
-        // edit or preview
-        if (toolbar != nullptr && toolbar->getStateOfViewButton ())
-            editArea->previewDoc (tree);
-        else
-            editArea->editNewDoc (tree);
+        editArea->startWork (tree, editArea->getCureentState());
 
         // set properties on the right side
         if (tree.getType ().toString () == "doc")
-        {
             editArea->setDocProperties (tree);
-        }
         else if (tree.getType ().toString () == "dir")
-        {
             editArea->setDirProperties (tree);
-        }
         else // root
-        {
             editArea->setProjectProperties (tree);
-        }
 
         treeContainer->setIdentityOfLastSelectedItem (getItemIdentifierString ());
     }    
@@ -564,9 +551,6 @@ void DocTreeViewItem::deleteSelected ()
     while (rootTree.getParent().isValid())
         rootTree = rootTree.getParent();
 
-    // here get the EditAndPreview, it must before the delete, otherwise it'll be wild-pointer!
-    EditAndPreview* editor = treeContainer->getEditAndPreview();
-
     // delete one by one
     for (int i = selectedTrees.size (); --i >= 0; )
     {
@@ -586,8 +570,7 @@ void DocTreeViewItem::deleteSelected ()
     }
     else
     {
-        jassert (editor != nullptr);
-        editor->editNewDoc (ValueTree::invalid);
+        treeContainer->getTreeView ().moveSelectedRow (-1);
     }
 }
 

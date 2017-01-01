@@ -138,15 +138,23 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
     if (isNowSelected)
     {
         EditAndPreview* editArea = treeContainer->getEditAndPreview ();
-        editArea->startWork (tree, editArea->getCureentState());
 
         // set properties on the right side
         if (tree.getType ().toString () == "doc")
+        {
             editArea->setDocProperties (tree);
+            editArea->startWork (tree, true);
+        }
         else if (tree.getType ().toString () == "dir")
+        {
             editArea->setDirProperties (tree);
+            editArea->startWork (tree, false);
+        }
         else // root
-            editArea->setProjectProperties (tree);
+        {
+            editArea->setProjectProperties (tree);        
+            editArea->startWork (tree, false);
+        }
 
         treeContainer->setIdentityOfLastSelectedItem (getItemIdentifierString ());
     }    
@@ -432,7 +440,7 @@ void DocTreeViewItem::createNewDocument ()
         docTree.setProperty ("name", thisDoc.getFileNameWithoutExtension (), nullptr);
         docTree.setProperty ("title", "Title of this article", nullptr);
         docTree.setProperty ("keywords", String (), nullptr);
-        docTree.setProperty ("tplFile", tree.getProperty ("render").toString() + "/article.html", nullptr);
+        docTree.setProperty ("isPage", false, nullptr);
         docTree.setProperty ("js", String (), nullptr);
 
         // must update this tree before show this new item
@@ -477,18 +485,12 @@ void DocTreeViewItem::createNewFolder ()
         thisDir = thisDir.getNonexistentSibling (true);
         thisDir.createDirectory ();
 
-        // for get the "render" info
-        ValueTree rootTree = tree;
-
-        while (rootTree.getParent ().isValid ())
-            rootTree = rootTree.getParent ();
-
         // dir tree
         ValueTree dirTree ("dir");
         dirTree.setProperty ("name", thisDir.getFileNameWithoutExtension(), nullptr);
         dirTree.setProperty ("title", thisDir.getFileNameWithoutExtension (), nullptr);
-        dirTree.setProperty ("isMenu", false, nullptr);
-        dirTree.setProperty ("render", rootTree.getProperty ("render").toString (), nullptr);
+        dirTree.setProperty ("isMenu", true, nullptr);
+        dirTree.setProperty ("needCreateIndexHtml", true, nullptr);
 
         // must update this tree before show this new item
         tree.removeListener (this);
@@ -502,7 +504,7 @@ void DocTreeViewItem::createNewFolder ()
         dirItem->setSelected (true, true);
 
         // save the data to project file
-        if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
+        if (!SwingUtilities::writeValueTreeToFile (treeContainer->projectTree, treeContainer->projectFile))
             SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
     }
 }
@@ -522,40 +524,38 @@ void DocTreeViewItem::deleteSelected ()
         selectedTrees.add (new ValueTree (item->tree));
     }
 
-    if (!AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Message"),
+    if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Message"),
                                        TRANS ("Do you really want to delete ") +
                                        String (selectedTrees.size ()) +
-                                       TRANS (" selected item(s)? ") + newLine +
-                                       TRANS ("This operation CANNOT be undone! ") + newLine + newLine +
-                                       TRANS ("Tips: The deleted items could be found in OS's Recycle Bin. ")))
-        return;
-
-    // MUST get the root before remove the tree!
-    ValueTree rootTree = tree;
-
-    while (rootTree.getParent().isValid())
-        rootTree = rootTree.getParent();
-
-    // delete one by one
-    for (int i = selectedTrees.size (); --i >= 0; )
+                                      TRANS (" selected item(s)? ") + newLine +
+                                      TRANS ("This operation CANNOT be undone! ") + newLine + newLine +
+                                      TRANS ("Tips: The deleted items could be found in OS's Recycle Bin. ")))
     {
-        ValueTree& v = *selectedTrees.getUnchecked (i);
+        treeContainer->getTreeView ().getRootItem ()->setSelected (true, false);
 
-        if (v.getParent ().isValid ())
+        // MUST get the root before remove the tree!
+        ValueTree rootTree = tree;
+
+        while (rootTree.getParent ().isValid ())
+            rootTree = rootTree.getParent ();
+
+        // delete one by one
+        for (int i = selectedTrees.size (); --i >= 0; )
         {
-            getFileOrDir (v).moveToTrash ();
-            v.getParent ().removeChild (v, nullptr);
-        }
-    }
+            ValueTree& v = *selectedTrees.getUnchecked (i);
 
-    // save the data to project file
-    if (!SwingUtilities::writeValueTreeToFile (rootTree, FileTreeContainer::projectFile))
-    {
-        SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
-    }
-    else
-    {
-        treeContainer->getTreeView ().moveSelectedRow (-1);
+            if (v.getParent ().isValid ())
+            {
+                getFileOrDir (v).moveToTrash ();
+                v.getParent ().removeChild (v, nullptr);
+            }
+        }
+
+        // save the data to project file
+        if (!SwingUtilities::writeValueTreeToFile (rootTree, FileTreeContainer::projectFile))
+        {
+            SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
+        }
     }
 }
 

@@ -28,7 +28,7 @@ class EditAndPreview : public Component,
                        private Timer
 {
 public:
-    EditAndPreview();
+    EditAndPreview ();
     ~EditAndPreview();
 
     void startWork (ValueTree& newDocTree, const bool enterEditState);
@@ -36,17 +36,15 @@ public:
     void paint (Graphics&) override {}
     void resized() override;
     
-    void needRecreateHtml (const bool recreate)           { needCreateHtml = recreate; }
+    void needRecreateHtml (const bool recreate)           { needCreateArticleHtml = recreate; }
 
     TextEditor* getEditor() const                         { return editor; }
     const File& getCurrentDocFile() const                 { return docFile;}
-    ValueTree& getCurrentTree()                           { return docTree; }
+    ValueTree& getCurrentTree()                           { return docOrDirTree; }
 
     /** return true if current is preview state, flase for edit state. */
     const bool getCureentState() const                    { return webView.isVisible(); }
     SetupPanel* getSetupPanel () const                    { return setupPanel; }
-
-    const File createMatchedHtmlFile();
 
     void projectClosed();
     const bool saveCurrentDocIfChanged();
@@ -57,20 +55,20 @@ public:
     
 private:
     //=========================================================================
-    void editorAndWebInitial();
-
     void editCurrentDoc ();
     void previewCurrentDoc ();
+    const File createArticleHtml ();
+    const File createIndexHtml ();
 
     virtual void textEditorTextChanged (TextEditor&) override;
     virtual void timerCallback() override;
 
     //=========================================================================
     File docFile = File::nonexistent;
-    ValueTree docTree;
+    ValueTree docOrDirTree;
 
     bool docHasChanged = false;
-    bool needCreateHtml = false;
+    bool needCreateArticleHtml = false;
     String currentContent;
     
     ScopedPointer<TextEditor> editor;

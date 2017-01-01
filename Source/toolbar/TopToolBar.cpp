@@ -134,6 +134,13 @@ void TopToolBar::resized ()
     bts[system]->setTopLeftPosition (getWidth () / 2 + 30, 12);
 }
 
+//=================================================================================================
+void TopToolBar::enableEditPreviewBt (const bool enableIt)
+{
+    bts[view]->setEnabled (enableIt);
+    bts[view]->setToggleState (enableIt, dontSendNotification);
+}
+
 //=========================================================================
 void TopToolBar::textEditorReturnKeyPressed (TextEditor& te)
 {
@@ -238,7 +245,7 @@ void TopToolBar::buttonClicked (Button* bt)
     if (bt == bts[view])
     {
         bts[view]->setToggleState (!bts[view]->getToggleState (), dontSendNotification);
-        editAndPreview->startWork (editAndPreview->getCurrentTree(), bts[view]->getToggleState());
+        editAndPreview->startWork (editAndPreview->getCurrentTree(), !bts[view]->getToggleState());
     }
     else if (bt == bts[system])
         popupSystemMenu ();
@@ -370,9 +377,10 @@ void TopToolBar::createNewProject ()
     p.setProperty ("dirFirst", 0, nullptr);
     p.setProperty ("showWhat", 0, nullptr);
     p.setProperty ("tooltip", 0, nullptr);
-    p.setProperty ("render", "themes/theme-1", nullptr);
+    p.setProperty ("render", "default", nullptr);
     p.setProperty ("fontName", SwingUtilities::getFontName (), nullptr);
     p.setProperty ("fontSize", SwingUtilities::getFontSize (), nullptr);
+    p.setProperty ("needCreateIndexHtml", true, nullptr);
 
     // create dirs and default template files
     projectFile.getSiblingFile ("docs").createDirectory ();

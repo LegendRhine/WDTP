@@ -11,7 +11,7 @@
 #ifndef MD2HTML_H_INCLUDED
 #define MD2HTML_H_INCLUDED
 
-class Md2Html
+struct Md2Html
 {
 public:
     /** Base on the argu Markdown string and template file, return html string. */
@@ -53,7 +53,6 @@ private:
     static const String orderedListParse (const String& mdString); /**< +  */
     
     static const String cleanUp (const String& mdString);
-
 };
 
 

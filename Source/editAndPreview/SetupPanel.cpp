@@ -101,32 +101,11 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
 
     values[dirDesc]->setValue (dirTree.getProperty ("title"));
     values[isMenu]->setValue (dirTree.getProperty ("isMenu"));
-    values[dirRenderDir]->setValue (dirTree.getProperty ("render"));
 
     Array<PropertyComponent*> dirProperties;
     dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Description: "), 0, true));
     dirProperties.add (new BooleanPropertyComponent (*values[isMenu], TRANS ("Web Menu: "), TRANS ("Yes")));
-
-    // themes dirs
-    StringArray themeDirsSa;
-    Array<var> themeDirsVar;
-
-    if (FileTreeContainer::projectFile.existsAsFile ())
-    {
-        const File themeDir (FileTreeContainer::projectFile.getSiblingFile ("themes"));
-        Array<File> themeDirs;
-        themeDir.findChildFiles (themeDirs, File::findDirectories, false);
-
-        for (int i = 0; i < themeDirs.size (); ++i)
-        {
-            themeDirsSa.add (themeDirs.getUnchecked (i).getFileName ());
-            themeDirsVar.add (themeDirs.getUnchecked (i).getFileName ());
-        }
-    }
-
-    dirProperties.add (new ChoicePropertyComponent (*values[dirRenderDir], TRANS ("Template: "),
-                                                    themeDirsSa, themeDirsVar));
-
+    
     for (auto p : dirProperties)     p->setPreferredHeight (28);
     dirProperties[0]->setPreferredHeight (28 * 3);
     
@@ -143,12 +122,12 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     jassert (docTree.isValid () && docTree.getType ().toString () == "doc");
 
     values[keywords]->setValue (docTree.getProperty ("keywords"));
-    values[tplFile]->setValue (docTree.getProperty ("tplFile"));
+    values[isPage]->setValue (docTree.getProperty ("isPage"));
     values[js]->setValue (docTree.getProperty ("js"));
 
     Array<PropertyComponent*> docProperties;
     docProperties.add (new TextPropertyComponent (*values[keywords], TRANS ("Keywords: "), 120, false));
-    docProperties.add (new TextPropertyComponent (*values[tplFile], TRANS ("Template File: "), 90, false));
+    docProperties.add (new BooleanPropertyComponent (*values[isPage], TRANS ("Single Page: "), TRANS ("Yes")));
     docProperties.add (new TextPropertyComponent (*values[js], TRANS ("Java Script: "), 0, true));
 
     for (auto p : docProperties)   p->setPreferredHeight (28);
@@ -224,14 +203,12 @@ void SetupPanel::valueChanged (Value& value)
         dirTree.setProperty ("title", values[dirDesc]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[isMenu]))
         dirTree.setProperty ("isMenu", values[isMenu]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[dirRenderDir]))
-        dirTree.setProperty ("render", values[dirRenderDir]->getValue (), nullptr);
 
     // doc properties
     else if (value.refersToSameSourceAs (*values[keywords]))
         docTree.setProperty ("keywords", values[keywords]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[tplFile]))
-        docTree.setProperty ("tplFile", values[tplFile]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[isPage]))
+        docTree.setProperty ("isPage", values[isPage]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[js]))
         docTree.setProperty ("js", values[js]->getValue (), nullptr);
 

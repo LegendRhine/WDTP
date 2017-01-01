@@ -12,9 +12,9 @@
 #include <fstream>
 
 //==============================================================================
-EditAndPreview::EditAndPreview()
+EditAndPreview::EditAndPreview () 
 {
-    addChildComponent (webView);
+    addAndMakeVisible (webView);
 
     // stretched layout, arg: index, min-width, max-width，default x%
     layoutManager.setItemLayout (0, -0.5, -1.0, -0.69);  // editor，
@@ -61,30 +61,22 @@ void EditAndPreview::startWork (ValueTree& newDocTree, const bool enterEditState
 {
     saveCurrentDocIfChanged ();
 
-    if (newDocTree != docTree)
+    if (newDocTree != docOrDirTree)
     {
-        const File& file (DocTreeViewItem::getFileOrDir (newDocTree));
+        editor->removeListener (this);
+        docOrDirTree = newDocTree;
+        docFile = DocTreeViewItem::getFileOrDir (newDocTree);
 
-        if (file.existsAsFile ())
+        if (docFile.existsAsFile ())
         {
-            docFile = file;
-            docTree = newDocTree;
-
-            editor->removeListener (this);
             editor->applyFontToAllText (FileTreeContainer::fontSize);
             editor->setText (docFile.loadFileAsString (), false);
-
             currentContent = editor->getText ();
-            editor->grabKeyboardFocus ();
             editor->addListener (this);
-        }
-        else
-        {
-            editorAndWebInitial ();
         }
     }
 
-    enterEditState ? previewCurrentDoc () : editCurrentDoc ();
+    (!enterEditState || docFile.isDirectory()) ? previewCurrentDoc () : editCurrentDoc ();
 }
 
 //=================================================================================================
@@ -93,6 +85,10 @@ void EditAndPreview::editCurrentDoc ()
     webView.setVisible (false);
     editor->setEnabled (true);
     editor->grabKeyboardFocus ();
+
+   /* TopToolBar* toolBar = findParentComponentOfClass<MainContentComponent> ()->getToolbar ();
+    jassert (toolBar != nullptr);
+    toolBar->enableEditPreviewBt (true);*/
 
     setupPanel->setEnabled (true);
     resized ();
@@ -104,38 +100,41 @@ void EditAndPreview::previewCurrentDoc ()
     editor->setEnabled (false);
     webView.setVisible (true);
     webView.stop ();
-
+    
     if (docFile.existsAsFile ())
-    {
-        webView.goToURL (createMatchedHtmlFile ().getFullPathName ());
-    }
-    else if (docFile.isDirectory ())
-    {
-        editorAndWebInitial ();
-        const String dirPath (docFile.getFullPathName ());
-        const File siteDir (dirPath.replace ("docs", "site"));
+        webView.goToURL (createArticleHtml().getFullPathName());
+    else
+        webView.goToURL (createIndexHtml().getFullPathName());
 
-        webView.goToURL (siteDir.getChildFile ("index.html").getFullPathName ());
-    }
+   /* TopToolBar* toolBar = findParentComponentOfClass<MainContentComponent> ()->getToolbar ();
+    jassert (toolBar != nullptr);
+    toolBar->enableEditPreviewBt (false);*/
 
-    setupPanel->setEnabled (false);
+    setupPanel->setEnabled (docFile.isDirectory());
     resized ();
 }
 
 //=================================================================================================
-const File EditAndPreview::createMatchedHtmlFile ()
+const File EditAndPreview::createArticleHtml ()
 {
     jassert (FileTreeContainer::projectTree.isValid());
+    jassert (docFile.existsAsFile ());  // selected a dir currently??    
 
-    const String docPath (docFile.withFileExtension("html").getFullPathName());
-    File htmlFile (docPath.replace("docs", "site"));
+    const String docPath (docFile.getFullPathName ());
+    const File htmlFile (File (docPath.replace ("docs", "site")).withFileExtension ("html"));
 
-    if (needCreateHtml || !htmlFile.existsAsFile())
+    if (needCreateArticleHtml || !htmlFile.existsAsFile())
     {   
         if (htmlFile.deleteFile())
         {
-            const File tplFile (FileTreeContainer::projectFile
-                                .getSiblingFile (docTree.getProperty ("tplFile").toString()));
+            File tplFile;
+            const String tplPath (FileTreeContainer::projectFile.getSiblingFile ("themes")
+                                  .getFullPathName () + File::separator
+                                  + FileTreeContainer::projectTree.getProperty ("render").toString ()
+                                  + File::separator);
+
+            tplFile = tplPath + ((bool (docOrDirTree.getProperty ("isPage"))) 
+                                 ? "page.html" : "article.html");
 
             // get the description (the second line which not empty-line)
             // the first line should be title
@@ -169,9 +168,9 @@ const File EditAndPreview::createMatchedHtmlFile ()
             htmlFile.create ();
             htmlFile.appendText (Md2Html::mdStringToHtml (currentContent, 
                                                           tplFile,
-                                                          docTree.getProperty("keywords").toString(),
+                                                          docOrDirTree.getProperty("keywords").toString(),
                                                           description.trim(), 
-                                                          docTree.getProperty ("title").toString ()));
+                                                          docOrDirTree.getProperty ("title").toString ()));
 
             // here, we copy the doc's media dir to the site's
             // maybe this is a ugly implement, need to be improved
@@ -185,22 +184,62 @@ const File EditAndPreview::createMatchedHtmlFile ()
         }
         else
         {
-            SHOW_MESSAGE (TRANS ("Something wrong during create html file."));
+            SHOW_MESSAGE (TRANS ("Something wrong during create this document's html file."));
         }        
     }
 
-    needCreateHtml = false;
+    needCreateArticleHtml = false;
     return htmlFile;
+}
+
+//=================================================================================================
+const File EditAndPreview::createIndexHtml ()
+{
+    jassert (FileTreeContainer::projectTree.isValid ());
+    jassert (docFile.isDirectory ());  // selected a article currently?? 
+
+    const String dirPath (docFile.getFullPathName ());
+    const File siteDir (dirPath.replace ("docs", "site"));
+    File indexHtml (siteDir.getChildFile ("index.html"));
+
+    if ((bool) docOrDirTree.getProperty ("needCreateIndexHtml") 
+        || !indexHtml.existsAsFile())
+    {
+        if (indexHtml.deleteFile ())
+        {
+            const File tplFile (FileTreeContainer::projectFile.getSiblingFile ("themes")
+                                  .getFullPathName () + File::separator
+                                  + FileTreeContainer::projectTree.getProperty ("render").toString ()
+                                  + File::separator + "category.html");
+            
+            indexHtml.appendText (tplFile.loadFileAsString());
+        }
+        else
+        {
+            SHOW_MESSAGE (TRANS ("Something wrong during create this folder's index.html."));
+        }
+    }
+
+    return indexHtml;
 }
 
 //=================================================================================================
 void EditAndPreview::projectClosed ()
 {
     saveCurrentDocIfChanged();
-    editorAndWebInitial ();
+
+    editor->removeListener (this);
+    editor->setText (String (), false);
+    editor->setEnabled (false);    
 
     setupPanel->projectClosed ();
     webView.setVisible (false);
+
+    docFile = File::nonexistent;
+    docOrDirTree = ValueTree::invalid;
+    docHasChanged = false;
+    needCreateArticleHtml = false;
+    currentContent.clear();
 }
 
 //=================================================================================================
@@ -222,26 +261,17 @@ void EditAndPreview::setDocProperties (ValueTree& docTree_)
 }
 
 //=================================================================================================
-void EditAndPreview::editorAndWebInitial ()
-{
-    editor->removeListener (this);
-    editor->setText (String (), false);
-    editor->setEnabled (false);
-
-    docFile = File::nonexistent;
-    docTree = ValueTree::invalid;
-    docHasChanged = false;
-    currentContent = String();
-}
-
-//=================================================================================================
 void EditAndPreview::textEditorTextChanged (TextEditor&)
 {
     // somehow, this method always be called when load a doc, so use this ugly judge...
     if (currentContent.compare (editor->getText()) != 0)
     {
         docHasChanged = true;
-        needCreateHtml = true;
+        needCreateArticleHtml = true;
+
+        jassert (docFile.existsAsFile ());
+        docOrDirTree.getParent().setProperty ("needCreateIndexHtml", true, nullptr);
+
         startTimer (5000);
     }    
 }
@@ -271,7 +301,7 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
 
         if (tempFile.overwriteTargetFileWithTemporary())
         {
-            docTree.setProperty ("title", tileStr, nullptr);
+            docOrDirTree.setProperty ("title", tileStr, nullptr);
             docHasChanged = false;
 
             return SwingUtilities::writeValueTreeToFile (FileTreeContainer::projectTree, 

@@ -472,14 +472,10 @@ void DocTreeViewItem::createNewFolder ()
         if (dirName.isEmpty ())
             dirName = TRANS ("New folder");
 
-        // create this dir and its index.md on disk
+        // create this dir on disk
         File thisDir (getFileOrDir (tree).getChildFile (dirName));
         thisDir = thisDir.getNonexistentSibling (true);
         thisDir.createDirectory ();
-
-        const File& indexFile (thisDir.getChildFile ("index.md"));
-        indexFile.create ();
-        indexFile.appendText (TRANS ("Description of ") + thisDir.getFileName() + ". ");
 
         // for get the "render" info
         ValueTree rootTree = tree;
@@ -494,17 +490,6 @@ void DocTreeViewItem::createNewFolder ()
         dirTree.setProperty ("isMenu", false, nullptr);
         dirTree.setProperty ("render", rootTree.getProperty ("render").toString (), nullptr);
 
-        // index tree
-        ValueTree indexTree ("doc");
-        indexTree.setProperty ("name", indexFile.getFileNameWithoutExtension (), nullptr);
-        indexTree.setProperty ("title", TRANS ("Tile of this article"), nullptr);
-        indexTree.setProperty ("keywords", String (), nullptr);
-        indexTree.setProperty ("tplFile", rootTree.getProperty ("render").toString () + "/article.html", nullptr);
-        indexTree.setProperty ("js", String (), nullptr);
-
-        // dir tree add the index tree
-        dirTree.addChild (indexTree, 0, nullptr);
-
         // must update this tree before show this new item
         tree.removeListener (this);
         tree.addChild (dirTree, 0, nullptr);
@@ -514,7 +499,7 @@ void DocTreeViewItem::createNewFolder ()
         setOpen (true);
         DocTreeViewItem* dirItem = new DocTreeViewItem (dirTree, treeContainer, sorter);
         addSubItemSorted (*sorter, dirItem);
-        dirItem->getSubItem(0)->setSelected (true, true);
+        dirItem->setSelected (true, true);
 
         // save the data to project file
         if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))

@@ -351,7 +351,7 @@ void TopToolBar::createNewProject ()
         return;
     }
 
-    // 5-1： create and initial project file
+    // create and initial project file
     if (!projectFile.deleteFile ())
     {
         SHOW_MESSAGE (TRANS ("Can't overwrite this project! "));
@@ -374,30 +374,14 @@ void TopToolBar::createNewProject ()
     p.setProperty ("fontName", SwingUtilities::getFontName (), nullptr);
     p.setProperty ("fontSize", SwingUtilities::getFontSize (), nullptr);
 
-    // 5-2 create dirs and default template files
+    // create dirs and default template files
     projectFile.getSiblingFile ("docs").createDirectory ();
     projectFile.getSiblingFile ("site").createDirectory ();
     projectFile.getSiblingFile ("themes").createDirectory ();
 
     // TODO: create template files in 'themes/theme-1'..
 
-    // 5-3: create a index.md and initial its properties
-    const File& indexFile (projectFile.getSiblingFile ("docs/index.md"));
-    indexFile.create ();
-    indexFile.appendText ("Hello World! ");
-
-    // index valueTree
-    ValueTree d ("doc");
-    d.setProperty ("name", indexFile.getFileNameWithoutExtension (), nullptr);
-    d.setProperty ("title", "Hello World", nullptr);
-    d.setProperty ("keywords", String (), nullptr);
-    d.setProperty ("tplFile", p.getProperty ("render").toString () + "/article.html", nullptr);
-    d.setProperty ("js", String (), nullptr);
-
-    // 5-4: add the new document's info to project file
-    p.addChild (d, 0, nullptr);
-
-    // 5-5: save the project file
+    // save the project file
     if (SwingUtilities::writeValueTreeToFile (p, projectFile))
         fileTreeContainer->openProject (projectFile); // load the new project file
     else

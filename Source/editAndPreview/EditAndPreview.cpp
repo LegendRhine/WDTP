@@ -76,7 +76,7 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
         }
     }
 
-    TopToolBar* toolBar = findParentComponentOfClass<MainContentComponent> ()->getToolbar ();
+    TopToolBar* toolBar = findParentComponentOfClass<MainContentComponent>()->getToolbar();
     jassert (toolBar != nullptr);
 
     if (docFile.isDirectory())
@@ -262,6 +262,7 @@ const File EditAndPreview::createIndexHtml ()
             const String indexContent (tplContent.replace("{{siteRelativeRootPath}}", cssRelativePath));
 
             // TODO..
+            indexHtml.create ();
             indexHtml.appendText (indexContent);
 
             docOrDirTree.setProperty ("needCreateIndexHtml", false, nullptr);

@@ -95,6 +95,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                           imageTrans, Colour (0x00),
                           Image::null, 1.000f, Colours::darkcyan,
                           Image::null, 1.0f, Colours::darkcyan);
+    bts[view]->setToggleState (true, dontSendNotification);
 
     bts[system]->setTooltip (TRANS ("Popup system menu"));
     bts[system]->setImages (false, true, true,
@@ -135,10 +136,11 @@ void TopToolBar::resized ()
 }
 
 //=================================================================================================
-void TopToolBar::enableEditPreviewBt (const bool enableIt)
+void TopToolBar::enableEditPreviewBt (const bool enableIt,
+                                      const bool toggleState)
 {
+    bts[view]->setToggleState (toggleState, dontSendNotification);
     bts[view]->setEnabled (enableIt);
-    bts[view]->setToggleState (enableIt, dontSendNotification);
 }
 
 //=========================================================================
@@ -245,7 +247,7 @@ void TopToolBar::buttonClicked (Button* bt)
     if (bt == bts[view])
     {
         bts[view]->setToggleState (!bts[view]->getToggleState (), dontSendNotification);
-        editAndPreview->startWork (editAndPreview->getCurrentTree(), !bts[view]->getToggleState());
+        editAndPreview->startWork (editAndPreview->getCurrentTree());
     }
     else if (bt == bts[system])
         popupSystemMenu ();

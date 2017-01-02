@@ -57,7 +57,7 @@ void EditAndPreview::resized()
 }
 
 //=================================================================================================
-void EditAndPreview::startWork (ValueTree& newDocTree, const bool enterEditState)
+void EditAndPreview::startWork (ValueTree& newDocTree)
 {
     saveCurrentDocIfChanged ();
 
@@ -76,7 +76,29 @@ void EditAndPreview::startWork (ValueTree& newDocTree, const bool enterEditState
         }
     }
 
-    (!enterEditState || docFile.isDirectory()) ? previewCurrentDoc () : editCurrentDoc ();
+    TopToolBar* toolBar = findParentComponentOfClass<MainContentComponent> ()->getToolbar ();
+    jassert (toolBar != nullptr);
+
+    if (docFile.isDirectory())
+    {
+        previewCurrentDoc ();
+        toolBar->enableEditPreviewBt (false, true);
+    }
+    else  // doc
+    {
+        const bool justCreatedThisDoc (Time::getCurrentTime() - docFile.getCreationTime() < RelativeTime (2.0));
+
+        if (toolBar->getStateOfViewButton() && !justCreatedThisDoc)
+        {
+            previewCurrentDoc();
+            toolBar->enableEditPreviewBt (true, true);
+        }
+        else
+        {
+            editCurrentDoc();
+            toolBar->enableEditPreviewBt (true, false);
+        }
+    }
 }
 
 //=================================================================================================
@@ -84,11 +106,7 @@ void EditAndPreview::editCurrentDoc ()
 {
     webView.setVisible (false);
     editor->setEnabled (true);
-    editor->grabKeyboardFocus ();
-
-   /* TopToolBar* toolBar = findParentComponentOfClass<MainContentComponent> ()->getToolbar ();
-    jassert (toolBar != nullptr);
-    toolBar->enableEditPreviewBt (true);*/
+    editor->grabKeyboardFocus ();    
 
     setupPanel->setEnabled (true);
     resized ();
@@ -104,11 +122,7 @@ void EditAndPreview::previewCurrentDoc ()
     if (docFile.existsAsFile ())
         webView.goToURL (createArticleHtml().getFullPathName());
     else
-        webView.goToURL (createIndexHtml().getFullPathName());
-
-   /* TopToolBar* toolBar = findParentComponentOfClass<MainContentComponent> ()->getToolbar ();
-    jassert (toolBar != nullptr);
-    toolBar->enableEditPreviewBt (false);*/
+        webView.goToURL (createIndexHtml().getFullPathName());    
 
     setupPanel->setEnabled (docFile.isDirectory());
     resized ();
@@ -127,13 +141,12 @@ const File EditAndPreview::createArticleHtml ()
     {   
         if (htmlFile.deleteFile())
         {
-            File tplFile;
             const String tplPath (FileTreeContainer::projectFile.getSiblingFile ("themes")
                                   .getFullPathName () + File::separator
                                   + FileTreeContainer::projectTree.getProperty ("render").toString ()
                                   + File::separator);
 
-            tplFile = tplPath + ((bool (docOrDirTree.getProperty ("isPage"))) 
+            const File tplFile = tplPath + ((bool (docOrDirTree.getProperty ("isPage"))) 
                                  ? "page.html" : "article.html");
 
             // get the description (the second line which not empty-line)
@@ -207,17 +220,28 @@ const File EditAndPreview::createIndexHtml ()
     {
         if (indexHtml.deleteFile ())
         {
+            const bool isWebIndex = (siteDir.getFileName () == "site");
+
             const File tplFile (FileTreeContainer::projectFile.getSiblingFile ("themes")
-                                  .getFullPathName () + File::separator
-                                  + FileTreeContainer::projectTree.getProperty ("render").toString ()
-                                  + File::separator + "category.html");
+                                .getFullPathName () + File::separator
+                                + FileTreeContainer::projectTree.getProperty ("render").toString ()
+                                + File::separator 
+                                + (isWebIndex ? "index.html" : "category.html"));
             
-            indexHtml.appendText (tplFile.loadFileAsString());
+            const String tplContent (tplFile.loadFileAsString ());
+            const String indexContent (tplContent);
+
+            // TODO..
+            indexHtml.appendText (indexContent);
+
+            docOrDirTree.setProperty ("needCreateIndexHtml", false, nullptr);
+            docHasChanged = true;
+            saveCurrentDocIfChanged ();
         }
         else
         {
             SHOW_MESSAGE (TRANS ("Something wrong during create this folder's index.html."));
-        }
+        }        
     }
 
     return indexHtml;

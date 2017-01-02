@@ -30,8 +30,8 @@ class EditAndPreview : public Component,
 public:
     EditAndPreview ();
     ~EditAndPreview();
-
-    void startWork (ValueTree& newDocTree, const bool enterEditState);
+       
+    void startWork (ValueTree& newDocTree);
 
     void paint (Graphics&) override {}
     void resized() override;

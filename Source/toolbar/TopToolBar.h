@@ -27,7 +27,7 @@ public:
     void resized() override;
 
     const bool getStateOfViewButton() const              { return bts[view]->getToggleState(); }
-    void enableEditPreviewBt (const bool enableIt);
+    void enableEditPreviewBt (const bool enableIt, const bool toggleState);
 
 private:
     //==========================================================================

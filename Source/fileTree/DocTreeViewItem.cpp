@@ -141,27 +141,21 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
 
         // set properties on the right side
         if (tree.getType ().toString () == "doc")
-        {
             editArea->setDocProperties (tree);
-            editArea->startWork (tree, true);
-        }
+        
         else if (tree.getType ().toString () == "dir")
-        {
             editArea->setDirProperties (tree);
-            editArea->startWork (tree, false);
-        }
+        
         else // root
-        {
             editArea->setProjectProperties (tree);        
-            editArea->startWork (tree, false);
-        }
+
+        editArea->startWork (tree);
 
         treeContainer->setIdentityOfLastSelectedItem (getItemIdentifierString ());
     }    
 }
 
 //=================================================================================================
-// right click
 void DocTreeViewItem::itemClicked (const MouseEvent& e)
 {
     const bool exist = getFileOrDir (tree).exists ();

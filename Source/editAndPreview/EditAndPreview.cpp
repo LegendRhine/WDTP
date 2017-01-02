@@ -65,7 +65,7 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
     {
         editor->removeListener (this);
         docOrDirTree = newDocTree;
-        docFile = DocTreeViewItem::getFileOrDir (newDocTree);
+        docFile = DocTreeViewItem::getMdFileOrDir (newDocTree);
 
         if (docFile.existsAsFile ())
         {
@@ -484,7 +484,7 @@ void EditorForMd::performPopupMenuAction (int index)
             return;
 
         imageFiles = fc.getResults();
-        const File imgPath (DocTreeViewItem::getFileOrDir (docTree).getSiblingFile ("media"));
+        const File imgPath (DocTreeViewItem::getMdFileOrDir (docTree).getSiblingFile ("media"));
 
         for (auto f : imageFiles)
         {

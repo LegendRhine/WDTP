@@ -26,7 +26,8 @@ public:
     instead of the project file!
 
     Note 2: this method will return a nonexists file when the arg is invalid. */
-    static const File getFileOrDir (const ValueTree& tree);
+    static const File getMdFileOrDir (const ValueTree& tree);
+    static const File getHtmlFileOrDir (const File& mdFileOrDir);
 
     // static public methods for drag-drop moving items..
     static void moveItems (const OwnedArray<ValueTree>& items, 

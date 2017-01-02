@@ -52,7 +52,7 @@
 			- 文章2.html
 			- ...
 	- themes (模板文件夹，每套模板位于一个独立的子文件夹下)
-		- theme-1 （模板1）
+		- default （系统默认模板）
 			- index.html
 			- page.html
 			- article.html

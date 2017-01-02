@@ -84,7 +84,7 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
         g.drawImageAt (icon, 2, getItemHeight () / 2 - 8);
     }
 
-    if (!getFileOrDir (tree).exists ())
+    if (!getMdFileOrDir (tree).exists ())
         c = Colours::red;
 
     g.setColour (c);
@@ -102,7 +102,7 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
 }
 
 //=================================================================================================
-const File DocTreeViewItem::getFileOrDir (const ValueTree& tree)
+const File DocTreeViewItem::getMdFileOrDir (const ValueTree& tree)
 {
     if (!tree.isValid())
         return File::nonexistent;
@@ -132,6 +132,15 @@ const File DocTreeViewItem::getFileOrDir (const ValueTree& tree)
 }
 
 //=================================================================================================
+const File DocTreeViewItem::getHtmlFileOrDir (const File& mdFileOrDir)
+{
+    if (mdFileOrDir.isDirectory ())
+        return File (mdFileOrDir.getFullPathName ().replace ("docs", "site"));
+    else
+        return File (mdFileOrDir.getFullPathName ().replace ("docs", "site")).withFileExtension ("html");
+}
+
+//=================================================================================================
 // mouse click
 void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
 {
@@ -158,7 +167,7 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
 //=================================================================================================
 void DocTreeViewItem::itemClicked (const MouseEvent& e)
 {
-    const bool exist = getFileOrDir (tree).exists ();
+    const bool exist = getMdFileOrDir (tree).exists ();
     const bool isDoc = (tree.getType ().toString () == "doc");
     const bool isDir = (tree.getType ().toString () == "dir");
     const bool isRoot = (tree.getType ().toString () == "wdtpProject");
@@ -234,9 +243,9 @@ void DocTreeViewItem::menuPerform (const int index)
 
     // open in external app..
     else if (index == 14)
-        getFileOrDir (tree).revealToUser ();
+        getMdFileOrDir (tree).revealToUser ();
     else if (index == 15)
-        getFileOrDir (tree).startAsProcess ();
+        getMdFileOrDir (tree).startAsProcess ();
 
     // sort and show what...
     else if (index >= 100 && index <= 105)
@@ -255,7 +264,7 @@ void DocTreeViewItem::menuPerform (const int index)
 //=================================================================================================
 void DocTreeViewItem::renameSelectedItem ()
 {
-    const File& fileOrDir (getFileOrDir (tree));
+    const File& fileOrDir (getMdFileOrDir (tree));
     jassert (tree.getType ().toString () != "wdtpProject");
 
     AlertWindow dialog (TRANS ("Rename the selected item"), TRANS ("Please input the new name."),
@@ -276,7 +285,7 @@ void DocTreeViewItem::renameSelectedItem ()
         if (newName.isEmpty ())
             newName = TRANS ("Untitled");
 
-        File newFile (getFileOrDir (tree).getSiblingFile (newName + (fileOrDir.isDirectory () ? String ()
+        File newFile (getMdFileOrDir (tree).getSiblingFile (newName + (fileOrDir.isDirectory () ? String ()
                                                                      : ".md")));
         newFile = newFile.getNonexistentSibling (true);
 
@@ -333,7 +342,7 @@ void DocTreeViewItem::exportAsMdFile ()
     mdFile.create ();
 
     // single doc or dir-docs
-    if ((tree.getType ().toString () == "doc") ? getFileOrDir (tree).copyFileTo (mdFile)
+    if ((tree.getType ().toString () == "doc") ? getMdFileOrDir (tree).copyFileTo (mdFile)
         : exportDocsAsMd (this, tree, mdFile))
     {
         if (AlertWindow::showOkCancelBox (AlertWindow::InfoIcon, TRANS ("Message"),
@@ -360,7 +369,7 @@ void DocTreeViewItem::importDocuments ()
         return;
 
     const Array<File> docFiles (fc.getResults ());
-    const File thisDir (getFileOrDir (tree));
+    const File thisDir (getMdFileOrDir (tree));
     jassert (thisDir.isDirectory ()); // can't copy external docs to a nonexists dir
 
     // get the root, here we need some info from it
@@ -417,7 +426,7 @@ void DocTreeViewItem::createNewDocument ()
             docName = TRANS ("Untitled");
 
         // create this doc on disk
-        const File& thisDoc (getFileOrDir (tree).getChildFile (docName + ".md")
+        const File& thisDoc (getMdFileOrDir (tree).getChildFile (docName + ".md")
                              .getNonexistentSibling (true));
         thisDoc.create();
         thisDoc.appendText ("# ");
@@ -474,7 +483,7 @@ void DocTreeViewItem::createNewFolder ()
             dirName = TRANS ("New folder");
 
         // create this dir on disk
-        File thisDir (getFileOrDir (tree).getChildFile (dirName));
+        File thisDir (getMdFileOrDir (tree).getChildFile (dirName));
         thisDir = thisDir.getNonexistentSibling (true);
         thisDir.createDirectory();
 
@@ -539,7 +548,12 @@ void DocTreeViewItem::deleteSelected ()
 
             if (v.getParent ().isValid ())
             {
-                getFileOrDir (v).moveToTrash ();
+                const File mdFile (getMdFileOrDir (v));
+                const File siteFile (getHtmlFileOrDir (mdFile));
+
+                mdFile.moveToTrash ();
+                siteFile.deleteRecursively ();
+
                 v.getParent ().removeChild (v, nullptr);
             }
         }
@@ -622,7 +636,7 @@ const bool DocTreeViewItem::exportDocsAsMd (DocTreeViewItem* item,
     }
     else
     {
-        const File& currentFile (getFileOrDir (tree));
+        const File& currentFile (getMdFileOrDir (tree));
 
         if (currentFile.existsAsFile () && currentFile.getSize () > 0)
             return fileAppendTo.appendText (currentFile.loadFileAsString ().trimEnd () + newLine + newLine);
@@ -646,7 +660,7 @@ DocTreeViewItem* DocTreeViewItem::getRootItem (DocTreeViewItem* subItem)
 //=================================================================================================
 var DocTreeViewItem::getDragSourceDescription ()
 {
-    if (tree.getType ().toString () != "wdtpProject" && getFileOrDir (tree).exists ())
+    if (tree.getType ().toString () != "wdtpProject" && getMdFileOrDir (tree).exists ())
         return "dragFileOrDir";
 
     return String ();
@@ -668,7 +682,7 @@ void DocTreeViewItem::itemDropped (const DragAndDropTarget::SourceDetails& detai
     if (details.description != "dragFileOrDir")
         return;
 
-    jassert (getFileOrDir (tree).isDirectory());
+    jassert (getMdFileOrDir (tree).isDirectory());
 
     OwnedArray<ValueTree> selectedTrees;
     TreeView* treeView = getOwnerView();
@@ -699,8 +713,8 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items,
 
         if (v.getParent ().isValid () && thisTree != v && !thisTree.isAChildOf (v))
         {
-            const File& thisFile (getFileOrDir (v));
-            File targetFile (getFileOrDir (thisTree).getChildFile (thisFile.getFileName ()));
+            const File& thisFile (getMdFileOrDir (v));
+            File targetFile (getMdFileOrDir (thisTree).getChildFile (thisFile.getFileName ()));
 
             // prevent same-location move. but this will also prevent sort by mannul-mode
             if (thisFile.exists () && targetFile.exists () && thisFile == targetFile)
@@ -764,7 +778,7 @@ String DocTreeViewItem::getTooltip ()
 {
     // full path of file name
     if (sorter->getTooltipToShow() == 0)
-        return getFileOrDir (tree).getFullPathName();
+        return getMdFileOrDir (tree).getFullPathName();
 
     // title or intro
     else if (sorter->getTooltipToShow() == 1) 
@@ -779,7 +793,7 @@ String DocTreeViewItem::getTooltip ()
         }
         else
         {
-            const String docPath (getFileOrDir(tree).getFullPathName());
+            const String docPath (getMdFileOrDir(tree).getFullPathName());
             const String& htmlPath (docPath.replace ("docs","site"));
             //DBGX (htmlPath.replace (".md", ".html"));
 

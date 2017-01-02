@@ -196,7 +196,7 @@ void TopToolBar::findInProject (const bool next)
         if (item == nullptr)
             continue;
 
-        const File& docFile (DocTreeViewItem::getFileOrDir (item->getTree()));
+        const File& docFile (DocTreeViewItem::getMdFileOrDir (item->getTree()));
         const String& docContent (docFile.loadFileAsString());
 
         if (docContent.containsIgnoreCase (keyword))

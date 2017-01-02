@@ -193,8 +193,8 @@ const int ItemSorter::compareElements (TreeViewItem* first, TreeViewItem* second
     if (st.getType ().toString () == "wdtpProject")
         return 1;
 
-    const File& ff (DocTreeViewItem::getFileOrDir (ft));
-    const File& sf (DocTreeViewItem::getFileOrDir (st));
+    const File& ff (DocTreeViewItem::getMdFileOrDir (ft));
+    const File& sf (DocTreeViewItem::getMdFileOrDir (st));
     const bool isAscending = (ascending.getValue () == var (0));
     const bool isDirFirst = (dirFirst.getValue () == var (0));
 

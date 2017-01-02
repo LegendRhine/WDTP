@@ -16,7 +16,8 @@ const String Md2Html::mdStringToHtml (const String& mdString,
                                       const File& tplFile,
                                       const String& htmlKeywords,
                                       const String& htmlDescription,
-                                      const String& htmlTitle)
+                                      const String& htmlTitle,
+                                      const String& cssPath)
 {
     jassert (tplFile.existsAsFile ());
 
@@ -44,6 +45,7 @@ const String Md2Html::mdStringToHtml (const String& mdString,
         .replace ("{{keywords}}", htmlKeywords)
         .replace ("{{description}}", htmlDescription)
         .replace ("{{title}}", htmlTitle)
+        .replace ("{{siteRelativeRootPath}}", cssPath)
         .replace ("{{content}}", htmlContent);
 }
 

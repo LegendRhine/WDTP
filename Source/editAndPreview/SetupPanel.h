@@ -47,7 +47,7 @@ private:
     enum  
     { 
         // project properties' values
-        projectName = 0, projectDesc, owner, projectSkin, 
+        projectName = 0, projectDesc, owner, /*projectSkin,*/ 
         projectRenderDir, fontSize, 
 
         // dir properties' values

@@ -31,7 +31,7 @@ EditAndPreview::EditAndPreview ()
     editor->setTabKeyUsedAsCharacter (true);
     editor->setColour (TextEditor::textColourId, Colour(0xff303030));
     editor->setColour (TextEditor::focusedOutlineColourId, Colour(0xffb4b4b4));
-    editor->setColour (TextEditor::backgroundColourId, Colour(0xffededed));
+    editor->setColour (TextEditor::backgroundColourId, Colour(0xffdedede));
     editor->setScrollBarThickness (10);
     editor->setIndents (10, 10);
     editor->setFont (SwingUtilities::getFontSize());
@@ -97,6 +97,9 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
         {
             editCurrentDoc();
             toolBar->enableEditPreviewBt (true, false);
+
+            if (justCreatedThisDoc)
+                editor->moveCaretToEnd (false);
         }
     }
 }
@@ -177,13 +180,27 @@ const File EditAndPreview::createArticleHtml ()
                 }
             }
 
+            // get the path which relative the site root-dir, for css path            
+            const String htmlFilePath (htmlFile.getFullPathName ());
+            const String webRootDirPath (FileTreeContainer::projectFile.getParentDirectory().getFullPathName() 
+                                         + File::separator + "site");
+            const String tempStr (htmlFilePath.trimCharactersAtStart (webRootDirPath));
+            String cssRelativePath;
+
+            for (int i = tempStr.length(); --i >= 0;)
+            {
+                if (tempStr[i] == File::separator)
+                    cssRelativePath << String ("../");
+            }
+            
             // generate the doc's html
             htmlFile.create ();
-            htmlFile.appendText (Md2Html::mdStringToHtml (currentContent, 
+            htmlFile.appendText (Md2Html::mdStringToHtml (currentContent,
                                                           tplFile,
-                                                          docOrDirTree.getProperty("keywords").toString(),
+                                                          docOrDirTree.getProperty ("keywords").toString(),
                                                           description.trim(), 
-                                                          docOrDirTree.getProperty ("title").toString ()));
+                                                          docOrDirTree.getProperty ("title").toString(),
+                                                          cssRelativePath));
 
             // here, we copy the doc's media dir to the site's
             // maybe this is a ugly implement, need to be improved
@@ -228,8 +245,21 @@ const File EditAndPreview::createIndexHtml ()
                                 + File::separator 
                                 + (isWebIndex ? "index.html" : "category.html"));
             
+            // get the path which relative the site root-dir, for css path            
+            const String htmlFilePath (indexHtml.getFullPathName ());
+            const String webRootDirPath (FileTreeContainer::projectFile.getParentDirectory ().getFullPathName ()
+                                         + File::separator + "site");
+            const String tempStr (htmlFilePath.trimCharactersAtStart (webRootDirPath));
+            String cssRelativePath;
+
+            for (int i = tempStr.length (); --i >= 0;)
+            {
+                if (tempStr[i] == File::separator)
+                    cssRelativePath << String ("../");
+            }
+
             const String tplContent (tplFile.loadFileAsString ());
-            const String indexContent (tplContent);
+            const String indexContent (tplContent.replace("{{siteRelativeRootPath}}", cssRelativePath));
 
             // TODO..
             indexHtml.appendText (indexContent);

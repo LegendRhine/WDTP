@@ -53,7 +53,13 @@ private:
     public:
         MyImageButton() 
         {
-            setMouseCursor(MouseCursor::PointingHandCursor);
+            setMouseCursor (MouseCursor::PointingHandCursor);
+        }
+
+        virtual void enablementChanged() override
+        {
+            setMouseCursor (isEnabled () ? MouseCursor::PointingHandCursor
+                            : MouseCursor::NormalCursor);
         }
 
     private:

@@ -405,7 +405,7 @@ void DocTreeViewItem::createNewDocument ()
     AlertWindow dialog (TRANS ("Create a new document"), TRANS ("Please input the new doc's name."),
                         AlertWindow::InfoIcon);
 
-    dialog.addTextEditor ("name", TRANS ("Untitled"));
+    dialog.addTextEditor ("name", String());
     dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
     dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
 
@@ -420,8 +420,7 @@ void DocTreeViewItem::createNewDocument ()
         const File& thisDoc (getFileOrDir (tree).getChildFile (docName + ".md")
                              .getNonexistentSibling (true));
         thisDoc.create();
-        thisDoc.appendText (TRANS ("# Title of this article")
-                            + newLine + newLine);
+        thisDoc.appendText ("# ");
 
         // get the root for get some its properties
         ValueTree rootTree = tree;
@@ -431,11 +430,11 @@ void DocTreeViewItem::createNewDocument ()
 
         // valueTree of this doc
         ValueTree docTree ("doc");
-        docTree.setProperty ("name", thisDoc.getFileNameWithoutExtension (), nullptr);
-        docTree.setProperty ("title", "Title of this article", nullptr);
-        docTree.setProperty ("keywords", String (), nullptr);
+        docTree.setProperty ("name", thisDoc.getFileNameWithoutExtension(), nullptr);
+        docTree.setProperty ("title", String(), nullptr);
+        docTree.setProperty ("keywords", String(), nullptr);
         docTree.setProperty ("isPage", false, nullptr);
-        docTree.setProperty ("js", String (), nullptr);
+        docTree.setProperty ("js", String(), nullptr);
 
         // must update this tree before show this new item
         tree.removeListener (this);
@@ -463,7 +462,7 @@ void DocTreeViewItem::createNewFolder ()
     AlertWindow dialog (TRANS ("Create a new folder"), TRANS ("Please input the new folder's name."),
                         AlertWindow::InfoIcon);
 
-    dialog.addTextEditor ("name", TRANS ("New Folder"));
+    dialog.addTextEditor ("name", String());
     dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
     dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
 
@@ -477,7 +476,7 @@ void DocTreeViewItem::createNewFolder ()
         // create this dir on disk
         File thisDir (getFileOrDir (tree).getChildFile (dirName));
         thisDir = thisDir.getNonexistentSibling (true);
-        thisDir.createDirectory ();
+        thisDir.createDirectory();
 
         // dir tree
         ValueTree dirTree ("dir");

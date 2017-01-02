@@ -373,7 +373,7 @@ void TopToolBar::createNewProject ()
     p.setProperty ("name", projectFile.getFileNameWithoutExtension (), nullptr);
     p.setProperty ("title", TRANS ("Description of this project..."), nullptr);
     p.setProperty ("owner", SystemStats::getLogonName() , nullptr);
-    p.setProperty ("skin", "Elegence", nullptr);
+    //p.setProperty ("skin", "Elegence", nullptr);
     p.setProperty ("order", 0, nullptr);
     p.setProperty ("ascending", 0, nullptr);
     p.setProperty ("dirFirst", 0, nullptr);

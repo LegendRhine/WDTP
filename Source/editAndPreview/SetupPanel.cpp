@@ -42,7 +42,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     values[projectName]->setValue (pTree.getProperty ("name"));
     values[projectDesc]->setValue (pTree.getProperty ("title"));
     values[owner]->setValue (pTree.getProperty ("owner"));
-    values[projectSkin]->setValue (pTree.getProperty ("skin"));
+    //values[projectSkin]->setValue (pTree.getProperty ("skin"));
     values[projectRenderDir]->setValue (pTree.getProperty ("render"));
     values[fontSize]->setValue (pTree.getProperty ("fontSize"));
 
@@ -53,7 +53,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     projectProperties.add (new TextPropertyComponent (*values[owner], TRANS ("Owner: "), 30, false));
 
     // skin
-    StringArray skinSa;
+    /*StringArray skinSa;
     skinSa.add (TRANS ("Elegance"));
     skinSa.add (TRANS ("Meditation"));
 
@@ -61,7 +61,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     skinVar.add ("Elegance");
     skinVar.add ("Meditation");
 
-    projectProperties.add (new ChoicePropertyComponent (*values[projectSkin], TRANS ("Project Skin: "), skinSa, skinVar));
+    projectProperties.add (new ChoicePropertyComponent (*values[projectSkin], TRANS ("Project Skin: "), skinSa, skinVar));*/
 
     // themes dirs
     StringArray themeDirsSa;
@@ -184,8 +184,8 @@ void SetupPanel::valueChanged (Value& value)
         projectTree.setProperty ("title", values[projectDesc]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[owner]))
         projectTree.setProperty ("owner", values[owner]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[projectSkin]))
-        projectTree.setProperty ("skin", values[projectSkin]->getValue (), nullptr);
+    /*else if (value.refersToSameSourceAs (*values[projectSkin]))
+        projectTree.setProperty ("skin", values[projectSkin]->getValue (), nullptr);*/
     else if (value.refersToSameSourceAs (*values[projectRenderDir]))
         projectTree.setProperty ("render", values[projectRenderDir]->getValue (), nullptr);
 

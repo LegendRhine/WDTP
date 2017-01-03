@@ -39,7 +39,7 @@ public:
     void needRecreateHtml (const bool recreate)           { needCreateArticleHtml = recreate; }
 
     TextEditor* getEditor() const                         { return editor; }
-    const File& getCurrentDocFile() const                 { return docFile;}
+    const File& getCurrentDocFile() const                 { return docOrDirFile;}
     ValueTree& getCurrentTree()                           { return docOrDirTree; }
 
     /** return true if current is preview state, flase for edit state. */
@@ -64,7 +64,7 @@ private:
     virtual void timerCallback() override;
 
     //=========================================================================
-    File docFile = File::nonexistent;
+    File docOrDirFile = File::nonexistent;
     ValueTree docOrDirTree;
 
     bool docHasChanged = false;

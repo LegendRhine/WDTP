@@ -292,10 +292,16 @@ void DocTreeViewItem::renameSelectedItem ()
             // save the project file
             tree.setProperty ("name", newDocFile.getFileNameWithoutExtension (), nullptr);
 
+            ValueTree parentTree = tree;
+
             if (docFileOrDir.isDirectory())
-                tree.setProperty ("needCreateIndexHtml", true, nullptr);
-            else
-                tree.getParent().setProperty ("needCreateIndexHtml", true, nullptr);            
+                parentTree.setProperty ("needCreateIndexHtml", true, nullptr);
+
+            while (parentTree.isValid())
+            {
+                parentTree = parentTree.getParent ();
+                parentTree.setProperty ("needCreateIndexHtml", true, nullptr);
+            }
 
             // rename the site dir or html-file
             File siteOldFile;
@@ -464,10 +470,19 @@ void DocTreeViewItem::createNewDocument ()
         docTree.setProperty ("keywords", String(), nullptr);
         docTree.setProperty ("isPage", false, nullptr);
         docTree.setProperty ("js", String(), nullptr);
-
+        
         // must update this tree before show this new item
         tree.removeListener (this);
         tree.addChild (docTree, 0, nullptr);
+
+        ValueTree parentTree = tree.getParent ();               
+
+        while (parentTree.isValid ())
+        {
+            parentTree.setProperty ("needCreateIndexHtml", true, nullptr);
+            parentTree = parentTree.getParent ();
+        }
+
         tree.addListener (this);
 
         // add and select the new item 
@@ -517,6 +532,15 @@ void DocTreeViewItem::createNewFolder ()
         // must update this tree before show this new item
         tree.removeListener (this);
         tree.addChild (dirTree, 0, nullptr);
+
+        ValueTree parentTree = tree;
+
+        while (parentTree.isValid ())
+        {
+            parentTree.setProperty ("needCreateIndexHtml", true, nullptr);
+            parentTree = parentTree.getParent ();
+        }
+
         tree.addListener (this);
 
         // this item add the new dir, then select the index item 
@@ -559,7 +583,10 @@ void DocTreeViewItem::deleteSelected ()
         ValueTree rootTree = tree;
 
         while (rootTree.getParent ().isValid ())
+        {
             rootTree = rootTree.getParent ();
+            rootTree.setProperty ("needCreateIndexHtml", true, nullptr);
+        }
 
         // delete one by one
         for (int i = selectedTrees.size (); --i >= 0; )

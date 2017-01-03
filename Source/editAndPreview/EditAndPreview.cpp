@@ -61,16 +61,16 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
 {
     saveCurrentDocIfChanged ();
 
-    if (newDocTree != docOrDirTree || docFile != DocTreeViewItem::getMdFileOrDir (newDocTree))
+    if (newDocTree != docOrDirTree || docOrDirFile != DocTreeViewItem::getMdFileOrDir (newDocTree))
     {
         editor->removeListener (this);
         docOrDirTree = newDocTree;
-        docFile = DocTreeViewItem::getMdFileOrDir (newDocTree);
+        docOrDirFile = DocTreeViewItem::getMdFileOrDir (newDocTree);
 
-        if (docFile.existsAsFile ())
+        if (docOrDirFile.existsAsFile ())
         {
             editor->applyFontToAllText (FileTreeContainer::fontSize);
-            editor->setText (docFile.loadFileAsString (), false);
+            editor->setText (docOrDirFile.loadFileAsString (), false);
             currentContent = editor->getText ();
             editor->addListener (this);
         }
@@ -79,14 +79,14 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
     TopToolBar* toolBar = findParentComponentOfClass<MainContentComponent>()->getToolbar();
     jassert (toolBar != nullptr);
 
-    if (docFile.isDirectory())
+    if (docOrDirFile.isDirectory())
     {
         previewCurrentDoc ();
         toolBar->enableEditPreviewBt (false, true);
     }
     else  // doc
     {
-        const bool justCreatedThisDoc (Time::getCurrentTime() - docFile.getCreationTime() < RelativeTime (2.0));
+        const bool justCreatedThisDoc (Time::getCurrentTime() - docOrDirFile.getCreationTime() < RelativeTime (2.0));
 
         if (toolBar->getStateOfViewButton() && !justCreatedThisDoc)
         {
@@ -122,12 +122,12 @@ void EditAndPreview::previewCurrentDoc ()
     webView.setVisible (true);
     webView.stop ();
     
-    if (docFile.existsAsFile ())
+    if (docOrDirFile.existsAsFile ())
         webView.goToURL (createArticleHtml().getFullPathName());
     else
         webView.goToURL (createIndexHtml().getFullPathName());    
 
-    setupPanel->setEnabled (docFile.isDirectory());
+    setupPanel->setEnabled (docOrDirFile.isDirectory());
     resized ();
 }
 
@@ -135,9 +135,9 @@ void EditAndPreview::previewCurrentDoc ()
 const File EditAndPreview::createArticleHtml ()
 {
     jassert (FileTreeContainer::projectTree.isValid());
-    jassert (docFile.existsAsFile ());  // selected a dir currently??    
+    jassert (docOrDirFile.existsAsFile ());  // selected a dir currently??    
 
-    const String docPath (docFile.getFullPathName ());
+    const String docPath (docOrDirFile.getFullPathName ());
     const File htmlFile (File (docPath.replace ("docs", "site")).withFileExtension ("html"));
 
     if (needCreateArticleHtml || !htmlFile.existsAsFile())
@@ -205,7 +205,7 @@ const File EditAndPreview::createArticleHtml ()
                                                              cssRelativePath));
 
             // here, we copy this doc's media file to the site's
-            const String docMediaDirStr (docFile.getSiblingFile ("media").getFullPathName ());
+            const String docMediaDirStr (docOrDirFile.getSiblingFile ("media").getFullPathName ());
             const String htmlMediaDirStr (htmlFile.getSiblingFile ("media").getFullPathName ());
             Array<File> docMedias;
             Array<File> htmlMedias;
@@ -255,9 +255,9 @@ const File EditAndPreview::createArticleHtml ()
 const File EditAndPreview::createIndexHtml ()
 {
     jassert (FileTreeContainer::projectTree.isValid ());
-    jassert (docFile.isDirectory ());  // selected a article currently?? 
+    jassert (docOrDirFile.isDirectory ());  // selected a article currently?? 
 
-    const String dirPath (docFile.getFullPathName ());
+    const String dirPath (docOrDirFile.getFullPathName ());
     const File siteDir (dirPath.replace ("docs", "site"));
     File indexHtml (siteDir.getChildFile ("index.html"));
 
@@ -287,10 +287,47 @@ const File EditAndPreview::createIndexHtml ()
                     cssRelativePath << String ("../");
             }
 
-            const String tplContent (tplFile.loadFileAsString ());
-            const String indexContent (tplContent.replace("{{siteRelativeRootPath}}", cssRelativePath));
+            const String tplStr (tplFile.loadFileAsString());
+            const String indexTileStr (docOrDirTree.getProperty ("title").toString ());
+            String indexContent (tplStr.replace("{{siteRelativeRootPath}}", cssRelativePath)
+                                 .replace ("{{title}}", indexTileStr)
+                                 .replace ("{{keywords}}", indexTileStr)
+                                 .replace ("{{description}}", indexTileStr + "-" + TRANS ("file list"))
+            );
 
-            // TODO..
+            if (tplStr.contains("{{fileList_reverse}}"))
+            {
+                Array<File> filesInDir;
+                StringArray filesPath;
+                const int fileNumbers = docOrDirFile.findChildFiles (filesInDir, 
+                                                                     File::findFilesAndDirectories, 
+                                                                     true);
+                const String dirPathStr (docOrDirFile.getFullPathName() + File::separator);
+                //filesInDir.sort ();  // TODO: need implement sort..
+
+                for (int i = fileNumbers; --i >= 0; )
+                {
+                    filesPath.add (filesInDir[i].getFullPathName().fromFirstOccurrenceOf(dirPathStr, false, false));
+                }
+
+                for (int i = filesPath.size(); --i >= 0; )
+                {
+                    if (filesPath[i].contains ("media"))
+                    {
+                        filesPath.remove (i);
+                    }
+                    else
+                    {
+                        if (filesPath[i].contains (".md"))
+                            filesPath.getReference (i) = filesPath[i].replace (".md", ".html");
+                        if (filesPath[i].contains ("\\"))
+                            filesPath.getReference (i) = filesPath[i].replace ("\\", "/");
+                    }
+                }
+
+                indexContent = indexContent.replace ("{{fileList_reverse}}", filesPath.joinIntoString (newLine + "<p>"));
+            }
+
             indexHtml.create ();
             indexHtml.appendText (indexContent);
 
@@ -319,7 +356,7 @@ void EditAndPreview::projectClosed ()
     setupPanel->projectClosed ();
     webView.setVisible (false);
 
-    docFile = File::nonexistent;
+    docOrDirFile = File::nonexistent;
     docOrDirTree = ValueTree::invalid;
     docHasChanged = false;
     needCreateArticleHtml = false;
@@ -353,8 +390,15 @@ void EditAndPreview::textEditorTextChanged (TextEditor&)
         docHasChanged = true;
         needCreateArticleHtml = true;
 
-        jassert (docFile.existsAsFile ());
-        docOrDirTree.getParent().setProperty ("needCreateIndexHtml", true, nullptr);
+        jassert (docOrDirFile.existsAsFile ());
+
+        ValueTree rootTree = docOrDirTree;
+
+        while (rootTree.getParent ().isValid ())
+        {
+            rootTree = rootTree.getParent ();
+            rootTree.setProperty ("needCreateIndexHtml", true, nullptr);
+        }
 
         startTimer (5000);
     }    
@@ -374,13 +418,13 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
 
     stopTimer ();
 
-    if (docHasChanged && docFile != File::nonexistent)
+    if (docHasChanged && docOrDirFile != File::nonexistent)
     {
         currentContent = editor->getText ();
         const String tileStr (currentContent.trim().upToFirstOccurrenceOf ("\n", false, true)
                               .replace("#", String()).trim());
 
-        TemporaryFile tempFile (docFile);
+        TemporaryFile tempFile (docOrDirFile);
         tempFile.getFile ().appendText (currentContent);
 
         if (tempFile.overwriteTargetFileWithTemporary())

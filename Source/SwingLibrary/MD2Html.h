@@ -14,16 +14,16 @@
 struct Md2Html
 {
 public:
-    /** Base on the argu Markdown string and template file, return html string. 
-        
-        the 6th arg 'cssPath' must end in "/".
-    */
-    static const String mdStringToHtml (const String& mdString, 
-                                        const File& tplFile,
-                                        const String& htmlKeywords,
-                                        const String& htmlDescription,
-                                        const String& htmlTitle,
-                                        const String& cssPath);
+    /** Base on the argu Markdown string, parse and return its html string. */
+    static const String mdStringToHtml (const String& mdString);
+
+    /* the 6th arg 'cssPath' must end in "/". */
+    static const String renderHtmlContent (const String& htmlContentStr,
+                                           const File& tplFile,
+                                           const String& htmlKeywords,
+                                           const String& htmlDescription,
+                                           const String& htmlTitle,
+                                           const String& cssPath);
 
 private:
     // call these methods must be ordered just like below order

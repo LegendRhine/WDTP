@@ -195,22 +195,51 @@ const File EditAndPreview::createArticleHtml ()
             
             // generate the doc's html
             htmlFile.create ();
-            htmlFile.appendText (Md2Html::mdStringToHtml (currentContent,
-                                                          tplFile,
-                                                          docOrDirTree.getProperty ("keywords").toString(),
-                                                          description.trim(), 
-                                                          docOrDirTree.getProperty ("title").toString(),
-                                                          cssRelativePath));
+            const String htmlStr (Md2Html::mdStringToHtml (currentContent));
 
-            // here, we copy the doc's media dir to the site's
-            // maybe this is a ugly implement, need to be improved
-            const File docsMediaDir (docFile.getSiblingFile ("media"));
+            htmlFile.appendText (Md2Html::renderHtmlContent (htmlStr,
+                                                             tplFile,
+                                                             docOrDirTree.getProperty ("keywords").toString (),
+                                                             description.trim (),
+                                                             docOrDirTree.getProperty ("title").toString (),
+                                                             cssRelativePath));
 
-            if (docsMediaDir.isDirectory())
+            // here, we copy this doc's media file to the site's
+            const String docMediaDirStr (docFile.getSiblingFile ("media").getFullPathName ());
+            const String htmlMediaDirStr (htmlFile.getSiblingFile ("media").getFullPathName ());
+            Array<File> docMedias;
+            Array<File> htmlMedias;
+
+            int indexStart = htmlStr.indexOfIgnoreCase (0, "src=\"");
+            int indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
+
+            while (indexStart != -1 && indexEnd != -1)
             {
-                const File htmlsMediaDir (htmlFile.getSiblingFile ("media"));
-                docsMediaDir.copyDirectoryTo (htmlsMediaDir);
+                docMedias.add (File (docMediaDirStr + File::separator + htmlStr.substring (indexStart + 11, indexEnd)));
+                htmlMedias.add (File (htmlMediaDirStr + File::separator + htmlStr.substring (indexStart + 11, indexEnd)));
+
+                indexStart = htmlStr.indexOfIgnoreCase (indexEnd + 2, "src=\"");
+
+                if (indexStart != -1)
+                    indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
             }
+
+            jassert (docMedias.size () == htmlMedias.size ());
+            String errorStr;
+
+            for (int i = docMedias.size(); --i >= 0; )
+            {
+                htmlMedias[i].create ();
+
+                if (! docMedias[i].copyFileTo (htmlMedias[i]))
+                    errorStr << docMedias[i].getFullPathName () << newLine;
+            }
+
+            if (errorStr.isNotEmpty ())
+            {
+                SHOW_MESSAGE (TRANS ("Can't generate these media-files:")
+                              + newLine + newLine + errorStr + newLine);
+            }            
         }
         else
         {

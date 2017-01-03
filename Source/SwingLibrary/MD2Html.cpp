@@ -596,6 +596,9 @@ const String Md2Html::cleanUp (const String& mdString)
     // otherwise the vertical-gap will too wide
     resultStr = resultStr.replace (String ("<pre><code>") + newLine, "<pre><code>");
 
+    // give it a <p> after table
+    resultStr = resultStr.replace (String ("</table>") + newLine, "</table><p>");
+
     //DBG (resultStr);
     return resultStr;
 }

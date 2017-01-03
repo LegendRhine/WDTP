@@ -1,6 +1,43 @@
-
-
+﻿
 body {
-	background-color: #dedede;
-	
+  background-color: #dedede;	
+  text-indent: 2em;
 }
+h2, h3, h4, h5, h6 {
+  text-indent: 24pt;
+}
+li, hr, div {
+  text-indent: 0;
+}
+blockquote {
+  background-color: #cdcdcd;
+  padding: 15px 20px 15px 20px;
+  margin: 0 0 20px 0;
+  font-size: 93%;
+  font-style: italic;
+}
+pre {
+  text-indent: 0;
+  background-color: #cdcdcd;
+  border-radius: 3px;
+  height: 120%;
+  overflow: scroll; 
+  padding: 15px 20px 15px 20px;
+  margin: 0 0 20px 0;
+  font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
+  font-size: 78%;
+}
+code {
+  background-color: #cdcdcd;
+}
+table  {
+  border-collapse:collapse;
+  width: 100%;
+}
+table, td, th  {
+  border:1px solid black;
+}
+th {
+  background-color: #cdcdcd;
+}
+

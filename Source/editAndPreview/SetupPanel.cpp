@@ -49,7 +49,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     Array<PropertyComponent*> projectProperties;
 
     projectProperties.add (new TextPropertyComponent (*values[projectName], TRANS ("Project Name: "), 60, false));
-    projectProperties.add (new TextPropertyComponent (*values[projectDesc], TRANS ("Description: "), 0, true));
+    projectProperties.add (new TextPropertyComponent (*values[projectDesc], TRANS ("Title: "), 0, true));
     projectProperties.add (new TextPropertyComponent (*values[owner], TRANS ("Owner: "), 30, false));
 
     // skin
@@ -103,7 +103,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     values[isMenu]->setValue (dirTree.getProperty ("isMenu"));
 
     Array<PropertyComponent*> dirProperties;
-    dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Description: "), 0, true));
+    dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Title: "), 0, true));
     dirProperties.add (new BooleanPropertyComponent (*values[isMenu], TRANS ("Web Menu: "), TRANS ("Yes")));
     
     for (auto p : dirProperties)     p->setPreferredHeight (28);

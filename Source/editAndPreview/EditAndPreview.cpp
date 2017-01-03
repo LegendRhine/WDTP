@@ -305,7 +305,7 @@ const File EditAndPreview::createIndexHtml ()
                 const String dirPathStr (docOrDirFile.getFullPathName() + File::separator);
                 //filesInDir.sort ();  // TODO: need implement sort..
 
-                for (int i = fileNumbers; --i >= 0; )
+                for (int i = 0; i < fileNumbers; ++i)
                 {
                     filesPath.add (filesInDir[i].getFullPathName().fromFirstOccurrenceOf(dirPathStr, false, false));
                 }
@@ -325,14 +325,18 @@ const File EditAndPreview::createIndexHtml ()
                     }
                 }
 
-                indexContent = indexContent.replace ("{{fileList_reverse}}", filesPath.joinIntoString (newLine + "<p>"));
+                indexContent = indexContent.replace ("{{fileList_reverse}}", filesPath.joinIntoString (newLine + "<br>"))
+                    .replace ("<body>", 
+                              "<body>\n <div align=center><h1>" 
+                              + docOrDirTree.getProperty ("title").toString () 
+                              + "</h1></div>\n<br>");
             }
 
             indexHtml.create ();
             indexHtml.appendText (indexContent);
 
             docOrDirTree.setProperty ("needCreateIndexHtml", false, nullptr);
-            docHasChanged = true;
+            //docHasChanged = true;
             saveCurrentDocIfChanged ();
         }
         else

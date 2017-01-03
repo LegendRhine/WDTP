@@ -188,7 +188,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
         PopupMenu sortMenu;
         sortMenu.addItem (100, TRANS ("File Name"), true, sorter->getOrder () == 0);
-        sortMenu.addItem (101, TRANS ("Desciption"), true, sorter->getOrder () == 1);
+        sortMenu.addItem (101, TRANS ("Title"), true, sorter->getOrder () == 1);
         sortMenu.addItem (103, TRANS ("File Size"), true, sorter->getOrder () == 3);
         sortMenu.addItem (104, TRANS ("Create Time"), true, sorter->getOrder () == 4);
         sortMenu.addItem (105, TRANS ("Modified Time"), true, sorter->getOrder () == 5);
@@ -200,13 +200,13 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
         PopupMenu showedAsMenu;
         showedAsMenu.addItem (200, TRANS ("File Name"), true, sorter->getShowWhat () == 0);
-        showedAsMenu.addItem (201, TRANS ("Desciption"), true, sorter->getShowWhat () == 1);
+        showedAsMenu.addItem (201, TRANS ("Title"), true, sorter->getShowWhat () == 1);
 
         m.addSubMenu (TRANS ("Showed as"), showedAsMenu);
 
         PopupMenu tooltipAsMenu;
         tooltipAsMenu.addItem (300, TRANS ("File Path"), true, sorter->getTooltipToShow () == 0);
-        tooltipAsMenu.addItem (301, TRANS ("Desciption"), true, sorter->getTooltipToShow () == 1);
+        tooltipAsMenu.addItem (301, TRANS ("Title"), true, sorter->getTooltipToShow () == 1);
 
         m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu);
         m.addSeparator ();

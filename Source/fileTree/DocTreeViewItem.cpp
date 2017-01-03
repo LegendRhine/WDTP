@@ -159,7 +159,6 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
             editArea->setProjectProperties (tree);        
 
         editArea->startWork (tree);
-
         treeContainer->setIdentityOfLastSelectedItem (getItemIdentifierString ());
     }    
 }
@@ -264,13 +263,13 @@ void DocTreeViewItem::menuPerform (const int index)
 //=================================================================================================
 void DocTreeViewItem::renameSelectedItem ()
 {
-    const File& fileOrDir (getMdFileOrDir (tree));
+    const File& docFileOrDir (getMdFileOrDir (tree));
     jassert (tree.getType ().toString () != "wdtpProject");
 
     AlertWindow dialog (TRANS ("Rename the selected item"), TRANS ("Please input the new name."),
                         AlertWindow::InfoIcon);
 
-    dialog.addTextEditor ("name", fileOrDir.getFileNameWithoutExtension ());
+    dialog.addTextEditor ("name", docFileOrDir.getFileNameWithoutExtension ());
     dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
     dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
 
@@ -285,21 +284,42 @@ void DocTreeViewItem::renameSelectedItem ()
         if (newName.isEmpty ())
             newName = TRANS ("Untitled");
 
-        File newFile (getMdFileOrDir (tree).getSiblingFile (newName + (fileOrDir.isDirectory () ? String ()
-                                                                     : ".md")));
-        newFile = newFile.getNonexistentSibling (true);
+        File newDocFile (docFileOrDir.getSiblingFile (newName + (docFileOrDir.isDirectory() ? String() : ".md")));
+        newDocFile = newDocFile.getNonexistentSibling (true);
 
-        if (fileOrDir.moveFileTo (newFile))
+        if (docFileOrDir.moveFileTo (newDocFile))
         {
             // save the project file
-            tree.setProperty ("name", newFile.getFileNameWithoutExtension (), nullptr);
+            tree.setProperty ("name", newDocFile.getFileNameWithoutExtension (), nullptr);
 
-            ValueTree rootTree = tree;
+            if (docFileOrDir.isDirectory())
+                tree.setProperty ("needCreateIndexHtml", true, nullptr);
+            else
+                tree.getParent().setProperty ("needCreateIndexHtml", true, nullptr);            
 
-            while (rootTree.getParent ().isValid ())
-                rootTree = rootTree.getParent ();
+            // rename the site dir or html-file
+            File siteOldFile;
+            File siteNewFile;
 
-            if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
+            if (newDocFile.isDirectory ())
+            {
+                siteOldFile = File (docFileOrDir.getFullPathName ().replace ("docs", "site"));
+                siteNewFile = File (siteOldFile.getSiblingFile (newName)).getNonexistentSibling (true);
+            }
+            else
+            {
+                siteOldFile = File (docFileOrDir.getFullPathName ().replace ("docs", "site")).withFileExtension ("html");
+                siteNewFile = File (siteOldFile.getSiblingFile (newName + ".html")).getNonexistentSibling (true);
+            }
+
+            if (siteOldFile.exists())
+                siteOldFile.moveFileTo (siteNewFile);
+
+            // here must re-select this item
+            setSelected (false, false, dontSendNotification);
+            setSelected (true, true);
+
+            if (!SwingUtilities::writeValueTreeToFile (treeContainer->projectTree, treeContainer->projectFile))
                 SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
         }
         else

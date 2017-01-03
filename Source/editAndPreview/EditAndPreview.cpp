@@ -61,7 +61,7 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
 {
     saveCurrentDocIfChanged ();
 
-    if (newDocTree != docOrDirTree)
+    if (newDocTree != docOrDirTree || docFile != DocTreeViewItem::getMdFileOrDir (newDocTree))
     {
         editor->removeListener (this);
         docOrDirTree = newDocTree;

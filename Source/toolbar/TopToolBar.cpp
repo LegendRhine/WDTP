@@ -278,7 +278,7 @@ void TopToolBar::popupSystemMenu ()
     m.addItem (3, TRANS ("Close Project"), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
-    m.addItem (5, TRANS ("Regenerate All"), fileTreeContainer->hasLoadedProject ());
+    m.addItem (5, TRANS ("Regenerate All..."), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
     PopupMenu lanMenu;
@@ -314,7 +314,7 @@ void TopToolBar::menuPerform (const int index)
     else if (index == 3)    fileTreeContainer->closeProject ();
 
     // re-generate the whole site
-    else if (index == 5)    NEED_TO_DO ("Regenerate the whole site...");
+    else if (index == 5)    NEED_TO_DO ("Clean up and Regenerate the whole site...");
 
     // help
     else if (index == 18)   NEED_TO_DO ("Getting started...");

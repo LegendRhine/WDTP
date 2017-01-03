@@ -301,7 +301,7 @@ const File EditAndPreview::createIndexHtml ()
                 StringArray filesPath;
                 const int fileNumbers = docOrDirFile.findChildFiles (filesInDir, 
                                                                      File::findFilesAndDirectories, 
-                                                                     true);
+                                                                     false);
                 const String dirPathStr (docOrDirFile.getFullPathName() + File::separator);
                 //filesInDir.sort ();  // TODO: need implement sort..
 

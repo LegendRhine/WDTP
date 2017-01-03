@@ -133,8 +133,8 @@ void TopToolBar::resized ()
     bts[prevPjt]->setBounds (searchInDoc->getX () - 22, 16, 12, 12);
 
     // image buttons
-    bts[view]->setTopRightPosition (getWidth() / 2 - 45, 12);
-    bts[system]->setTopLeftPosition (getWidth () / 2 + 15, 12);
+    bts[view]->setTopRightPosition (getWidth() / 2 - 43, 12);
+    bts[system]->setTopLeftPosition (getWidth () / 2 + 17, 12);
 }
 
 //=================================================================================================

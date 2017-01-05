@@ -209,9 +209,8 @@ void SetupPanel::valueChanged (Value& value)
     else if (value.refersToSameSourceAs (*values[js]))
         currentTree.setProperty ("js", values[js]->getValue (), nullptr);
 
-    currentTree.setProperty ("needCreateHtml", true, nullptr);
+    DocTreeViewItem::needCreateHtml (currentTree);
     projectHasChanged = true;
-
     startTimer (200);
 }
 
@@ -228,10 +227,9 @@ void SetupPanel::savePropertiesIfNeeded ()
         systemFile->saveIfNeeded ();
 
     if (projectHasChanged && currentTree.isValid() &&
-        FileTreeContainer::projectFile.existsAsFile() &&
-        !SwingUtilities::writeValueTreeToFile (FileTreeContainer::projectTree, FileTreeContainer::projectFile))
+        FileTreeContainer::projectFile.existsAsFile())
     {
-        SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
+        FileTreeContainer::saveProject ();
     }
 
     projectHasChanged = false;

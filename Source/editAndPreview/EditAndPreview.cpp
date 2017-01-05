@@ -241,9 +241,8 @@ const File EditAndPreview::createArticleHtml ()
                               + newLine + newLine + errorStr + newLine);
             } 
 
-            docOrDirTree.setProperty ("needCreateHtml", true, nullptr);
-            SwingUtilities::writeValueTreeToFile (FileTreeContainer::projectTree,
-                                                  FileTreeContainer::projectFile);
+            docOrDirTree.setProperty ("needCreateHtml", false, nullptr);
+            FileTreeContainer::saveProject ();
         }
         else
         {
@@ -314,8 +313,7 @@ const File EditAndPreview::createIndexHtml ()
             indexHtml.appendText (indexContent);
 
             docOrDirTree.setProperty ("needCreateHtml", false, nullptr);
-            SwingUtilities::writeValueTreeToFile (FileTreeContainer::projectTree,
-                                                  FileTreeContainer::projectFile);
+            FileTreeContainer::saveProject ();
         }
         else
         {
@@ -372,11 +370,12 @@ void EditAndPreview::textEditorTextChanged (TextEditor&)
         jassert (docOrDirFile.existsAsFile ());
 
         ValueTree rootTree = docOrDirTree;
+        rootTree.setProperty ("needCreateHtml", true, nullptr);
 
-        while (rootTree.getParent ().isValid ())
+        while (rootTree.getParent().isValid ())
         {
-            rootTree.setProperty ("needCreateHtml", true, nullptr);
             rootTree = rootTree.getParent ();
+            rootTree.setProperty ("needCreateHtml", true, nullptr);
         }
 
         startTimer (5000);
@@ -411,8 +410,7 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
             docOrDirTree.setProperty ("title", tileStr, nullptr);
             docHasChanged = false;
 
-            return SwingUtilities::writeValueTreeToFile (FileTreeContainer::projectTree, 
-                                                         FileTreeContainer::projectFile);
+            return FileTreeContainer::saveProject();
         }
         else
         {
@@ -657,11 +655,8 @@ void EditorForMd::performPopupMenuAction (int index)
 
     docTree.setProperty ("needCreateHtml", true, nullptr);
 
-    // save the project
-    if (!SwingUtilities::writeValueTreeToFile (FileTreeContainer::projectTree, FileTreeContainer::projectFile))
-        SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
-
-    // then update the setup panel
+    // save the project then update the setup panel
+    FileTreeContainer::saveProject ();
     parent->getSetupPanel()->showDocProperties (docTree);
 }
 

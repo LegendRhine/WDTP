@@ -80,6 +80,7 @@ public:
     void setIdentityOfLastSelectedItem (const String& str)    { lastItem = str; }
     void selectIdentityItem();
 
+    static bool saveProject ();
     static File projectFile;
     static ValueTree projectTree;
     static float fontSize;

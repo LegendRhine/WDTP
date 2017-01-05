@@ -135,7 +135,7 @@ const File DocTreeViewItem::getMdFileOrDir (const ValueTree& tree)
 const File DocTreeViewItem::getHtmlFileOrDir (const File& mdFileOrDir)
 {
     if (mdFileOrDir.isDirectory ())
-        return File (mdFileOrDir.getFullPathName ().replace ("docs", "site"));
+        return File (mdFileOrDir.getFullPathName ().replace ("docs", "site")).getChildFile("index.html");
     else
         return File (mdFileOrDir.getFullPathName ().replace ("docs", "site")).withFileExtension ("html");
 }
@@ -144,6 +144,20 @@ const File DocTreeViewItem::getHtmlFileOrDir (const File& mdFileOrDir)
 const File DocTreeViewItem::getHtmlFileOrDir (const ValueTree& tree)
 {
     return getHtmlFileOrDir (getMdFileOrDir (tree));
+}
+
+//=================================================================================================
+void DocTreeViewItem::needCreateHtml (const ValueTree& tree)
+{
+    ValueTree parentTree = tree;
+
+    while (parentTree.getParent().isValid ())
+    {
+        parentTree.setProperty ("needCreateHtml", true, nullptr);
+        parentTree = parentTree.getParent ();
+    }
+
+    parentTree.setProperty ("needCreateHtml", true, nullptr);
 }
 
 //=================================================================================================
@@ -297,17 +311,7 @@ void DocTreeViewItem::renameSelectedItem ()
         {
             // save the project file
             tree.setProperty ("name", newDocFile.getFileNameWithoutExtension (), nullptr);
-
-            ValueTree parentTree = tree;
-
-            if (docFileOrDir.isDirectory())
-                parentTree.setProperty ("needCreateHtml", true, nullptr);
-
-            while (parentTree.isValid())
-            {
-                parentTree = parentTree.getParent ();
-                parentTree.setProperty ("needCreateHtml", true, nullptr);
-            }
+            needCreateHtml (tree);
 
             // rename the site dir or html-file
             File siteOldFile;
@@ -330,9 +334,7 @@ void DocTreeViewItem::renameSelectedItem ()
             // here must re-select this item
             setSelected (false, false, dontSendNotification);
             setSelected (true, true);
-
-            if (!SwingUtilities::writeValueTreeToFile (treeContainer->projectTree, treeContainer->projectFile))
-                SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
+            FileTreeContainer::saveProject ();
         }
         else
         {
@@ -403,13 +405,7 @@ void DocTreeViewItem::importDocuments ()
     const Array<File> docFiles (fc.getResults ());
     const File thisDir (getMdFileOrDir (tree));
     jassert (thisDir.isDirectory ()); // can't copy external docs to a nonexists dir
-
-    // get the root, here we need some info from it
-    ValueTree rootTree = tree;
-
-    while (rootTree.getParent ().isValid ())
-        rootTree = rootTree.getParent ();
-
+    
     for (int i = docFiles.size (); --i >= 0; )
     {
         // copy md-file to current dir
@@ -421,8 +417,8 @@ void DocTreeViewItem::importDocuments ()
             ValueTree docTree ("doc");
             docTree.setProperty ("name", targetFile.getFileNameWithoutExtension (), nullptr);
             docTree.setProperty ("title", targetFile.getFileNameWithoutExtension (), nullptr);
-            docTree.setProperty ("tplFile", rootTree.getProperty ("render").toString () + "/article.html", nullptr);
             docTree.setProperty ("js", String (), nullptr);
+            docTree.setProperty ("needCreateHtml", true, nullptr);
 
             tree.addChild (docTree, 0, nullptr);
         }
@@ -433,8 +429,8 @@ void DocTreeViewItem::importDocuments ()
         }
     }
 
-    if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
-        SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
+    needCreateHtml (tree);
+    FileTreeContainer::saveProject ();
 }
 
 //=================================================================================================
@@ -463,12 +459,6 @@ void DocTreeViewItem::createNewDocument ()
         thisDoc.create();
         thisDoc.appendText ("# ");
 
-        // get the root for get some its properties
-        ValueTree rootTree = tree;
-
-        while (rootTree.getParent ().isValid ())
-            rootTree = rootTree.getParent ();
-
         // valueTree of this doc
         ValueTree docTree ("doc");
         docTree.setProperty ("name", thisDoc.getFileNameWithoutExtension(), nullptr);
@@ -480,15 +470,7 @@ void DocTreeViewItem::createNewDocument ()
         // must update this tree before show this new item
         tree.removeListener (this);
         tree.addChild (docTree, 0, nullptr);
-
-        ValueTree parentTree = tree.getParent ();               
-
-        while (parentTree.isValid ())
-        {
-            parentTree.setProperty ("needCreateHtml", true, nullptr);
-            parentTree = parentTree.getParent ();
-        }
-
+        needCreateHtml (docTree);
         tree.addListener (this);
 
         // add and select the new item 
@@ -497,9 +479,7 @@ void DocTreeViewItem::createNewDocument ()
         addSubItemSorted (*sorter, docItem);
         docItem->setSelected (true, true);
 
-        // save the data to project file
-        if (!SwingUtilities::writeValueTreeToFile (rootTree, treeContainer->projectFile))
-            SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
+        FileTreeContainer::saveProject ();
     }
 }
 
@@ -533,20 +513,11 @@ void DocTreeViewItem::createNewFolder ()
         dirTree.setProperty ("name", thisDir.getFileNameWithoutExtension(), nullptr);
         dirTree.setProperty ("title", thisDir.getFileNameWithoutExtension (), nullptr);
         dirTree.setProperty ("isMenu", true, nullptr);
-        dirTree.setProperty ("needCreateHtml", true, nullptr);
 
         // must update this tree before show this new item
         tree.removeListener (this);
         tree.addChild (dirTree, 0, nullptr);
-
-        ValueTree parentTree = tree;
-
-        while (parentTree.isValid ())
-        {
-            parentTree.setProperty ("needCreateHtml", true, nullptr);
-            parentTree = parentTree.getParent ();
-        }
-
+        needCreateHtml (dirTree);
         tree.addListener (this);
 
         // this item add the new dir, then select the index item 
@@ -555,9 +526,7 @@ void DocTreeViewItem::createNewFolder ()
         addSubItemSorted (*sorter, dirItem);
         dirItem->setSelected (true, true);
 
-        // save the data to project file
-        if (!SwingUtilities::writeValueTreeToFile (treeContainer->projectTree, treeContainer->projectFile))
-            SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
+        FileTreeContainer::saveProject ();
     }
 }
 
@@ -585,19 +554,11 @@ void DocTreeViewItem::deleteSelected ()
     {
         treeContainer->getTreeView ().getRootItem ()->setSelected (true, false);
 
-        // MUST get the root before remove the tree!
-        ValueTree rootTree = tree;
-
-        while (rootTree.getParent ().isValid ())
-        {
-            rootTree = rootTree.getParent ();
-            rootTree.setProperty ("needCreateHtml", true, nullptr);
-        }
-
         // delete one by one
         for (int i = selectedTrees.size (); --i >= 0; )
         {
             ValueTree& v = *selectedTrees.getUnchecked (i);
+            needCreateHtml (v);
 
             if (v.getParent ().isValid ())
             {
@@ -606,16 +567,11 @@ void DocTreeViewItem::deleteSelected ()
 
                 mdFile.moveToTrash ();
                 siteFile.deleteRecursively ();
-
                 v.getParent ().removeChild (v, nullptr);
             }
         }
 
-        // save the data to project file
-        if (!SwingUtilities::writeValueTreeToFile (rootTree, FileTreeContainer::projectFile))
-        {
-            SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
-        }
+        FileTreeContainer::saveProject ();
     }
 }
 
@@ -790,7 +746,10 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items,
             {
                 v.setProperty ("name", targetFile.getFileNameWithoutExtension (), nullptr);
                 v.getParent ().removeChild (v, nullptr);
+                needCreateHtml (v.getParent ());
+
                 thisTree.addChild (v, 0, nullptr);
+                needCreateHtml (thisTree);
             }
             else
             {
@@ -801,15 +760,8 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items,
     }
 
 #undef CHOICE_BOX
-
-    // save the data to project file
-    ValueTree rootTree = thisTree;
-
-    while (rootTree.getParent ().isValid ())
-        rootTree = rootTree.getParent ();
-
-    if (!SwingUtilities::writeValueTreeToFile (rootTree, FileTreeContainer::projectFile))
-        SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
+    
+    FileTreeContainer::saveProject ();
 }
 
 //=================================================================================================

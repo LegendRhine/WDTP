@@ -13,8 +13,11 @@
 //=================================================================================================
 const String TplTagProcessor::fileAndDirList (const ValueTree& dirTree)
 {   
+    jassert (dirTree.getType ().toString () != "doc");
+
     StringArray filesLinkStr;
-    const String parentPath (DocTreeViewItem::getHtmlFileOrDir (dirTree).getFullPathName());
+    String parentPath (DocTreeViewItem::getHtmlFileOrDir (dirTree).getFullPathName());
+    parentPath = parentPath.dropLastCharacters (11); // remove "/index.html"
 
     for (int i = 0; i < dirTree.getNumChildren(); ++i)
     {
@@ -23,7 +26,8 @@ const String TplTagProcessor::fileAndDirList (const ValueTree& dirTree)
 
         const File& html (DocTreeViewItem::getHtmlFileOrDir (tree));
         String path (html.getFullPathName().fromFirstOccurrenceOf (parentPath, false, false));
-        path = "<a href=\"" + path + "\">" + titleStr + "</a><br>";
+        //DBG (path);
+        path = "<a href=\"." + path + "\">" + titleStr + "</a><br>";
 
         filesLinkStr.add (path);
     }

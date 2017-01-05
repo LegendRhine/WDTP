@@ -138,9 +138,7 @@ const bool FileTreeContainer::saveDocAndProject ()
     {
         projectTree.setProperty ("identityOfLastSelectedItem", lastItem, nullptr);
 
-        return editAndPreview->saveCurrentDocIfChanged() 
-            && SwingUtilities::writeValueTreeToFile (FileTreeContainer::projectTree,
-                                                     FileTreeContainer::projectFile);
+        return editAndPreview->saveCurrentDocIfChanged() && saveProject();
     }
 
     return true;
@@ -275,8 +273,7 @@ void ItemSorter::valueChanged (Value& value)
         projectTree.setProperty ("dirFirst", dirFirst.getValue (), nullptr);
 
     // save the project file
-    if (!SwingUtilities::writeValueTreeToFile (projectTree, FileTreeContainer::projectFile))
-        SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
+    FileTreeContainer::saveProject ();
 }
 
 //=================================================================================================
@@ -286,5 +283,19 @@ void FileTreeContainer::selectIdentityItem ()
 
     if (item != nullptr)
         item->setSelected (true, true);
+}
+
+//=================================================================================================
+bool FileTreeContainer::saveProject ()
+{
+    if (SwingUtilities::writeValueTreeToFile (projectTree, projectFile))
+    {
+        return true;
+    }
+    else
+    {
+        SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
+        return false;
+    }
 }
 

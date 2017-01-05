@@ -16,8 +16,9 @@ blockquote {
   background-color: #cdcdcd;
   padding: 15px 20px 15px 20px;
   margin: 0 0 20px 0;
-  font-size: 95%;
-  font-weight: bold;
+  /*font-size: 95%;
+  font-weight: bold;*/
+  /*font-family: 'KaiTi', 'Consolas';*/
 }
 pre {
   text-indent: 0;

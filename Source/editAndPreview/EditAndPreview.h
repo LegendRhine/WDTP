@@ -36,8 +36,6 @@ public:
     void paint (Graphics&) override {}
     void resized() override;
     
-    void needRecreateHtml (const bool recreate)           { needCreateArticleHtml = recreate; }
-
     TextEditor* getEditor() const                         { return editor; }
     const File& getCurrentDocFile() const                 { return docOrDirFile;}
     ValueTree& getCurrentTree()                           { return docOrDirTree; }
@@ -66,9 +64,7 @@ private:
     //=========================================================================
     File docOrDirFile = File::nonexistent;
     ValueTree docOrDirTree;
-
-    bool docHasChanged = false;
-    bool needCreateArticleHtml = false;
+    bool docHasChanged = false;    
     String currentContent;
     
     ScopedPointer<TextEditor> editor;

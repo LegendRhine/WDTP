@@ -63,10 +63,7 @@ private:
     OwnedArray<Value> values;
     EditAndPreview* editor;
 
-    ValueTree projectTree = ValueTree::invalid;
-    ValueTree dirTree = ValueTree::invalid;
-    ValueTree docTree = ValueTree::invalid;
-
+    ValueTree currentTree = ValueTree::invalid;
     bool projectHasChanged = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SetupPanel)

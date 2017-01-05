@@ -24,6 +24,10 @@
               file="Source/editAndPreview/EditAndPreview.h"/>
         <FILE id="eladi5" name="SetupPanel.cpp" compile="1" resource="0" file="Source/editAndPreview/SetupPanel.cpp"/>
         <FILE id="UkaHhi" name="SetupPanel.h" compile="0" resource="0" file="Source/editAndPreview/SetupPanel.h"/>
+        <FILE id="REUpXM" name="TplTagProcessor.cpp" compile="1" resource="0"
+              file="Source/editAndPreview/TplTagProcessor.cpp"/>
+        <FILE id="TuWJrr" name="TplTagProcessor.h" compile="0" resource="0"
+              file="Source/editAndPreview/TplTagProcessor.h"/>
       </GROUP>
       <GROUP id="{3E35F29C-ED85-843B-0669-6F1C0563902E}" name="fileTree">
         <FILE id="pCuEtC" name="DocTreeViewItem.cpp" compile="1" resource="0"

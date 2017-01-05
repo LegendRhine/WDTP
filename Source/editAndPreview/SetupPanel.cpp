@@ -35,9 +35,9 @@ SetupPanel::~SetupPanel()
 void SetupPanel::showProjectProperties (ValueTree& pTree)
 {
     valuesRemoveListener ();
-    projectTree = pTree;
+    currentTree = pTree;
     panel->clear ();
-    jassert (projectTree.isValid () && projectTree.getType ().toString () == "wdtpProject");
+    jassert (currentTree.isValid () && currentTree.getType ().toString () == "wdtpProject");
 
     values[projectName]->setValue (pTree.getProperty ("name"));
     values[projectDesc]->setValue (pTree.getProperty ("title"));
@@ -96,11 +96,11 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
 {
     valuesRemoveListener ();
     panel->clear ();
-    dirTree = dTree;
-    jassert (dirTree.isValid () && dirTree.getType ().toString () == "dir");
+    currentTree = dTree;
+    jassert (currentTree.isValid () && currentTree.getType ().toString () == "dir");
 
-    values[dirDesc]->setValue (dirTree.getProperty ("title"));
-    values[isMenu]->setValue (dirTree.getProperty ("isMenu"));
+    values[dirDesc]->setValue (currentTree.getProperty ("title"));
+    values[isMenu]->setValue (currentTree.getProperty ("isMenu"));
 
     Array<PropertyComponent*> dirProperties;
     dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Title: "), 0, true));
@@ -118,12 +118,12 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
 {
     valuesRemoveListener ();
     panel->clear ();
-    docTree = dTree;
-    jassert (docTree.isValid () && docTree.getType ().toString () == "doc");
+    currentTree = dTree;
+    jassert (currentTree.isValid () && currentTree.getType ().toString () == "doc");
 
-    values[keywords]->setValue (docTree.getProperty ("keywords"));
-    values[isPage]->setValue (docTree.getProperty ("isPage"));
-    values[js]->setValue (docTree.getProperty ("js"));
+    values[keywords]->setValue (currentTree.getProperty ("keywords"));
+    values[isPage]->setValue (currentTree.getProperty ("isPage"));
+    values[js]->setValue (currentTree.getProperty ("js"));
 
     Array<PropertyComponent*> docProperties;
     docProperties.add (new TextPropertyComponent (*values[keywords], TRANS ("Keywords: "), 120, false));
@@ -144,10 +144,7 @@ void SetupPanel::projectClosed()
     savePropertiesIfNeeded();
     valuesRemoveListener ();
 
-    projectTree = ValueTree::invalid;
-    dirTree = ValueTree::invalid;
-    docTree = ValueTree::invalid;
-
+    currentTree = ValueTree::invalid;
     projectHasChanged = false;
     panel->clear();
 }
@@ -179,15 +176,15 @@ void SetupPanel::valueChanged (Value& value)
 {    
     // project properties
     if (value.refersToSameSourceAs (*values[projectName]))
-        projectTree.setProperty ("name", values[projectName]->getValue (), nullptr);
+        currentTree.setProperty ("name", values[projectName]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[projectDesc]))
-        projectTree.setProperty ("title", values[projectDesc]->getValue (), nullptr);
+        currentTree.setProperty ("title", values[projectDesc]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[owner]))
-        projectTree.setProperty ("owner", values[owner]->getValue (), nullptr);
+        currentTree.setProperty ("owner", values[owner]->getValue (), nullptr);
     /*else if (value.refersToSameSourceAs (*values[projectSkin]))
-        projectTree.setProperty ("skin", values[projectSkin]->getValue (), nullptr);*/
+        currentTree.setProperty ("skin", values[projectSkin]->getValue (), nullptr);*/
     else if (value.refersToSameSourceAs (*values[projectRenderDir]))
-        projectTree.setProperty ("render", values[projectRenderDir]->getValue (), nullptr);
+        currentTree.setProperty ("render", values[projectRenderDir]->getValue (), nullptr);
 
     else if (value.refersToSameSourceAs (*values[fontSize]))
     {
@@ -195,26 +192,27 @@ void SetupPanel::valueChanged (Value& value)
 
         editor->getEditor ()->applyFontToAllText (fs);
         FileTreeContainer::fontSize = fs;
-        projectTree.setProperty ("fontSize", fs, nullptr);
+        currentTree.setProperty ("fontSize", fs, nullptr);
     }
 
     // dir properties
     else if (value.refersToSameSourceAs (*values[dirDesc]))
-        dirTree.setProperty ("title", values[dirDesc]->getValue (), nullptr);
+        currentTree.setProperty ("title", values[dirDesc]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[isMenu]))
-        dirTree.setProperty ("isMenu", values[isMenu]->getValue (), nullptr);
+        currentTree.setProperty ("isMenu", values[isMenu]->getValue (), nullptr);
 
     // doc properties
     else if (value.refersToSameSourceAs (*values[keywords]))
-        docTree.setProperty ("keywords", values[keywords]->getValue (), nullptr);
+        currentTree.setProperty ("keywords", values[keywords]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[isPage]))
-        docTree.setProperty ("isPage", values[isPage]->getValue (), nullptr);
+        currentTree.setProperty ("isPage", values[isPage]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[js]))
-        docTree.setProperty ("js", values[js]->getValue (), nullptr);
+        currentTree.setProperty ("js", values[js]->getValue (), nullptr);
 
+    currentTree.setProperty ("needCreateHtml", true, nullptr);
     projectHasChanged = true;
-    editor->needRecreateHtml (true);
-    startTimer (500);
+
+    startTimer (200);
 }
 
 //=================================================================================================
@@ -229,10 +227,12 @@ void SetupPanel::savePropertiesIfNeeded ()
     if (systemFile != nullptr)
         systemFile->saveIfNeeded ();
 
-    if (projectHasChanged && projectTree.isValid() && 
+    if (projectHasChanged && currentTree.isValid() &&
         FileTreeContainer::projectFile.existsAsFile() &&
-        !SwingUtilities::writeValueTreeToFile (projectTree, FileTreeContainer::projectFile))
+        !SwingUtilities::writeValueTreeToFile (FileTreeContainer::projectTree, FileTreeContainer::projectFile))
+    {
         SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
+    }
 
     projectHasChanged = false;
     stopTimer ();

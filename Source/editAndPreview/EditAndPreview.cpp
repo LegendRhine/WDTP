@@ -140,7 +140,7 @@ const File EditAndPreview::createArticleHtml ()
     const String docPath (docOrDirFile.getFullPathName ());
     const File htmlFile (File (docPath.replace ("docs", "site")).withFileExtension ("html"));
 
-    if (needCreateArticleHtml || !htmlFile.existsAsFile())
+    if ((bool)docOrDirTree.getProperty ("needCreateHtml") || !htmlFile.existsAsFile())
     {   
         if (htmlFile.deleteFile())
         {
@@ -239,7 +239,11 @@ const File EditAndPreview::createArticleHtml ()
             {
                 SHOW_MESSAGE (TRANS ("Can't generate these media-files:")
                               + newLine + newLine + errorStr + newLine);
-            }            
+            } 
+
+            docOrDirTree.setProperty ("needCreateHtml", true, nullptr);
+            SwingUtilities::writeValueTreeToFile (FileTreeContainer::projectTree,
+                                                  FileTreeContainer::projectFile);
         }
         else
         {
@@ -247,7 +251,6 @@ const File EditAndPreview::createArticleHtml ()
         }        
     }
 
-    needCreateArticleHtml = false;
     return htmlFile;
 }
 
@@ -261,7 +264,7 @@ const File EditAndPreview::createIndexHtml ()
     const File siteDir (dirPath.replace ("docs", "site"));
     File indexHtml (siteDir.getChildFile ("index.html"));
 
-    if ((bool) docOrDirTree.getProperty ("needCreateIndexHtml") 
+    if ((bool) docOrDirTree.getProperty ("needCreateHtml") 
         || !indexHtml.existsAsFile())
     {
         if (indexHtml.deleteFile ())
@@ -292,52 +295,27 @@ const File EditAndPreview::createIndexHtml ()
             String indexContent (tplStr.replace("{{siteRelativeRootPath}}", cssRelativePath)
                                  .replace ("{{title}}", indexTileStr)
                                  .replace ("{{keywords}}", indexTileStr)
-                                 .replace ("{{description}}", indexTileStr + "-" + TRANS ("file list"))
-            );
+                                 .replace ("{{description}}", indexTileStr + "-" + TRANS ("file list")));
+            
+            // title of this index.html
+            if (tplStr.contains ("{{titleOfDir}}"))
+                indexContent = indexContent.replace ("{{titleOfDir}}", "<div align=center><h1>" 
+                                                 + indexTileStr + "</h1></div>" + newLine);
 
-            if (tplStr.contains("{{fileList_reverse}}"))
+            // process TAGs, it's nothing about the content but the dir or something else
+            if (tplStr.contains("{{fileAndDirList}}"))
             {
-                Array<File> filesInDir;
-                StringArray filesPath;
-                const int fileNumbers = docOrDirFile.findChildFiles (filesInDir, 
-                                                                     File::findFilesAndDirectories, 
-                                                                     false);
-                const String dirPathStr (docOrDirFile.getFullPathName() + File::separator);
-                //filesInDir.sort ();  // TODO: need implement sort..
-
-                for (int i = 0; i < fileNumbers; ++i)
-                {
-                    filesPath.add (filesInDir[i].getFullPathName().fromFirstOccurrenceOf(dirPathStr, false, false));
-                }
-
-                for (int i = filesPath.size(); --i >= 0; )
-                {
-                    if (filesPath[i].contains ("media"))
-                    {
-                        filesPath.remove (i);
-                    }
-                    else
-                    {
-                        if (filesPath[i].contains (".md"))
-                            filesPath.getReference (i) = filesPath[i].replace (".md", ".html");
-                        if (filesPath[i].contains ("\\"))
-                            filesPath.getReference (i) = filesPath[i].replace ("\\", "/");
-                    }
-                }
-
-                indexContent = indexContent.replace ("{{fileList_reverse}}", filesPath.joinIntoString (newLine + "<br>"))
-                    .replace ("<body>", 
-                              "<body>\n <div align=center><h1>" 
-                              + docOrDirTree.getProperty ("title").toString () 
-                              + "</h1></div>\n<br>");
+                indexContent = indexContent.replace ("{{fileAndDirList}}", "<div>"
+                                                     + TplTagProcessor::fileAndDirList (docOrDirTree)
+                                                     + "</div>");
             }
 
             indexHtml.create ();
             indexHtml.appendText (indexContent);
 
-            docOrDirTree.setProperty ("needCreateIndexHtml", false, nullptr);
-            //docHasChanged = true;
-            saveCurrentDocIfChanged ();
+            docOrDirTree.setProperty ("needCreateHtml", false, nullptr);
+            SwingUtilities::writeValueTreeToFile (FileTreeContainer::projectTree,
+                                                  FileTreeContainer::projectFile);
         }
         else
         {
@@ -362,8 +340,7 @@ void EditAndPreview::projectClosed ()
 
     docOrDirFile = File::nonexistent;
     docOrDirTree = ValueTree::invalid;
-    docHasChanged = false;
-    needCreateArticleHtml = false;
+    docHasChanged = false;    
     currentContent.clear();
 }
 
@@ -392,16 +369,14 @@ void EditAndPreview::textEditorTextChanged (TextEditor&)
     if (currentContent.compare (editor->getText()) != 0)
     {
         docHasChanged = true;
-        needCreateArticleHtml = true;
-
         jassert (docOrDirFile.existsAsFile ());
 
         ValueTree rootTree = docOrDirTree;
 
         while (rootTree.getParent ().isValid ())
         {
+            rootTree.setProperty ("needCreateHtml", true, nullptr);
             rootTree = rootTree.getParent ();
-            rootTree.setProperty ("needCreateIndexHtml", true, nullptr);
         }
 
         startTimer (5000);
@@ -507,7 +482,7 @@ void EditorForMd::performPopupMenuAction (int index)
 
     if (20 == index)  // add the selected to this doc's keywords
     {
-        const String selectedStr (getHighlightedText ());
+        content = getHighlightedText ();
         const String currentKeyWords (docTree.getProperty ("keywords").toString().trim());
 
         String keyWords (currentKeyWords);
@@ -516,40 +491,26 @@ void EditorForMd::performPopupMenuAction (int index)
         // update the doc-tree
         if (currentKeyWords.isNotEmpty ())
         {
-            if (!currentKeyWords.containsIgnoreCase (selectedStr))
-                keyWords = currentKeyWords + ", " + selectedStr;
+            if (!currentKeyWords.containsIgnoreCase (content))
+                keyWords = currentKeyWords + ", " + content;
             else
                 needRecreateHtm = false;
         }
         else
         {
-            keyWords = selectedStr;
+            keyWords = content;
         }
 
         docTree.setProperty ("keywords", keyWords, nullptr);
-        parent->needRecreateHtml (needRecreateHtm);
-
-        // save the project
-        ValueTree rootTree = docTree.getParent();
-
-        while (rootTree.getParent ().isValid ())
-            rootTree = rootTree.getParent ();
-
-        if (!SwingUtilities::writeValueTreeToFile (rootTree, FileTreeContainer::projectFile))
-            SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
-
-        // then update the setup panel
-        parent->getSetupPanel()->showDocProperties (docTree);
-
-        return;  // don't insert anything in current content
-
     }
     else if (21 == index)  // search by selected
     {
+        NEED_TO_DO ("search by selected");
         return;  // don't insert anything in current content
     }
     else if (22 == index)  // replace selected to something else
     {
+        NEED_TO_DO ("replace selected");
         return;  // don't insert anything in current content
     }
     else if (1 == index) // image
@@ -693,6 +654,15 @@ void EditorForMd::performPopupMenuAction (int index)
         moveCaretUp (false);
         moveCaretToEndOfLine (false);
     }
+
+    docTree.setProperty ("needCreateHtml", true, nullptr);
+
+    // save the project
+    if (!SwingUtilities::writeValueTreeToFile (FileTreeContainer::projectTree, FileTreeContainer::projectFile))
+        SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
+
+    // then update the setup panel
+    parent->getSetupPanel()->showDocProperties (docTree);
 }
 
 //=================================================================================================

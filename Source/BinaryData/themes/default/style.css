@@ -9,12 +9,15 @@ h2, h3, h4, h5, h6 {
 li, hr, div {
   text-indent: 0;
 }
+a { 
+  text-decoration: none;
+}
 blockquote {
   background-color: #cdcdcd;
   padding: 15px 20px 15px 20px;
   margin: 0 0 20px 0;
-  font-size: 93%;
-  font-style: italic;
+  font-size: 95%;
+  font-weight: bold;
 }
 pre {
   text-indent: 0;
@@ -31,8 +34,9 @@ code {
   background-color: #cdcdcd;
 }
 table  {
+  margin: 0 auto;
   border-collapse:collapse;
-  width: 100%;
+  width: 93%;
 }
 table, td, th  {
   border:1px solid black;

@@ -107,7 +107,7 @@
 	- render: 渲染模板（磁盘Themes下的某个子目录，即已安装的某套模板）
 	- fontName: 文本编辑器所用的字体
 	- fontSize：文本编辑器的字体大小
-	- needCreateIndexHtml: 本站根目录下的index.html是否需要重新生成
+	- needCreateHtml: 本站根目录下的index.html是否需要重新生成
 	- identityOfLastSelectedItem: 文件树中最后一次选择的文档的标示，可由TreeView的findItemFromIdentifierString()找到对应的item，
 	  此值用于文件树中移动项目、打开项目时自动选择最后一次点选的item
 
@@ -116,7 +116,7 @@
     - name：目录名 (不包含任何上级路径。上级路径可通过其父节点的name获取）
 	- title：简述，即网页上所显示的栏目名称
 	- isMenu：是否为网站菜单
-	- needCreateIndexHtml: 本目录下的index.html是否需要重新生成
+	- needCreateHtml: 本目录下的index.html是否需要重新生成
 
 - 值树中各个doc（文档）的属性：
     - name：文件名（不含文件扩展名，不包含任何上级路径。上级路径可通过其父节点的name获取）
@@ -124,6 +124,7 @@
 	- keywords: 关键字
 	- isPage: 本文挡是否生成独立页面（不加入列表页，使用page模板。否则使用article模板）
     - js：网页head区所执行的js代码
+	- needCreateHtml: 本文档是否需要生成网页
 
 - MD文档生成html时，替换模板html中的“标签项”（格式为：{{xxxx}}），要替换的项目如下：
     - {{siteRelativeRootPath}} 该网页相对于网站根目录的路径，用于该网页链接网站根目录下的css样式表文件。
@@ -133,7 +134,9 @@
 	- {{description}} <head>区meta属性中的描述，即：MD文档中有实际内容的第二段（标题后面的非空行段落）
 	- {{title}} <head>区meta属性中的标题，即：MD文档的第一行（标题）
 	- {{content}} <body>区中所显示的网页内容，即：MD文档的所有内容
-	- {{fileList_reverse}} <body>区中所显示的网页内容为：逆序排列文章和目录标题（递归显示所有子目录及文件）
+
+	- {{titleOfDir}} <body>区中所显示的当前目录的标题
+	- {{fileAndDirList}} <body>区中所显示的网页内容为文章和目录标题
 
 ### 界面设计
 

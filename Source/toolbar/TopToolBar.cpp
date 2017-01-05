@@ -384,7 +384,7 @@ void TopToolBar::createNewProject ()
     p.setProperty ("render", "default", nullptr);
     p.setProperty ("fontName", SwingUtilities::getFontName (), nullptr);
     p.setProperty ("fontSize", SwingUtilities::getFontSize (), nullptr);
-    p.setProperty ("needCreateIndexHtml", true, nullptr);
+    p.setProperty ("needCreateHtml", true, nullptr);
 
     // create dirs and default template files
     projectFile.getSiblingFile ("docs").createDirectory ();

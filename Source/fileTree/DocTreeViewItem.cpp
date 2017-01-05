@@ -141,6 +141,12 @@ const File DocTreeViewItem::getHtmlFileOrDir (const File& mdFileOrDir)
 }
 
 //=================================================================================================
+const File DocTreeViewItem::getHtmlFileOrDir (const ValueTree& tree)
+{
+    return getHtmlFileOrDir (getMdFileOrDir (tree));
+}
+
+//=================================================================================================
 // mouse click
 void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
 {
@@ -295,12 +301,12 @@ void DocTreeViewItem::renameSelectedItem ()
             ValueTree parentTree = tree;
 
             if (docFileOrDir.isDirectory())
-                parentTree.setProperty ("needCreateIndexHtml", true, nullptr);
+                parentTree.setProperty ("needCreateHtml", true, nullptr);
 
             while (parentTree.isValid())
             {
                 parentTree = parentTree.getParent ();
-                parentTree.setProperty ("needCreateIndexHtml", true, nullptr);
+                parentTree.setProperty ("needCreateHtml", true, nullptr);
             }
 
             // rename the site dir or html-file
@@ -479,7 +485,7 @@ void DocTreeViewItem::createNewDocument ()
 
         while (parentTree.isValid ())
         {
-            parentTree.setProperty ("needCreateIndexHtml", true, nullptr);
+            parentTree.setProperty ("needCreateHtml", true, nullptr);
             parentTree = parentTree.getParent ();
         }
 
@@ -527,7 +533,7 @@ void DocTreeViewItem::createNewFolder ()
         dirTree.setProperty ("name", thisDir.getFileNameWithoutExtension(), nullptr);
         dirTree.setProperty ("title", thisDir.getFileNameWithoutExtension (), nullptr);
         dirTree.setProperty ("isMenu", true, nullptr);
-        dirTree.setProperty ("needCreateIndexHtml", true, nullptr);
+        dirTree.setProperty ("needCreateHtml", true, nullptr);
 
         // must update this tree before show this new item
         tree.removeListener (this);
@@ -537,7 +543,7 @@ void DocTreeViewItem::createNewFolder ()
 
         while (parentTree.isValid ())
         {
-            parentTree.setProperty ("needCreateIndexHtml", true, nullptr);
+            parentTree.setProperty ("needCreateHtml", true, nullptr);
             parentTree = parentTree.getParent ();
         }
 
@@ -585,7 +591,7 @@ void DocTreeViewItem::deleteSelected ()
         while (rootTree.getParent ().isValid ())
         {
             rootTree = rootTree.getParent ();
-            rootTree.setProperty ("needCreateIndexHtml", true, nullptr);
+            rootTree.setProperty ("needCreateHtml", true, nullptr);
         }
 
         // delete one by one

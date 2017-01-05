@@ -31,7 +31,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     htmlContent = unorderedListParse (htmlContent);
     htmlContent = cleanUp (htmlContent);
     
-    htmlContent += "<p>\n  <div align=\"right\">Powered by <a href=\"http://www.underwaySoft.com/wdtp\" target=\"_blank\">WDTP</a></div>";
+    htmlContent += copyrightInfo;
     //DBG (htmlContent);
 
     return htmlContent;
@@ -315,113 +315,49 @@ const String Md2Html::mdLinkParse (const String& mdString)
 //=================================================================================================
 const String Md2Html::unorderedListParse (const String& mdString)
 {
+    if (mdString.isEmpty ())
+        return mdString;
+
     StringArray contentByLine;
     contentByLine.addLines (mdString);
 
-    // if a nested list places at the last line, it'll parse wrong
-    // so, here we force add a new line at the last
-    if (contentByLine.getReference(contentByLine.size() - 1).isNotEmpty())
-        contentByLine.add (newLine);
+    contentByLine.insert (0, "%%__unordered@List@Parse__%%");
+    contentByLine.add ("%%__unordered@List@Parse__%%");
 
-    // process nested list
-    // insert
-    for (int i = contentByLine.size (); --i >= 0; )
+    for (int i = 1; i < contentByLine.size () - 1; ++i)
     {
-        const String currentLine (contentByLine.getReference (i));
-
-        if (currentLine.substring (0, 6) == "    - ")
-        {   
-            if (i == contentByLine.size() - 1)
-            {
-                contentByLine.add ("</ul>");
-            }
-            else if (i == 0)
-            {
-                contentByLine.insert (0, "<ul>");
-            }
-            else
-            {
-                const String prevLine (contentByLine.getReference (i - 1));
-
-                if (prevLine.substring (0, 6) != "    - ")
-                {
-                    contentByLine.insert (i, "<ul>");
-                    ++i;
-                }
-
-                const String nextLine (contentByLine.getReference (i + 1));
-
-                if (nextLine.substring (0, 6) != "    - ")
-                    contentByLine.insert (i + 1, "</ul>");
-            }            
-        }
-    }
-
-    // replace to "<li>xxxx</li>" 
-    for (int i = contentByLine.size (); --i >= 0; )
-    {
-        const String currentLine (contentByLine.getReference (i));
+        const String& prevLine (contentByLine.getReference (i - 1));
+        String& currentLine (contentByLine.getReference (i));
+        const String& nextLine (contentByLine.getReference (i + 1));
+        String prefix, postfix;
 
         if (currentLine.substring (0, 6) == "    - ")
         {
-            contentByLine.getReference (i) = currentLine.replaceSection (0, 6, "<li>");
-            contentByLine.getReference (i) += "</li>";
+            if (prevLine.substring (0, 6) != "    - "
+                && prevLine.substring (0, 8) != "    <ul>"
+                && prevLine.substring (0, 8) != "    <li>")
+                prefix = "    <ul>";
+            if (nextLine.substring (0, 6) != "    - ")
+                postfix = "    </ul>";
+
+            currentLine = prefix + "    <li>" + currentLine.fromFirstOccurrenceOf ("    - ", false, true) + "</li>" + postfix;
         }
-    }
-
-    // process the top-level list
-    // insert
-    for (int i = contentByLine.size (); --i >= 0; )
-    {
-        const String currentLine (contentByLine.getReference (i));
-
-        if (currentLine.substring (0, 2) == "- ")
+        else if (currentLine.substring (0, 2) == "- ")
         {
-            if (i == contentByLine.size () - 1)
-            {
-                contentByLine.add ("</ul>");
-            }
-            else if (i == 0)
-            {
-                contentByLine.insert (0, "<ul>");
-            }
-            else
-            {
-                const String prevLine (contentByLine.getReference (i - 1));
+            if (prevLine.substring (0, 2) != "- "
+                && prevLine.substring (0, 4) != "<li>"
+                && prevLine.substring (0, 4) != "<ul>")
+                prefix = "<ul>";
+            if (nextLine.substring (0, 2) != "- "
+                && nextLine.substring (0, 6) != "    - ")
+                postfix = "</ul>";
 
-                if (prevLine.substring (0, 2) != "- "
-                    && prevLine.substring (0, 6) != "    - "
-                    && prevLine.substring (0, 5) != "</ul>")
-                {
-                    contentByLine.insert (i, "<ul>");
-                    ++i;
-                }
-
-                const String nextLine (contentByLine.getReference (i + 1));
-
-                if (nextLine.substring (0, 2) != "- "
-                    && nextLine.substring (0, 6) != "    - "
-                    && nextLine.substring (0, 4) != "<ul>")
-                {
-                    contentByLine.insert (i + 1, "</ul>");
-                }
-            }
+            currentLine = prefix + "<li>" + currentLine.fromFirstOccurrenceOf ("- ", false, true) + "</li>" + postfix;
         }
     }
 
-    // replace to "<li>xxxx</li>" 
-    for (int i = contentByLine.size (); --i >= 0; )
-    {
-        const String currentLine (contentByLine.getReference (i));
-
-        if (currentLine.substring (0, 2) == "- ")
-        {
-            contentByLine.getReference (i) = currentLine.replaceSection (0, 2, "<li>");
-            contentByLine.getReference (i) += "</li>";
-        }
-    }
-
-    return contentByLine.joinIntoString (newLine);
+    contentByLine.removeString ("%%__unordered@List@Parse__%%");
+    return contentByLine.joinIntoString (newLine).replace ("    </ul>", "    </ul></ul>");
 }
 
 //=================================================================================================
@@ -433,110 +369,43 @@ const String Md2Html::orderedListParse (const String& mdString)
     StringArray contentByLine;
     contentByLine.addLines (mdString);
 
-    // if a nested list places at the last line, it'll parse wrong
-    // so, here we force add a new line at the last
-    if (contentByLine.getReference (contentByLine.size () - 1).isNotEmpty ())
-        contentByLine.add (newLine);
+    contentByLine.insert (0, "%%__ordered@List@Parse__%%");
+    contentByLine.add ("%%__ordered@List@Parse__%%");
 
-    // process nested list
-    // insert
-    for (int i = contentByLine.size (); --i >= 0; )
+    for (int i = 1; i < contentByLine.size() - 1; ++i)
     {
-        const String currentLine (contentByLine.getReference (i));
+        const String& prevLine (contentByLine.getReference (i - 1));
+        String& currentLine (contentByLine.getReference (i));
+        const String& nextLine (contentByLine.getReference (i + 1));
+        String prefix, postfix;
 
         if (currentLine.substring (0, 6) == "    + ")
         {
-            if (i == contentByLine.size () - 1)
-            {
-                contentByLine.add ("</ol>");
-            }
-            else if (i == 0)
-            {
-                contentByLine.insert (0, "<ol>");
-            }
-            else
-            {
-                const String prevLine (contentByLine.getReference (i - 1));
+            if (prevLine.substring (0, 6) != "    + "
+                && prevLine.substring (0, 8) != "    <ol>"
+                && prevLine.substring (0, 8) != "    <li>")
+                prefix = "    <ol>";
+            if (nextLine.substring (0, 6) != "    + ")
+                postfix = "    </ol>";
 
-                if (prevLine.substring (0, 6) != "    + ")
-                {
-                    contentByLine.insert (i, "<ol>");
-                    ++i;
-                }
-
-                const String nextLine (contentByLine.getReference (i + 1));
-
-                if (nextLine.substring (0, 6) != "    + ")
-                    contentByLine.insert (i + 1, "</ol>");
-            }
+            currentLine = prefix + "    <li>" + currentLine.fromFirstOccurrenceOf("    + ", false, true) + "</li>" + postfix;
         }
-    }
-
-    // replace to "<li>xxxx</li>" 
-    for (int i = contentByLine.size (); --i >= 0; )
-    {
-        const String currentLine (contentByLine.getReference (i));
-
-        if (currentLine.substring (0, 6) == "    + ")
+        else if (currentLine.substring (0, 2) == "+ ")
         {
-            contentByLine.getReference (i) = currentLine.replaceSection (0, 6, "<li>");
-            contentByLine.getReference (i) += "</li>";
+            if (prevLine.substring (0, 2) != "+ " 
+                && prevLine.substring (0, 4) != "<li>"
+                && prevLine.substring (0, 4) != "<ol>")
+                prefix = "<ol>";
+            if (nextLine.substring (0, 2) != "+ " 
+                && nextLine.substring (0, 6) != "    + ")
+                postfix = "</ol>";
+
+            currentLine = prefix + "<li>" + currentLine.fromFirstOccurrenceOf ("+ ", false, true) + "</li>" + postfix;
         }
     }
 
-    // process the top-level list
-    // insert
-    for (int i = contentByLine.size (); --i >= 0; )
-    {
-        const String currentLine (contentByLine.getReference (i));
-
-        if (currentLine.substring (0, 2) == "+ ")
-        {
-            if (i == contentByLine.size () - 1)
-            {
-                contentByLine.add ("</ol>");
-            }
-            else if (i == 0)
-            {
-                contentByLine.insert (0, "<ol>");
-            }
-            else
-            {
-                const String prevLine (contentByLine.getReference (i - 1));
-
-                if (prevLine.substring (0, 2) != "+ "
-                    && prevLine.substring (0, 6) != "    + "
-                    && prevLine.substring (0, 5) != "</ol>")
-                {
-                    contentByLine.insert (i, "<ol>");
-                    ++i;
-                }
-
-                const String nextLine (contentByLine.getReference (i + 1));
-
-                if (nextLine.substring (0, 2) != "+ "
-                    && nextLine.substring (0, 6) != "    + "
-                    && nextLine.substring (0, 4) != "<ol>")
-                {
-                    contentByLine.insert (i + 1, "</ol>");
-                }
-            }
-        }
-    }
-
-    // replace to "<li>xxxx</li>" 
-    for (int i = contentByLine.size (); --i >= 0; )
-    {
-        const String currentLine (contentByLine.getReference (i));
-
-        if (currentLine.substring (0, 2) == "+ ")
-        {
-            contentByLine.getReference (i) = currentLine.replaceSection (0, 2, "<li>");
-            contentByLine.getReference (i) += "</li>";
-        }
-    }
-
-    return contentByLine.joinIntoString (newLine);
+    contentByLine.removeString ("%%__ordered@List@Parse__%%");
+    return contentByLine.joinIntoString (newLine).replace("    </ol>", "    </ol></ol>");
 }
 
 //=================================================================================================
@@ -602,4 +471,10 @@ const String Md2Html::cleanUp (const String& mdString)
     //DBG (resultStr);
     return resultStr;
 }
+
+//=========================================================================
+const String Md2Html::copyrightInfo ("<p><hr>\n"
+                                     "<div align=\"right\">Powered by "
+                                     "<a href=\"http://www.underwaySoft.com/wdtp\""
+                                     " target=\"_blank\">WDTP</a> </div>");
 

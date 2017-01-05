@@ -32,5 +32,6 @@ const String TplTagProcessor::fileAndDirList (const ValueTree& dirTree)
         filesLinkStr.add (path);
     }
 
-    return filesLinkStr.joinIntoString (newLine);
+    return filesLinkStr.joinIntoString (newLine) + Md2Html::copyrightInfo;
 }
+

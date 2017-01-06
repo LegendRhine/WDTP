@@ -61,6 +61,12 @@ struct SwingUtilities
     static const ValueTree readValueTreeFromFile (const File& fileToReadFrom, 
                                                   const bool usingGZipCompresData = false);
 
+    /** rename a file or dir */
+    static bool renameFile (const File& file, const String& newName)
+    {
+        return file.moveFileTo (file.getSiblingFile (newName));
+    }
+
     //=========================================================================
     /** Return such as "20150610112523" 
         (year + month + day + hour + minute + second, without " " and "-") */

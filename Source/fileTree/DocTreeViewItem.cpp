@@ -465,7 +465,9 @@ void DocTreeViewItem::createNewDocument ()
         docTree.setProperty ("title", String(), nullptr);
         docTree.setProperty ("keywords", String(), nullptr);
         docTree.setProperty ("isPage", false, nullptr);
-        docTree.setProperty ("js", String(), nullptr);
+        docTree.setProperty ("date", 
+                             SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), false), 
+                             nullptr);
         
         // must update this tree before show this new item
         tree.removeListener (this);
@@ -513,6 +515,9 @@ void DocTreeViewItem::createNewFolder ()
         dirTree.setProperty ("name", thisDir.getFileNameWithoutExtension(), nullptr);
         dirTree.setProperty ("title", thisDir.getFileNameWithoutExtension (), nullptr);
         dirTree.setProperty ("isMenu", true, nullptr);
+        dirTree.setProperty ("date", 
+                             SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), false), 
+                             nullptr);
 
         // must update this tree before show this new item
         tree.removeListener (this);

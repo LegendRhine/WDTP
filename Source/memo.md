@@ -95,8 +95,8 @@
 - 项目文档的ValueTree中，可将doc文档子树直接作为总值树的一级子树（代表于磁盘Docs目录下的某个 Markdown 文档文件）
 
 - wdtpProject总值树的属性（项目属性）：
-    - name: 项目名称
-    - title: 项目简述
+    - tile: 项目名称
+    - description: 项目简述
 	- owner: 项目所有者（作者）
 	- skin: 软件界面配色（暂未使用）
 	- order: 文件树的排序方式。文件名（0）、标题/简介（1）、网页文件名（2）、文件大小（3）、创建时间（4）、修改时间（5）
@@ -114,7 +114,9 @@
 
 - 值树中各个dir（目录）的属性：
     - name：目录名 (不包含任何上级路径。上级路径可通过其父节点的name获取）
-	- title：简述，即网页上所显示的栏目名称
+	- title：标题，即网页上所显示的栏目名称
+    - description: 目录简述，用于index的description
+	- date: 创建日期
 	- isMenu：是否为网站菜单
 	- needCreateHtml: 本目录下的index.html是否需要重新生成
 
@@ -122,8 +124,9 @@
     - name：文件名（不含文件扩展名，不包含任何上级路径。上级路径可通过其父节点的name获取）
 	- title：文章或页面的标题
 	- keywords: 关键字
+    - description: 目录简述，用于index的description
+	- date: 创建日期
 	- isPage: 本文挡是否生成独立页面（不加入列表页，使用page模板。否则使用article模板）
-    - js：网页head区所执行的js代码
 	- needCreateHtml: 本文档是否需要生成网页
 
 - MD文档生成html时，替换模板html中的“标签项”（格式为：{{xxxx}}），要替换的项目如下：

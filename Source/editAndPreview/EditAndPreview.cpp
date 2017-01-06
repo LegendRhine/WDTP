@@ -305,7 +305,7 @@ const File EditAndPreview::createIndexHtml ()
             if (tplStr.contains("{{fileAndDirList}}"))
             {
                 indexContent = indexContent.replace ("{{fileAndDirList}}", "<div>"
-                                                     + TplTagProcessor::fileAndDirList (docOrDirTree)
+                                                     + TplTagProcessor::fileAndDirList (docOrDirTree, true, true, true)
                                                      + "</div>");
             }
 
@@ -613,7 +613,7 @@ void EditorForMd::performPopupMenuAction (int index)
             << TRANS ("Author: ")
             << FileTreeContainer::projectTree.getProperty ("owner").toString ()
             << " " << newLine << ">>> "
-            << SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString ()).dropLastCharacters (9)
+            << SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), false)
             << " ";
         
     }

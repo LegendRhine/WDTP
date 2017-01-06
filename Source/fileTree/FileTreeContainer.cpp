@@ -229,8 +229,7 @@ const int ItemSorter::compareElements (TreeViewItem* first, TreeViewItem* second
             if (!(ff.exists () && sf.exists ()))
                 return 0;
 
-            const bool b = (ff.getCreationTime () > sf.getCreationTime ());
-            const int r = b ? -1 : 1;
+            const int r = ft.getProperty ("date").toString ().compareIgnoreCase (st.getProperty ("date").toString ());
             return isAscending ? -r : r;
         }
         else if (5 == order) // modified time

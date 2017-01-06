@@ -51,10 +51,10 @@ private:
         projectRenderDir, fontSize, 
 
         // dir properties' values
-        dirDesc, isMenu,   
+        dirDesc, isMenu, dirDate,
 
         // doc properties' values
-        keywords, isPage, js, 
+        keywords, isPage, docDate, 
 
         totalValues
     };

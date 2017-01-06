@@ -135,17 +135,19 @@ const String SwingUtilities::getCurrentTimeString (const int plusDays /*= 0*/)
 }
 
 //=================================================================================================
-const String SwingUtilities::getTimeStringWithSeparator (const String& dateAndTimeString)
+const String SwingUtilities::getTimeStringWithSeparator (const String& dateAndTimeString,
+                                                         bool includeTime)
 {
     if (!isTimeStringValid (dateAndTimeString))
         return String::empty;
 
     return dateAndTimeString.substring (0, 4) + "-" +
         dateAndTimeString.substring (4, 6) + "-" +
-        dateAndTimeString.substring (6, 8) + " " +
-        dateAndTimeString.substring (8, 10) + ":" +
-        dateAndTimeString.substring (10, 12) + ":" +
-        dateAndTimeString.substring (12, 14);
+        dateAndTimeString.substring (6, 8) + 
+        (includeTime ? " " +
+         dateAndTimeString.substring (8, 10) + ":" + 
+         dateAndTimeString.substring (10, 12) + ":" + 
+         dateAndTimeString.substring (12, 14) : String());
 }
 
 //=================================================================================================

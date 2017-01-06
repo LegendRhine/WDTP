@@ -101,11 +101,13 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
 
     values[dirDesc]->setValue (currentTree.getProperty ("title"));
     values[isMenu]->setValue (currentTree.getProperty ("isMenu"));
+    values[dirDate]->setValue (currentTree.getProperty ("date"));
 
     Array<PropertyComponent*> dirProperties;
     dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Title: "), 0, true));
     dirProperties.add (new BooleanPropertyComponent (*values[isMenu], TRANS ("Web Menu: "), TRANS ("Yes")));
-    
+    dirProperties.add (new TextPropertyComponent (*values[dirDate], TRANS ("Date: "), 10, false));
+
     for (auto p : dirProperties)     p->setPreferredHeight (28);
     dirProperties[0]->setPreferredHeight (28 * 3);
     
@@ -123,15 +125,15 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
 
     values[keywords]->setValue (currentTree.getProperty ("keywords"));
     values[isPage]->setValue (currentTree.getProperty ("isPage"));
-    values[js]->setValue (currentTree.getProperty ("js"));
+    values[docDate]->setValue (currentTree.getProperty ("date"));
 
     Array<PropertyComponent*> docProperties;
-    docProperties.add (new TextPropertyComponent (*values[keywords], TRANS ("Keywords: "), 120, false));
+    docProperties.add (new TextPropertyComponent (*values[keywords], TRANS ("Keywords: "), 0, false));
     docProperties.add (new BooleanPropertyComponent (*values[isPage], TRANS ("Single Page: "), TRANS ("Yes")));
-    docProperties.add (new TextPropertyComponent (*values[js], TRANS ("Java Script: "), 0, true));
+    docProperties.add (new TextPropertyComponent (*values[docDate], TRANS ("Date: "), 10, false));
 
-    for (auto p : docProperties)   p->setPreferredHeight (28);
-    docProperties[docProperties.size() - 1]->setPreferredHeight (28 * 4);
+    for (auto p : docProperties)   
+        p->setPreferredHeight (28);
 
     panel->addSection (TRANS ("Document Setup"), docProperties);
     valuesAddListener ();
@@ -200,14 +202,16 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("title", values[dirDesc]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[isMenu]))
         currentTree.setProperty ("isMenu", values[isMenu]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[dirDate]))
+        currentTree.setProperty ("date", values[dirDate]->getValue (), nullptr);
 
     // doc properties
     else if (value.refersToSameSourceAs (*values[keywords]))
         currentTree.setProperty ("keywords", values[keywords]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[isPage]))
         currentTree.setProperty ("isPage", values[isPage]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[js]))
-        currentTree.setProperty ("js", values[js]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[docDate]))
+        currentTree.setProperty ("date", values[docDate]->getValue (), nullptr);
 
     DocTreeViewItem::needCreateHtml (currentTree);
     projectHasChanged = true;

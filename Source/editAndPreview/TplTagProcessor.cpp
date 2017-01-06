@@ -11,15 +11,24 @@
 #include "../WdtpHeader.h"
 
 //=================================================================================================
-const String TplTagProcessor::fileAndDirList (const ValueTree& dirTree)
+const String TplTagProcessor::fileAndDirList (const ValueTree& dirTree_,
+                                              const bool reverse,
+                                              const bool includeDir,
+                                              const bool extrctIntro,
+                                              const int itemsPrePage/* = 0*/)
 {   
-    jassert (dirTree.getType ().toString () != "doc");
+    jassert (dirTree_.getType ().toString () != "doc");
 
     StringArray filesLinkStr;
-    String parentPath (DocTreeViewItem::getHtmlFileOrDir (dirTree).getFullPathName());
+    String parentPath (DocTreeViewItem::getHtmlFileOrDir (dirTree_).getFullPathName());
     parentPath = parentPath.dropLastCharacters (11); // remove "/index.html"
 
-    for (int i = 0; i < dirTree.getNumChildren(); ++i)
+    ValueTree dirTree (dirTree_.createCopy ());
+
+    TplTagProcessor sorter;
+    dirTree.sort (sorter, nullptr, false);
+
+    for (int i = dirTree.getNumChildren(); --i >= 0; )
     {
         const ValueTree& tree (dirTree.getChild (i));
         const String titleStr (tree.getProperty ("title").toString ());
@@ -27,11 +36,28 @@ const String TplTagProcessor::fileAndDirList (const ValueTree& dirTree)
         const File& html (DocTreeViewItem::getHtmlFileOrDir (tree));
         String path (html.getFullPathName().fromFirstOccurrenceOf (parentPath, false, false));
         //DBG (path);
-        path = "<a href=\"." + path + "\">" + titleStr + "</a><br>";
 
-        filesLinkStr.add (path);
+        if (!includeDir && html.getFileNameWithoutExtension () == "index")
+        {
+            path = String();
+        }
+        else
+        {
+            path = "<a href=\"." + path + "\">" + titleStr + "</a>";
+
+            if (extrctIntro)
+                path = "<h2>" + path + "</h2>" + tree.getProperty ("title").toString ();
+            else
+                path += "<br>";
+        }
+
+        if (reverse)
+            filesLinkStr.add (path);
+        else
+            filesLinkStr.insert (0, path);
     }
 
+    filesLinkStr.removeEmptyStrings (false);
     return filesLinkStr.joinIntoString (newLine) + Md2Html::copyrightInfo;
 }
 

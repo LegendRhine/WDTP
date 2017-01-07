@@ -50,9 +50,16 @@ const String TplTagProcessor::fileAndDirList (const ValueTree& dirTree_,
             path = "<a href=\"." + path + "\">" + titleStr + "</a>";
 
             if (extrctIntro)
-                path = "<h2>" + path + "</h2><p>" + tree.getProperty ("description").toString () + "<hr>";
+            {
+                path = "<h2>" + path + "</h2>" +
+                    +"<h4>" + tree.getProperty ("date").toString () + "</h4><p>"
+                    + tree.getProperty ("description").toString () + "<hr>";
+
+            }
             else
+            {
                 path += "<br>";
+            }
         }
 
         if (reverse)
@@ -63,5 +70,16 @@ const String TplTagProcessor::fileAndDirList (const ValueTree& dirTree_,
 
     filesLinkStr.removeEmptyStrings (false);
     return filesLinkStr.joinIntoString (newLine) + Md2Html::copyrightInfo;
+}
+
+//=================================================================================================
+const int TplTagProcessor::compareElements (const ValueTree& ft, const ValueTree& st)
+{
+    if (ft.getType ().toString () == "dir" && st.getType ().toString () == "doc")
+        return -1;
+    else if (ft.getType ().toString () == "doc" && st.getType ().toString () == "dir")
+        return 1;
+    else  // doc vs doc and dir vs dir..
+        return ft.getProperty ("date").toString ().compareIgnoreCase (st.getProperty ("date").toString ());
 }
 

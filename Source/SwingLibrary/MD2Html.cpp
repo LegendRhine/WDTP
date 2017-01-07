@@ -476,5 +476,7 @@ const String Md2Html::cleanUp (const String& mdString)
 const String Md2Html::copyrightInfo ("<p><hr>\n"
                                      "<div align=\"right\">Powered by "
                                      "<a href=\"http://www.underwaySoft.com/wdtp\""
-                                     " target=\"_blank\">WDTP</a> </div>");
+                                     " target=\"_blank\">WDTP</a> " + 
+                                     String (ProjectInfo::versionString) + 
+                                     "</div>");
 

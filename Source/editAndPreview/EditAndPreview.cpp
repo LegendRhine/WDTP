@@ -17,9 +17,9 @@ EditAndPreview::EditAndPreview ()
     addAndMakeVisible (webView);
 
     // stretched layout, arg: index, min-width, max-width，default x%
-    layoutManager.setItemLayout (0, -0.5, -1.0, -0.69);  // editor，
+    layoutManager.setItemLayout (0, -0.5, -1.0, -0.72);  // editor，
     layoutManager.setItemLayout (1, 3, 3, 3);           // layoutBar
-    layoutManager.setItemLayout (2, 2, -0.5, -0.31);  // propertiesPanel
+    layoutManager.setItemLayout (2, 2, -0.5, -0.28);  // propertiesPanel
 
     addAndMakeVisible (editor = new EditorForMd (this));
     addAndMakeVisible (setupPanel = new SetupPanel (this));
@@ -660,7 +660,7 @@ void EditorForMd::performPopupMenuAction (int index)
         moveCaretToEndOfLine (false);
     }
 
-    docTree.setProperty ("needCreateHtml", true, nullptr);
+    DocTreeViewItem::needCreateHtml (docTree);
 
     // save the project then update the setup panel
     FileTreeContainer::saveProject ();

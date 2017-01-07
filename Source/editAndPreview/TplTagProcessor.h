@@ -28,15 +28,7 @@ struct TplTagProcessor
                                         const int itemsPrePage = 0);
 
     //=========================================================================
-    const int compareElements (const ValueTree& ft, const ValueTree& st)
-    {
-        if (ft.getType ().toString () == "dir" && st.getType ().toString () == "doc")
-            return -1;
-        else if (ft.getType ().toString () == "doc" && st.getType ().toString () == "dir")
-            return 1;
-        else  // doc vs doc and dir vs dir..
-            return ft.getProperty ("date").toString().compareIgnoreCase (st.getProperty ("date").toString());
-    }
+    const int compareElements (const ValueTree& ft, const ValueTree& st);
 
 
 };

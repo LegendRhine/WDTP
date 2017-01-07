@@ -24,7 +24,6 @@ const String TplTagProcessor::fileAndDirList (const ValueTree& dirTree_,
     parentPath = parentPath.dropLastCharacters (11); // remove "/index.html"
 
     ValueTree dirTree (dirTree_.createCopy ());
-
     TplTagProcessor sorter;
     dirTree.sort (sorter, nullptr, false);
 
@@ -46,7 +45,7 @@ const String TplTagProcessor::fileAndDirList (const ValueTree& dirTree_,
             path = "<a href=\"." + path + "\">" + titleStr + "</a>";
 
             if (extrctIntro)
-                path = "<h2>" + path + "</h2>" + tree.getProperty ("title").toString ();
+                path = "<h2>" + path + "</h2><p>" + tree.getProperty ("description").toString () + "<hr>";
             else
                 path += "<br>";
         }

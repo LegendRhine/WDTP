@@ -151,35 +151,7 @@ const File EditAndPreview::createArticleHtml ()
 
             const File tplFile = tplPath + ((bool (docOrDirTree.getProperty ("isPage"))) 
                                  ? "page.html" : "article.html");
-
-            // get the description (the second line which not empty-line)
-            // the first line should be title
-            StringArray contentArray;
-            contentArray.addLines (currentContent);
-            contentArray.removeEmptyStrings ();
-            String description;
-
-            for (int i = 0; i < contentArray.size(); ++i)
-            {
-                if (i > 0 && contentArray.getReference(i).trim().isNotEmpty())
-                {
-                    description = contentArray.getReference (i).trim ()
-                        .replace ("+", String ())
-                        .replace ("-", String ())
-                        .replace ("*", String ())
-                        .replace ("#", String ())
-                        .replace ("`", String ())
-                        .replace (">", String ())
-                        .replace ("|", String ())
-                        .replace ("<", String ())
-                        .replace ("!", String ())
-                        .replace ("[", String ())
-                        .replace ("]", String ());
-
-                    break;
-                }
-            }
-
+            
             // get the path which relative the site root-dir, for css path            
             const String htmlFilePath (htmlFile.getFullPathName ());
             const String webRootDirPath (FileTreeContainer::projectFile.getParentDirectory().getFullPathName() 
@@ -200,7 +172,7 @@ const File EditAndPreview::createArticleHtml ()
             htmlFile.appendText (Md2Html::renderHtmlContent (htmlStr,
                                                              tplFile,
                                                              docOrDirTree.getProperty ("keywords").toString (),
-                                                             description.trim (),
+                                                             docOrDirTree.getProperty ("description").toString (),
                                                              docOrDirTree.getProperty ("title").toString (),
                                                              cssRelativePath));
 
@@ -291,10 +263,12 @@ const File EditAndPreview::createIndexHtml ()
 
             const String tplStr (tplFile.loadFileAsString());
             const String indexTileStr (docOrDirTree.getProperty ("title").toString ());
+            const String indexDescStr (docOrDirTree.getProperty ("description").toString ());
+
             String indexContent (tplStr.replace("{{siteRelativeRootPath}}", cssRelativePath)
                                  .replace ("{{title}}", indexTileStr)
                                  .replace ("{{keywords}}", indexTileStr)
-                                 .replace ("{{description}}", indexTileStr + "-" + TRANS ("file list")));
+                                 .replace ("{{description}}", indexDescStr));
             
             // title of this index.html
             if (tplStr.contains ("{{titleOfDir}}"))
@@ -399,15 +373,44 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
     if (docHasChanged && docOrDirFile != File::nonexistent)
     {
         currentContent = editor->getText ();
-        const String tileStr (currentContent.trim().upToFirstOccurrenceOf ("\n", false, true)
-                              .replace("#", String()).trim());
-
         TemporaryFile tempFile (docOrDirFile);
         tempFile.getFile ().appendText (currentContent);
 
         if (tempFile.overwriteTargetFileWithTemporary())
         {
+            const String tileStr (currentContent.trim ().upToFirstOccurrenceOf ("\n", false, true)
+                                  .replace ("#", String ()).trim ());
+
             docOrDirTree.setProperty ("title", tileStr, nullptr);
+
+            if (docOrDirTree.getProperty("description").toString().isEmpty())
+            {
+                // get the description (the second line which not empty-line)
+                // the first line should be title
+                StringArray contentArray;
+                contentArray.addLines (currentContent);
+                contentArray.removeEmptyStrings ();
+                String description;
+
+                for (int i = 1; i < contentArray.size (); ++i)
+                {
+                    if (contentArray.getReference (i).trim ().isNotEmpty ())
+                    {
+                        description = contentArray.getReference (i).trim ()
+                            .replace ("+", String ()).replace ("-", String ())
+                            .replace ("*", String ()).replace ("#", String ())
+                            .replace ("`", String ()).replace (">", String ())
+                            .replace ("|", String ()).replace ("<", String ())
+                            .replace ("!", String ()).replace ("[", " ")
+                            .replace ("]", " ");
+
+                        break;
+                    }
+                }
+
+                docOrDirTree.setProperty ("description", description, nullptr);
+            }
+
             docHasChanged = false;
 
             return FileTreeContainer::saveProject();
@@ -428,7 +431,8 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 
     if (e->mods.isPopupMenu())
     {
-        menu.addItem (20, TRANS ("Pickup Keyword"), getHighlightedText ().isNotEmpty ());
+        menu.addItem (20, TRANS ("Add to Keywords"), getHighlightedText ().isNotEmpty ());
+        menu.addItem (23, TRANS ("Pickup Description"), getHighlightedText ().isNotEmpty ());
         menu.addSeparator ();
 
         menu.addItem (21, TRANS ("Search Selected"), getHighlightedText ().isNotEmpty ());
@@ -484,15 +488,12 @@ void EditorForMd::performPopupMenuAction (int index)
         const String currentKeyWords (docTree.getProperty ("keywords").toString().trim());
 
         String keyWords (currentKeyWords);
-        bool needRecreateHtm = true;
 
         // update the doc-tree
         if (currentKeyWords.isNotEmpty ())
         {
             if (!currentKeyWords.containsIgnoreCase (content))
                 keyWords = currentKeyWords + ", " + content;
-            else
-                needRecreateHtm = false;
         }
         else
         {
@@ -500,6 +501,11 @@ void EditorForMd::performPopupMenuAction (int index)
         }
 
         docTree.setProperty ("keywords", keyWords, nullptr);
+    }
+    else if (23 == index)  // add the selected to this doc's description
+    {
+        content = getHighlightedText ();
+        docTree.setProperty ("description", content, nullptr);
     }
     else if (21 == index)  // search by selected
     {

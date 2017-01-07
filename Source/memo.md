@@ -96,7 +96,7 @@
 
 - wdtpProject总值树的属性（项目属性）：
     - tile: 项目名称
-    - description: 项目简述
+    - description: 简述
 	- owner: 项目所有者（作者）
 	- skin: 软件界面配色（暂未使用）
 	- order: 文件树的排序方式。文件名（0）、标题/简介（1）、网页文件名（2）、文件大小（3）、创建时间（4）、修改时间（5）
@@ -124,7 +124,7 @@
     - name：文件名（不含文件扩展名，不包含任何上级路径。上级路径可通过其父节点的name获取）
 	- title：文章或页面的标题
 	- keywords: 关键字
-    - description: 目录简述，用于index的description
+    - description: 简述，用于index的description
 	- date: 创建日期
 	- isPage: 本文挡是否生成独立页面（不加入列表页，使用page模板。否则使用article模板）
 	- needCreateHtml: 本文档是否需要生成网页

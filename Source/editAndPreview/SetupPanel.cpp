@@ -39,8 +39,8 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     panel->clear ();
     jassert (currentTree.isValid () && currentTree.getType ().toString () == "wdtpProject");
 
-    values[projectName]->setValue (pTree.getProperty ("name"));
-    values[projectDesc]->setValue (pTree.getProperty ("title"));
+    values[projectTitle]->setValue (pTree.getProperty ("title"));
+    values[projectDesc]->setValue (pTree.getProperty ("description"));
     values[owner]->setValue (pTree.getProperty ("owner"));
     //values[projectSkin]->setValue (pTree.getProperty ("skin"));
     values[projectRenderDir]->setValue (pTree.getProperty ("render"));
@@ -48,8 +48,8 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
 
     Array<PropertyComponent*> projectProperties;
 
-    projectProperties.add (new TextPropertyComponent (*values[projectName], TRANS ("Project Name: "), 60, false));
-    projectProperties.add (new TextPropertyComponent (*values[projectDesc], TRANS ("Title: "), 0, true));
+    projectProperties.add (new TextPropertyComponent (*values[projectTitle], TRANS ("Title: "), 60, false));
+    projectProperties.add (new TextPropertyComponent (*values[projectDesc], TRANS ("Description: "), 0, true));
     projectProperties.add (new TextPropertyComponent (*values[owner], TRANS ("Owner: "), 30, false));
 
     // skin
@@ -99,17 +99,19 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     currentTree = dTree;
     jassert (currentTree.isValid () && currentTree.getType ().toString () == "dir");
 
-    values[dirDesc]->setValue (currentTree.getProperty ("title"));
+    values[dirTitle]->setValue (currentTree.getProperty ("title"));
+    values[dirDesc]->setValue (currentTree.getProperty ("description"));
     values[isMenu]->setValue (currentTree.getProperty ("isMenu"));
     values[dirDate]->setValue (currentTree.getProperty ("date"));
 
     Array<PropertyComponent*> dirProperties;
-    dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Title: "), 0, true));
+    dirProperties.add (new TextPropertyComponent (*values[dirTitle], TRANS ("Title: "), 0, false));
+    dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Description: "), 0, true));
     dirProperties.add (new BooleanPropertyComponent (*values[isMenu], TRANS ("Web Menu: "), TRANS ("Yes")));
     dirProperties.add (new TextPropertyComponent (*values[dirDate], TRANS ("Date: "), 10, false));
 
     for (auto p : dirProperties)     p->setPreferredHeight (28);
-    dirProperties[0]->setPreferredHeight (28 * 3);
+    dirProperties[1]->setPreferredHeight (28 * 3);
     
     panel->addSection (TRANS ("Folder Setup"), dirProperties);
     valuesAddListener ();
@@ -124,16 +126,18 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     jassert (currentTree.isValid () && currentTree.getType ().toString () == "doc");
 
     values[keywords]->setValue (currentTree.getProperty ("keywords"));
+    values[docDesc]->setValue (currentTree.getProperty ("description"));
     values[isPage]->setValue (currentTree.getProperty ("isPage"));
     values[docDate]->setValue (currentTree.getProperty ("date"));
 
     Array<PropertyComponent*> docProperties;
     docProperties.add (new TextPropertyComponent (*values[keywords], TRANS ("Keywords: "), 0, false));
+    docProperties.add (new TextPropertyComponent (*values[docDesc], TRANS ("Description: "), 0, true));
     docProperties.add (new BooleanPropertyComponent (*values[isPage], TRANS ("Single Page: "), TRANS ("Yes")));
     docProperties.add (new TextPropertyComponent (*values[docDate], TRANS ("Date: "), 10, false));
 
-    for (auto p : docProperties)   
-        p->setPreferredHeight (28);
+    for (auto p : docProperties)           p->setPreferredHeight (28);
+    docProperties[1]->setPreferredHeight (28 * 3);
 
     panel->addSection (TRANS ("Document Setup"), docProperties);
     valuesAddListener ();
@@ -177,10 +181,10 @@ void SetupPanel::resized()
 void SetupPanel::valueChanged (Value& value)
 {    
     // project properties
-    if (value.refersToSameSourceAs (*values[projectName]))
-        currentTree.setProperty ("name", values[projectName]->getValue (), nullptr);
+    if (value.refersToSameSourceAs (*values[projectTitle]))
+        currentTree.setProperty ("title", values[projectTitle]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[projectDesc]))
-        currentTree.setProperty ("title", values[projectDesc]->getValue (), nullptr);
+        currentTree.setProperty ("description", values[projectDesc]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[owner]))
         currentTree.setProperty ("owner", values[owner]->getValue (), nullptr);
     /*else if (value.refersToSameSourceAs (*values[projectSkin]))
@@ -198,8 +202,10 @@ void SetupPanel::valueChanged (Value& value)
     }
 
     // dir properties
+    else if (value.refersToSameSourceAs (*values[dirTitle]))
+        currentTree.setProperty ("title", values[dirTitle]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[dirDesc]))
-        currentTree.setProperty ("title", values[dirDesc]->getValue (), nullptr);
+        currentTree.setProperty ("description", values[dirDesc]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[isMenu]))
         currentTree.setProperty ("isMenu", values[isMenu]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[dirDate]))
@@ -208,6 +214,8 @@ void SetupPanel::valueChanged (Value& value)
     // doc properties
     else if (value.refersToSameSourceAs (*values[keywords]))
         currentTree.setProperty ("keywords", values[keywords]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[docDesc]))
+        currentTree.setProperty ("description", values[docDesc]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[isPage]))
         currentTree.setProperty ("isPage", values[isPage]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[docDate]))

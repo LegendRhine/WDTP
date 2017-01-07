@@ -47,14 +47,14 @@ private:
     enum  
     { 
         // project properties' values
-        projectName = 0, projectDesc, owner, /*projectSkin,*/ 
+        projectTitle = 0, projectDesc, owner, /*projectSkin,*/ 
         projectRenderDir, fontSize, 
 
         // dir properties' values
-        dirDesc, isMenu, dirDate,
+        dirTitle, dirDesc, isMenu, dirDate, 
 
         // doc properties' values
-        keywords, isPage, docDate, 
+        keywords, docDesc, isPage, docDate, 
 
         totalValues
     };

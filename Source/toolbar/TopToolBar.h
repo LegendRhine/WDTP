@@ -33,6 +33,7 @@ private:
     //==========================================================================
     virtual void textEditorReturnKeyPressed (TextEditor&) override;
     virtual void textEditorEscapeKeyPressed (TextEditor&) override;
+
     void findInProject (const bool next);
     void findInDoc (const bool next);
 
@@ -42,6 +43,10 @@ private:
     
     void createNewProject ();
     void openProject();
+    void cleanAndGenerateAll ();
+
+    /** generate the tree and all its children's html file */
+    static void generateHtmlFiles (ValueTree tree);
 
     //==========================================================================
     enum { prevAll, nextAll, prevPjt, nextPjt, 

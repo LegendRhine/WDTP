@@ -315,8 +315,8 @@ void TopToolBar::menuPerform (const int index)
     // close current project
     else if (index == 3)    fileTreeContainer->closeProject ();
 
-    // re-generate the whole site
-    else if (index == 5)    NEED_TO_DO ("Clean up and Regenerate the whole site...");
+    // clean up and re-generate the whole site
+    else if (index == 5)    cleanAndGenerateAll ();
 
     // help
     else if (index == 18)   NEED_TO_DO ("Getting started...");
@@ -409,4 +409,49 @@ void TopToolBar::openProject ()
         fileTreeContainer->openProject (fc.getResult ());
 }
 
+//=================================================================================================
+void TopToolBar::cleanAndGenerateAll ()
+{
+    if (AlertWindow::showOkCancelBox(AlertWindow::QuestionIcon, 
+                                       TRANS ("Confirm"),
+                                       TRANS ("Do you really want to cleanup the whole site and\n"
+                                              "regenerate all html-files?")))
+    {
+        // save the content of style.css
+        const File cssFile (FileTreeContainer::projectFile.getSiblingFile ("site")
+                            .getChildFile("style.css"));
+
+        jassert (cssFile.existsAsFile ());
+        const String cssStr (cssFile.loadFileAsString());
+
+        // cleanup
+        if (FileTreeContainer::projectFile.getSiblingFile ("site").deleteRecursively())
+        {
+            // generate
+            generateHtmlFiles (FileTreeContainer::projectTree);
+            FileTreeContainer::saveProject ();
+
+            // restore the style.css
+            jassert (! cssFile.existsAsFile ());
+            cssFile.create ();
+            cssFile.appendText (cssStr);
+
+            SHOW_MESSAGE (TRANS ("Clean and regenerate successful!"));
+        }
+    }
+}
+
+//=================================================================================================
+void TopToolBar::generateHtmlFiles (ValueTree tree)
+{
+    tree.setProperty ("needCreateHtml", true, nullptr);
+
+    if (tree.getType().toString() == "doc")
+        HtmlProcessor::createArticleHtml (tree, false);
+    else
+        HtmlProcessor::createIndexHtml (tree, false);
+
+    for (int i = tree.getNumChildren(); --i >= 0; )
+        generateHtmlFiles (tree.getChild (i));
+}
 

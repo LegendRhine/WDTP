@@ -55,8 +55,7 @@ private:
     //=========================================================================
     void editCurrentDoc ();
     void previewCurrentDoc ();
-    const File createArticleHtml ();
-    const File createIndexHtml ();
+    
 
     virtual void textEditorTextChanged (TextEditor&) override;
     virtual void timerCallback() override;

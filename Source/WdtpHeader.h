@@ -19,7 +19,7 @@
 #include "toolbar/TopToolBar.h"
 #include "editAndPreview/EditAndPreview.h"
 #include "editAndPreview/SetupPanel.h"
-#include "editAndPreview/TplTagProcessor.h"
+#include "editAndPreview/HtmlProcessor.h"
 #include "fileTree/FileTreeContainer.h"
 #include "fileTree/DocTreeViewItem.h"
 #include "SwingLibrary/MD2Html.h"

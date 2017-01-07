@@ -118,10 +118,10 @@ const File DocTreeViewItem::getMdFileOrDir (const ValueTree& tree)
         String path = tree.getProperty ("name").toString ();
         ValueTree t (tree);
 
-        while (t.getParent ().isValid () && t.getParent ().getType ().toString () != "wdtpProject")
+        while (t.getParent().isValid() && t.getParent().getType().toString() != "wdtpProject")
         {
             t = t.getParent ();
-            path = t.getProperty ("name").toString () + "/" + path;
+            path = t.getProperty ("name").toString () + File::separator + path;
         }
 
         if (tree.getType ().toString () == "doc")

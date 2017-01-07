@@ -412,6 +412,7 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
             }
 
             docHasChanged = false;
+            setupPanel->showDocProperties (docOrDirTree);
 
             return FileTreeContainer::saveProject();
         }

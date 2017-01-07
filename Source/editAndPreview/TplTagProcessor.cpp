@@ -20,8 +20,7 @@ const String TplTagProcessor::fileAndDirList (const ValueTree& dirTree_,
     jassert (dirTree_.getType ().toString () != "doc");
 
     StringArray filesLinkStr;
-    String parentPath (DocTreeViewItem::getHtmlFileOrDir (dirTree_).getFullPathName());
-    parentPath = parentPath.dropLastCharacters (11); // remove "/index.html"
+    const File thisDir (DocTreeViewItem::getHtmlFileOrDir (dirTree_).getParentDirectory());
 
     ValueTree dirTree (dirTree_.createCopy ());
     TplTagProcessor sorter;
@@ -31,14 +30,20 @@ const String TplTagProcessor::fileAndDirList (const ValueTree& dirTree_,
     {
         const ValueTree& tree (dirTree.getChild (i));
         const String titleStr (tree.getProperty ("title").toString ());
+        const String fileName (tree.getProperty ("name").toString ());
 
-        const File& html (DocTreeViewItem::getHtmlFileOrDir (tree));
-        String path (html.getFullPathName().fromFirstOccurrenceOf (parentPath, false, false));
-        //DBG (path);
+        File html;
 
-        if (!includeDir && html.getFileNameWithoutExtension () == "index")
+        if (tree.getType ().toString () == "dir")
+            html = thisDir.getChildFile (fileName + "/index.html");
+        else  // doc
+            html = thisDir.getChildFile (fileName + ".html");
+
+        String path (html.getFullPathName().fromFirstOccurrenceOf (thisDir.getFullPathName(), false, false));
+
+        if (!includeDir && path == "index.html")
         {
-            path = String();
+            path = String ();
         }
         else
         {

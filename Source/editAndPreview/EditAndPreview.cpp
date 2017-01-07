@@ -17,9 +17,9 @@ EditAndPreview::EditAndPreview ()
     addAndMakeVisible (webView);
 
     // stretched layout, arg: index, min-width, max-width，default x%
-    layoutManager.setItemLayout (0, -0.5, -1.0, -0.72);  // editor，
+    layoutManager.setItemLayout (0, -0.5, -1.0, -0.70);  // editor，
     layoutManager.setItemLayout (1, 3, 3, 3);           // layoutBar
-    layoutManager.setItemLayout (2, 2, -0.5, -0.28);  // propertiesPanel
+    layoutManager.setItemLayout (2, 2, -0.5, -0.30);  // propertiesPanel
 
     addAndMakeVisible (editor = new EditorForMd (this));
     addAndMakeVisible (setupPanel = new SetupPanel (this));

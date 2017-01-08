@@ -1,3 +1,4 @@
+/* Default style of WDTP */
 
 body, p {
   max-width: 760px;
@@ -29,6 +30,7 @@ pre {
   text-indent: 0;
   font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
   font-size: 82%;
+  line-height: 1.2;
 }
 code {
   background-color: #cdcdcd;

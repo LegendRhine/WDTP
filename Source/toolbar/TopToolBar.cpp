@@ -415,8 +415,8 @@ void TopToolBar::cleanAndGenerateAll ()
 {
     if (AlertWindow::showOkCancelBox(AlertWindow::QuestionIcon, 
                                        TRANS ("Confirm"),
-                                       TRANS ("Do you really want to cleanup the whole site and\n"
-                                              "regenerate all html-files?")))
+                                       TRANS ("Do you really want to cleanup the whole site\n"
+                                              "and then auto-regenerate them all?")))
     {
         // move the add-in dir which inlcude style.css, code-highlight.js
         // prevent it will be deleted

@@ -99,19 +99,24 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     currentTree = dTree;
     jassert (currentTree.isValid () && currentTree.getType ().toString () == "dir");
 
+    values[dirName]->setValue (currentTree.getProperty ("name"));
     values[dirTitle]->setValue (currentTree.getProperty ("title"));
     values[dirDesc]->setValue (currentTree.getProperty ("description"));
     values[isMenu]->setValue (currentTree.getProperty ("isMenu"));
     values[dirDate]->setValue (currentTree.getProperty ("date"));
 
     Array<PropertyComponent*> dirProperties;
+    dirProperties.add (new TextPropertyComponent (*values[dirName], TRANS ("Name: "), 0, false));
     dirProperties.add (new TextPropertyComponent (*values[dirTitle], TRANS ("Title: "), 0, false));
     dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Description: "), 0, true));
     dirProperties.add (new BooleanPropertyComponent (*values[isMenu], TRANS ("Web Menu: "), TRANS ("Yes")));
     dirProperties.add (new TextPropertyComponent (*values[dirDate], TRANS ("Date: "), 10, false));
 
-    for (auto p : dirProperties)     p->setPreferredHeight (28);
-    dirProperties[1]->setPreferredHeight (28 * 3);
+    for (auto p : dirProperties)
+        p->setPreferredHeight (28);
+
+    dirProperties[0]->setEnabled (false);
+    dirProperties[2]->setPreferredHeight (28 * 3);
     
     panel->addSection (TRANS ("Folder Setup"), dirProperties);
     valuesAddListener ();
@@ -125,19 +130,27 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     currentTree = dTree;
     jassert (currentTree.isValid () && currentTree.getType ().toString () == "doc");
 
+    values[docName]->setValue (currentTree.getProperty ("name"));
+    values[docTitle]->setValue (currentTree.getProperty ("title"));
     values[keywords]->setValue (currentTree.getProperty ("keywords"));
     values[docDesc]->setValue (currentTree.getProperty ("description"));
     values[isPage]->setValue (currentTree.getProperty ("isPage"));
     values[docDate]->setValue (currentTree.getProperty ("date"));
 
     Array<PropertyComponent*> docProperties;
+    docProperties.add (new TextPropertyComponent (*values[docName], TRANS ("Name: "), 0, false));
+    docProperties.add (new TextPropertyComponent (*values[docTitle], TRANS ("Title: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[keywords], TRANS ("Keywords: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[docDesc], TRANS ("Description: "), 0, true));
     docProperties.add (new BooleanPropertyComponent (*values[isPage], TRANS ("Single Page: "), TRANS ("Yes")));
     docProperties.add (new TextPropertyComponent (*values[docDate], TRANS ("Date: "), 10, false));
 
-    for (auto p : docProperties)           p->setPreferredHeight (28);
-    docProperties[1]->setPreferredHeight (28 * 3);
+    for (auto p : docProperties)           
+        p->setPreferredHeight (28);
+
+    docProperties[0]->setEnabled (false);
+    docProperties[1]->setEnabled (false);
+    docProperties[3]->setPreferredHeight (28 * 3);
 
     panel->addSection (TRANS ("Document Setup"), docProperties);
     valuesAddListener ();

@@ -212,12 +212,14 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
             const String tplStr (tplFile.loadFileAsString ());
             const String indexTileStr (dirTree.getProperty ("title").toString ());
             const String indexAuthorStr (FileTreeContainer::projectTree.getProperty ("owner").toString ());
+            const String indexKeywordsStr (FileTreeContainer::projectTree.getProperty ("title").toString () 
+                                           + ", " + indexTileStr);
             const String indexDescStr (dirTree.getProperty ("description").toString ());
 
             String indexContent (tplStr.replace ("{{siteRelativeRootPath}}", cssRelativePath)
                                  .replace ("{{author}}", indexAuthorStr)
                                  .replace ("{{title}}", indexTileStr)
-                                 .replace ("{{keywords}}", indexTileStr)
+                                 .replace ("{{keywords}}", indexKeywordsStr)
                                  .replace ("{{description}}", indexDescStr));
 
             // title of this index.html

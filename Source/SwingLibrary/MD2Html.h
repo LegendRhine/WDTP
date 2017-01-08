@@ -21,6 +21,7 @@ public:
     static const String renderHtmlContent (const String& htmlContentStr,
                                            const File& tplFile,
                                            const String& htmlKeywords,
+                                           const String& htmlAuthor,
                                            const String& htmlDescription,
                                            const String& htmlTitle,
                                            const String& cssPath);

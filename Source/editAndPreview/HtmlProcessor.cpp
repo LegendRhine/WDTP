@@ -114,6 +114,7 @@ const File HtmlProcessor::createArticleHtml (ValueTree& docTree, bool saveProjec
             htmlFile.appendText (Md2Html::renderHtmlContent (htmlStr,
                                                              tplFile,
                                                              docTree.getProperty ("keywords").toString (),
+                                                             FileTreeContainer::projectTree.getProperty ("owner").toString (),
                                                              docTree.getProperty ("description").toString (),
                                                              docTree.getProperty ("title").toString (),
                                                              cssRelativePath));
@@ -209,9 +210,11 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
 
             const String tplStr (tplFile.loadFileAsString ());
             const String indexTileStr (dirTree.getProperty ("title").toString ());
+            const String indexAuthorStr (FileTreeContainer::projectTree.getProperty ("owner").toString ());
             const String indexDescStr (dirTree.getProperty ("description").toString ());
 
             String indexContent (tplStr.replace ("{{siteRelativeRootPath}}", cssRelativePath)
+                                 .replace ("{{author}}", indexAuthorStr)
                                  .replace ("{{title}}", indexTileStr)
                                  .replace ("{{keywords}}", indexTileStr)
                                  .replace ("{{description}}", indexDescStr));

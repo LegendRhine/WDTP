@@ -41,6 +41,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
 const String Md2Html::renderHtmlContent (const String& htmlContentStr, 
                                          const File& tplFile,
                                          const String& htmlKeywords,
+                                         const String& htmlAuthor,
                                          const String& htmlDescription,
                                          const String& htmlTitle,
                                          const String& cssPath)
@@ -50,6 +51,7 @@ const String Md2Html::renderHtmlContent (const String& htmlContentStr,
 
     return tplFile.loadFileAsString ()
         .replace ("{{keywords}}", htmlKeywords)
+        .replace ("{{author}}", htmlAuthor)
         .replace ("{{description}}", htmlDescription)
         .replace ("{{title}}", htmlTitle)
         .replace ("{{siteRelativeRootPath}}", cssPath)

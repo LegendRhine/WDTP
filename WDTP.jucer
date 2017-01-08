@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="iAHZG1" name="WDTP" projectType="guiapp" version="0.1.161228"
+<JUCERPROJECT id="iAHZG1" name="WDTP" projectType="guiapp" version="1.0.161228"
               bundleIdentifier="com.yourcompany.WDTP" includeBinaryInAppConfig="1"
-              jucerVersion="4.3.0" userNotes="Start: 2016-09-02" companyName="UnderwaySoft"
+              jucerVersion="4.3.0" userNotes="Start:    2016.09.03" companyName="UnderwaySoft"
               companyWebsite="http://www.underwaySoft.com" companyEmail="underwaySoft@126.com">
   <MAINGROUP id="dEY4lK" name="WDTP">
     <GROUP id="{24163B05-55E9-9D57-4AF2-ACA9BBF8DA1F}" name="Source">

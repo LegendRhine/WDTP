@@ -1,11 +1,14 @@
 /* Default style of WDTP */
 
 body, p {
-  max-width: 760px;
+  max-width: 730px;
   margin: 0 auto;
   background-color: #dedede;	
   text-indent: 2em;
   line-height: 1.6;
+}
+p {
+  margin: 12px 0;
 }
 h2, h3, h4, h5, h6 {
   text-indent: 24pt;
@@ -35,6 +38,10 @@ pre {
 code {
   background-color: #cdcdcd;
 }
+ol, ul {
+  margin: 5px 0;
+  padding: 0 0 0 40px;
+}
 table  {
   position: relative;
   top: 10px;
@@ -47,7 +54,14 @@ table  {
   line-height: 1.5;
 }
 table, td, th  {
-  border:1px solid black;
+  border: 1px solid black;
+}
+#copyright {
+  position: relative;
+  top: 0;
+  border: 0px solid black;
+  font-size: 90%;
+  font-weight: bold;
 }
 th {
   background-color: #cdcdcd;

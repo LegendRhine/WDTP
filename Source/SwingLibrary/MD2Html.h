@@ -54,9 +54,8 @@ private:
     static const String imageParse (const String& mdString);  /**< ![](media/xxx.jpg) */
     static const String mdLinkParse (const String& mdString); /**< [](http://xxx.com) */    
 
-    // These two only support two-level nested lists
-    static const String unorderedListParse (const String& mdString); /**< -  */
-    static const String orderedListParse (const String& mdString); /**< +  */
+    // only support two-level nested lists. + for ordered (true), - for unordered (false)
+    static const String orderedListParse (const String& mdString, const bool isOrdered); 
     
     static const String cleanUp (const String& mdString);
 

@@ -28,8 +28,8 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     htmlContent = spaceLinkParse (htmlContent);
     htmlContent = imageParse (htmlContent);
     htmlContent = mdLinkParse (htmlContent);
-    htmlContent = orderedListParse (htmlContent);
-    htmlContent = unorderedListParse (htmlContent);
+    htmlContent = orderedListParse (htmlContent, true);
+    htmlContent = orderedListParse (htmlContent, false);
     htmlContent = cleanUp (htmlContent);
     
     htmlContent += HtmlProcessor::getCopyrightInfo();
@@ -327,55 +327,7 @@ const String Md2Html::mdLinkParse (const String& mdString)
 }
 
 //=================================================================================================
-const String Md2Html::unorderedListParse (const String& mdString)
-{
-    if (mdString.isEmpty ())
-        return mdString;
-
-    StringArray contentByLine;
-    contentByLine.addLines (mdString);
-
-    contentByLine.insert (0, "%%__unordered@List@Parse__%%");
-    contentByLine.add ("%%__unordered@List@Parse__%%");
-
-    for (int i = 1; i < contentByLine.size () - 1; ++i)
-    {
-        const String& prevLine (contentByLine.getReference (i - 1));
-        String& currentLine (contentByLine.getReference (i));
-        const String& nextLine (contentByLine.getReference (i + 1));
-        String prefix, postfix;
-
-        if (currentLine.substring (0, 6) == "    - ")
-        {
-            if (prevLine.substring (0, 6) != "    - "
-                && prevLine.substring (0, 8) != "    <ul>"
-                && prevLine.substring (0, 8) != "    <li>")
-                prefix = "    <ul>";
-            if (nextLine.substring (0, 6) != "    - ")
-                postfix = "    </ul>";
-
-            currentLine = prefix + "    <li>" + currentLine.fromFirstOccurrenceOf ("    - ", false, true) + "</li>" + postfix;
-        }
-        else if (currentLine.substring (0, 2) == "- ")
-        {
-            if (prevLine.substring (0, 2) != "- "
-                && prevLine.substring (0, 4) != "<li>"
-                && prevLine.substring (0, 4) != "<ul>")
-                prefix = "<ul>";
-            if (nextLine.substring (0, 2) != "- "
-                && nextLine.substring (0, 6) != "    - ")
-                postfix = "</ul>";
-
-            currentLine = prefix + "<li>" + currentLine.fromFirstOccurrenceOf ("- ", false, true) + "</li>" + postfix;
-        }
-    }
-
-    contentByLine.removeString ("%%__unordered@List@Parse__%%");
-    return contentByLine.joinIntoString (newLine).replace ("    </ul>", "    </ul></ul>");
-}
-
-//=================================================================================================
-const String Md2Html::orderedListParse (const String& mdString)
+const String Md2Html::orderedListParse (const String& mdString, const bool isOrdered)
 {
     if (mdString.isEmpty ())
         return mdString;
@@ -388,38 +340,53 @@ const String Md2Html::orderedListParse (const String& mdString)
 
     for (int i = 1; i < contentByLine.size() - 1; ++i)
     {
-        const String& prevLine (contentByLine.getReference (i - 1));
+        const String& prevLine = contentByLine.getReference (i - 1);
+        const String& nextLine = contentByLine.getReference (i + 1);        
         String& currentLine (contentByLine.getReference (i));
-        const String& nextLine (contentByLine.getReference (i + 1));
         String prefix, postfix;
 
-        if (currentLine.substring (0, 6) == "    + ")
+        const String nestTag (isOrdered ? "    + " : "    - ");
+        const String nestedStart (isOrdered ? "    <ol>" : "    <ul>");
+        const String nestedEnd (isOrdered ? "    </ol>" : "    </ul>");
+        const String listTag (isOrdered ? "+ " : "- ");
+        const String listStart (isOrdered ? "<ol>" : "<ul>");
+        const String listEnd (isOrdered ? "</ol>" : "</ul>");
+
+        if (currentLine.substring (0, 6) == nestTag)
         {
-            if (prevLine.substring (0, 6) != "    + "
-                && prevLine.substring (0, 8) != "    <ol>"
+            if (prevLine.substring (0, 6) != nestTag
+                && prevLine.substring (0, 8) != nestedStart
                 && prevLine.substring (0, 8) != "    <li>")
-                prefix = "    <ol>";
-            if (nextLine.substring (0, 6) != "    + ")
-                postfix = "    </ol>";
+                prefix = nestedStart;
+            if (nextLine.substring (0, 6) != nestTag)
+                postfix = nestedEnd;
 
-            currentLine = prefix + "    <li>" + currentLine.fromFirstOccurrenceOf("    + ", false, true) + "</li>" + postfix;
+            currentLine = prefix + "    <li>" + currentLine.fromFirstOccurrenceOf (nestTag, false, true) + "</li>" + postfix;
         }
-        else if (currentLine.substring (0, 2) == "+ ")
+        else if (currentLine.substring (0, 2) == listTag)
         {
-            if (prevLine.substring (0, 2) != "+ " 
-                && prevLine.substring (0, 4) != "<li>"
-                && prevLine.substring (0, 4) != "<ol>")
-                prefix = "<ol>";
-            if (nextLine.substring (0, 2) != "+ " 
-                && nextLine.substring (0, 6) != "    + ")
-                postfix = "</ol>";
+            if (prevLine.substring (0, 2) != listTag
+                && prevLine.trimStart().substring (0, 4) != "<li>"
+                && prevLine.trimStart().substring (0, 4) != listStart)
+                prefix = listStart;
+            if (nextLine.substring (0, 2) != listTag
+                && nextLine.substring (0, 6) != nestTag)
+                postfix = listEnd;
 
-            currentLine = prefix + "<li>" + currentLine.fromFirstOccurrenceOf ("+ ", false, true) + "</li>" + postfix;
+            currentLine = prefix + "<li>" + currentLine.fromFirstOccurrenceOf (listTag, false, true) + "</li>" + postfix;
+        }
+        
+        if ((currentLine.substring (0, 8) == "    <li>" 
+             || currentLine.substring (0, 8) == nestedStart)
+            && currentLine.getLastCharacters(5) == listEnd
+            && nextLine.substring (0, 2) != listTag)
+        {
+            currentLine += listEnd;
         }
     }
 
     contentByLine.removeString ("%%__ordered@List@Parse__%%");
-    return contentByLine.joinIntoString (newLine).replace("    </ol>", "    </ol></ol>");
+    return contentByLine.joinIntoString (newLine);
 }
 
 //=================================================================================================

@@ -235,8 +235,9 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addItem (12, TRANS ("Delete..."), !isRoot);
         m.addSeparator ();
 
-        m.addItem (14, TRANS ("Open in Explorer/Finder..."), exist && onlyOneSelected);
+        m.addItem (14, TRANS ("View in Explorer/Finder..."), exist && onlyOneSelected);
         m.addItem (15, TRANS ("Open in External Editor..."), exist && isDoc && onlyOneSelected);
+        m.addItem (16, TRANS ("Browse in External Browser..."), exist && onlyOneSelected);
 
         menuPerform (m.show ());
     }
@@ -265,6 +266,8 @@ void DocTreeViewItem::menuPerform (const int index)
         getMdFileOrDir (tree).revealToUser ();
     else if (index == 15)
         getMdFileOrDir (tree).startAsProcess ();
+    else if (index == 16)
+        getHtmlFileOrDir (tree).startAsProcess ();
 
     // sort and show what...
     else if (index >= 100 && index <= 105)

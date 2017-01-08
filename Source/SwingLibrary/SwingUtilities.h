@@ -232,6 +232,7 @@ class WebBrowserComp : public WebBrowserComponent
 public:
     WebBrowserComp() {}
     ~WebBrowserComp() {}
+
     virtual void newWindowAttemptingToLoad (const String& newURL) override;
 
 private:

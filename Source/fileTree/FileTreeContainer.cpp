@@ -52,6 +52,13 @@ void FileTreeContainer::resized ()
 }
 
 //=================================================================================================
+void FileTreeContainer::paint (Graphics& g)
+{
+    g.setColour (Colours::grey);
+    g.drawVerticalLine (getWidth() - 1, 0, getBottom() - 0.f);
+}
+
+//=================================================================================================
 void FileTreeContainer::openProject (const File& project)
 {
     // check if the file exists and could write

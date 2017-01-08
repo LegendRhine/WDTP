@@ -25,13 +25,14 @@ public:
     ~SetupPanel();
 
     void resized () override;
+
     void projectClosed();
+    void showNothing ()    { panel->clear (); }
 
     void showProjectProperties (ValueTree& projectTree);
     void showDirProperties (ValueTree& dirTree);
     void showDocProperties (ValueTree& docTree);   
 
-    void showNothing()  { panel->clear(); }
     
 private:
     //=========================================================================    

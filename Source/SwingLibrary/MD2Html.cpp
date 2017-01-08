@@ -442,7 +442,7 @@ const String Md2Html::cleanUp (const String& mdString)
     }
 
     // clean extra <p> when it's after any html-tag
-    int indexP = resultStr.indexOfIgnoreCase (0, "<p>");
+    /*int indexP = resultStr.indexOfIgnoreCase (0, "<p>");
 
     while (indexP != -1)
     {
@@ -451,7 +451,7 @@ const String Md2Html::cleanUp (const String& mdString)
             resultStr = resultStr.replaceSection (indexP, 4, newLine);
 
         indexP = resultStr.indexOfIgnoreCase (indexP + 3, "<p>");
-    }
+    }*/
 
     // clean extra <p> and <br> which is in code-block(s)
     int indexCodeStart = resultStr.indexOfIgnoreCase (0, "<pre><code>");
@@ -478,8 +478,10 @@ const String Md2Html::cleanUp (const String& mdString)
     // otherwise the vertical-gap will too wide
     resultStr = resultStr.replace (String ("<pre><code>") + newLine, "<pre><code>");
 
-    // give it a <p> after table
+    // give it a <p> after table, '<hr>' and '</code></pre>'
     resultStr = resultStr.replace (String ("</table>") + newLine, "</table><p>");
+    resultStr = resultStr.replace (String ("<hr>") + newLine, "<hr>\n<p>");
+    resultStr = resultStr.replace (String ("</code></pre>") + newLine, "</code></pre>\n<p>");
 
     //DBG (resultStr);
     return resultStr;

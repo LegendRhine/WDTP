@@ -82,6 +82,7 @@ class EditorForMd : public TextEditor
 public:
     EditorForMd (EditAndPreview* parent_) : parent (parent_) { }
     ~EditorForMd () { }
+    void paint (Graphics& g) override;
 
     virtual void addPopupMenuItems (PopupMenu& menuToAddTo, const MouseEvent* mouseClickEvent) override;
     virtual void performPopupMenuAction (int menuItemID) override;

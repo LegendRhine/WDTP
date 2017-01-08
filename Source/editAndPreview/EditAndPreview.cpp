@@ -30,7 +30,7 @@ EditAndPreview::EditAndPreview ()
     editor->setReturnKeyStartsNewLine (true);
     editor->setTabKeyUsedAsCharacter (true);
     editor->setColour (TextEditor::textColourId, Colour(0xff303030));
-    editor->setColour (TextEditor::focusedOutlineColourId, Colour(0xffb4b4b4));
+    editor->setColour (TextEditor::focusedOutlineColourId, Colour(0x000));
     editor->setColour (TextEditor::backgroundColourId, Colour(0xffdedede));
     editor->setScrollBarThickness (10);
     editor->setIndents (10, 10);
@@ -256,6 +256,15 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
     }
 
     return true;
+}
+
+//=================================================================================================
+void EditorForMd::paint (Graphics& g)
+{
+    TextEditor::paint (g);
+    g.setColour (Colours::grey);
+    g.drawVerticalLine (getWidth() - 1, 0, getBottom () - 0.f);
+
 }
 
 //=================================================================================================

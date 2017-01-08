@@ -67,7 +67,8 @@ public:
     FileTreeContainer (EditAndPreview* editAndPreview);
     ~FileTreeContainer();
 
-    void resized() override;
+    void resized () override;
+    void paint (Graphics& g) override;
 
     void openProject (const File& projectFile);
     void closeProject();

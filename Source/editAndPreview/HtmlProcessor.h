@@ -30,6 +30,9 @@ struct HtmlProcessor
     static const File createArticleHtml (ValueTree& docTree, bool saveProjectAfterCreated);
     static const File createIndexHtml (ValueTree& dirTree, bool saveProjectAfterCreated);
 
+    /** The return result could be showed on the very bottom of every web-page */
+    static const String getCopyrightInfo();
+
     //=========================================================================
     /** Use for file/dir list sort. Base on create-date */
     const int compareElements (const ValueTree& ft, const ValueTree& st);

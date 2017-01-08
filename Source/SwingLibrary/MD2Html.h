@@ -26,10 +26,7 @@ public:
                                            const String& htmlTitle,
                                            const String& cssPath,
                                            const bool codeHighlight);
-
-    /** showed on right-bottom of every web-page */
-    static const String copyrightInfo;
-
+    
 private:
     // call these methods must be ordered just like below order
 

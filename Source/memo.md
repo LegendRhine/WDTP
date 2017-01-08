@@ -98,6 +98,7 @@
     - tile: 项目名称
     - description: 简述
 	- owner: 项目所有者（作者）
+	- copyright: 显示在网页页底的版权信息
 	- skin: 软件界面配色（暂未使用）
 	- order: 文件树的排序方式。文件名（0）、标题/简介（1）、网页文件名（2）、文件大小（3）、创建时间（4）、修改时间（5）
 	- dirFirst: 目录排在前面（0），还是文档排在前面（1）
@@ -105,7 +106,7 @@
 	- showWhat: TreeView中显示文件名（0）、标题/简介（1），还是网页文件名（2）
 	- tooltip：TreeView中的tooltip显示文件名（包括所有路径，0）、标题/简介（1），还是网页文件名（2）
 	- render: 渲染模板（磁盘Themes下的某个子目录，即已安装的某套模板）
-	- fontName: 文本编辑器所用的字体
+	- fontName: 文本编辑器所用的字体(暂未使用)
 	- fontSize：文本编辑器的字体大小
 	- needCreateHtml: 本站根目录下的index.html是否需要重新生成
 	- identityOfLastSelectedItem: 文件树中最后一次选择的文档的标示，可由TreeView的findItemFromIdentifierString()找到对应的item，

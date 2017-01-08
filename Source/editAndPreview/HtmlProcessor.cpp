@@ -69,7 +69,7 @@ const String HtmlProcessor::getFileList (const ValueTree& dirTree_,
     }
 
     filesLinkStr.removeEmptyStrings (false);
-    return filesLinkStr.joinIntoString (newLine) + Md2Html::copyrightInfo;
+    return filesLinkStr.joinIntoString (newLine) + getCopyrightInfo();
 }
 
 //=================================================================================================
@@ -261,4 +261,16 @@ const int HtmlProcessor::compareElements (const ValueTree& ft, const ValueTree& 
     else  // doc vs doc and dir vs dir..
         return ft.getProperty ("date").toString ().compareIgnoreCase (st.getProperty ("date").toString ());
 }
+
+//=========================================================================
+const String HtmlProcessor::getCopyrightInfo()
+{
+    return "<p><hr>\n"
+        "<table id=\"copyright\"><tr><td id=\"copyright\">" +
+        FileTreeContainer::projectTree.getProperty ("copyright").toString () +
+        "</td><td id=\"copyright\" align=\"right\">Powered by "
+        "<a href=\"http://www.underwaySoft.com/wdtp\""
+        " target=\"_blank\">WDTP</a> </td></tr></table>";
+}
+    
 

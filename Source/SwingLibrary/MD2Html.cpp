@@ -9,6 +9,7 @@
 */
 
 #include "JuceHeader.h"
+#include "../editAndPreview/HtmlProcessor.h"
 #include "MD2Html.h"
 
 //=================================================================================================
@@ -31,7 +32,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     htmlContent = unorderedListParse (htmlContent);
     htmlContent = cleanUp (htmlContent);
     
-    htmlContent += copyrightInfo;
+    htmlContent += HtmlProcessor::getCopyrightInfo();
     //DBG (htmlContent);
 
     return htmlContent;
@@ -487,11 +488,4 @@ const String Md2Html::cleanUp (const String& mdString)
     return resultStr;
 }
 
-//=========================================================================
-const String Md2Html::copyrightInfo ("<p><hr>\n"
-                                     "<div align=\"right\">Powered by "
-                                     "<a href=\"http://www.underwaySoft.com/wdtp\""
-                                     " target=\"_blank\">WDTP</a> " + 
-                                     String (ProjectInfo::versionString) + 
-                                     "</div>");
 

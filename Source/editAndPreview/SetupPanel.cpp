@@ -42,6 +42,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     values[projectTitle]->setValue (pTree.getProperty ("title"));
     values[projectDesc]->setValue (pTree.getProperty ("description"));
     values[owner]->setValue (pTree.getProperty ("owner"));
+    values[copyrightInfo]->setValue (pTree.getProperty ("copyright"));
     //values[projectSkin]->setValue (pTree.getProperty ("skin"));
     values[projectRenderDir]->setValue (pTree.getProperty ("render"));
     values[fontSize]->setValue (pTree.getProperty ("fontSize"));
@@ -51,6 +52,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     projectProperties.add (new TextPropertyComponent (*values[projectTitle], TRANS ("Title: "), 60, false));
     projectProperties.add (new TextPropertyComponent (*values[projectDesc], TRANS ("Description: "), 0, true));
     projectProperties.add (new TextPropertyComponent (*values[owner], TRANS ("Owner: "), 30, false));
+    projectProperties.add (new TextPropertyComponent (*values[copyrightInfo], TRANS ("Copyright: "), 0, true));
 
     // skin
     /*StringArray skinSa;
@@ -86,6 +88,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
 
     for (auto p : projectProperties)  p->setPreferredHeight (28);
     projectProperties[1]->setPreferredHeight (28 * 3);
+    projectProperties[3]->setPreferredHeight (28 * 3);
     
     panel->addSection (TRANS ("Project Setup"), projectProperties);
     valuesAddListener ();
@@ -200,6 +203,8 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("description", values[projectDesc]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[owner]))
         currentTree.setProperty ("owner", values[owner]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[copyrightInfo]))
+        currentTree.setProperty ("copyright", values[copyrightInfo]->getValue (), nullptr);
     /*else if (value.refersToSameSourceAs (*values[projectSkin]))
         currentTree.setProperty ("skin", values[projectSkin]->getValue (), nullptr);*/
     else if (value.refersToSameSourceAs (*values[projectRenderDir]))

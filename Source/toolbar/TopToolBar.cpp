@@ -381,8 +381,7 @@ void TopToolBar::createNewProject ()
     p.setProperty ("dirFirst", 0, nullptr);
     p.setProperty ("showWhat", 0, nullptr);
     p.setProperty ("tooltip", 0, nullptr);
-    p.setProperty ("render", "default", nullptr);
-    p.setProperty ("fontName", SwingUtilities::getFontName (), nullptr);
+    p.setProperty ("render", "blog", nullptr);
     p.setProperty ("fontSize", SwingUtilities::getFontSize (), nullptr);
     p.setProperty ("needCreateHtml", true, nullptr);
 
@@ -392,7 +391,7 @@ void TopToolBar::createNewProject ()
     projectFile.getSiblingFile ("site").getChildFile("add-in").createDirectory();
     projectFile.getSiblingFile ("themes").createDirectory();
 
-    // TODO: create template and css/js files in 'themes/..' and 'site/add-in'
+    // TODO: create template in 'themes/..' and css/js files in 'site/add-in'
 
     // save the project file
     if (SwingUtilities::writeValueTreeToFile (p, projectFile))

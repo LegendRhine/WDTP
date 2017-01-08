@@ -387,11 +387,12 @@ void TopToolBar::createNewProject ()
     p.setProperty ("needCreateHtml", true, nullptr);
 
     // create dirs and default template files
-    projectFile.getSiblingFile ("docs").createDirectory ();
-    projectFile.getSiblingFile ("site").createDirectory ();
-    projectFile.getSiblingFile ("themes").createDirectory ();
+    projectFile.getSiblingFile ("docs").createDirectory();
+    projectFile.getSiblingFile ("site").createDirectory();
+    projectFile.getSiblingFile ("site").getChildFile("add-in").createDirectory();
+    projectFile.getSiblingFile ("themes").createDirectory();
 
-    // TODO: create template files in 'themes/theme-1'..
+    // TODO: create template and css/js files in 'themes/..' and 'site/add-in'
 
     // save the project file
     if (SwingUtilities::writeValueTreeToFile (p, projectFile))
@@ -417,12 +418,12 @@ void TopToolBar::cleanAndGenerateAll ()
                                        TRANS ("Do you really want to cleanup the whole site and\n"
                                               "regenerate all html-files?")))
     {
-        // save the content of style.css
-        const File cssFile (FileTreeContainer::projectFile.getSiblingFile ("site")
-                            .getChildFile("style.css"));
-
-        jassert (cssFile.existsAsFile ());
-        const String cssStr (cssFile.loadFileAsString());
+        // move the add-in dir which inlcude style.css, code-highlight.js
+        // prevent it will be deleted
+        const File addinDir (FileTreeContainer::projectFile.getSiblingFile ("site").getChildFile("add-in"));
+        jassert (addinDir.isDirectory());
+        const File tempDirDorAddin (FileTreeContainer::projectFile.getSiblingFile ("add-in"));
+        addinDir.copyDirectoryTo (tempDirDorAddin);
 
         // cleanup
         if (FileTreeContainer::projectFile.getSiblingFile ("site").deleteRecursively())
@@ -431,12 +432,13 @@ void TopToolBar::cleanAndGenerateAll ()
             generateHtmlFiles (FileTreeContainer::projectTree);
             FileTreeContainer::saveProject ();
 
-            // restore the style.css
-            jassert (! cssFile.existsAsFile ());
-            cssFile.create ();
-            cssFile.appendText (cssStr);
-
+            // restore the add-in dir
+            tempDirDorAddin.moveFileTo (addinDir);
             SHOW_MESSAGE (TRANS ("Clean and regenerate successful!"));
+        }
+        else
+        {
+            tempDirDorAddin.deleteRecursively();
         }
     }
 }

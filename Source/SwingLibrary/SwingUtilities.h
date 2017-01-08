@@ -51,6 +51,15 @@ struct SwingUtilities
         brown colour and bigger size. */
     static void showAbout (const String& shortDescription, const String& copyrightYear);
 
+    /** This method will change the default WebBroswerCompoennt's core on Windows.
+
+        By default, JUCE using IE-7 web-core which cannot load any js script when 
+        using WebBroswerComponent to display a html-page.
+
+        After called, it will change the web-core to IE-11 on Windows (write to user's Windows register).
+        This method should be called when the app is about to start. */
+    static void fixWindowsRegistry();
+
     //=========================================================================
     /** Write an ValueTree to a file. */
     static const bool writeValueTreeToFile (const ValueTree& treeToWrite, 

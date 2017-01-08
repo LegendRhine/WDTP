@@ -117,7 +117,8 @@ const File HtmlProcessor::createArticleHtml (ValueTree& docTree, bool saveProjec
                                                              FileTreeContainer::projectTree.getProperty ("owner").toString (),
                                                              docTree.getProperty ("description").toString (),
                                                              docTree.getProperty ("title").toString (),
-                                                             cssRelativePath));
+                                                             cssRelativePath,
+                                                             htmlStr.contains("<pre><code>")));
 
             // here, we copy this doc's media file to the site's
             const String docMediaDirStr (mdDoc.getSiblingFile ("media").getFullPathName ());

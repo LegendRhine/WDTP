@@ -24,10 +24,14 @@ public:
     const String getApplicationName() override       { return ProjectInfo::projectName; }
     const String getApplicationVersion() override    { return ProjectInfo::versionString; }
     bool moreThanOneInstanceAllowed() override       { return true; }
-    
+      
     //==============================================================================
     void initialise (const String& /*commandLine*/) override
     {
+        // for WebBroswerComponent's web-core on Windows (IE7-IE11)
+        // otherwise, the embedded broswer cannot load any js-script (e.g. code-hightlight..)
+        SwingUtilities::fixWindowsRegistry ();
+
         // initial system properties file
         const File& f (File::getSpecialLocation (File::userDocumentsDirectory).getChildFile ("wdtp.sys"));
         PropertiesFile::Options options;

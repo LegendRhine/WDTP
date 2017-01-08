@@ -24,7 +24,8 @@ public:
                                            const String& htmlAuthor,
                                            const String& htmlDescription,
                                            const String& htmlTitle,
-                                           const String& cssPath);
+                                           const String& cssPath,
+                                           const bool codeHighlight);
 
     /** showed on right-bottom of every web-page */
     static const String copyrightInfo;

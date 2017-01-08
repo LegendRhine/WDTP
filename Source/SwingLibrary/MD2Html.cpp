@@ -44,13 +44,24 @@ const String Md2Html::renderHtmlContent (const String& htmlContentStr,
                                          const String& htmlAuthor,
                                          const String& htmlDescription,
                                          const String& htmlTitle,
-                                         const String& cssPath)
+                                         const String& cssPath,
+                                         const bool codeHighlight)
 {
-    if (htmlContentStr.isEmpty ())
-        return tplFile.loadFileAsString ();
+    String htmlStr (tplFile.loadFileAsString ());
 
-    return tplFile.loadFileAsString ()
-        .replace ("{{keywords}}", htmlKeywords)
+    if (htmlContentStr.isEmpty ())
+        return htmlStr;
+
+    if (codeHighlight)
+    {
+        htmlStr = htmlStr.replace (newLine + "  <title>", 
+                                   "\n  <script src = \""
+                                   + cssPath + "add-in/hl.js\"></script>\n"
+                                   "  <script>hljs.initHighlightingOnLoad(); </script>\n"
+                                   "  <title>");
+    }
+
+    return htmlStr.replace ("{{keywords}}", htmlKeywords)
         .replace ("{{author}}", htmlAuthor)
         .replace ("{{description}}", htmlDescription)
         .replace ("{{title}}", htmlTitle)

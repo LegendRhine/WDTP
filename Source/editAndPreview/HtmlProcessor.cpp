@@ -238,7 +238,7 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
                 indexContent = indexContent.replace (newLine + "  <title>",
                                                      "\n  <script type=\"text/javascript\">\n"
                                                      + dirTree.getProperty ("js").toString ().trim ()
-                                                     + "\n</script>\n  <title>");
+                                                     + "\n  </script>\n  <title>");
             }
 
             indexHtml.create ();

@@ -66,11 +66,12 @@ const String Md2Html::renderHtmlContent (const String& htmlContentStr,
 
     if (jsCode.trim().isNotEmpty())
     {
-        htmlStr = htmlStr.replace (newLine + "  <title>",
+        htmlStr = htmlStr.replace ("\n  <title>",
                                    "\n  <script type=\"text/javascript\">\n"
-                                   + jsCode.trim() + "\n</script>\n"
+                                   + jsCode.trim() + "\n  </script>\n"
                                    "  <title>");
     }
+    DBG (htmlStr);
 
     return htmlStr.replace ("{{keywords}}", htmlKeywords)
         .replace ("{{author}}", htmlAuthor)

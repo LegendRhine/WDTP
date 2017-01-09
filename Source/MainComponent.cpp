@@ -19,11 +19,11 @@ MainContentComponent::MainContentComponent()
     addAndMakeVisible (editAndPreview = new EditAndPreview ());
     addAndMakeVisible (fileTree = new FileTreeContainer (editAndPreview));
     addAndMakeVisible (toolBar = new TopToolBar (fileTree, editAndPreview));
-    addAndMakeVisible (layoutBar = new StretchableLayoutResizerBar (&layoutManager, 1, true));
+    addAndMakeVisible (layoutBar = new StrechableBar (&layoutManager, 1, true));
 
     // stretched layout. arg: index, min-width, max-width，default x%
     layoutManager.setItemLayout (0, 2, -0.3, -0.22);  // fileTree
-    layoutManager.setItemLayout (1, 3, 3, 3);            // layoutBar
+    layoutManager.setItemLayout (1, 2, 2, 2);            // layoutBar
     layoutManager.setItemLayout (2, -0.7, -1.0, -0.78);   // editAndPreview
 
     setSize (1200, 740);    

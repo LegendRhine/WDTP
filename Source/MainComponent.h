@@ -37,7 +37,7 @@ private:
     ScopedPointer<EditAndPreview> editAndPreview;
 
     StretchableLayoutManager layoutManager;
-    ScopedPointer<StretchableLayoutResizerBar> layoutBar;
+    ScopedPointer<StrechableBar> layoutBar;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
 };

@@ -239,6 +239,41 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WebBrowserComp)
 };
 
+//=========================================================================
+/** Change the default backgroud colour of the parent class */
+class StrechableBar : public StretchableLayoutResizerBar
+{
+public:
+    StrechableBar (StretchableLayoutManager *layoutToUse, 
+                   int itemIndexInLayout, 
+                   bool isBarVertical)
+        : StretchableLayoutResizerBar (layoutToUse, itemIndexInLayout, isBarVertical)
+    {
 
+    }
+
+    //=========================================================================
+    void paint (Graphics& g) override
+    {
+        g.setColour (isMouseOver () ? Colours::lightskyblue : Colour (0x00));
+        g.fillAll ();
+    }
+
+    //=========================================================================
+    virtual void mouseEnter(const MouseEvent& ) override
+    {
+        repaint ();
+    }
+
+    virtual void mouseExit(const MouseEvent& ) override
+    {
+        repaint ();
+    }
+
+    //=========================================================================
+private:
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (StrechableBar)
+};
 
 #endif  // SWINGUTILITIES_H_INCLUDED

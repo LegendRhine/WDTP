@@ -405,13 +405,13 @@ void EditorForMd::performPopupMenuAction (int index)
     else if (3 == index) // table (4 x 3)
     {
         content << newLine 
-            << "<table>" << newLine
-            << "  <tr><th> H1 </th><th> H2 </th><th> H3 </th></tr>" << newLine
-            << "  <tr><td> 11 </td><td> 12 </td><td> 13 </td></tr>" << newLine
-            << "  <tr><td> 21 </td><td> 22 </td><td> 23 </td></tr>" << newLine
-            << "  <tr><td> 31 </td><td> 32 </td><td> 33 </td></tr>" << newLine
-            << "  <tr><td> 41 </td><td> 42 </td><td> 43 </td></tr>" << newLine
-            << "</table>" << newLine;
+            << " H1 | H2 | H3 " << newLine
+            << "--------------" << newLine
+            << " 11 | 12 | 13 " << newLine
+            << " 21 | 22 | 23 " << newLine
+            << " 31 | 32 | 33 " << newLine
+            << " 41 | 42 | 43 " << newLine
+            << newLine;
     }
     else if (4 == index) // Quotation
     {
@@ -453,7 +453,7 @@ void EditorForMd::performPopupMenuAction (int index)
     }
     else if (14 == index) // separator
     {
-        content << newLine << "---" << newLine << newLine;
+        content << newLine << "---" << newLine;
     }
     else if (15 == index) // author and date
     {

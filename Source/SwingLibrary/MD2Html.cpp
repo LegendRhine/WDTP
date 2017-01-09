@@ -50,10 +50,11 @@ const String Md2Html::renderHtmlContent (const String& htmlContentStr,
                                          const bool codeHighlight,
                                          const String& jsCode)
 {
-    String htmlStr (tplFile.existsAsFile () ? tplFile.loadFileAsString () : String ());
+    String htmlStr (tplFile.existsAsFile () ? tplFile.loadFileAsString () 
+                    : TRANS ("Please specify a template file. "));
 
     if (htmlContentStr.isEmpty ())
-        return htmlStr;
+        return String();
 
     if (codeHighlight)
     {

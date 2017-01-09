@@ -96,6 +96,7 @@
 
 - wdtpProject总值树的属性（项目属性）：
     - tile: 项目名称
+	- keywords: 关键字
     - description: 简述
 	- owner: 项目所有者（作者）
 	- copyright: 显示在网页页底的版权信息
@@ -117,6 +118,7 @@
 - 值树中各个dir（目录）的属性：
     - name：目录名 (不包含任何上级路径。上级路径可通过其父节点的name获取）
 	- title：标题，即网页上所显示的栏目名称
+	- keywords: 关键字
     - description: 目录简述，用于index的description
 	- date: 创建日期
 	- isMenu：是否为网站菜单

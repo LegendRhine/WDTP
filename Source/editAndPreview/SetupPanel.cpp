@@ -40,6 +40,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     jassert (currentTree.isValid () && currentTree.getType ().toString () == "wdtpProject");
 
     values[projectTitle]->setValue (pTree.getProperty ("title"));
+    values[projectKeywords]->setValue (pTree.getProperty ("keywords"));
     values[projectDesc]->setValue (pTree.getProperty ("description"));
     values[owner]->setValue (pTree.getProperty ("owner"));
     values[copyrightInfo]->setValue (pTree.getProperty ("copyright"));
@@ -50,7 +51,8 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
 
     Array<PropertyComponent*> projectProperties;
 
-    projectProperties.add (new TextPropertyComponent (*values[projectTitle], TRANS ("Title: "), 60, false));
+    projectProperties.add (new TextPropertyComponent (*values[projectTitle], TRANS ("Title: "), 0, false));
+    projectProperties.add (new TextPropertyComponent (*values[projectKeywords], TRANS ("Keywords: "), 0, false));
     projectProperties.add (new TextPropertyComponent (*values[projectDesc], TRANS ("Description: "), 0, true));
     projectProperties.add (new TextPropertyComponent (*values[owner], TRANS ("Owner: "), 30, false));
     projectProperties.add (new TextPropertyComponent (*values[copyrightInfo], TRANS ("Copyright: "), 0, true));
@@ -111,8 +113,8 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     projectProperties.add (new SliderPropertyComponent (*values[fontSize], TRANS ("Editor Font: "), 12.0, 60.0, 0.1));
 
     for (auto p : projectProperties)  p->setPreferredHeight (28);
-    projectProperties[1]->setPreferredHeight (28 * 3);
-    projectProperties[3]->setPreferredHeight (28 * 3);
+    projectProperties[2]->setPreferredHeight (28 * 3);
+    projectProperties[4]->setPreferredHeight (28 * 3);
     
     panel->addSection (TRANS ("Project Setup"), projectProperties);
     valuesAddListener ();
@@ -128,6 +130,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
 
     values[dirName]->setValue (currentTree.getProperty ("name"));
     values[dirTitle]->setValue (currentTree.getProperty ("title"));
+    values[dirKeywords]->setValue (currentTree.getProperty ("keywords"));
     values[dirDesc]->setValue (currentTree.getProperty ("description"));
     values[isMenu]->setValue (currentTree.getProperty ("isMenu"));
     values[dirTpl]->setValue (currentTree.getProperty ("tplFile"));
@@ -136,6 +139,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     Array<PropertyComponent*> dirProperties;
     dirProperties.add (new TextPropertyComponent (*values[dirName], TRANS ("Name: "), 0, false));
     dirProperties.add (new TextPropertyComponent (*values[dirTitle], TRANS ("Title: "), 0, false));
+    dirProperties.add (new TextPropertyComponent (*values[dirKeywords], TRANS ("Keywords: "), 0, false));
     dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Description: "), 0, true));
     dirProperties.add (new BooleanPropertyComponent (*values[isMenu], TRANS ("Web Menu: "), TRANS ("Yes")));
     dirProperties.add (new TextPropertyComponent (*values[dirDate], TRANS ("Date: "), 10, false));
@@ -166,7 +170,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
         p->setPreferredHeight (28);
 
     dirProperties[0]->setEnabled (false);
-    dirProperties[2]->setPreferredHeight (28 * 3);
+    dirProperties[3]->setPreferredHeight (28 * 3);
     
     panel->addSection (TRANS ("Folder Setup"), dirProperties);
     valuesAddListener ();
@@ -182,7 +186,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
 
     values[docName]->setValue (currentTree.getProperty ("name"));
     values[docTitle]->setValue (currentTree.getProperty ("title"));
-    values[keywords]->setValue (currentTree.getProperty ("keywords"));
+    values[docKeywords]->setValue (currentTree.getProperty ("keywords"));
     values[docDesc]->setValue (currentTree.getProperty ("description"));
     values[isPage]->setValue (currentTree.getProperty ("isPage"));
     values[docTpl]->setValue (currentTree.getProperty ("tplFile"));
@@ -191,7 +195,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     Array<PropertyComponent*> docProperties;
     docProperties.add (new TextPropertyComponent (*values[docName], TRANS ("Name: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[docTitle], TRANS ("Title: "), 0, false));
-    docProperties.add (new TextPropertyComponent (*values[keywords], TRANS ("Keywords: "), 0, false));
+    docProperties.add (new TextPropertyComponent (*values[docKeywords], TRANS ("Keywords: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[docDesc], TRANS ("Description: "), 0, true));
     docProperties.add (new BooleanPropertyComponent (*values[isPage], TRANS ("Single Page: "), TRANS ("Yes")));
     docProperties.add (new TextPropertyComponent (*values[docDate], TRANS ("Date: "), 10, false));
@@ -269,6 +273,8 @@ void SetupPanel::valueChanged (Value& value)
     // project properties
     if (value.refersToSameSourceAs (*values[projectTitle]))
         currentTree.setProperty ("title", values[projectTitle]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[projectKeywords]))
+        currentTree.setProperty ("keywords", values[projectKeywords]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[projectDesc]))
         currentTree.setProperty ("description", values[projectDesc]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[owner]))
@@ -294,6 +300,8 @@ void SetupPanel::valueChanged (Value& value)
     // dir properties
     else if (value.refersToSameSourceAs (*values[dirTitle]))
         currentTree.setProperty ("title", values[dirTitle]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[dirKeywords]))
+        currentTree.setProperty ("keywords", values[dirKeywords]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[dirDesc]))
         currentTree.setProperty ("description", values[dirDesc]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[isMenu]))
@@ -304,8 +312,8 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("tplFile", values[dirTpl]->getValue (), nullptr);
 
     // doc properties
-    else if (value.refersToSameSourceAs (*values[keywords]))
-        currentTree.setProperty ("keywords", values[keywords]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[docKeywords]))
+        currentTree.setProperty ("keywords", values[docKeywords]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[docDesc]))
         currentTree.setProperty ("description", values[docDesc]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[isPage]))

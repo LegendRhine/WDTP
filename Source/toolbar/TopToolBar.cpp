@@ -93,7 +93,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                           ImageCache::getFromMemory (BinaryData::view_png,
                                                      BinaryData::view_pngSize),
                           imageTrans, Colour (0x00),
-                          Image::null, 1.000f, Colours::darkcyan,
+                          Image::null, 1.0f, Colour (0x00),
                           Image::null, 1.0f, Colours::darkcyan);
     bts[view]->setToggleState (true, dontSendNotification);
 
@@ -142,7 +142,7 @@ void TopToolBar::enableEditPreviewBt (const bool enableIt,
                                       const bool toggleState)
 {
     bts[view]->setToggleState (toggleState, dontSendNotification);
-    bts[view]->setEnabled (enableIt);
+    bts[view]->setVisible (enableIt);
 }
 
 //=========================================================================

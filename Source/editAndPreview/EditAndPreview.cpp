@@ -111,7 +111,7 @@ void EditAndPreview::editCurrentDoc ()
     editor->setEnabled (true);
     editor->grabKeyboardFocus ();    
 
-    setupPanel->setEnabled (true);
+    //setupPanel->setEnabled (true);
     resized ();
 }
 
@@ -127,7 +127,7 @@ void EditAndPreview::previewCurrentDoc ()
     else
         webView.goToURL (HtmlProcessor::createIndexHtml (docOrDirTree, true).getFullPathName());    
 
-    setupPanel->setEnabled (docOrDirFile.isDirectory());
+    //setupPanel->setEnabled (docOrDirFile.isDirectory());
     resized ();
 }
 

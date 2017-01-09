@@ -105,7 +105,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
         }
     }
 
-    projectProperties.add (new ChoicePropertyComponent (*values[indexTpl], TRANS ("Render to: "),
+    projectProperties.add (new ChoicePropertyComponent (*values[indexTpl], TRANS ("Render TPL: "),
                                                         tplFileSa, tplFileVar));
 
     projectProperties.add (new SliderPropertyComponent (*values[fontSize], TRANS ("Editor Font: "), 12.0, 60.0, 0.1));
@@ -159,7 +159,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
         }
     }
 
-    dirProperties.add (new ChoicePropertyComponent (*values[dirTpl], TRANS ("Render to: "),
+    dirProperties.add (new ChoicePropertyComponent (*values[dirTpl], TRANS ("Render TPL: "),
                                                         tplFileSa, tplFileVar));
 
     for (auto p : dirProperties)
@@ -215,7 +215,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
         }
     }
 
-    docProperties.add (new ChoicePropertyComponent (*values[docTpl], TRANS ("Render to: "),
+    docProperties.add (new ChoicePropertyComponent (*values[docTpl], TRANS ("Render TPL: "),
                                                     tplFileSa, tplFileVar));
 
     for (auto p : docProperties)           

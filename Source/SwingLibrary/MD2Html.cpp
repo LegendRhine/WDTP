@@ -71,7 +71,6 @@ const String Md2Html::renderHtmlContent (const String& htmlContentStr,
                                    + jsCode.trim() + "\n  </script>\n"
                                    "  <title>");
     }
-    DBG (htmlStr);
 
     return htmlStr.replace ("{{keywords}}", htmlKeywords)
         .replace ("{{author}}", htmlAuthor)

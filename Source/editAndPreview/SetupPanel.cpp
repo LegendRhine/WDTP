@@ -17,7 +17,9 @@ SetupPanel::SetupPanel (EditAndPreview* ed) :
     editor (ed)
 {
     jassert (systemFile != nullptr);
-    for (int i = totalValues; --i >= 0; )   values.add (new Value());
+    
+    for (int i = totalValues; --i >= 0; )   
+        values.add (new Value());
      
     addAndMakeVisible (panel = new PropertyPanel());
     panel->getViewport().setScrollBarThickness (10);   
@@ -198,6 +200,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     values[docTpl]->setValue (currentTree.getProperty ("tplFile"));
     values[docJs]->setValue (currentTree.getProperty ("js"));
     values[docDate]->setValue (currentTree.getProperty ("date"));
+    //values[wordCount]->setValue (String());
 
     Array<PropertyComponent*> docProperties;
     docProperties.add (new TextPropertyComponent (*values[docName], TRANS ("Name: "), 0, false));
@@ -229,12 +232,15 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
 
     docProperties.add (new ChoicePropertyComponent (*values[docTpl], TRANS ("Render TPL: "),
                                                     tplFileSa, tplFileVar));
+    docProperties.add (new TextPropertyComponent (*values[wordCount], TRANS ("Word Count: "), 0, false));
 
     for (auto p : docProperties)           
         p->setPreferredHeight (28);
 
     docProperties[0]->setEnabled (false);
     docProperties[1]->setEnabled (false);
+    docProperties[8]->setEnabled (false);
+
     docProperties[3]->setPreferredHeight (28 * 3);
     docProperties[6]->setPreferredHeight (28 * 6);
 

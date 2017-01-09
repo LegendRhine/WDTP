@@ -32,7 +32,8 @@ public:
     void showProjectProperties (ValueTree& projectTree);
     void showDirProperties (ValueTree& dirTree);
     void showDocProperties (ValueTree& docTree);   
-
+    
+    void updateWordCount (const int wordsNum)   { values[wordCount]->setValue (wordsNum); }
     
 private:
     //=========================================================================    
@@ -56,6 +57,7 @@ private:
 
         // doc properties' values
         docName, docTitle, docKeywords, docDesc, isPage, docTpl, docDate, docJs,
+        wordCount,
 
         totalValues
     };

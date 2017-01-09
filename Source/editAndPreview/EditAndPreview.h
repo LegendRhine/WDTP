@@ -56,7 +56,6 @@ private:
     void editCurrentDoc ();
     void previewCurrentDoc ();
     
-
     virtual void textEditorTextChanged (TextEditor&) override;
     virtual void timerCallback() override;
 

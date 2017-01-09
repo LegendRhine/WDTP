@@ -102,6 +102,10 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
                 editor->moveCaretToEnd (false);
         }
     }
+    
+    // word count doesn't include ' ' and newLine. 
+    setupPanel->updateWordCount (currentContent.removeCharacters (" ")
+                                 .removeCharacters (newLine).length ());
 }
 
 //=================================================================================================
@@ -173,16 +177,16 @@ void EditAndPreview::textEditorTextChanged (TextEditor&)
     // somehow, this method always be called when load a doc, so use this ugly judge...
     if (currentContent.compare (editor->getText()) != 0)
     {
+        currentContent = editor->getText ();
         docHasChanged = true;
-        jassert (docOrDirFile.existsAsFile ());
 
-        ValueTree rootTree = docOrDirTree;
-        rootTree.setProperty ("needCreateHtml", true, nullptr);
+        ValueTree allParentTree = docOrDirTree;
+        allParentTree.setProperty ("needCreateHtml", true, nullptr);
 
-        while (rootTree.getParent().isValid ())
+        while (allParentTree.getParent().isValid ())
         {
-            rootTree = rootTree.getParent ();
-            rootTree.setProperty ("needCreateHtml", true, nullptr);
+            allParentTree = allParentTree.getParent ();
+            allParentTree.setProperty ("needCreateHtml", true, nullptr);
         }
 
         startTimer (5000);
@@ -202,10 +206,10 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
     DBGX (++i);*/
 
     stopTimer ();
+    bool returnValue = true;
 
     if (docHasChanged && docOrDirFile != File::nonexistent)
     {
-        currentContent = editor->getText ();
         TemporaryFile tempFile (docOrDirFile);
         tempFile.getFile ().appendText (currentContent);
 
@@ -245,17 +249,21 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
             }
 
             docHasChanged = false;
-            setupPanel->showDocProperties (docOrDirTree);
+            setupPanel->showDocProperties (docOrDirTree);           
 
-            return FileTreeContainer::saveProject();
+            returnValue = FileTreeContainer::saveProject();
         }
         else
         {
-            return false;
+            returnValue = false;
         }
+
+        // word count doesn't include ' ' and newLine. 
+        setupPanel->updateWordCount (currentContent.removeCharacters (" ")
+                                     .removeCharacters (newLine).length());
     }
 
-    return true;
+    return returnValue;
 }
 
 //=================================================================================================

@@ -178,7 +178,9 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
         else // root
             editArea->setProjectProperties (tree);        
 
-        editArea->startWork (tree);
+        // this must after setXxxProperties(), 
+        // because startWork() will update the word count of this doc to setup-panel
+        editArea->startWork (tree); 
         treeContainer->setIdentityOfLastSelectedItem (getItemIdentifierString ());
     }    
 }

@@ -47,7 +47,8 @@ const String Md2Html::renderHtmlContent (const String& htmlContentStr,
                                          const String& htmlDescription,
                                          const String& htmlTitle,
                                          const String& cssPath,
-                                         const bool codeHighlight)
+                                         const bool codeHighlight,
+                                         const String& jsCode)
 {
     String htmlStr (tplFile.existsAsFile () ? tplFile.loadFileAsString () : String ());
 
@@ -60,6 +61,14 @@ const String Md2Html::renderHtmlContent (const String& htmlContentStr,
                                    "\n  <script src = \""
                                    + cssPath + "add-in/hl.js\"></script>\n"
                                    "  <script>hljs.initHighlightingOnLoad(); </script>\n"
+                                   "  <title>");
+    }
+
+    if (jsCode.trim().isNotEmpty())
+    {
+        htmlStr = htmlStr.replace (newLine + "  <title>",
+                                   "\n  <script type=\"text/javascript\">\n"
+                                   + jsCode.trim() + "\n</script>\n"
                                    "  <title>");
     }
 
@@ -259,37 +268,37 @@ const String Md2Html::processByLine (const String& mdString)
         String& currentLine (contentByLine.getReference (i));
 
         // <hr>
-        if (currentLine.substring (0, 3) == "---")
+        if (currentLine.trimStart().substring (0, 3) == "---")
             currentLine = "<hr>";
 
         // <blockquote>
-        else if (currentLine.substring (0, 2) == "> ")
-            currentLine = "<blockquote>" + currentLine.substring (2) + "</blockquote>";
+        else if (currentLine.trimStart ().substring (0, 2) == "> ")
+            currentLine = "<blockquote>" + currentLine.trimStart ().substring (2) + "</blockquote>";
 
         // <h6> ~ <h1>
-        else if (currentLine.substring (0, 7) == "###### ")
-            currentLine = "<h6>" + currentLine.substring (7) + "</h6>";
+        else if (currentLine.trimStart ().substring (0, 7) == "###### ")
+            currentLine = "<h6>" + currentLine.trimStart ().substring (7) + "</h6>";
 
-        else if (currentLine.substring (0, 6) == "##### ")
-            currentLine = "<h5>" + currentLine.substring (6) + "</h5>";
+        else if (currentLine.trimStart ().substring (0, 6) == "##### ")
+            currentLine = "<h5>" + currentLine.trimStart ().substring (6) + "</h5>";
 
-        else if (currentLine.substring (0, 5) == "#### ")
-            currentLine = "<h4>" + currentLine.substring (5) + "</h4>";
+        else if (currentLine.trimStart ().substring (0, 5) == "#### ")
+            currentLine = "<h4>" + currentLine.trimStart ().substring (5) + "</h4>";
 
-        else if (currentLine.substring (0, 4) == "### ")
-            currentLine = "<h3>" + currentLine.substring (4) + "</h3>";
+        else if (currentLine.trimStart ().substring (0, 4) == "### ")
+            currentLine = "<h3>" + currentLine.trimStart ().substring (4) + "</h3>";
 
-        else if (currentLine.substring (0, 3) == "## ")
-            currentLine = "<h2>" + currentLine.substring (3) + "</h2>";
+        else if (currentLine.trimStart ().substring (0, 3) == "## ")
+            currentLine = "<h2>" + currentLine.trimStart ().substring (3) + "</h2>";
 
-        else if (currentLine.substring (0, 2) == "# ")
-            currentLine = "<div align=center><h1>" + currentLine.substring (2) + "</h1></div>";
+        else if (currentLine.trimStart ().substring (0, 2) == "# ")
+            currentLine = "<div align=center><h1>" + currentLine.trimStart ().substring (2) + "</h1></div>";
 
         // align
-        else if (currentLine.substring (0, 4) == ">|< ")
+        else if (currentLine.trimStart ().substring (0, 4) == ">|< ")
             currentLine = "<div align=center>" + currentLine.substring (4) + "</div>";
 
-        else if (currentLine.substring (0, 4) == ">>> ")
+        else if (currentLine.trimStart ().substring (0, 4) == ">>> ")
             currentLine = "<div align=right>" + currentLine.substring (4) + "</div>";
     }
 

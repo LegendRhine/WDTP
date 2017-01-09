@@ -278,9 +278,9 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addItem (23, TRANS ("Pickup Description"), getHighlightedText ().isNotEmpty ());
         menu.addSeparator ();
 
-        menu.addItem (21, TRANS ("Search Selected"), getHighlightedText ().isNotEmpty ());
+        /*menu.addItem (21, TRANS ("Search Selected"), getHighlightedText ().isNotEmpty ());
         menu.addItem (22, TRANS ("Replace Selected"), getHighlightedText ().isNotEmpty ());
-        menu.addSeparator ();
+        menu.addSeparator ();*/
 
         PopupMenu insertMenu;
         insertMenu.addItem (1, TRANS ("Iamge(s)..."));

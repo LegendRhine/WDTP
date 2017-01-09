@@ -110,6 +110,7 @@
 	- tplFile: 渲染网站首页所使用的模板文件，位于render所设置的目录下
 	- fontName: 文本编辑器所用的字体(暂未使用)
 	- fontSize：文本编辑器的字体大小
+	- js: 首页所需的js代码
 	- needCreateHtml: 本站根目录下的index.html是否需要重新生成
 	- identityOfLastSelectedItem: 文件树中最后一次选择的文档的标示，可由TreeView的findItemFromIdentifierString()找到对应的item，
 	  此值用于文件树中移动项目、打开项目时自动选择最后一次点选的item
@@ -123,6 +124,7 @@
 	- date: 创建日期
 	- isMenu：是否为网站菜单
 	- tplFile: 渲染目录index页所使用的模板文件，位于项目属性render所设置的目录下
+	- js: 目录index页所需的js代码
 	- needCreateHtml: 本目录下的index.html是否需要重新生成
 
 - 值树中各个doc（文档）的属性：
@@ -133,6 +135,7 @@
 	- date: 创建日期
 	- isPage: 本文挡是否生成独立页面（不加入列表页，使用page模板。否则使用article模板）
 	- tplFile: 渲染本文档所使用的模板文件，位于项目属性render所设置的目录下
+	- js: 网页所需的js代码
 	- needCreateHtml: 本文档是否需要生成网页
 
 - MD文档生成html时，替换模板html中的“标签项”（格式为：{{xxxx}}），要替换的项目如下：

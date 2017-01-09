@@ -233,6 +233,7 @@ public:
     WebBrowserComp() {}
     ~WebBrowserComp() {}
 
+    /** new dialog window to display the URL */
     virtual void newWindowAttemptingToLoad (const String& newURL) override;
 
 private:

@@ -47,6 +47,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     //values[projectSkin]->setValue (pTree.getProperty ("skin"));
     values[projectRenderDir]->setValue (pTree.getProperty ("render"));
     values[indexTpl]->setValue (pTree.getProperty ("tplFile"));
+    values[projectJs]->setValue (pTree.getProperty ("js"));
     values[fontSize]->setValue (pTree.getProperty ("fontSize"));
 
     Array<PropertyComponent*> projectProperties;
@@ -54,7 +55,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     projectProperties.add (new TextPropertyComponent (*values[projectTitle], TRANS ("Title: "), 0, false));
     projectProperties.add (new TextPropertyComponent (*values[projectKeywords], TRANS ("Keywords: "), 0, false));
     projectProperties.add (new TextPropertyComponent (*values[projectDesc], TRANS ("Description: "), 0, true));
-    projectProperties.add (new TextPropertyComponent (*values[owner], TRANS ("Owner: "), 30, false));
+    projectProperties.add (new TextPropertyComponent (*values[owner], TRANS ("Owner: "), 0, false));
     projectProperties.add (new TextPropertyComponent (*values[copyrightInfo], TRANS ("Copyright: "), 0, true));
 
     // skin
@@ -110,11 +111,13 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     projectProperties.add (new ChoicePropertyComponent (*values[indexTpl], TRANS ("Render TPL: "),
                                                         tplFileSa, tplFileVar));
 
+    projectProperties.add (new TextPropertyComponent (*values[projectJs], TRANS ("Java Script: "), 0, true));
     projectProperties.add (new SliderPropertyComponent (*values[fontSize], TRANS ("Editor Font: "), 12.0, 60.0, 0.1));
 
     for (auto p : projectProperties)  p->setPreferredHeight (28);
     projectProperties[2]->setPreferredHeight (28 * 3);
     projectProperties[4]->setPreferredHeight (28 * 3);
+    projectProperties[7]->setPreferredHeight (28 * 6);
     
     panel->addSection (TRANS ("Project Setup"), projectProperties);
     valuesAddListener ();
@@ -134,6 +137,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     values[dirDesc]->setValue (currentTree.getProperty ("description"));
     values[isMenu]->setValue (currentTree.getProperty ("isMenu"));
     values[dirTpl]->setValue (currentTree.getProperty ("tplFile"));
+    values[dirJs]->setValue (currentTree.getProperty ("js"));
     values[dirDate]->setValue (currentTree.getProperty ("date"));
 
     Array<PropertyComponent*> dirProperties;
@@ -143,6 +147,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Description: "), 0, true));
     dirProperties.add (new BooleanPropertyComponent (*values[isMenu], TRANS ("Web Menu: "), TRANS ("Yes")));
     dirProperties.add (new TextPropertyComponent (*values[dirDate], TRANS ("Date: "), 10, false));
+    dirProperties.add (new TextPropertyComponent (*values[dirJs], TRANS ("Java Script: "), 0, true));
 
     // render tpl-file
     StringArray tplFileSa;
@@ -171,6 +176,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
 
     dirProperties[0]->setEnabled (false);
     dirProperties[3]->setPreferredHeight (28 * 3);
+    dirProperties[6]->setPreferredHeight (28 * 6);
     
     panel->addSection (TRANS ("Folder Setup"), dirProperties);
     valuesAddListener ();
@@ -190,6 +196,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     values[docDesc]->setValue (currentTree.getProperty ("description"));
     values[isPage]->setValue (currentTree.getProperty ("isPage"));
     values[docTpl]->setValue (currentTree.getProperty ("tplFile"));
+    values[docJs]->setValue (currentTree.getProperty ("js"));
     values[docDate]->setValue (currentTree.getProperty ("date"));
 
     Array<PropertyComponent*> docProperties;
@@ -199,6 +206,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docProperties.add (new TextPropertyComponent (*values[docDesc], TRANS ("Description: "), 0, true));
     docProperties.add (new BooleanPropertyComponent (*values[isPage], TRANS ("Single Page: "), TRANS ("Yes")));
     docProperties.add (new TextPropertyComponent (*values[docDate], TRANS ("Date: "), 10, false));
+    docProperties.add (new TextPropertyComponent (*values[docJs], TRANS ("Java Script: "), 0, true));
 
     // render tpl-file
     StringArray tplFileSa;
@@ -228,6 +236,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docProperties[0]->setEnabled (false);
     docProperties[1]->setEnabled (false);
     docProperties[3]->setPreferredHeight (28 * 3);
+    docProperties[6]->setPreferredHeight (28 * 6);
 
     panel->addSection (TRANS ("Document Setup"), docProperties);
     valuesAddListener ();
@@ -287,6 +296,8 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("render", values[projectRenderDir]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[indexTpl]))
         currentTree.setProperty ("tplFile", values[indexTpl]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[projectJs]))
+        currentTree.setProperty ("js", values[projectJs]->getValue (), nullptr);
 
     else if (value.refersToSameSourceAs (*values[fontSize]))
     {
@@ -310,6 +321,8 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("date", values[dirDate]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[dirTpl]))
         currentTree.setProperty ("tplFile", values[dirTpl]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[dirJs]))
+        currentTree.setProperty ("js", values[dirJs]->getValue (), nullptr);
 
     // doc properties
     else if (value.refersToSameSourceAs (*values[docKeywords]))
@@ -322,6 +335,8 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("date", values[docDate]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[docTpl]))
         currentTree.setProperty ("tplFile", values[docTpl]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[docJs]))
+        currentTree.setProperty ("js", values[docJs]->getValue (), nullptr);
 
     DocTreeViewItem::needCreateHtml (currentTree);
     projectHasChanged = true;

@@ -25,7 +25,8 @@ public:
                                            const String& htmlDescription,
                                            const String& htmlTitle,
                                            const String& cssPath,
-                                           const bool codeHighlight);
+                                           const bool codeHighlight,
+                                           const String& jsCode);
     
 private:
     // call these methods must according to the below order

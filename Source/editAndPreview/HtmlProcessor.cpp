@@ -117,7 +117,8 @@ const File HtmlProcessor::createArticleHtml (ValueTree& docTree, bool saveProjec
                                                              docTree.getProperty ("description").toString (),
                                                              docTree.getProperty ("title").toString (),
                                                              cssRelativePath,
-                                                             htmlStr.contains("<pre><code>")));
+                                                             htmlStr.contains ("<pre><code>"),
+                                                             docTree.getProperty ("js").toString ()));
 
             // here, we copy this doc's media file to the site's
             const String docMediaDirStr (mdDoc.getSiblingFile ("media").getFullPathName ());
@@ -229,6 +230,15 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
                 indexContent = indexContent.replace ("{{fileAndDirList_N_Y_N_0}}", "<div>"
                                                      + getFileList (dirTree, false, true, false)
                                                      + "</div>");
+            }
+
+            // java script
+            if (dirTree.getProperty("js").toString().trim().isNotEmpty())
+            {
+                indexContent = indexContent.replace (newLine + "  <title>",
+                                                     "\n  <script type=\"text/javascript\">\n"
+                                                     + dirTree.getProperty ("js").toString ().trim ()
+                                                     + "\n</script>\n  <title>");
             }
 
             indexHtml.create ();

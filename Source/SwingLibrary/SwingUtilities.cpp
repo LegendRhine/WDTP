@@ -47,7 +47,7 @@ void SwingUtilities::showAbout (const String& shortDescription, const String& co
                           TRANS ("Author: ") + "SwingCoder" + newLine + 
                           "underwaySoft@126.com" + newLine +
                           "QQ: 843775" + newLine + newLine +
-                          "(C) " + copyrightYear + " UnderwaySoft. " + 
+                          String (CharPointer_UTF8 ("\xc2\xa9")) + copyrightYear + " UnderwaySoft. " +
                           TRANS ("All Right Reserved.") + newLine);
 
     Component* linkButton = new HyperlinkButton ("UnderwaySoft", URL ("http://underwaySoft.com"));

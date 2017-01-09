@@ -1,14 +1,23 @@
 /* Default style of WDTP */
 
+html {
+  background-color: #cdcdcd;	
+}
 body, p {
-  max-width: 730px;
+  max-width: 710px;
   margin: 0 auto;
   background-color: #dedede;	
   text-indent: 2em;
-  line-height: 1.6;
+  line-height: 1.8;
+}
+body {
+  border-style: solid;
+  border-width: 1px;
+  border-color: #bcbcbc;
+  padding: 0 45px 0px 45px;
 }
 p {
-  margin: 12px 0;
+  margin: 10px 0;
 }
 h2, h3, h4, h5, h6 {
   text-indent: 24pt;

@@ -20,6 +20,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
 
     // parse markdown
     String htmlContent (mdString);
+    htmlContent = tableParse (htmlContent);
     htmlContent = codeBlockParse (htmlContent);
     htmlContent = inlineCodeParse (htmlContent);
     htmlContent = boldParse (htmlContent);
@@ -68,6 +69,59 @@ const String Md2Html::renderHtmlContent (const String& htmlContentStr,
         .replace ("{{title}}", htmlTitle)
         .replace ("{{siteRelativeRootPath}}", cssPath)
         .replace ("{{content}}", htmlContentStr);
+}
+
+//=================================================================================================
+const String Md2Html::tableParse (const String& mdString)
+{
+    if (mdString.isEmpty ())
+        return mdString;
+
+    StringArray contentByLine;
+    contentByLine.addLines (mdString);
+
+    contentByLine.insert (0, "%%__table@MDtag@Parse__%%");
+    contentByLine.add ("%%__table@MDtag@Parse__%%");
+
+    for (int i = 1; i < contentByLine.size () - 1; ++i)
+    {
+        String& prevLine = contentByLine.getReference (i - 1);
+        String& currentLine (contentByLine.getReference (i));
+        String& nextLine = contentByLine.getReference (i + 1);
+        
+        if (currentLine.substring (0, 6) == "------"
+            && prevLine.contains (" | ")
+            && nextLine.contains (" | "))
+        {
+            currentLine = prevLine;
+            prevLine = "<table>";
+
+            currentLine = "<tr><th>" + currentLine.replace (" | ", "</th><th>") + "</th></tr>";
+            nextLine = "<tr><td>" + nextLine.replace (" | ", "</td><td>") + "</td></tr>";
+
+            int rowNums = i + 1;
+
+            while (++rowNums < contentByLine.size())
+            {
+                String& thisLine = contentByLine.getReference (rowNums);
+
+                if (thisLine.contains (" | "))
+                {
+                    thisLine = "<tr><td>" + thisLine.replace (" | ", "</td><td>") + "</td></tr>";
+                }
+                else
+                {
+                    contentByLine.insert (rowNums, "</table>");
+                    break;
+                }
+            }             
+
+            i = rowNums;
+        }
+    }
+
+    contentByLine.removeString ("%%__table@MDtag@Parse__%%");
+    return contentByLine.joinIntoString (newLine);
 }
 
 //=================================================================================================

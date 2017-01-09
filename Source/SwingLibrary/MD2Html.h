@@ -28,8 +28,23 @@ public:
                                            const bool codeHighlight);
     
 private:
-    // call these methods must be ordered just like below order
+    // call these methods must according to the below order
 
+    /** process table. doesn't support align MD-tag. 
+        It must at least 2 rows and 2 columns. 
+        
+        Markdown form:    
+                                     
+    headOne | headTwo | headThree    -> at least one ' | ', how many ' | ' then the columns + 1
+    ------------------------------   -> begin with and at least 6 '-' in the second line
+    row-1-1 | row-1-2 |  row-1-3     -> divide cells by ' | '. if '|'s more than the head line's, the extra will be cut off
+    row-2-1 |         |  row-2-3     -> empty between two ' | ' means empty cell
+    row-3-1                          -> means this row only has one content-cell which at the very left cell
+                                     -> end up with an empty line
+    */
+    static const String tableParse (const String& mdString);
+
+    /** ``` [code] ```: <pre><code>...</pre></code> */
     static const String codeBlockParse (const String& mdString);
 
     /** If one "`" in a single line (paragaph), then "`" needn't to escape :) */

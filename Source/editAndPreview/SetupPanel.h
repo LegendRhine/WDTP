@@ -49,13 +49,13 @@ private:
     { 
         // project properties' values
         projectTitle = 0, projectDesc, owner, /*projectSkin,*/ 
-        copyrightInfo, projectRenderDir, fontSize, 
+        copyrightInfo, projectRenderDir, indexTpl, fontSize, 
 
         // dir properties' values
-        dirName, dirTitle, dirDesc, isMenu, dirDate, 
+        dirName, dirTitle, dirDesc, isMenu, dirTpl, dirDate, 
 
         // doc properties' values
-        docName, docTitle, keywords, docDesc, isPage, docDate, 
+        docName, docTitle, keywords, docDesc, isPage, docTpl, docDate, 
 
         totalValues
     };

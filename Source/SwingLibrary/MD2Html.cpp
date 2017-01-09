@@ -49,7 +49,7 @@ const String Md2Html::renderHtmlContent (const String& htmlContentStr,
                                          const String& cssPath,
                                          const bool codeHighlight)
 {
-    String htmlStr (tplFile.loadFileAsString ());
+    String htmlStr (tplFile.existsAsFile () ? tplFile.loadFileAsString () : String ());
 
     if (htmlContentStr.isEmpty ())
         return htmlStr;

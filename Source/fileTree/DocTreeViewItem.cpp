@@ -468,6 +468,7 @@ void DocTreeViewItem::createNewDocument ()
         docTree.setProperty ("title", String(), nullptr);
         docTree.setProperty ("keywords", String(), nullptr);
         docTree.setProperty ("isPage", false, nullptr);
+        docTree.setProperty ("tplFile", "article.html", nullptr);
         docTree.setProperty ("date", 
                              SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), false), 
                              nullptr);
@@ -518,6 +519,7 @@ void DocTreeViewItem::createNewFolder ()
         dirTree.setProperty ("name", thisDir.getFileNameWithoutExtension(), nullptr);
         dirTree.setProperty ("title", thisDir.getFileNameWithoutExtension (), nullptr);
         dirTree.setProperty ("isMenu", true, nullptr);
+        dirTree.setProperty ("tplFile", "category.html", nullptr);
         dirTree.setProperty ("date", 
                              SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), false), 
                              nullptr);

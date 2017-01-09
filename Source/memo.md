@@ -105,7 +105,8 @@
 	- ascending: 升序(0)还是降序(1)
 	- showWhat: TreeView中显示文件名（0）、标题/简介（1），还是网页文件名（2）
 	- tooltip：TreeView中的tooltip显示文件名（包括所有路径，0）、标题/简介（1），还是网页文件名（2）
-	- render: 渲染模板（磁盘Themes下的某个子目录，即已安装的某套模板）
+	- render: 模板目录（磁盘Themes下的某个子目录，即已安装的某套模板）
+	- tplFile: 渲染网站首页所使用的模板文件，位于render所设置的目录下
 	- fontName: 文本编辑器所用的字体(暂未使用)
 	- fontSize：文本编辑器的字体大小
 	- needCreateHtml: 本站根目录下的index.html是否需要重新生成
@@ -119,6 +120,7 @@
     - description: 目录简述，用于index的description
 	- date: 创建日期
 	- isMenu：是否为网站菜单
+	- tplFile: 渲染目录index页所使用的模板文件，位于项目属性render所设置的目录下
 	- needCreateHtml: 本目录下的index.html是否需要重新生成
 
 - 值树中各个doc（文档）的属性：
@@ -128,6 +130,7 @@
     - description: 简述，用于index的description
 	- date: 创建日期
 	- isPage: 本文挡是否生成独立页面（不加入列表页，使用page模板。否则使用article模板）
+	- tplFile: 渲染本文档所使用的模板文件，位于项目属性render所设置的目录下
 	- needCreateHtml: 本文档是否需要生成网页
 
 - MD文档生成html时，替换模板html中的“标签项”（格式为：{{xxxx}}），要替换的项目如下：

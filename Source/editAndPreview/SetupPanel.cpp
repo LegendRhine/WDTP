@@ -45,6 +45,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     values[copyrightInfo]->setValue (pTree.getProperty ("copyright"));
     //values[projectSkin]->setValue (pTree.getProperty ("skin"));
     values[projectRenderDir]->setValue (pTree.getProperty ("render"));
+    values[indexTpl]->setValue (pTree.getProperty ("tplFile"));
     values[fontSize]->setValue (pTree.getProperty ("fontSize"));
 
     Array<PropertyComponent*> projectProperties;
@@ -84,6 +85,29 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
 
     projectProperties.add (new ChoicePropertyComponent (*values[projectRenderDir], TRANS ("Template: "),
                                                         themeDirsSa, themeDirsVar));
+
+    // render tpl-file
+    StringArray tplFileSa;
+    Array<var> tplFileVar;
+
+    if (FileTreeContainer::projectFile.existsAsFile ())
+    {
+        const File renderDir (FileTreeContainer::projectFile
+                              .getSiblingFile ("themes")
+                              .getChildFile(pTree.getProperty("render").toString()));
+        Array<File> tplFiles;
+        renderDir.findChildFiles (tplFiles, File::findFiles, false, "*.html");
+
+        for (int i = 0; i < tplFiles.size (); ++i)
+        {
+            tplFileSa.add (tplFiles.getUnchecked (i).getFileName ());
+            tplFileVar.add (tplFiles.getUnchecked (i).getFileName ());
+        }
+    }
+
+    projectProperties.add (new ChoicePropertyComponent (*values[indexTpl], TRANS ("Render to: "),
+                                                        tplFileSa, tplFileVar));
+
     projectProperties.add (new SliderPropertyComponent (*values[fontSize], TRANS ("Editor Font: "), 12.0, 60.0, 0.1));
 
     for (auto p : projectProperties)  p->setPreferredHeight (28);
@@ -106,6 +130,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     values[dirTitle]->setValue (currentTree.getProperty ("title"));
     values[dirDesc]->setValue (currentTree.getProperty ("description"));
     values[isMenu]->setValue (currentTree.getProperty ("isMenu"));
+    values[dirTpl]->setValue (currentTree.getProperty ("tplFile"));
     values[dirDate]->setValue (currentTree.getProperty ("date"));
 
     Array<PropertyComponent*> dirProperties;
@@ -114,6 +139,28 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Description: "), 0, true));
     dirProperties.add (new BooleanPropertyComponent (*values[isMenu], TRANS ("Web Menu: "), TRANS ("Yes")));
     dirProperties.add (new TextPropertyComponent (*values[dirDate], TRANS ("Date: "), 10, false));
+
+    // render tpl-file
+    StringArray tplFileSa;
+    Array<var> tplFileVar;
+
+    if (FileTreeContainer::projectFile.existsAsFile ())
+    {
+        const File renderDir (FileTreeContainer::projectFile
+                              .getSiblingFile ("themes")
+                              .getChildFile (FileTreeContainer::projectTree.getProperty ("render").toString ()));
+        Array<File> tplFiles;
+        renderDir.findChildFiles (tplFiles, File::findFiles, false, "*.html");
+
+        for (int i = 0; i < tplFiles.size (); ++i)
+        {
+            tplFileSa.add (tplFiles.getUnchecked (i).getFileName ());
+            tplFileVar.add (tplFiles.getUnchecked (i).getFileName ());
+        }
+    }
+
+    dirProperties.add (new ChoicePropertyComponent (*values[dirTpl], TRANS ("Render to: "),
+                                                        tplFileSa, tplFileVar));
 
     for (auto p : dirProperties)
         p->setPreferredHeight (28);
@@ -138,6 +185,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     values[keywords]->setValue (currentTree.getProperty ("keywords"));
     values[docDesc]->setValue (currentTree.getProperty ("description"));
     values[isPage]->setValue (currentTree.getProperty ("isPage"));
+    values[docTpl]->setValue (currentTree.getProperty ("tplFile"));
     values[docDate]->setValue (currentTree.getProperty ("date"));
 
     Array<PropertyComponent*> docProperties;
@@ -147,6 +195,28 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docProperties.add (new TextPropertyComponent (*values[docDesc], TRANS ("Description: "), 0, true));
     docProperties.add (new BooleanPropertyComponent (*values[isPage], TRANS ("Single Page: "), TRANS ("Yes")));
     docProperties.add (new TextPropertyComponent (*values[docDate], TRANS ("Date: "), 10, false));
+
+    // render tpl-file
+    StringArray tplFileSa;
+    Array<var> tplFileVar;
+
+    if (FileTreeContainer::projectFile.existsAsFile ())
+    {
+        const File renderDir (FileTreeContainer::projectFile
+                              .getSiblingFile ("themes")
+                              .getChildFile (FileTreeContainer::projectTree.getProperty ("render").toString ()));
+        Array<File> tplFiles;
+        renderDir.findChildFiles (tplFiles, File::findFiles, false, "*.html");
+
+        for (int i = 0; i < tplFiles.size (); ++i)
+        {
+            tplFileSa.add (tplFiles.getUnchecked (i).getFileName ());
+            tplFileVar.add (tplFiles.getUnchecked (i).getFileName ());
+        }
+    }
+
+    docProperties.add (new ChoicePropertyComponent (*values[docTpl], TRANS ("Render to: "),
+                                                    tplFileSa, tplFileVar));
 
     for (auto p : docProperties)           
         p->setPreferredHeight (28);
@@ -209,6 +279,8 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("skin", values[projectSkin]->getValue (), nullptr);*/
     else if (value.refersToSameSourceAs (*values[projectRenderDir]))
         currentTree.setProperty ("render", values[projectRenderDir]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[indexTpl]))
+        currentTree.setProperty ("tplFile", values[indexTpl]->getValue (), nullptr);
 
     else if (value.refersToSameSourceAs (*values[fontSize]))
     {
@@ -228,6 +300,8 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("isMenu", values[isMenu]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[dirDate]))
         currentTree.setProperty ("date", values[dirDate]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[dirTpl]))
+        currentTree.setProperty ("tplFile", values[dirTpl]->getValue (), nullptr);
 
     // doc properties
     else if (value.refersToSameSourceAs (*values[keywords]))
@@ -238,6 +312,8 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("isPage", values[isPage]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[docDate]))
         currentTree.setProperty ("date", values[docDate]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[docTpl]))
+        currentTree.setProperty ("tplFile", values[docTpl]->getValue (), nullptr);
 
     DocTreeViewItem::needCreateHtml (currentTree);
     projectHasChanged = true;

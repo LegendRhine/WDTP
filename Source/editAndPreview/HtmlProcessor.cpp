@@ -92,8 +92,7 @@ const File HtmlProcessor::createArticleHtml (ValueTree& docTree, bool saveProjec
                                   + FileTreeContainer::projectTree.getProperty ("render").toString ()
                                   + File::separator);
 
-            const File tplFile = tplPath + ((bool (docTree.getProperty ("isPage")))
-                                            ? "page.html" : "article.html");
+            const File tplFile (tplPath + docTree.getProperty("tplFile").toString());
 
             // get the path which relative the site root-dir, for css path            
             const String htmlFilePath (htmlFile.getFullPathName ());
@@ -188,13 +187,11 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
     {
         if (indexHtml.deleteFile ())
         {
-            const bool isWebIndex = (siteDir.getFileName () == "site");
-
             const File tplFile (FileTreeContainer::projectFile.getSiblingFile ("themes")
                                 .getFullPathName () + File::separator
                                 + FileTreeContainer::projectTree.getProperty ("render").toString ()
                                 + File::separator
-                                + (isWebIndex ? "index.html" : "category.html"));
+                                + dirTree.getProperty("tplFile").toString());
 
             // get the path which relative the site root-dir, for css path            
             const String htmlFilePath (indexHtml.getFullPathName ());
@@ -209,7 +206,7 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
                     cssRelativePath << String ("../");
             }
 
-            const String tplStr (tplFile.loadFileAsString ());
+            const String tplStr (tplFile.existsAsFile() ? tplFile.loadFileAsString () : String());
             const String indexTileStr (dirTree.getProperty ("title").toString ());
             const String indexAuthorStr (FileTreeContainer::projectTree.getProperty ("owner").toString ());
             const String indexKeywordsStr (FileTreeContainer::projectTree.getProperty ("title").toString () 

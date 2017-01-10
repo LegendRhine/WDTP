@@ -90,6 +90,7 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
     }
     else  // doc
     {
+        // prevent auto-enter preview mode when created a new document
         const bool justCreatedThisDoc (Time::getCurrentTime() - docOrDirFile.getCreationTime() < RelativeTime (2.0));
 
         if (toolBar->getStateOfViewButton() && !justCreatedThisDoc)
@@ -562,7 +563,7 @@ void EditorForMd::performPopupMenuAction (int index)
     else if (43 == index)
     {
         if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),
-                                      TRANS ("Are you sure you want reset the editor's font size,\n"
+                                      TRANS ("Are you sure you want to reset the font size,\n"
                                              "text color and background to the default?")))
         {
 

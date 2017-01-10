@@ -17,7 +17,8 @@ class FileTreeContainer;
 /** */
 class TopToolBar    : public Component,
     private TextEditor::Listener,
-    private Button::Listener
+    private Button::Listener,
+    public ChangeListener
 {
 public:
     TopToolBar (FileTreeContainer* container, EditAndPreview* editAndPreview);
@@ -28,6 +29,8 @@ public:
 
     const bool getStateOfViewButton() const              { return bts[view]->getToggleState(); }
     void enableEditPreviewBt (const bool enableIt, const bool toggleState);
+
+    virtual void changeListenerCallback(ChangeBroadcaster* source) override;
 
 private:
     //==========================================================================
@@ -72,6 +75,10 @@ private:
     };
 
     //=========================================================================
+    void setUiBackground();
+    void setUiTextColour();
+    void resetUiColour();
+
     OwnedArray<MyImageButton> bts;
     ScopedPointer<TextEditor> searchInProject;
     ScopedPointer<TextEditor> searchInDoc;
@@ -79,8 +86,10 @@ private:
     FileTreeContainer* fileTreeContainer;
     EditAndPreview* editAndPreview;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TopToolBar)
+    ScopedPointer<ColourSelectorWithPreset> fontColourSelector;
+    ScopedPointer<ColourSelectorWithPreset> bgColourSelector;
 
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TopToolBar)        
 };
 
 

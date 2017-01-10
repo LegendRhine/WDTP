@@ -42,8 +42,7 @@ MainContentComponent::~MainContentComponent()
 //=========================================================================
 void MainContentComponent::paint (Graphics& g)
 {
-    g.fillAll (Colour(0xffdcdbdb));
-    //g.fillAll (Colours::darkgrey);
+    g.fillAll (Colour::fromString(systemFile->getValue("uiBackground")));
 }
 
 //=========================================================================

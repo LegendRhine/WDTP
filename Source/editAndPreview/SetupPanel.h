@@ -50,7 +50,7 @@ private:
     { 
         // project properties' values
         projectTitle = 0, projectKeywords, projectDesc, owner, /*projectSkin,*/ 
-        copyrightInfo, projectRenderDir, indexTpl, projectJs, fontSize, 
+        copyrightInfo, projectRenderDir, indexTpl, projectJs,  
 
         // dir properties' values
         dirName, dirTitle, dirKeywords, dirDesc, isMenu, dirTpl, dirJs, dirDate, 

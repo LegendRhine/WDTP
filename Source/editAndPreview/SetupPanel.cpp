@@ -50,7 +50,6 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     values[projectRenderDir]->setValue (pTree.getProperty ("render"));
     values[indexTpl]->setValue (pTree.getProperty ("tplFile"));
     values[projectJs]->setValue (pTree.getProperty ("js"));
-    values[fontSize]->setValue (pTree.getProperty ("fontSize"));
 
     Array<PropertyComponent*> projectProperties;
 
@@ -114,7 +113,6 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
                                                         tplFileSa, tplFileVar));
 
     projectProperties.add (new TextPropertyComponent (*values[projectJs], TRANS ("JavaScript: "), 0, true));
-    projectProperties.add (new SliderPropertyComponent (*values[fontSize], TRANS ("Editor Font: "), 12.0, 60.0, 0.1));
 
     for (auto p : projectProperties)  p->setPreferredHeight (28);
     projectProperties[2]->setPreferredHeight (28 * 3);
@@ -304,16 +302,7 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("tplFile", values[indexTpl]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[projectJs]))
         currentTree.setProperty ("js", values[projectJs]->getValue (), nullptr);
-
-    else if (value.refersToSameSourceAs (*values[fontSize]))
-    {
-        const float fs = values[fontSize]->getValue ();
-
-        editor->getEditor ()->applyFontToAllText (fs);
-        FileTreeContainer::fontSize = fs;
-        currentTree.setProperty ("fontSize", fs, nullptr);
-    }
-
+    
     // dir properties
     else if (value.refersToSameSourceAs (*values[dirTitle]))
         currentTree.setProperty ("title", values[dirTitle]->getValue (), nullptr);

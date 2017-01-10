@@ -84,7 +84,6 @@ public:
     static bool saveProject ();
     static File projectFile;
     static ValueTree projectTree;
-    static float fontSize;
 
 private:
     //=========================================================================

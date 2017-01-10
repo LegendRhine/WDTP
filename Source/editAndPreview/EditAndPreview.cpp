@@ -36,7 +36,7 @@ EditAndPreview::EditAndPreview ()
     editor->setIndents (10, 10);
     editor->setFont (SwingUtilities::getFontSize());
     editor->setEnabled (false);
-    editor->setBorder (BorderSize<int>(1, 1, 1, 1));
+    editor->setBorder (BorderSize<int> (1, 1, 1, 1));
 }
 
 //=========================================================================
@@ -59,6 +59,7 @@ void EditAndPreview::resized()
 //=================================================================================================
 void EditAndPreview::startWork (ValueTree& newDocTree)
 {
+    jassert (newDocTree.isValid ());
     saveCurrentDocIfChanged ();
 
     if (newDocTree != docOrDirTree || docOrDirFile != DocTreeViewItem::getMdFileOrDir (newDocTree))
@@ -69,7 +70,7 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
 
         if (docOrDirFile.existsAsFile ())
         {
-            editor->applyFontToAllText (FileTreeContainer::fontSize);
+            editor->setFont ((float) FileTreeContainer::projectTree.getProperty ("fontSize"));
             editor->setText (docOrDirFile.loadFileAsString (), false);
             currentContent = editor->getText ();
             editor->addListener (this);
@@ -267,12 +268,22 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
 }
 
 //=================================================================================================
+EditorForMd::EditorForMd (EditAndPreview* parent_) 
+    : parent (parent_),
+    fontSizeSlider (Slider::LinearHorizontal, Slider::TextBoxBelow)
+{
+    fontSizeSlider.setRange (12.0, 60.0, 0.1);
+    fontSizeSlider.setDoubleClickReturnValue (true, 20.0);
+    fontSizeSlider.setSize (300, 60);
+    fontSizeSlider.addListener (this);
+}
+
+//=================================================================================================
 void EditorForMd::paint (Graphics& g)
 {
     TextEditor::paint (g);
     g.setColour (Colours::grey);
     g.drawVerticalLine (getWidth() - 1, 0, getBottom () - 0.f);
-
 }
 
 //=================================================================================================
@@ -324,6 +335,11 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSeparator ();
 
         TextEditor::addPopupMenuItems (menu, e);
+        menu.addSeparator ();
+
+        PopupMenu editorSetup;
+        editorSetup.addItem (40, TRANS ("Font Size..."));
+        menu.addSubMenu (TRANS ("Editor Setup"), editorSetup);
     }
 }
 
@@ -493,6 +509,16 @@ void EditorForMd::performPopupMenuAction (int index)
     {
         content << "`" << getHighlightedText() << "`";
     }
+    else if (40 == index)  // font size
+    {
+        fontSizeSlider.setValue ((double) FileTreeContainer::projectTree.getProperty ("fontSize"), 
+                                 dontSendNotification);
+        CallOutBox callOut (fontSizeSlider, getLocalBounds (), this);
+        callOut.runModalLoop ();
+
+        FileTreeContainer::projectTree.setProperty ("fontSize", fontSizeSlider.getValue (), nullptr);
+        FileTreeContainer::saveProject ();
+    }
     else
     {
         TextEditor::performPopupMenuAction (index);
@@ -527,4 +553,14 @@ bool EditorForMd::keyPressed (const KeyPress& key)
     }
 
     return TextEditor::keyPressed (key);
+}
+
+//=================================================================================================
+void EditorForMd::sliderValueChanged (Slider* slider)
+{
+    if (slider == &fontSizeSlider)
+    {
+        parent->getEditor ()->setFont ((float) slider->getValue ());
+        parent->getEditor ()->applyFontToAllText ((float) slider->getValue ());
+    }
 }

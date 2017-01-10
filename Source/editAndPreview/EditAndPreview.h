@@ -76,10 +76,11 @@ private:
 };
 
 //=========================================================================
-class EditorForMd : public TextEditor
+class EditorForMd : public TextEditor,
+    public Slider::Listener
 {
 public:
-    EditorForMd (EditAndPreview* parent_) : parent (parent_) { }
+    EditorForMd (EditAndPreview* parent_);
     ~EditorForMd () { }
     void paint (Graphics& g) override;
 
@@ -88,9 +89,11 @@ public:
 
     /** for solve the TAB key (somehow it can't input spaces, instead of the caret doesn't move) */
     bool keyPressed (const KeyPress& key) override;
+    virtual void sliderValueChanged (Slider* slider) override;
 
 private:
     EditAndPreview* parent;
+    Slider fontSizeSlider;  
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditorForMd)
 };

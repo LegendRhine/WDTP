@@ -14,7 +14,6 @@ extern PropertiesFile* systemFile;
 
 File FileTreeContainer::projectFile;
 ValueTree FileTreeContainer::projectTree = ValueTree::invalid;
-float FileTreeContainer::fontSize = SwingUtilities::getFontSize();
 
 //==============================================================================
 FileTreeContainer::FileTreeContainer (EditAndPreview* rightArea) :
@@ -91,8 +90,6 @@ void FileTreeContainer::openProject (const File& project)
 
     // load the project
     projectFile = project;
-    fontSize = projectTree.getProperty ("fontSize");
-
     sorter = new ItemSorter (projectTree);
     docTreeItem = new DocTreeViewItem (projectTree, this, sorter);
     sorter->setTreeViewItem (docTreeItem);

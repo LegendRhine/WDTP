@@ -125,11 +125,11 @@ void TopToolBar::resized ()
 {
     // search textEditors and find buttons
     bts[prevAll]->setBounds (12, 16, 12, 12);
-    searchInProject->setBounds (bts[prevAll]->getRight () + 10, 10, 220, 25);
+    searchInProject->setBounds (bts[prevAll]->getRight () + 10, 10, 200, 25);
     bts[nextAll]->setBounds (searchInProject->getRight () + 10, 16, 12, 12);
 
-    bts[nextPjt]->setBounds (getWidth () - 25, 16, 12, 12);
-    searchInDoc->setBounds (bts[nextPjt]->getX () - 240, 10, 230, 25);
+    bts[nextPjt]->setBounds (getWidth () - 24, 16, 12, 12);
+    searchInDoc->setBounds (bts[nextPjt]->getX () - 230, 10, 220, 25);
     bts[prevPjt]->setBounds (searchInDoc->getX () - 22, 16, 12, 12);
 
     // image buttons
@@ -383,7 +383,7 @@ void TopToolBar::createNewProject ()
     p.setProperty ("tooltip", 0, nullptr);
     p.setProperty ("render", "blog", nullptr);
     p.setProperty ("tplFile", "index.html", nullptr);
-    p.setProperty ("fontSize", SwingUtilities::getFontSize (), nullptr);
+    p.setProperty ("fontSize", SwingUtilities::getFontSize(), nullptr);
     p.setProperty ("needCreateHtml", true, nullptr);
 
     // create dirs and default template files

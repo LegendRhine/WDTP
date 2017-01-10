@@ -38,7 +38,8 @@ const String SwingUtilities::getFontName ()
 }
 
 //=================================================================================================
-void SwingUtilities::showAbout (const String& shortDescription, const String& copyrightYear)
+void SwingUtilities::showAbout (const String& shortDescription, 
+                                const String& copyrightYear)
 {
     SwingDialog* window = new SwingDialog (shortDescription);
 

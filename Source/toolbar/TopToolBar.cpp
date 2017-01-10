@@ -292,7 +292,8 @@ void TopToolBar::popupSystemMenu ()
     m.addItem (19, TRANS ("Check New Version..."), true);
     m.addSeparator ();
 
-    m.addItem (20, TRANS ("About..."), true);
+    m.addItem (20, TRANS ("Acknowledgements..."), true);
+    m.addItem (21, TRANS ("About..."), true);
 
     // display the menu
     const int index = m.show ();
@@ -324,8 +325,16 @@ void TopToolBar::menuPerform (const int index)
     // check new version
     else if (index == 19)   URL ("http://underwaySoft.com").launchInDefaultBrowser ();
 
+    // acknowledgements
+    else if (index == 20)  
+    {
+        AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS ("Acknowledgements"),
+                                     "- Framework: JUCE (https://juce.com)\n"
+                                     "- Library: cURL (https://curl.haxx.se)\n"
+                                     "- Highlight.js (https://highlightjs.org)");
+    }
     // about
-    else if (index == 20)   SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2016");
+    else if (index == 21)   SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2016");
 
     // language
     else if (index == 30)

@@ -47,9 +47,10 @@ struct SwingUtilities
     static const String getFontName ();
 
     /** Display "About window" which can be used on Android platform.
-        Arg 'shortDescription': the first text line inside the box with 
+        Arg 'shortDescription' (may app's name): the first text line inside the box with 
         brown colour and bigger size. */
-    static void showAbout (const String& shortDescription, const String& copyrightYear);
+    static void showAbout (const String& shortDescription, 
+                           const String& copyrightYear);
 
     /** This method will change the default WebBroswerCompoennt's core on Windows.
 

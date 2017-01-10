@@ -177,8 +177,8 @@ const String SwingUtilities::getTimeStringWithSeparator (const String& dateAndTi
     if (!isTimeStringValid (dateAndTimeString))
         return String::empty;
 
-    return dateAndTimeString.substring (0, 4) + "-" +
-        dateAndTimeString.substring (4, 6) + "-" +
+    return dateAndTimeString.substring (0, 4) + "." +
+        dateAndTimeString.substring (4, 6) + "." +
         dateAndTimeString.substring (6, 8) + 
         (includeTime ? " " +
          dateAndTimeString.substring (8, 10) + ":" + 
@@ -515,4 +515,52 @@ void WebBrowserComp::newWindowAttemptingToLoad (const String& newURL)
 
     option.launchAsync ();
 }
+
+//=================================================================================================
+/** static arry */
+Array<Colour> ColourSelectorWithPreset::colours;
+
+//=================================================================================================
+ColourSelectorWithPreset::ColourSelectorWithPreset ()
+{
+    if (colours.size () <= 0)
+        setPresetDefaultColour ();
+}
+//=================================================================================================
+void ColourSelectorWithPreset::setSwatchColour (int index,
+                                                const Colour& newColour) const
+{
+    colours.set (index, newColour);
+}
+//=================================================================================================
+void ColourSelectorWithPreset::setPresetDefaultColour ()
+{
+    colours.add (Colour (0xFF000000));
+    colours.add (Colour (0xFFFFFFFF));
+    colours.add (Colour (0xFFFF0000));
+    colours.add (Colour (0xFF00FF00));
+    colours.add (Colour (0xFF0000FF));
+    colours.add (Colour (0xFFFFFF00));
+    colours.add (Colour (0xFFFF00FF));
+    colours.add (Colour (0xFF00FFFF));
+
+    colours.add (Colours::burlywood);
+    colours.add (Colours::cyan);
+    colours.add (Colours::darkcyan);
+    colours.add (Colours::darkgreen);
+    colours.add (Colours::darkgrey);
+    colours.add (Colours::darkorange);
+    colours.add (Colours::fuchsia);
+    colours.add (Colours::gold);
+
+    colours.add (Colours::grey);
+    colours.add (Colours::lightseagreen);
+    colours.add (Colours::lightsteelblue);
+    colours.add (Colours::mediumblue);
+    colours.add (Colours::mediumseagreen);
+    colours.add (Colours::olive);
+    colours.add (Colours::purple);
+    colours.add (Colours::slategrey);
+}
+
 

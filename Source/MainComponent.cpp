@@ -21,6 +21,11 @@ MainContentComponent::MainContentComponent()
     addAndMakeVisible (toolBar = new TopToolBar (fileTree, editAndPreview));
     addAndMakeVisible (layoutBar = new StrechableBar (&layoutManager, 1, true));
 
+    // here must disenable the preview button of toolbar
+    // to prevent the jassert when the app doesn't load any project
+    // the arg 2 will deside the editor's mode (preview or edit) after the app running with a project
+    toolBar->enableEditPreviewBt (false, true);
+
     // stretched layout. arg: index, min-width, max-width，default x%
     layoutManager.setItemLayout (0, 2, -0.3, -0.22);  // fileTree
     layoutManager.setItemLayout (1, 2, 2, 2);            // layoutBar

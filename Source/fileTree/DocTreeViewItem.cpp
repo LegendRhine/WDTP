@@ -213,7 +213,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         sortMenu.addItem (101, TRANS ("Title"), true, sorter->getOrder () == 1);
         sortMenu.addItem (103, TRANS ("File Size"), true, sorter->getOrder () == 3);
         sortMenu.addItem (104, TRANS ("Create Time"), true, sorter->getOrder () == 4);
-        sortMenu.addItem (105, TRANS ("Modified Time"), true, sorter->getOrder () == 5);
+        sortMenu.addItem (105, TRANS ("Last Modified"), true, sorter->getOrder () == 5);
         sortMenu.addSeparator ();
         sortMenu.addItem (106, TRANS ("Ascending Order"), true, sorter->getAscending () == 0);
         sortMenu.addItem (107, TRANS ("Folder First"), true, sorter->getWhichFirst () == 0);
@@ -472,7 +472,7 @@ void DocTreeViewItem::createNewDocument ()
         docTree.setProperty ("isPage", false, nullptr);
         docTree.setProperty ("tplFile", "article.html", nullptr);
         docTree.setProperty ("date", 
-                             SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), false), 
+                             SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), true), 
                              nullptr);
         
         // must update this tree before show this new item

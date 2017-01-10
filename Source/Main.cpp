@@ -42,6 +42,10 @@ public:
         if (!f.existsAsFile())
         {
             systemFile->setValue ("language", "English");
+            systemFile->setValue ("editorFontColour", Colour (0xff303030).toString ());
+            systemFile->setValue ("editorBackground", Colour (0xffdedede).toString ());
+            systemFile->setValue ("fontSize", SwingUtilities::getFontSize ());
+
             systemFile->save();
         }
 

@@ -392,7 +392,6 @@ void TopToolBar::createNewProject ()
     p.setProperty ("tooltip", 0, nullptr);
     p.setProperty ("render", "blog", nullptr);
     p.setProperty ("tplFile", "index.html", nullptr);
-    p.setProperty ("fontSize", SwingUtilities::getFontSize(), nullptr);
     p.setProperty ("needCreateHtml", true, nullptr);
 
     // create dirs and default template files

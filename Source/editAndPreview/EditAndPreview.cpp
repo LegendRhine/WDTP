@@ -11,6 +11,8 @@
 #include "../WdtpHeader.h"
 #include <fstream>
 
+extern PropertiesFile* systemFile;
+
 //==============================================================================
 EditAndPreview::EditAndPreview () 
 {
@@ -29,12 +31,14 @@ EditAndPreview::EditAndPreview ()
     editor->setMultiLine (true);
     editor->setReturnKeyStartsNewLine (true);
     editor->setTabKeyUsedAsCharacter (true);
-    editor->setColour (TextEditor::textColourId, Colour(0xff303030));
-    editor->setColour (TextEditor::focusedOutlineColourId, Colour(0x000));
-    editor->setColour (TextEditor::backgroundColourId, Colour(0xffdedede));
+
+    editor->setColour (TextEditor::focusedOutlineColourId, Colour (0x000));
+    editor->setColour (TextEditor::textColourId, Colour::fromString (systemFile->getValue ("editorFontColour")));
+    editor->setColour (TextEditor::backgroundColourId, Colour::fromString (systemFile->getValue ("editorBackground")));
+    editor->setFont (systemFile->getValue ("fontSize").getFloatValue ());
+
     editor->setScrollBarThickness (10);
-    editor->setIndents (10, 10);
-    editor->setFont (SwingUtilities::getFontSize());
+    editor->setIndents (8, 8);
     editor->setEnabled (false);
     editor->setBorder (BorderSize<int> (1, 1, 1, 1));
 }
@@ -70,7 +74,6 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
 
         if (docOrDirFile.existsAsFile ())
         {
-            editor->setFont ((float) FileTreeContainer::projectTree.getProperty ("fontSize"));
             editor->setText (docOrDirFile.loadFileAsString (), false);
             currentContent = editor->getText ();
             editor->addListener (this);
@@ -190,7 +193,7 @@ void EditAndPreview::textEditorTextChanged (TextEditor&)
             allParentTree.setProperty ("needCreateHtml", true, nullptr);
         }
 
-        startTimer (5000);
+        startTimer (3000);
     }    
 }
 
@@ -203,9 +206,6 @@ void EditAndPreview::timerCallback ()
 //=================================================================================================
 const bool EditAndPreview::saveCurrentDocIfChanged ()
 {
-    /*static int i = 0;
-    DBGX (++i);*/
-
     stopTimer ();
     bool returnValue = true;
 
@@ -216,11 +216,17 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
 
         if (tempFile.overwriteTargetFileWithTemporary())
         {
-            const String tileStr (currentContent.trim ().upToFirstOccurrenceOf ("\n", false, true)
-                                  .replace ("#", String ()).trim ());
+            // title
+            if (docOrDirTree.getProperty ("title").toString ().isEmpty ())
+            {
+                const String tileStr (currentContent.trim ().upToFirstOccurrenceOf ("\n", false, true)
+                                      .replace ("#", String ()).trim ());
 
-            docOrDirTree.setProperty ("title", tileStr, nullptr);
+                docOrDirTree.setProperty ("title", tileStr, nullptr);
+                setupPanel->showDocProperties (docOrDirTree);
+            }
 
+            // description
             if (docOrDirTree.getProperty("description").toString().isEmpty())
             {
                 // get the description (the second line which not empty-line)
@@ -247,11 +253,10 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
                 }
 
                 docOrDirTree.setProperty ("description", description, nullptr);
+                setupPanel->showDocProperties (docOrDirTree);
             }
 
             docHasChanged = false;
-            setupPanel->showDocProperties (docOrDirTree);           
-
             returnValue = FileTreeContainer::saveProject();
         }
         else
@@ -339,6 +344,11 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 
         PopupMenu editorSetup;
         editorSetup.addItem (40, TRANS ("Font Size..."));
+        editorSetup.addItem (41, TRANS ("Font Color..."));
+        editorSetup.addItem (42, TRANS ("Backgroud..."));
+        editorSetup.addSeparator ();
+        editorSetup.addItem (43, TRANS ("Reset to Default"));
+
         menu.addSubMenu (TRANS ("Editor Setup"), editorSetup);
     }
 }
@@ -374,7 +384,7 @@ void EditorForMd::performPopupMenuAction (int index)
         content = getHighlightedText ();
         docTree.setProperty ("description", content, nullptr);
     }
-    else if (21 == index)  // search by selected
+    /*else if (21 == index)  // search by selected
     {
         NEED_TO_DO ("search by selected");
         return;  // don't insert anything in current content
@@ -383,7 +393,7 @@ void EditorForMd::performPopupMenuAction (int index)
     {
         NEED_TO_DO ("replace selected");
         return;  // don't insert anything in current content
-    }
+    }*/
     else if (1 == index) // image
     {
         FileChooser fc (TRANS ("Select Images..."), File::nonexistent,
@@ -511,13 +521,62 @@ void EditorForMd::performPopupMenuAction (int index)
     }
     else if (40 == index)  // font size
     {
-        fontSizeSlider.setValue ((double) FileTreeContainer::projectTree.getProperty ("fontSize"), 
+        fontSizeSlider.setValue (systemFile->getValue ("fontSize").getDoubleValue(), 
                                  dontSendNotification);
         CallOutBox callOut (fontSizeSlider, getLocalBounds (), this);
         callOut.runModalLoop ();
 
-        FileTreeContainer::projectTree.setProperty ("fontSize", fontSizeSlider.getValue (), nullptr);
-        FileTreeContainer::saveProject ();
+        systemFile->setValue ("fontSize", fontSizeSlider.getValue());
+        systemFile->saveIfNeeded();
+    }
+    else if (41 == index)  // font color
+    {
+        fontColourSelector = new ColourSelectorWithPreset ();
+
+        fontColourSelector->setColour (ColourSelector::backgroundColourId, Colour (0xffededed));
+        fontColourSelector->setSize (450, 480);
+        fontColourSelector->setCurrentColour (Colour::fromString (systemFile->getValue("editorFontColour")));
+        fontColourSelector->addChangeListener (this);
+
+        CallOutBox callOut (*fontColourSelector, getLocalBounds(), this);
+        callOut.runModalLoop ();
+
+        systemFile->setValue ("editorFontColour", fontColourSelector->getCurrentColour().toString());
+        systemFile->saveIfNeeded ();
+    }
+    else if (42 == index)  // background color
+    {
+        bgColourSelector = new ColourSelectorWithPreset ();
+
+        bgColourSelector->setColour (ColourSelector::backgroundColourId, Colour (0xffededed));
+        bgColourSelector->setSize (450, 480);
+        bgColourSelector->setCurrentColour (Colour::fromString (systemFile->getValue ("editorBackground")));
+        bgColourSelector->addChangeListener (this);
+
+        CallOutBox callOut (*bgColourSelector, getLocalBounds(), this);
+        callOut.runModalLoop ();
+
+        systemFile->setValue ("editorBackground", bgColourSelector->getCurrentColour().toString());
+        systemFile->saveIfNeeded ();
+    }
+    else if (43 == index)
+    {
+        if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),
+                                      TRANS ("Are you sure you want reset the editor's font size,\n"
+                                             "text color and background to the default?")))
+        {
+
+            systemFile->setValue ("fontSize", SwingUtilities::getFontSize());
+            systemFile->setValue ("editorFontColour", Colour (0xff303030).toString());
+            systemFile->setValue ("editorBackground", Colour (0xffdedede).toString());
+
+            parent->getEditor()->setColour (TextEditor::textColourId, Colour (0xff303030));
+            parent->getEditor()->setColour (TextEditor::backgroundColourId, Colour (0xffdedede));
+            parent->getEditor()->setFont (SwingUtilities::getFontSize());
+
+            parent->getEditor ()->applyFontToAllText (SwingUtilities::getFontSize());
+            systemFile->saveIfNeeded ();
+        }
     }
     else
     {
@@ -564,3 +623,18 @@ void EditorForMd::sliderValueChanged (Slider* slider)
         parent->getEditor ()->applyFontToAllText ((float) slider->getValue ());
     }
 }
+
+//=================================================================================================
+void EditorForMd::changeListenerCallback (ChangeBroadcaster* source)
+{
+    if (source == fontColourSelector)
+    {
+        parent->getEditor ()->setColour (TextEditor::textColourId, fontColourSelector->getCurrentColour());
+        parent->getEditor ()->applyFontToAllText (systemFile->getValue ("fontSize").getFloatValue ());
+    }
+    else if (source == bgColourSelector)
+    {
+        parent->getEditor ()->setColour (TextEditor::backgroundColourId, bgColourSelector->getCurrentColour());
+    }
+}
+

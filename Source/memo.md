@@ -53,7 +53,7 @@
 			- ...
 	- themes (模板文件夹，每套模板位于一个独立的子文件夹下)
 		- default （系统默认模板）
-			- index.html
+			- index.html （文件名和扩展名可为任意，但必须保证是文本文件，最好为UTF-8格式）
 			- page.html
 			- article.html
 			- category.html
@@ -71,6 +71,10 @@
 - PropertiesFile (systemFile, 系统属性文件)位于本机“用户-文档”目录下，文件名为：wdtp.sys，属性如下：
 	- recentFiles：最近打开的10个项目
 	- language: 界面语言（字符串，语言名称）
+	- fontName: 文本编辑器所用的字体(暂未使用)
+	- fontSize：文本编辑器的字体大小
+	- editorFontColour: 文本编辑器文字颜色
+	- editorBackground: 文本编辑器背景色
 
 ### 项目文档
 - 项目文档（*.wdtp）采用ValueTree数据模型+TreeView视图+派生的TreeViewItem实现文档的组织管理、显示与交互等功能。
@@ -108,8 +112,6 @@
 	- tooltip：TreeView中的tooltip显示文件名（包括所有路径，0）、标题/简介（1），还是网页文件名（2）
 	- render: 模板目录（磁盘Themes下的某个子目录，即已安装的某套模板）
 	- tplFile: 渲染网站首页所使用的模板文件，位于render所设置的目录下
-	- fontName: 文本编辑器所用的字体(暂未使用)
-	- fontSize：文本编辑器的字体大小
 	- js: 首页所需的js代码
 	- needCreateHtml: 本站根目录下的index.html是否需要重新生成
 	- identityOfLastSelectedItem: 文件树中最后一次选择的文档的标示，可由TreeView的findItemFromIdentifierString()找到对应的item，

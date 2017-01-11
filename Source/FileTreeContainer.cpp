@@ -1,4 +1,4 @@
-﻿/*
+/*
   ==============================================================================
 
     FileTreeContainer.cpp
@@ -234,7 +234,8 @@ const int ItemSorter::compareElements (TreeViewItem* first, TreeViewItem* second
             if (!(ff.exists () && sf.exists ()))
                 return 0;
 
-            const int r = ft.getProperty ("date").toString ().compareIgnoreCase (st.getProperty ("date").toString ());
+            const int r = ft.getProperty ("createDate").toString ().compareIgnoreCase
+            (st.getProperty ("createDate").toString ());
             return isAscending ? -r : r;
         }
         else if (5 == order) // modified time

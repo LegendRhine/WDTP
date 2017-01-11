@@ -138,7 +138,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     values[isMenu]->setValue (currentTree.getProperty ("isMenu"));
     values[dirTpl]->setValue (currentTree.getProperty ("tplFile"));
     values[dirJs]->setValue (currentTree.getProperty ("js"));
-    values[dirDate]->setValue (currentTree.getProperty ("date"));
+    values[dirCreateDate]->setValue (currentTree.getProperty ("createDate"));
 
     Array<PropertyComponent*> dirProperties;
     dirProperties.add (new TextPropertyComponent (*values[dirName], TRANS ("Name: "), 0, false));
@@ -146,7 +146,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     dirProperties.add (new TextPropertyComponent (*values[dirKeywords], TRANS ("Keywords: "), 0, false));
     dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Description: "), 0, true));
     dirProperties.add (new BooleanPropertyComponent (*values[isMenu], TRANS ("Web Menu: "), TRANS ("Yes")));
-    dirProperties.add (new TextPropertyComponent (*values[dirDate], TRANS ("Create Date: "), 10, false));
+    dirProperties.add (new TextPropertyComponent (*values[dirCreateDate], TRANS ("Create Date: "), 10, false));
     dirProperties.add (new TextPropertyComponent (*values[dirJs], TRANS ("JavaScript: "), 0, true));
 
     // render tpl-file
@@ -197,7 +197,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     values[isPage]->setValue (currentTree.getProperty ("isPage"));
     values[docTpl]->setValue (currentTree.getProperty ("tplFile"));
     values[docJs]->setValue (currentTree.getProperty ("js"));
-    values[docDate]->setValue (currentTree.getProperty ("date"));
+    values[docCreateDate]->setValue (currentTree.getProperty ("createDate"));
     //values[wordCount]->setValue (String());
 
     Array<PropertyComponent*> docProperties;
@@ -206,7 +206,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docProperties.add (new TextPropertyComponent (*values[docKeywords], TRANS ("Keywords: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[docDesc], TRANS ("Description: "), 0, true));
     docProperties.add (new BooleanPropertyComponent (*values[isPage], TRANS ("Single Page: "), TRANS ("Yes")));
-    docProperties.add (new TextPropertyComponent (*values[docDate], TRANS ("Create Date: "), 10, false));
+    docProperties.add (new TextPropertyComponent (*values[docCreateDate], TRANS ("Create Date: "), 10, false));
     docProperties.add (new TextPropertyComponent (*values[docJs], TRANS ("JavaScript: "), 0, true));
 
     // render tpl-file
@@ -311,8 +311,8 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("description", values[dirDesc]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[isMenu]))
         currentTree.setProperty ("isMenu", values[isMenu]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[dirDate]))
-        currentTree.setProperty ("date", values[dirDate]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[dirCreateDate]))
+        currentTree.setProperty ("createDate", values[dirCreateDate]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[dirTpl]))
         currentTree.setProperty ("tplFile", values[dirTpl]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[dirJs]))
@@ -327,8 +327,8 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("description", values[docDesc]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[isPage]))
         currentTree.setProperty ("isPage", values[isPage]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[docDate]))
-        currentTree.setProperty ("date", values[docDate]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[docCreateDate]))
+        currentTree.setProperty ("createDate", values[docCreateDate]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[docTpl]))
         currentTree.setProperty ("tplFile", values[docTpl]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[docJs]))

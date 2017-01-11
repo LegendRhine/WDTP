@@ -52,7 +52,7 @@ const String HtmlProcessor::getFileList (const ValueTree& dirTree_,
             if (extrctIntro)
             {
                 path = "<h2>" + path + "</h2>" +
-                    +"<h4>" + tree.getProperty ("date").toString () + "</h4><p>"
+                    +"<h4>" + tree.getProperty ("createDate").toString () + "</h4><p>"
                     + tree.getProperty ("description").toString () + "<hr>";
 
             }
@@ -265,7 +265,8 @@ const int HtmlProcessor::compareElements (const ValueTree& ft, const ValueTree& 
     else if (ft.getType ().toString () == "doc" && st.getType ().toString () == "dir")
         return 1;
     else  // doc vs doc and dir vs dir..
-        return ft.getProperty ("date").toString ().compareIgnoreCase (st.getProperty ("date").toString ());
+        return ft.getProperty ("createDate").toString ().compareIgnoreCase
+        (st.getProperty ("createDate").toString ());
 }
 
 //=========================================================================

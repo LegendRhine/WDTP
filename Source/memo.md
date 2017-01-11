@@ -124,7 +124,8 @@
 	- title：标题，即网页上所显示的栏目名称
 	- keywords: 关键字
     - description: 目录简述，用于index的description
-	- date: 创建日期
+	- createDate: 创建日期
+    - modifyDate: 最后一次修改的日期
 	- isMenu：是否为网站菜单
 	- tplFile: 渲染目录index页所使用的模板文件，位于项目属性render所设置的目录下
 	- js: 目录index页所需的js代码
@@ -135,7 +136,8 @@
 	- title：文章或页面的标题
 	- keywords: 关键字
     - description: 简述，用于index的description
-	- date: 创建日期
+	- createDate: 创建日期
+    - modifyDate: 最后一次修改的日期
 	- isPage: 本文挡是否生成独立页面（不加入列表页，使用page模板。否则使用article模板）
 	- tplFile: 渲染本文档所使用的模板文件，位于项目属性render所设置的目录下
 	- js: 网页所需的js代码

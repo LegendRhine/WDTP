@@ -58,7 +58,7 @@ const String Md2Html::renderHtmlContent (const String& htmlContentStr,
 
     if (codeHighlight)
     {
-        htmlStr = htmlStr.replace (newLine + "  <title>", 
+        htmlStr = htmlStr.replace ("\n  <title>",
                                    "\n  <script src = \""
                                    + cssPath + "add-in/hl.js\"></script>\n"
                                    "  <script>hljs.initHighlightingOnLoad(); </script>\n"

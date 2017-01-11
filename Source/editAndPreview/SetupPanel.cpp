@@ -236,7 +236,6 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
         p->setPreferredHeight (28);
 
     docProperties[0]->setEnabled (false);
-    docProperties[1]->setEnabled (false);
     docProperties[8]->setEnabled (false);
 
     docProperties[3]->setPreferredHeight (28 * 3);
@@ -320,6 +319,8 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("js", values[dirJs]->getValue (), nullptr);
 
     // doc properties
+    else if (value.refersToSameSourceAs (*values[docTitle]))
+        currentTree.setProperty ("title", values[docTitle]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[docKeywords]))
         currentTree.setProperty ("keywords", values[docKeywords]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[docDesc]))

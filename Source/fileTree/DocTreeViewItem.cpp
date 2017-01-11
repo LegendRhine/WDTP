@@ -175,7 +175,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 {
     const bool exist = getMdFileOrDir (tree).exists ();
     const bool isDoc = (tree.getType ().toString () == "doc");
-    const bool isDir = (tree.getType ().toString () == "dir");
+    //const bool isDir = (tree.getType ().toString () == "dir");
     const bool isRoot = (tree.getType ().toString () == "wdtpProject");
     const bool onlyOneSelected = getOwnerView ()->getNumSelectedItems () == 1;
 

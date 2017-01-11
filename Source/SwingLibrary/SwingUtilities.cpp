@@ -14,7 +14,7 @@
 const float SwingUtilities::getFontSize ()
   {
 #if JUCE_MAC
-    return 23.f;
+    return 20.f;
 #else
     return 20.f;
 #endif
@@ -23,18 +23,18 @@ const float SwingUtilities::getFontSize ()
 //=================================================================================================
 const String SwingUtilities::getFontName ()
 {
-#if JUCE_WINDOWS
+//#if JUCE_WINDOWS
     return "Microsoft YaHei";
-#elif JUCE_MAC
-    return "Hiragino Sans GB";
-#elif JUCE_LINUX
-    return "Droid Sans Fallback";
-#else
-    return "Heiti SC";  // only for iOS
+//#elif JUCE_MAC
+ //   return "Hiragino Sans GB";
+//#elif JUCE_LINUX
+//    return "Droid Sans Fallback";
+//#else
+ //   return "Heiti SC";  // only for iOS
 
 // Android need to be confirm
 
-#endif
+//#endif
 }
 
 //=================================================================================================

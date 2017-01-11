@@ -9,9 +9,6 @@
       <GROUP id="{5C5311BB-5266-DB1B-DE96-35AA97A1E8E3}" name="BinaryData">
         <FILE id="GiC33W" name="next.png" compile="0" resource="1" file="Source/BinaryData/next.png"/>
         <FILE id="Vu53va" name="prev.png" compile="0" resource="1" file="Source/BinaryData/prev.png"/>
-        <FILE id="O1smAJ" name="dir-o.png" compile="0" resource="1" file="Source/BinaryData/dir-o.png"/>
-        <FILE id="RuGrUI" name="dir.png" compile="0" resource="1" file="Source/BinaryData/dir.png"/>
-        <FILE id="lDEDKx" name="doc.png" compile="0" resource="1" file="Source/BinaryData/doc.png"/>
         <FILE id="UJVgtK" name="logo.png" compile="0" resource="1" file="Source/BinaryData/logo.png"/>
         <FILE id="S5pEoV" name="icon.png" compile="0" resource="1" file="Source/BinaryData/icon.png"/>
         <FILE id="WJnq70" name="view.png" compile="0" resource="1" file="Source/BinaryData/view.png"/>

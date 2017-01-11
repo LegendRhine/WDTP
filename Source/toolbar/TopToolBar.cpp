@@ -28,7 +28,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
 
     searchInProject->setColour (TextEditor::textColourId, Colour (0xff303030));
     searchInProject->setColour (TextEditor::focusedOutlineColourId, Colours::lightskyblue);
-    searchInProject->setColour (TextEditor::backgroundColourId, Colour (0xffededed));
+    searchInProject->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha(0.6f));
     searchInProject->setScrollBarThickness (10);
     searchInProject->setFont (SwingUtilities::getFontSize () - 2.f);
     searchInProject->setTextToShowWhenEmpty (TRANS ("Seach in this project..."), Colour (0xffa0a0a0));
@@ -39,7 +39,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
 
     searchInDoc->setColour (TextEditor::textColourId, Colour (0xff303030));
     searchInDoc->setColour (TextEditor::focusedOutlineColourId, Colours::lightskyblue);
-    searchInDoc->setColour (TextEditor::backgroundColourId, Colour (0xffededed));
+    searchInDoc->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha(0.6f));
     searchInDoc->setScrollBarThickness (10);
     searchInDoc->setFont (SwingUtilities::getFontSize () - 2.f);
     searchInDoc->setTextToShowWhenEmpty (TRANS ("Seach in current document..."), Colour (0xffa0a0a0));
@@ -114,7 +114,7 @@ TopToolBar::~TopToolBar ()
 //=======================================================================
 void TopToolBar::paint (Graphics& g)
 {
-    g.setColour (Colour (0x00).withAlpha (0.2f));
+    g.setColour (Colour::fromString (systemFile->getValue("uiTextColour")).withAlpha (0.6f));
     g.drawLine (1.0f, getHeight () - 0.5f, getWidth () - 2.0f, getHeight () - 0.5f, 0.6f);
 
     //g.drawVerticalLine (getWidth () / 2, 0.5f, getHeight () - 1.0f);
@@ -495,6 +495,9 @@ void TopToolBar::changeListenerCallback(ChangeBroadcaster* source)
 {
     if (source == bgColourSelector)
     {
+        // itself
+        repaint();
+
         // update ui's background colour
         systemFile->setValue("uiBackground", bgColourSelector->getCurrentColour().toString());
         getParentComponent()->repaint();

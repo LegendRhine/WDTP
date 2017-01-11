@@ -146,7 +146,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     dirProperties.add (new TextPropertyComponent (*values[dirKeywords], TRANS ("Keywords: "), 0, false));
     dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Description: "), 0, true));
     dirProperties.add (new BooleanPropertyComponent (*values[isMenu], TRANS ("Web Menu: "), TRANS ("Yes")));
-    dirProperties.add (new TextPropertyComponent (*values[dirDate], TRANS ("Date: "), 10, false));
+    dirProperties.add (new TextPropertyComponent (*values[dirDate], TRANS ("Create Date: "), 10, false));
     dirProperties.add (new TextPropertyComponent (*values[dirJs], TRANS ("JavaScript: "), 0, true));
 
     // render tpl-file
@@ -206,7 +206,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docProperties.add (new TextPropertyComponent (*values[docKeywords], TRANS ("Keywords: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[docDesc], TRANS ("Description: "), 0, true));
     docProperties.add (new BooleanPropertyComponent (*values[isPage], TRANS ("Single Page: "), TRANS ("Yes")));
-    docProperties.add (new TextPropertyComponent (*values[docDate], TRANS ("Date: "), 10, false));
+    docProperties.add (new TextPropertyComponent (*values[docDate], TRANS ("Create Date: "), 10, false));
     docProperties.add (new TextPropertyComponent (*values[docJs], TRANS ("JavaScript: "), 0, true));
 
     // render tpl-file

@@ -293,6 +293,8 @@ void DocTreeViewItem::renameSelectedItem ()
 
         if (newName.isEmpty ())
             newName = TRANS ("Untitled");
+        else if (newName == "index" || newName == "media" || newName == "add-in")
+            newName += "(2)";
 
         File newDocFile (docFileOrDir.getSiblingFile (newName + (docFileOrDir.isDirectory() ? String() : ".md")));
         newDocFile = newDocFile.getNonexistentSibling (true);
@@ -443,6 +445,8 @@ void DocTreeViewItem::createNewDocument ()
 
         if (docName.isEmpty ())
             docName = TRANS ("Untitled");
+        else if (docName == "index")
+            docName = "index(2)";
 
         // create this doc on disk
         const File& thisDoc (getMdFileOrDir (tree).getChildFile (docName + ".md")
@@ -496,10 +500,11 @@ void DocTreeViewItem::createNewFolder ()
 
         if (dirName.isEmpty ())
             dirName = TRANS ("New folder");
+        else if (dirName == "media" || dirName == "add-in")
+            dirName += "(2)";
 
         // create this dir on disk
-        File thisDir (getMdFileOrDir (tree).getChildFile (dirName));
-        thisDir = thisDir.getNonexistentSibling (true);
+        File thisDir (getMdFileOrDir (tree).getChildFile (dirName).getNonexistentSibling (true));
         thisDir.createDirectory();
 
         // dir tree

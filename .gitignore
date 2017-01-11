@@ -13,3 +13,5 @@ JuceLibraryCode/
 Desktop.ini
 $RECYCLE.BIN/
 *.lnk
+
+*.supported

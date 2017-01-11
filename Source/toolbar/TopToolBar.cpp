@@ -1,4 +1,4 @@
-﻿/*
+/*
   ==============================================================================
 
     TopToolBar.cpp
@@ -31,7 +31,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
     searchInProject->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha(0.6f));
     searchInProject->setScrollBarThickness (10);
     searchInProject->setFont (SwingUtilities::getFontSize () - 2.f);
-    searchInProject->setTextToShowWhenEmpty (TRANS ("Seach in this project..."), Colour (0xffa0a0a0));
+    searchInProject->setTextToShowWhenEmpty (TRANS ("Seach in this project..."), Colour (0xff303030).withAlpha(0.6f));
     //searchEditor->setTabKeyUsedAsCharacter(true);
 
     addAndMakeVisible (searchInDoc = new TextEditor ());
@@ -42,7 +42,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
     searchInDoc->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha(0.6f));
     searchInDoc->setScrollBarThickness (10);
     searchInDoc->setFont (SwingUtilities::getFontSize () - 2.f);
-    searchInDoc->setTextToShowWhenEmpty (TRANS ("Seach in current document..."), Colour (0xffa0a0a0));
+    searchInDoc->setTextToShowWhenEmpty (TRANS ("Seach in current document..."), Colour (0xff303030).withAlpha(0.6f));
     //searchEditor->setTabKeyUsedAsCharacter(true);
 
     // image buttons...
@@ -104,6 +104,14 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                             imageTrans, Colour (0x00),
                             Image::null, 1.000f, Colours::darkcyan,
                             Image::null, 1.000f, Colours::darkcyan);
+    
+    bts[upload]->setTooltip (TRANS ("Publish the changed"));
+    bts[upload]->setImages (false, true, true,
+                            ImageCache::getFromMemory (BinaryData::upload_png,
+                                                       BinaryData::upload_pngSize),
+                            imageTrans, Colour (0x00),
+                            Image::null, 1.000f, Colours::darkcyan,
+                            Image::null, 1.000f, Colours::darkcyan);
 }
 
 //=======================================================================
@@ -133,8 +141,9 @@ void TopToolBar::resized ()
     bts[prevPjt]->setBounds (searchInDoc->getX () - 22, 16, 12, 12);
 
     // image buttons
-    bts[view]->setTopRightPosition (getWidth() / 2 - 43, 12);
-    bts[system]->setTopLeftPosition (getWidth () / 2 + 17, 12);
+    bts[upload]->setTopLeftPosition(getWidth() / 2 - 10, 13);
+    bts[view]->setTopRightPosition (bts[upload]->getX() - 40, 12);
+    bts[system]->setTopLeftPosition (bts[upload]->getRight() + 40, 12);
 }
 
 //=================================================================================================

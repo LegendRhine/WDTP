@@ -324,6 +324,7 @@ void DocTreeViewItem::renameSelectedItem ()
             // here must re-select this item
             setSelected (false, false, dontSendNotification);
             setSelected (true, true);
+            
             FileTreeContainer::saveProject ();
         }
         else

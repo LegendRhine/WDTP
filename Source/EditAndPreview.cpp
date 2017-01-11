@@ -1,4 +1,4 @@
-﻿/*
+/*
   ==============================================================================
 
     EditAndPreview.cpp
@@ -90,7 +90,7 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
     else  // doc
     {
         // prevent auto-enter preview mode when created a new document
-        const bool justCreatedThisDoc (Time::getCurrentTime() - docOrDirFile.getCreationTime() < RelativeTime (2.0));
+        const bool justCreatedThisDoc (currentContent.length() < 3);
 
         if (toolBar->getStateOfViewButton() && !justCreatedThisDoc)
         {
@@ -131,10 +131,19 @@ void EditAndPreview::previewCurrentDoc ()
     webView.stop ();
     
     if (docOrDirFile.existsAsFile ())
-        webView.goToURL (HtmlProcessor::createArticleHtml (docOrDirTree, true).getFullPathName());
+    {
+        String fileUrl (HtmlProcessor::createArticleHtml (docOrDirTree, true).getFullPathName());
+        
+        // escape Chinese characters..
+        fileUrl = SwingUtilities::addEscapeChars (fileUrl).replace("\\x", "%");
+        DBG (fileUrl);
+        webView.goToURL (fileUrl);
+    }
     else
-        webView.goToURL (HtmlProcessor::createIndexHtml (docOrDirTree, true).getFullPathName());    
-
+    {
+        webView.goToURL (HtmlProcessor::createIndexHtml (docOrDirTree, true).getFullPathName());
+    }
+    
     //setupPanel->setEnabled (docOrDirFile.isDirectory());
     resized ();
 }

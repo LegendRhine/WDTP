@@ -123,7 +123,134 @@ struct SwingUtilities
     /** Trim and replace all the invalid characters of the arg to '-', 
         then return an valid file/dir name string. */
     static const String getValidFileName (const String& originalStr);
+    
+    //==============================================================================
+    /** Takes a string and returns a version of it where standard C++ escape sequences have been
+     used to replace any non-ascii bytes.
+     
+     Although not strictly a tokenising function, this is still a function that often comes in
+     handy when working with C++ code!
+     
+     @see writeEscapeChars
+     */
+    static String addEscapeChars (const String& s)
+    {
+        MemoryOutputStream mo;
+        writeEscapeChars (mo, s.toRawUTF8(), -1, -1, false, true, true);
+        return mo.toString();
+    }
+    
+    //=======================================================================
+private:
+    /** Takes a UTF8 string and writes it to a stream using standard C++ escape sequences for any
+     non-ascii bytes.
+     
+     Although not strictly a tokenising function, this is still a function that often comes in
+     handy when working with C++ code!
+     
+     Note that addEscapeChars() is easier to use than this function if you're working with Strings.
+     
+     @see addEscapeChars
+     */
+    static void writeEscapeChars (OutputStream& out, const char* utf8, const int numBytesToRead,
+                                  const int maxCharsOnLine, const bool breakAtNewLines,
+                                  const bool replaceSingleQuotes, const bool allowStringBreaks)
+    {
+        int charsOnLine = 0;
+        bool lastWasHexEscapeCode = false;
+        bool trigraphDetected = false;
+        
+        for (int i = 0; i < numBytesToRead || numBytesToRead < 0; ++i)
+        {
+            const unsigned char c = (unsigned char) utf8[i];
+            bool startNewLine = false;
+            
+            switch (c)
+            {
+                    
+                case '\t':  out << "\\t";  trigraphDetected = false; lastWasHexEscapeCode = false; charsOnLine += 2; break;
+                case '\r':  out << "\\r";  trigraphDetected = false; lastWasHexEscapeCode = false; charsOnLine += 2; break;
+                case '\n':  out << "\\n";  trigraphDetected = false; lastWasHexEscapeCode = false; charsOnLine += 2; startNewLine = breakAtNewLines; break;
+                case '\\':  out << "\\\\"; trigraphDetected = false; lastWasHexEscapeCode = false; charsOnLine += 2; break;
+                case '\"':  out << "\\\""; trigraphDetected = false; lastWasHexEscapeCode = false; charsOnLine += 2; break;
+                    
+                case '?':
+                    if (trigraphDetected)
+                    {
+                        out << "\\?";
+                        charsOnLine++;
+                        trigraphDetected = false;
+                    }
+                    else
+                    {
+                        out << "?";
+                        trigraphDetected = true;
+                    }
+                    
+                    lastWasHexEscapeCode = false;
+                    charsOnLine++;
+                    break;
+                    
+                case 0:
+                    if (numBytesToRead < 0)
+                        return;
+                    
+                    out << "\\0";
+                    lastWasHexEscapeCode = true;
+                    trigraphDetected = false;
+                    charsOnLine += 2;
+                    break;
+                    
+                case '\'':
+                    if (replaceSingleQuotes)
+                    {
+                        out << "\\\'";
+                        lastWasHexEscapeCode = false;
+                        trigraphDetected = false;
+                        charsOnLine += 2;
+                        break;
+                    }
+                    
+                    // deliberate fall-through...
+                    
+                default:
+                    if (c >= 32 && c < 127 && ! (lastWasHexEscapeCode  // (have to avoid following a hex escape sequence with a valid hex digit)
+                                                 && CharacterFunctions::getHexDigitValue (c) >= 0))
+                    {
+                        out << (char) c;
+                        lastWasHexEscapeCode = false;
+                        trigraphDetected = false;
+                        ++charsOnLine;
+                    }
+                    else if (allowStringBreaks && lastWasHexEscapeCode && c >= 32 && c < 127)
+                    {
+                        out << "\"\"" << (char) c;
+                        lastWasHexEscapeCode = false;
+                        trigraphDetected = false;
+                        charsOnLine += 3;
+                    }
+                    else
+                    {
+                        out << (c < 16 ? "\\x0" : "\\x") << String::toHexString ((int) c);
+                        lastWasHexEscapeCode = true;
+                        trigraphDetected = false;
+                        charsOnLine += 4;
+                    }
+                    
+                    break;
+            }
+            
+            if ((startNewLine || (maxCharsOnLine > 0 && charsOnLine >= maxCharsOnLine))
+                && (numBytesToRead < 0 || i < numBytesToRead - 1))
+            {
+                charsOnLine = 0;
+                out << "\"" << newLine << "\"";
+                lastWasHexEscapeCode = false;
+            }
+        }
+    }
 
+    
 };
 
 //=========================================================================

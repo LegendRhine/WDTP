@@ -509,7 +509,7 @@ void DocTreeViewItem::createNewFolder ()
         dirTree.setProperty ("isMenu", true, nullptr);
         dirTree.setProperty ("tplFile", "category.html", nullptr);
         dirTree.setProperty ("date", 
-                             SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), false), 
+                             SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), true),
                              nullptr);
 
         // must update this tree before show this new item

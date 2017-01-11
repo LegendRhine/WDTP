@@ -88,7 +88,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                              Image::null, 1.0f, Colours::darkcyan,
                              Image::null, 1.0f, Colours::darkcyan);
 
-    bts[view]->setTooltip (TRANS ("Switch preview / edit mode"));
+    bts[view]->setTooltip (TRANS ("Switch Preview / Edit Mode"));
     bts[view]->setImages (false, true, true,
                           ImageCache::getFromMemory (BinaryData::view_png,
                                                      BinaryData::view_pngSize),
@@ -97,7 +97,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                           Image::null, 1.0f, Colours::darkcyan);
     bts[view]->setToggleState (true, dontSendNotification);
 
-    bts[system]->setTooltip (TRANS ("Popup system menu"));
+    bts[system]->setTooltip (TRANS ("Popup System Menu"));
     bts[system]->setImages (false, true, true,
                             ImageCache::getFromMemory (BinaryData::system_png,
                                                        BinaryData::system_pngSize),
@@ -105,13 +105,22 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                             Image::null, 1.000f, Colours::darkcyan,
                             Image::null, 1.000f, Colours::darkcyan);
     
-    bts[upload]->setTooltip (TRANS ("Publish the changed"));
+    bts[upload]->setTooltip (TRANS ("Publish The Changed"));
     bts[upload]->setImages (false, true, true,
                             ImageCache::getFromMemory (BinaryData::upload_png,
                                                        BinaryData::upload_pngSize),
                             imageTrans, Colour (0x00),
                             Image::null, 1.000f, Colours::darkcyan,
                             Image::null, 1.000f, Colours::darkcyan);
+    
+    bts[width]->setTooltip (TRANS ("Switch Simply / Full Mode"));
+    bts[width]->setImages (false, true, true,
+                          ImageCache::getFromMemory (BinaryData::width_png,
+                                                     BinaryData::width_pngSize),
+                          imageTrans, Colour (0x00),
+                          Image::null, 1.0f, Colour (0x00),
+                          Image::null, 1.0f, Colours::darkcyan);
+    bts[width]->setToggleState (true, dontSendNotification);
 }
 
 //=======================================================================
@@ -124,7 +133,6 @@ void TopToolBar::paint (Graphics& g)
 {
     g.setColour (Colour::fromString (systemFile->getValue("uiTextColour")).withAlpha (0.6f));
     g.drawLine (1.0f, getHeight () - 0.5f, getWidth () - 2.0f, getHeight () - 0.5f, 0.6f);
-
     //g.drawVerticalLine (getWidth () / 2, 0.5f, getHeight () - 1.0f);
 }
 
@@ -132,18 +140,38 @@ void TopToolBar::paint (Graphics& g)
 void TopToolBar::resized ()
 {
     // search textEditors and find buttons
-    bts[prevAll]->setBounds (12, 14, 16, 16);
-    searchInProject->setBounds (bts[prevAll]->getRight () + 10, 10, 200, 25);
-    bts[nextAll]->setBounds (searchInProject->getRight () + 10, 14, 16, 16);
-
-    bts[nextPjt]->setBounds (getWidth () - 24, 14, 16, 16);
-    searchInDoc->setBounds (bts[nextPjt]->getX () - 230, 10, 220, 25);
-    bts[prevPjt]->setBounds (searchInDoc->getX () - 25, 14, 16, 16);
+    if (getWidth() >= 800)
+    {
+        bts[prevAll]->setVisible(true);
+        searchInProject->setVisible(true);
+        bts[nextAll]->setVisible(true);
+        bts[nextPjt]->setVisible(true);
+        searchInDoc->setVisible(true);
+        bts[prevPjt]->setVisible(true);
+        
+        bts[prevAll]->setBounds (12, 14, 16, 16);
+        searchInProject->setBounds (bts[prevAll]->getRight () + 10, 10, 200, 25);
+        bts[nextAll]->setBounds (searchInProject->getRight () + 10, 14, 16, 16);
+        
+        bts[nextPjt]->setBounds (getWidth () - 24, 14, 16, 16);
+        searchInDoc->setBounds (bts[nextPjt]->getX () - 230, 10, 220, 25);
+        bts[prevPjt]->setBounds (searchInDoc->getX () - 25, 14, 16, 16);
+    }
+    else
+    {
+        bts[prevAll]->setVisible(false);
+        searchInProject->setVisible(false);
+        bts[nextAll]->setVisible(false);
+        bts[nextPjt]->setVisible(false);
+        searchInDoc->setVisible(false);
+        bts[prevPjt]->setVisible(false);
+    }
 
     // image buttons
-    bts[upload]->setTopLeftPosition(getWidth() / 2 - 10, 13);
+    bts[upload]->setTopLeftPosition(getWidth() / 2 - 41, 13);
     bts[view]->setTopRightPosition (bts[upload]->getX() - 40, 12);
     bts[system]->setTopLeftPosition (bts[upload]->getRight() + 40, 12);
+    bts[width]->setTopLeftPosition (bts[system]->getRight() + 40, 12);
 }
 
 //=================================================================================================
@@ -259,6 +287,12 @@ void TopToolBar::buttonClicked (Button* bt)
     {
         bts[view]->setToggleState (!bts[view]->getToggleState (), dontSendNotification);
         editAndPreview->startWork (editAndPreview->getCurrentTree());
+    }
+    else if (bt == bts[width])
+    {
+        bts[width]->setToggleState (!bts[width]->getToggleState (), dontSendNotification);
+        getParentComponent()->setSize ((bts[width]->getToggleState() ? 1280 : 660), 780);
+        getTopLevelComponent()->setCentreRelative(0.5f, 0.53f);
     }
     else if (bt == bts[system])
         popupSystemMenu ();

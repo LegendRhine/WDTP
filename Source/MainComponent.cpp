@@ -1,4 +1,4 @@
-﻿/*
+/*
   ==============================================================================
 
     MainComponent.cpp
@@ -31,7 +31,7 @@ MainContentComponent::MainContentComponent()
     layoutManager.setItemLayout (1, 2, 2, 2);            // layoutBar
     layoutManager.setItemLayout (2, -0.7, -1.0, -0.78);   // editAndPreview
 
-    setSize (1280, 760);
+    setSize (1280, 780);
 }
 
 //=======================================================================
@@ -49,10 +49,21 @@ void MainContentComponent::paint (Graphics& g)
 void MainContentComponent::resized()
 {
     toolBar->setBounds (0, 0, getWidth (), 45);
-
-    // stretched layout
-    Component* comps[] = { fileTree, layoutBar, editAndPreview };
-    layoutManager.layOutComponents (comps, 3, 0, 45, getWidth (), getHeight () - 45, false, true);
+    
+    if (getWidth() > 760)  // stretched layout
+    {
+        fileTree->setVisible(true);
+        layoutBar->setVisible(true);
+        
+        Component* comps[] = { fileTree, layoutBar, editAndPreview };
+        layoutManager.layOutComponents (comps, 3, 0, 45, getWidth (), getHeight () - 45, false, true);
+    }
+    else  // simple-mode (only makes the editor visable)
+    {
+        fileTree->setVisible(false);
+        layoutBar->setVisible(false);
+        editAndPreview->setBounds (0, 45, getWidth (), getHeight () - 45);
+    }    
 }
 
 //=================================================================================================
@@ -62,7 +73,7 @@ MainWindow::MainWindow (String name) :
     setUsingNativeTitleBar (true);
     setContentOwned (mainComp = new MainContentComponent (), true);
     setResizable (true, false);
-    setResizeLimits (800, 500, 3200, 2400);
+    setResizeLimits (640, 480, 3200, 2400);
 
     centreWithSize (getWidth (), getHeight ());
     setVisible (true);

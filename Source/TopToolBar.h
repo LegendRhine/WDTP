@@ -56,7 +56,7 @@ private:
 
     //==========================================================================
     enum { prevAll, nextAll, prevPjt, nextPjt, 
-           view, system, upload, totalBts };
+           view, system, upload, width, totalBts };
 
     /** When mouse enter the button, the cursor will change to a finger */
     class MyImageButton : public ImageButton

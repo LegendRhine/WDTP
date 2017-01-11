@@ -37,7 +37,7 @@ EditAndPreview::EditAndPreview ()
     editor->setFont (systemFile->getValue ("fontSize").getFloatValue ());
 
     editor->setScrollBarThickness (10);
-    editor->setIndents (8, 8);
+    editor->setIndents (10, 10);
     editor->setEnabled (false);
     editor->setBorder (BorderSize<int> (1, 1, 1, 1));
 }
@@ -51,12 +51,24 @@ EditAndPreview::~EditAndPreview()
 //=========================================================================
 void EditAndPreview::resized()
 {
-    // layout
-    Component* comps[] = { (webView.isVisible ()) ? 
-        static_cast<Component*>(&webView) : static_cast<Component*>(editor), 
-        layoutBar, setupPanel };
-
-    layoutManager.layOutComponents (comps, 3, 0, 0, getWidth(), getHeight(), false, true);
+    Component* wordArea = (webView.isVisible () ? static_cast<Component*>(&webView)
+                                                       : static_cast<Component*>(editor));
+    
+    if (getParentComponent()->getWidth() > 1020)  // stretched layout
+    {
+        setupPanel->setVisible(true);
+        layoutBar->setVisible(true);
+        
+        Component* comps[] = { wordArea, layoutBar, setupPanel };
+        
+        layoutManager.layOutComponents (comps, 3, 0, 0, getWidth(), getHeight(), false, true);
+    }
+    else  // simple-mode (only makes the editor visable)
+    {
+        setupPanel->setVisible(false);
+        layoutBar->setVisible(false);
+        wordArea->setBounds (0, 0, getWidth (), getHeight ());
+    }
 }
 
 //=================================================================================================

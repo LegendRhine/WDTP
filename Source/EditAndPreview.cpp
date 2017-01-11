@@ -136,7 +136,6 @@ void EditAndPreview::previewCurrentDoc ()
         
         // escape Chinese characters..
         fileUrl = SwingUtilities::addEscapeChars (fileUrl).replace("\\x", "%");
-        DBG (fileUrl);
         webView.goToURL (fileUrl);
     }
     else

@@ -42,9 +42,8 @@ private:
 
     virtual void valueChanged (Value & value) override;
     virtual void timerCallback () override;
-    
     void savePropertiesIfNeeded ();
-
+    
     //=========================================================================
     enum  
     { 

@@ -361,3 +361,4 @@ void SetupPanel::savePropertiesIfNeeded ()
     stopTimer ();
 }
 
+

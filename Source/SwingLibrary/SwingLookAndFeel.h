@@ -21,7 +21,11 @@ public:
     static TextLayout layoutTooltipText (const String& text, Colour colour) noexcept;
     Rectangle<int> getTooltipBounds (const String& tipText, Point<int> screenPos, Rectangle<int> parentArea);
     void drawTooltip (Graphics& g, const String& text, int width, int height);
-
+    
+    /* PropertyPanel's header text */
+     void drawPropertyPanelSectionHeader (Graphics& g, const String& name,
+                                          bool isOpen, int width, int height);
+    
 };
 
 

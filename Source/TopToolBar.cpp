@@ -132,13 +132,13 @@ void TopToolBar::paint (Graphics& g)
 void TopToolBar::resized ()
 {
     // search textEditors and find buttons
-    bts[prevAll]->setBounds (12, 16, 12, 12);
+    bts[prevAll]->setBounds (12, 14, 16, 16);
     searchInProject->setBounds (bts[prevAll]->getRight () + 10, 10, 200, 25);
-    bts[nextAll]->setBounds (searchInProject->getRight () + 10, 16, 12, 12);
+    bts[nextAll]->setBounds (searchInProject->getRight () + 10, 14, 16, 16);
 
-    bts[nextPjt]->setBounds (getWidth () - 24, 16, 12, 12);
+    bts[nextPjt]->setBounds (getWidth () - 24, 14, 16, 16);
     searchInDoc->setBounds (bts[nextPjt]->getX () - 230, 10, 220, 25);
-    bts[prevPjt]->setBounds (searchInDoc->getX () - 22, 16, 12, 12);
+    bts[prevPjt]->setBounds (searchInDoc->getX () - 25, 14, 16, 16);
 
     // image buttons
     bts[upload]->setTopLeftPosition(getWidth() / 2 - 10, 13);

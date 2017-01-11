@@ -114,6 +114,7 @@
 	- render: 模板目录（磁盘Themes下的某个子目录，即已安装的某套模板）
 	- tplFile: 渲染网站首页所使用的模板文件，位于render所设置的目录下
 	- js: 首页所需的js代码
+    - modifyDate: 最后一次修改的日期
 	- needCreateHtml: 本站根目录下的index.html是否需要重新生成
 	- identityOfLastSelectedItem: 文件树中最后一次选择的文档的标示，可由TreeView的findItemFromIdentifierString()找到对应的item，
 	  此值用于文件树中移动项目、打开项目时自动选择最后一次点选的item

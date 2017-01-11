@@ -534,7 +534,7 @@ void EditorForMd::performPopupMenuAction (int index)
     {
         fontColourSelector = new ColourSelectorWithPreset ();
 
-        fontColourSelector->setColour (ColourSelector::backgroundColourId, Colour (0xffededed));
+        //fontColourSelector->setColour (ColourSelector::backgroundColourId, Colour (0xffededed));
         fontColourSelector->setSize (450, 480);
         fontColourSelector->setCurrentColour (Colour::fromString (systemFile->getValue("editorFontColour")));
         fontColourSelector->addChangeListener (this);
@@ -549,7 +549,7 @@ void EditorForMd::performPopupMenuAction (int index)
     {
         bgColourSelector = new ColourSelectorWithPreset ();
 
-        bgColourSelector->setColour (ColourSelector::backgroundColourId, Colour (0xffededed));
+        //bgColourSelector->setColour (ColourSelector::backgroundColourId, Colour (0xffededed));
         bgColourSelector->setSize (450, 480);
         bgColourSelector->setCurrentColour (Colour::fromString (systemFile->getValue ("editorBackground")));
         bgColourSelector->addChangeListener (this);

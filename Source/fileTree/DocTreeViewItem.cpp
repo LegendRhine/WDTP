@@ -61,36 +61,15 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
 {
     g.setFont (SwingUtilities::getFontSize () - 2.f);
     int leftGap = 4;
-    Colour c (0xff303030);
-
-    // doc and dir item
-    if (tree.getType ().toString () != "wdtpProject")
-    {
-        leftGap = 22;
-        Image icon;
-
-        if (tree.getType ().toString () == "doc")
-        {
-            icon = ImageCache::getFromMemory (BinaryData::doc_png, BinaryData::doc_pngSize);
-        }
-        else
-        {
-            if (isOpen ())
-                icon = ImageCache::getFromMemory (BinaryData::diro_png, BinaryData::diro_pngSize);
-            else
-                icon = ImageCache::getFromMemory (BinaryData::dir_png, BinaryData::dir_pngSize);
-        }
-
-        g.drawImageAt (icon, 2, getItemHeight () / 2 - 8);
-    }
+    Colour c (Colour::fromString(systemFile->getValue("uiTextColour")));
 
     if (!getMdFileOrDir (tree).exists ())
         c = Colours::red;
 
     g.setColour (c);
 
-    String itemName;
     jassert (sorter != nullptr);
+    String itemName;
 
     if (sorter->getShowWhat () == 0)  // file name
         itemName = tree.getProperty ("name").toString ();
@@ -98,7 +77,13 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
     else if (sorter->getShowWhat () == 1) // title or intro
         itemName = tree.getProperty ("title").toString ();
 
-    g.drawText (itemName, leftGap, 0, width - 4, height, Justification::centredLeft, true);
+    // mark of doc and dir item
+    String markStr;
+
+    if (tree.getType().toString() == "doc")
+        markStr = CharPointer_UTF8("\xe2\x97\x8f ");
+
+    g.drawText (markStr + itemName, leftGap, 0, width - 4, height, Justification::centredLeft, true);
 }
 
 //=================================================================================================
@@ -779,15 +764,25 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items,
 //=================================================================================================
 void DocTreeViewItem::paintHorizontalConnectingLine (Graphics& g, const Line<float>& line)
 {
-    g.setColour (Colours::skyblue);
+    g.setColour (Colour::fromString(systemFile->getValue("uiTextColour")).withAlpha(0.6f));
     g.drawLine (line);
 }
 
 //=================================================================================================
 void DocTreeViewItem::paintVerticalConnectingLine (Graphics& g, const Line<float>& line)
 {
-    g.setColour (Colours::skyblue);
+    g.setColour (Colour::fromString(systemFile->getValue("uiTextColour")).withAlpha(0.6f));
     g.drawLine (line);
+}
+
+//=================================================================================================
+void DocTreeViewItem::paintOpenCloseButton(Graphics& g, const Rectangle<float>& area, Colour, bool)
+{
+    Path p;
+    p.addTriangle(0.0f, 0.0f, 1.0f, isOpen() ? 0.0f : 0.5f, isOpen() ? 0.5f : 0.0f, 1.0f);
+
+    g.setColour(Colour::fromString (systemFile->getValue("uiTextColour")).withAlpha(0.6f));
+    g.fillPath(p, p.getTransformToScaleToFit(area.reduced(2, area.getHeight() / 4), true));
 }
 
 //=================================================================================================

@@ -30,6 +30,7 @@ FileTreeContainer::FileTreeContainer (EditAndPreview* rightArea) :
     fileTree.setOpenCloseButtonsVisible (true);
     fileTree.setIndentSize (15);
     fileTree.getViewport ()->setScrollBarThickness (10);
+    fileTree.setColour(TreeView::selectedItemBackgroundColourId, Colours::skyblue.withAlpha(0.6f));
 
     addAndMakeVisible (fileTree);
 }
@@ -47,7 +48,7 @@ FileTreeContainer::~FileTreeContainer ()
 void FileTreeContainer::resized ()
 {
     fileTree.setVisible (getWidth () > 50);
-    fileTree.setBounds (10, 0, getWidth () - 10, getHeight ());
+    fileTree.setBounds (12, 0, getWidth () - 14, getHeight ());
 }
 
 //=================================================================================================

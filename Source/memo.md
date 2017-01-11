@@ -72,7 +72,7 @@
 	- recentFiles：最近打开的10个项目
 	- language: 界面语言（字符串，语言名称）
 	- uiBackground: 界面背景色
-	- uiFontColour: 界面文字的颜色
+	- uiTextColour: 界面文字只有深浅两种颜色，根据UI颜色的亮度确定
 	- fontName: 文本编辑器所用的字体(暂未使用)
 	- fontSize：文本编辑器的字体大小
 	- editorFontColour: 文本编辑器文字颜色

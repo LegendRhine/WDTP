@@ -61,7 +61,7 @@ public:
     // draw line..
     virtual void paintHorizontalConnectingLine (Graphics&, const Line<float>& line) override;
     virtual void paintVerticalConnectingLine (Graphics&, const Line<float>& line) override;
-
+    virtual void paintOpenCloseButton(Graphics&, const Rectangle<float>&, Colour, bool) override;
 private:
     //=========================================================================
     /** export the selected item (all project-docs, a dir-docs or a doc) as a single md file. */

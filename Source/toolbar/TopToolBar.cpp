@@ -289,9 +289,8 @@ void TopToolBar::popupSystemMenu ()
     m.addSubMenu (TRANS ("UI Language"), lanMenu);
 
     PopupMenu uiMenu;
-    uiMenu.addItem(15, TRANS("Background..."));
-    uiMenu.addItem(16, TRANS("Text Color..."));
-    uiMenu.addItem(17, TRANS("Reset to Default"));
+    uiMenu.addItem(15, TRANS("Set UI Color..."));
+    uiMenu.addItem(16, TRANS("Reset to Default"));
     m.addSubMenu(TRANS("UI Color"), uiMenu);
     m.addSeparator();
 
@@ -326,9 +325,8 @@ void TopToolBar::menuPerform (const int index)
     // clean up and re-generate the whole site
     else if (index == 5)    cleanAndGenerateAll ();
 
-    else if (index == 15)  setUiBackground();
-    else if (index == 16)  setUiTextColour();
-    else if (index == 17)  resetUiColour();
+    else if (index == 15)  setUiColour();
+    else if (index == 16)  resetUiColour();
 
     // help
     else if (index == 18)   NEED_TO_DO ("Getting started...");
@@ -477,11 +475,11 @@ void TopToolBar::generateHtmlFiles (ValueTree tree)
 }
 
 //=================================================================================================
-void TopToolBar::setUiBackground()
+void TopToolBar::setUiColour()
 {
     bgColourSelector = new ColourSelectorWithPreset();
 
-    bgColourSelector->setColour(ColourSelector::backgroundColourId, Colour(0xffededed));
+    //bgColourSelector->setColour(ColourSelector::backgroundColourId, Colour(0xffededed));
     bgColourSelector->setSize(450, 480);
     bgColourSelector->setCurrentColour(Colour::fromString(systemFile->getValue("uiBackground")));
     bgColourSelector->addChangeListener(this);
@@ -493,33 +491,27 @@ void TopToolBar::setUiBackground()
 }
 
 //=================================================================================================
-void TopToolBar::setUiTextColour()
-{
-    fontColourSelector = new ColourSelectorWithPreset();
-
-    fontColourSelector->setColour(ColourSelector::backgroundColourId, Colour(0xffededed));
-    fontColourSelector->setSize(450, 480);
-    fontColourSelector->setCurrentColour(Colour::fromString(systemFile->getValue("uiFontColour")));
-    fontColourSelector->addChangeListener(this);
-
-    CallOutBox callOut(*fontColourSelector, getScreenBounds(), this);
-    callOut.runModalLoop();
-
-    systemFile->setValue("uiFontColour", fontColourSelector->getCurrentColour().toString());
-    systemFile->saveIfNeeded();
-}
-
-//=================================================================================================
 void TopToolBar::changeListenerCallback(ChangeBroadcaster* source)
 {
     if (source == bgColourSelector)
     {
+        // update ui's background colour
         systemFile->setValue("uiBackground", bgColourSelector->getCurrentColour().toString());
         getParentComponent()->repaint();
-    }
-    else if (source == fontColourSelector)
-    {
-        ;
+
+        // treeView
+        if (bgColourSelector->getCurrentColour().getBrightness() >= 0.70f)
+            systemFile->setValue("uiTextColour", Colour(0xff303030).toString());
+        else
+            systemFile->setValue("uiTextColour", Colour(0xffe9e9e9).toString());
+
+        TreeViewItem* projectTreeItem = fileTreeContainer->getTreeView().getRootItem();
+        
+        if (projectTreeItem != nullptr)
+            projectTreeItem->repaintItem();
+
+        // setup panel
+
     }
 }
 
@@ -529,8 +521,18 @@ void TopToolBar::resetUiColour()
     if (AlertWindow::showOkCancelBox(AlertWindow::QuestionIcon, TRANS("Confirm"),
                                      TRANS("Do you want to reset the UI's color?")))
     {
+        // background colour
         systemFile->setValue("uiBackground", Colour(0xffdcdbdb).toString());
         getParentComponent()->repaint();
+
+        systemFile->setValue("uiTextColour", Colour(0xff303030).toString());
+
+        // treeView
+        TreeViewItem* projectTreeItem = fileTreeContainer->getTreeView().getRootItem();
+
+        if (projectTreeItem != nullptr)
+            projectTreeItem->repaintItem();
+
         systemFile->saveIfNeeded();
     }
 }

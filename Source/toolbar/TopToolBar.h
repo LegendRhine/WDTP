@@ -51,6 +51,9 @@ private:
     /** generate the tree and all its children's html file */
     static void generateHtmlFiles (ValueTree tree);
 
+    void setUiColour();
+    void resetUiColour();
+
     //==========================================================================
     enum { prevAll, nextAll, prevPjt, nextPjt, 
            view, system, totalBts };
@@ -75,10 +78,6 @@ private:
     };
 
     //=========================================================================
-    void setUiBackground();
-    void setUiTextColour();
-    void resetUiColour();
-
     OwnedArray<MyImageButton> bts;
     ScopedPointer<TextEditor> searchInProject;
     ScopedPointer<TextEditor> searchInDoc;
@@ -86,7 +85,6 @@ private:
     FileTreeContainer* fileTreeContainer;
     EditAndPreview* editAndPreview;
 
-    ScopedPointer<ColourSelectorWithPreset> fontColourSelector;
     ScopedPointer<ColourSelectorWithPreset> bgColourSelector;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TopToolBar)        

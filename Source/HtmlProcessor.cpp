@@ -8,7 +8,7 @@
   ==============================================================================
 */
 
-#include "../WdtpHeader.h"
+#include "WdtpHeader.h"
 
 //=================================================================================================
 const String HtmlProcessor::getFileList (const ValueTree& dirTree_,

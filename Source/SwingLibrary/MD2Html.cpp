@@ -9,7 +9,7 @@
 */
 
 #include "JuceHeader.h"
-#include "../editAndPreview/HtmlProcessor.h"
+#include "../HtmlProcessor.h"
 #include "MD2Html.h"
 
 //=================================================================================================

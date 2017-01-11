@@ -8,7 +8,7 @@
   ==============================================================================
 */
 
-#include "../WdtpHeader.h"
+#include "WdtpHeader.h"
 
 extern PropertiesFile* systemFile;
 

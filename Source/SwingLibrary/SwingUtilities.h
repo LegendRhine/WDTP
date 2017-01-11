@@ -41,10 +41,10 @@
 struct SwingUtilities
 {    
     /** Return the platform-special font size */
-    static const float getFontSize ();
+    static const float getFontSize ()          { return 20.f; }
 
     /** Return the platform-special font name */
-    static const String getFontName ();
+    static const String getFontName ()         { return "Microsoft YaHei"; }
 
     /** Display "About window" which can be used on Android platform.
         Arg 'shortDescription' (may app's name): the first text line inside the box with 

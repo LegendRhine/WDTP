@@ -148,7 +148,7 @@ void EditAndPreview::previewCurrentDoc ()
         //DBGX (URL::addEscapeChars (fileUrl, true));
         
         // escape Chinese characters..
-        fileUrl = SwingUtilities::addEscapeChars (fileUrl).replace("\\x", "%");
+        fileUrl = CppTokeniserFunctions::addEscapeChars (fileUrl).replace("\\x", "%");
         //DBGX (fileUrl);
         
         webView.goToURL (fileUrl);

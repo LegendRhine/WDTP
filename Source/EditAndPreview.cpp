@@ -209,11 +209,15 @@ void EditAndPreview::textEditorTextChanged (TextEditor&)
 
         ValueTree allParentTree = docOrDirTree;
         allParentTree.setProperty ("needCreateHtml", true, nullptr);
+        allParentTree.setProperty ("modifyDate",
+                                   SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), true), nullptr);
 
         while (allParentTree.getParent().isValid ())
         {
             allParentTree = allParentTree.getParent ();
             allParentTree.setProperty ("needCreateHtml", true, nullptr);
+            allParentTree.setProperty ("modifyDate",
+                                       SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), true), nullptr);
         }
 
         startTimer (3000);
@@ -246,7 +250,6 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
                                       .replace ("#", String ()).trim ());
 
                 docOrDirTree.setProperty ("title", tileStr, nullptr);
-                setupPanel->showDocProperties (docOrDirTree);
             }
 
             // description
@@ -276,10 +279,10 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
                 }
 
                 docOrDirTree.setProperty ("description", description, nullptr);
-                setupPanel->showDocProperties (docOrDirTree);
             }
 
             docHasChanged = false;
+            setupPanel->showDocProperties (docOrDirTree);
             returnValue = FileTreeContainer::saveProject();
         }
         else

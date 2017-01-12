@@ -52,11 +52,12 @@ private:
         copyrightInfo, projectRenderDir, indexTpl, projectJs,  
 
         // dir properties' values
-        dirName, dirTitle, dirKeywords, dirDesc, isMenu, dirTpl, dirJs, dirCreateDate,
+        dirName, dirTitle, dirKeywords, dirDesc, isMenu, dirTpl, dirJs,
+        dirCreateDate, dirModifyDate,
 
         // doc properties' values
-        docName, docTitle, docKeywords, docDesc, isPage, docTpl, docCreateDate, docJs,
-        wordCount,
+        docName, docTitle, docKeywords, docDesc, isPage, docTpl,
+        docCreateDate, docModifyDate, docJs, wordCount,
 
         totalValues
     };

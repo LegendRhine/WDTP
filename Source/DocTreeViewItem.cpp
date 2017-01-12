@@ -303,6 +303,7 @@ void DocTreeViewItem::renameSelectedItem ()
         {
             // save the project file
             tree.setProperty ("name", newDocFile.getFileNameWithoutExtension (), nullptr);
+            tree.setProperty ("modifyDate", SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), true), nullptr);
             needCreateHtml (tree);
 
             // rename the site dir or html-file
@@ -464,6 +465,7 @@ void DocTreeViewItem::createNewDocument ()
         docTree.setProperty ("createDate", 
                              SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), true), 
                              nullptr);
+        docTree.setProperty ("modifyDate", docTree.getProperty("createDate").toString(), nullptr);
         
         // must update this tree before show this new item
         tree.removeListener (this);
@@ -516,6 +518,7 @@ void DocTreeViewItem::createNewFolder ()
         dirTree.setProperty ("createDate",
                              SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), true),
                              nullptr);
+        dirTree.setProperty ("modifyDate", dirTree.getProperty("createDate").toString(), nullptr);
 
         // must update this tree before show this new item
         tree.removeListener (this);

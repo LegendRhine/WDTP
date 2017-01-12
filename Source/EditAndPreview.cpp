@@ -145,9 +145,12 @@ void EditAndPreview::previewCurrentDoc ()
     if (docOrDirFile.existsAsFile ())
     {
         String fileUrl (HtmlProcessor::createArticleHtml (docOrDirTree, true).getFullPathName());
+        //DBGX (URL::addEscapeChars (fileUrl, true));
         
         // escape Chinese characters..
         fileUrl = SwingUtilities::addEscapeChars (fileUrl).replace("\\x", "%");
+        //DBGX (fileUrl);
+        
         webView.goToURL (fileUrl);
     }
     else

@@ -67,7 +67,7 @@ void EditAndPreview::resized()
     {
         setupPanel->setVisible(false);
         layoutBar->setVisible(false);
-        wordArea->setBounds (0, 0, getWidth (), getHeight ());
+        wordArea->setBounds (0, 0, getWidth(), getHeight());
     }
 }
 

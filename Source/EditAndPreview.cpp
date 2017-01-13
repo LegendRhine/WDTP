@@ -145,13 +145,15 @@ void EditAndPreview::previewCurrentDoc ()
     if (docOrDirFile.existsAsFile ())
     {
         String fileUrl (HtmlProcessor::createArticleHtml (docOrDirTree, true).getFullPathName());
+        
+        // escape Chinese characters on OSX..
+    #if JUCE_OSX
+        fileUrl = CppTokeniserFunctions::addEscapeChars(fileUrl).replace("\\x", "%");
+    #endif
+
         //DBGX (URL::addEscapeChars (fileUrl, true));
-        
-        // escape Chinese characters..
-        fileUrl = CppTokeniserFunctions::addEscapeChars (fileUrl).replace("\\x", "%");
-        //DBGX (fileUrl);
-        
-        webView.goToURL (fileUrl);
+        //DBGX (fileUrl);        
+        webView.goToURL(fileUrl);
     }
     else
     {

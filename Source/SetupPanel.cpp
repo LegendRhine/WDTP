@@ -22,6 +22,7 @@ SetupPanel::SetupPanel (EditAndPreview* ed) :
         values.add (new Value());
      
     addAndMakeVisible (panel = new PropertyPanel());
+    panel->setMessageWhenEmpty(String());
     panel->getViewport().setScrollBarThickness (10);   
 }
 

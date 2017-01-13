@@ -260,13 +260,13 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
 //=================================================================================================
 const int HtmlProcessor::compareElements (const ValueTree& ft, const ValueTree& st)
 {
-    if (ft.getType ().toString () == "dir" && st.getType ().toString () == "doc")
+    if (ft.getType().toString() == "dir" && st.getType().toString() == "doc")
         return -1;
-    else if (ft.getType ().toString () == "doc" && st.getType ().toString () == "dir")
+    else if (ft.getType().toString() == "doc" && st.getType().toString() == "dir")
         return 1;
     else  // doc vs doc and dir vs dir..
-        return ft.getProperty ("createDate").toString ().compareIgnoreCase
-        (st.getProperty ("createDate").toString ());
+        return ft.getProperty("createDate").toString().compareIgnoreCase
+        (st.getProperty("createDate").toString());
 }
 
 //=========================================================================

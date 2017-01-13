@@ -48,8 +48,9 @@ private:
     enum  
     { 
         // project properties' values
-        projectTitle = 0, projectKeywords, projectDesc, owner, /*projectSkin,*/ 
-        copyrightInfo, projectRenderDir, indexTpl, projectJs,  
+        projectTitle = 0, projectKeywords, projectDesc, owner,  
+        copyrightInfo, projectRenderDir, indexTpl, projectJs, 
+        ftpAddress, ftpUserName, ftpPassword,
 
         // dir properties' values
         dirName, dirTitle, dirKeywords, dirDesc, isMenu, dirTpl, dirJs,

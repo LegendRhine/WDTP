@@ -47,10 +47,12 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     values[projectDesc]->setValue (pTree.getProperty ("description"));
     values[owner]->setValue (pTree.getProperty ("owner"));
     values[copyrightInfo]->setValue (pTree.getProperty ("copyright"));
-    //values[projectSkin]->setValue (pTree.getProperty ("skin"));
     values[projectRenderDir]->setValue (pTree.getProperty ("render"));
     values[indexTpl]->setValue (pTree.getProperty ("tplFile"));
-    values[projectJs]->setValue (pTree.getProperty ("js"));
+    values[projectJs]->setValue(pTree.getProperty("js"));
+    values[ftpAddress]->setValue(pTree.getProperty("ftpAddress"));
+    values[ftpUserName]->setValue(pTree.getProperty("ftpAddress"));
+    values[ftpPassword]->setValue(pTree.getProperty("ftpPassword"));
 
     Array<PropertyComponent*> projectProperties;
 
@@ -59,17 +61,6 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     projectProperties.add (new TextPropertyComponent (*values[projectDesc], TRANS ("Description: "), 0, true));
     projectProperties.add (new TextPropertyComponent (*values[owner], TRANS ("Owner: "), 0, false));
     projectProperties.add (new TextPropertyComponent (*values[copyrightInfo], TRANS ("Copyright: "), 0, true));
-
-    // skin
-    /*StringArray skinSa;
-    skinSa.add (TRANS ("Elegance"));
-    skinSa.add (TRANS ("Meditation"));
-
-    Array<var> skinVar;
-    skinVar.add ("Elegance");
-    skinVar.add ("Meditation");
-
-    projectProperties.add (new ChoicePropertyComponent (*values[projectSkin], TRANS ("Project Skin: "), skinSa, skinVar));*/
 
     // themes dirs
     StringArray themeDirsSa;
@@ -114,7 +105,11 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
                                                         tplFileSa, tplFileVar));
 
     projectProperties.add (new TextPropertyComponent (*values[projectJs], TRANS ("JavaScript: "), 0, true));
-    projectProperties.add (new TextPropertyComponent (Value (pTree.getProperty("modifyDate")), TRANS ("Last Modified: "), 0, false));
+    projectProperties.add(new TextPropertyComponent(Value(pTree.getProperty("modifyDate")), TRANS("Last Modified: "), 0, false));
+
+    projectProperties.add(new TextPropertyComponent(Value(pTree.getProperty("ftpAddress")), TRANS("FTP Address: "), 0, false));
+    projectProperties.add(new TextPropertyComponent(Value(pTree.getProperty("ftpUserName")), TRANS("FTP Account: "), 0, false));
+    projectProperties.add(new PasswordPropertyComponent(Value(pTree.getProperty("ftpPassword")), TRANS("FTP Password: ")));
 
     for (auto p : projectProperties)  p->setPreferredHeight (28);
     projectProperties[2]->setPreferredHeight (28 * 3);
@@ -269,6 +264,8 @@ void SetupPanel::valuesAddListener ()
 {
     for (auto v : values)
         v->addListener (this);
+
+    values[wordCount]->removeListener(this);
 }
 
 //=================================================================================================
@@ -300,14 +297,18 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("owner", values[owner]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[copyrightInfo]))
         currentTree.setProperty ("copyright", values[copyrightInfo]->getValue (), nullptr);
-    /*else if (value.refersToSameSourceAs (*values[projectSkin]))
-        currentTree.setProperty ("skin", values[projectSkin]->getValue (), nullptr);*/
     else if (value.refersToSameSourceAs (*values[projectRenderDir]))
         currentTree.setProperty ("render", values[projectRenderDir]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[indexTpl]))
         currentTree.setProperty ("tplFile", values[indexTpl]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[projectJs]))
         currentTree.setProperty ("js", values[projectJs]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs(*values[ftpAddress]))
+        currentTree.setProperty("ftpAddress", values[ftpAddress]->getValue(), nullptr);
+    else if (value.refersToSameSourceAs(*values[ftpUserName]))
+        currentTree.setProperty("ftpUserName", values[ftpUserName]->getValue(), nullptr);
+    else if (value.refersToSameSourceAs(*values[ftpPassword]))
+        currentTree.setProperty("ftpPassword", values[ftpPassword]->getValue(), nullptr);    
     
     // dir properties
     else if (value.refersToSameSourceAs (*values[dirTitle]))
@@ -344,6 +345,10 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("tplFile", values[docTpl]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[docJs]))
         currentTree.setProperty ("js", values[docJs]->getValue (), nullptr);
+
+    String pw(values[ftpPassword]->getValue().toString());
+    DBG(pw.getHexValue64());
+    DBG(String::toHexString(pw.getHexValue64()));
 
     DocTreeViewItem::needCreateHtml (currentTree);
     projectHasChanged = true;

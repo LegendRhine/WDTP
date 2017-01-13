@@ -110,22 +110,6 @@ void FtpProcessor::setRemoteRootDir (const String& rootDir)
 }
 
 //=========================================================================
-void FtpProcessor::setRemotePathForFtp (const String& destRemotePath,
-                                        const String& tempPathForUse/* = String::empty*/)
-{
-	remoteFileOrDirPath = destRemotePath;
-
-    if (remoteFileOrDirPath.substring (0, 1) == String (File::separator) ||
-        remoteFileOrDirPath.substring (0, 1) == "/")
-        remoteFileOrDirPath = remoteFileOrDirPath.substring (1);
-
-    secondRemotePath = tempPathForUse;
-
-    if (secondRemotePath.substring (0, 1) == String (File::separator) ||
-        secondRemotePath.substring (0, 1) == "/")
-        secondRemotePath = secondRemotePath.substring (1);
-}
-//=========================================================================
 void FtpProcessor::setUserNameAndPassword (String username, String password)
 {
 	userNameAndPassword = username << ":" << password;
@@ -412,10 +396,24 @@ void FtpProcessor::curlSetToCreateRemoteDir ()
     const String createDirCommand ("MKD " + remoteFileOrDirPath);
     curl_easy_setopt (handle, CURLOPT_CUSTOMREQUEST, createDirCommand.toUTF8().getAddress());
 }
+
+//=========================================================================
+void FtpProcessor::setRemotePathForFtp(const String& destRemotePath,
+                                       const String& tempPathForUse/* = String::empty*/) {
+    remoteFileOrDirPath = destRemotePath;
+
+    if (remoteFileOrDirPath.substring(0, 1) == String(File::separator))
+        remoteFileOrDirPath = remoteFileOrDirPath.substring(1);
+
+    secondRemotePath = tempPathForUse;
+
+    if (secondRemotePath.substring(0, 1) == String(File::separator))
+        secondRemotePath = secondRemotePath.substring(1);
+}
 //=================================================================================================
 const bool FtpProcessor::connectOk (String& testResult)
 {
-    testResult = getDirectoryListing (String::empty).joinIntoString (newLine);
+    testResult = getDirectoryListing (String()).joinIntoString (newLine);
     DBG ("FtpProcessor::connectOk() - Root-dir listing or connect test: " << newLine << testResult);
 
     return  testResult != "Login denied" &&

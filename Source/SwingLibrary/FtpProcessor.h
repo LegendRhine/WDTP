@@ -26,8 +26,8 @@ typedef void CURL;
 
     Usage:
 
-    1. Create object, setUserNameAndPassword() for your ftp server, 
-       and setRemoteRootDir(). All of the succedent operations will base on this root-dir.
+    1. Create object, setRemoteRootDir() for your ftp server, all of the succedent operations
+       will base on this root-dir. Then setUserNameAndPassword(). 
        Then call connectOk () to check out if the connection successful or not.
 
     2. If everything is OK, call the functions do what you want.
@@ -41,8 +41,8 @@ typedef void CURL;
     5. Want a progress value when upload and download file? Just call getProgress() after
        perform a operation.
 
-    Note: to use this class, make sure you have the permission of your server, 
-    the normal FTP commands can be performed correctly on this server, 
+    Note: to use this class, make sure you have the permission of your server and 
+    the normal FTP commands must be performed correctly on this server, 
     and the remote file and dir has the proper attribute that can be deleted, created, renamed or moved.
  */
 class FtpProcessor : public TimeSliceClient

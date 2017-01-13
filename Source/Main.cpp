@@ -66,9 +66,11 @@ public:
     //=========================================================================
     void shutdown() override
     {
+        // must destroy all guis first, because they use systemFile
+        mainWindow = nullptr;            
+
         systemFile->saveIfNeeded();
         deleteAndZero (systemFile);
-        mainWindow = nullptr;
     }
 
     //=========================================================================

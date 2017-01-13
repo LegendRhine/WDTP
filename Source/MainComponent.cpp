@@ -27,9 +27,9 @@ MainContentComponent::MainContentComponent()
     toolBar->enableEditPreviewBt (false, true);
 
     // stretched layout. arg: index, min-width, max-width，default x%
-    layoutManager.setItemLayout (0, 2, -0.3, -0.22);  // fileTree
+    layoutManager.setItemLayout (0, 2, -0.3, -0.21);  // fileTree
     layoutManager.setItemLayout (1, 2, 2, 2);            // layoutBar
-    layoutManager.setItemLayout (2, -0.7, -1.0, -0.78);   // editAndPreview
+    layoutManager.setItemLayout (2, -0.7, -1.0, -0.79);   // editAndPreview
 
     setSize (1280, 780);
 }

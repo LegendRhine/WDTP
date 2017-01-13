@@ -4,7 +4,7 @@ html {
   background-color: #cdcdcd;	
 }
 body, p {
-  max-width: 680px;
+  max-width: 708px;
   margin: 0 auto;
   background-color: #dedede;
   font-family: 'Microsoft YaHei', 'Consolas', 'Monaco', 'Lucida Console', monospace;	
@@ -42,7 +42,7 @@ blockquote {
 pre {
   text-indent: 0;
   font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
-  font-size: 15.5px;
+  font-size: 15px;
   line-height: 1.2;
 }
 code {

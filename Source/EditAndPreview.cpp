@@ -31,8 +31,11 @@ EditAndPreview::EditAndPreview ()
     editor->setReturnKeyStartsNewLine (true);
     editor->setTabKeyUsedAsCharacter (true);
 
+    Colour textClr = Colour::fromString(systemFile->getValue("editorFontColour"));
+
     editor->setColour (TextEditor::focusedOutlineColourId, Colour (0x000));
-    editor->setColour (TextEditor::textColourId, Colour::fromString (systemFile->getValue ("editorFontColour")));
+    editor->setColour(TextEditor::textColourId, textClr);
+    editor->setColour(CaretComponent::caretColourId, textClr.withAlpha(0.6f));
     editor->setColour (TextEditor::backgroundColourId, Colour::fromString (systemFile->getValue ("editorBackground")));
     editor->setFont (systemFile->getValue ("fontSize").getFloatValue ());
 
@@ -587,7 +590,7 @@ void EditorForMd::performPopupMenuAction (int index)
         systemFile->setValue ("editorBackground", bgColourSelector->getCurrentColour().toString());
         systemFile->saveIfNeeded ();
     }
-    else if (43 == index)
+    else if (43 == index)  // reset color and font-size
     {
         if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),
                                       TRANS ("Are you sure you want to reset the font size,\n"
@@ -598,7 +601,8 @@ void EditorForMd::performPopupMenuAction (int index)
             systemFile->setValue ("editorFontColour", Colour (0xff303030).toString());
             systemFile->setValue ("editorBackground", Colour (0xffdedede).toString());
 
-            parent->getEditor()->setColour (TextEditor::textColourId, Colour (0xff303030));
+            parent->getEditor()->setColour(TextEditor::textColourId, Colour(0xff303030));
+            parent->getEditor()->setColour(CaretComponent::caretColourId, Colour(0xff303030).withAlpha(0.6f));
             parent->getEditor()->setColour (TextEditor::backgroundColourId, Colour (0xffdedede));
             parent->getEditor()->setFont (SwingUtilities::getFontSize());
 
@@ -657,7 +661,9 @@ void EditorForMd::changeListenerCallback (ChangeBroadcaster* source)
 {
     if (source == fontColourSelector)
     {
-        parent->getEditor ()->setColour (TextEditor::textColourId, fontColourSelector->getCurrentColour());
+        Colour textClr(fontColourSelector->getCurrentColour());
+        parent->getEditor()->setColour(TextEditor::textColourId, textClr);
+        parent->getEditor()->setColour(CaretComponent::caretColourId, textClr.withAlpha(0.6f));
         parent->getEditor ()->applyFontToAllText (systemFile->getValue ("fontSize").getFloatValue ());
     }
     else if (source == bgColourSelector)

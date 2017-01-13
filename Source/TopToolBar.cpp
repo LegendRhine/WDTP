@@ -168,10 +168,10 @@ void TopToolBar::resized ()
     }
 
     // image buttons
-    bts[upload]->setTopLeftPosition(getWidth() / 2 - 41, 13);
-    bts[view]->setTopRightPosition (bts[upload]->getX() - 40, 12);
-    bts[system]->setTopLeftPosition (bts[upload]->getRight() + 40, 12);
-    bts[width]->setTopLeftPosition (bts[system]->getRight() + 40, 12);
+    bts[system]->setTopLeftPosition(getWidth() / 2 - 41, 12);
+    bts[view]->setTopRightPosition (bts[system]->getX() - 40, 12);
+    bts[upload]->setTopLeftPosition (bts[system]->getRight() + 40, 13);
+    bts[width]->setTopLeftPosition (bts[upload]->getRight() + 40, 12);
 }
 
 //=================================================================================================

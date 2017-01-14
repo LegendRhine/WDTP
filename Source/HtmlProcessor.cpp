@@ -157,7 +157,7 @@ const File HtmlProcessor::createArticleHtml (ValueTree& docTree, bool saveProjec
                               + newLine + newLine + errorStr + newLine);
             }
 
-            docTree.setProperty ("needCreateHtml", false, nullptr);
+			docTree.setProperty ("needCreateHtml", false, nullptr);
 
             if (saveProject)
                 FileTreeContainer::saveProject ();

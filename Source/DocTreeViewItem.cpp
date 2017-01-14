@@ -169,6 +169,23 @@ const int DocTreeViewItem::getHtmlMediaFiles (const File& htmlFile, Array<File>&
 }
 
 //=================================================================================================
+const int DocTreeViewItem::getMdMediaFiles (const ValueTree & docOrDirTree, Array<File>& files)
+{
+	const File htmlFile (getHtmlFileOrDir (docOrDirTree));
+	Array<File> mediaFiles;
+
+	for (int i = getHtmlMediaFiles (htmlFile, mediaFiles); --i >= 0; )
+	{
+		const File f (File (mediaFiles[i].getFullPathName ().replace ("site", "docs")));
+
+		if (f.existsAsFile ())
+			files.add (f);
+	}
+
+	return files.size ();
+}
+
+//=================================================================================================
 void DocTreeViewItem::needCreateAndUpload (const ValueTree& tree)
 {
     ValueTree parentTree = tree;
@@ -568,10 +585,10 @@ void DocTreeViewItem::deleteSelected ()
                 // here should delete its media-file(s) first
                 Array<File> htmlMedias;
 
-                for (int i = getHtmlMediaFiles (siteFile, htmlMedias); --i >= 0; )
+                for (int j = getHtmlMediaFiles (siteFile, htmlMedias); --j >= 0; )
                 {
-					const String mediaFileName (htmlMedias[i].getFullPathName ());
-					htmlMedias[i].moveToTrash ();
+					const String mediaFileName (htmlMedias[j].getFullPathName ());
+					htmlMedias[j].moveToTrash ();
 					File (mediaFileName.replace ("site", "docs")).moveToTrash ();
                 }
 

@@ -211,19 +211,7 @@ void EditAndPreview::textEditorTextChanged (TextEditor&)
     {
         currentContent = editor->getText ();
         docHasChanged = true;
-
-        ValueTree allParentTree = docOrDirTree;
-        allParentTree.setProperty ("needCreateHtml", true, nullptr);
-        allParentTree.setProperty ("modifyDate",
-                                   SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), true), nullptr);
-
-        while (allParentTree.getParent().isValid ())
-        {
-            allParentTree = allParentTree.getParent ();
-            allParentTree.setProperty ("needCreateHtml", true, nullptr);
-            allParentTree.setProperty ("modifyDate",
-                                       SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), true), nullptr);
-        }
+        DocTreeViewItem::needCreateHtml (docOrDirTree);
 
         startTimer (3000);
     }    

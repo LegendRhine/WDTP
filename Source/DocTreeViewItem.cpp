@@ -135,14 +135,17 @@ const File DocTreeViewItem::getHtmlFileOrDir (const ValueTree& tree)
 void DocTreeViewItem::needCreateHtml (const ValueTree& tree)
 {
     ValueTree parentTree = tree;
+    parentTree.setProperty("needCreateHtml", true, nullptr);
+    parentTree.setProperty("modifyDate",
+                           SwingUtilities::getTimeStringWithSeparator(SwingUtilities::getCurrentTimeString(), true), nullptr);
 
     while (parentTree.getParent().isValid ())
     {
-        parentTree.setProperty ("needCreateHtml", true, nullptr);
         parentTree = parentTree.getParent ();
+        parentTree.setProperty("needCreateHtml", true, nullptr);
+        parentTree.setProperty("modifyDate",
+                               SwingUtilities::getTimeStringWithSeparator(SwingUtilities::getCurrentTimeString(), true), nullptr);
     }
-
-    parentTree.setProperty ("needCreateHtml", true, nullptr);
 }
 
 //=================================================================================================
@@ -189,7 +192,6 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addItem (2, TRANS ("New Document..."), exist && !isDoc && onlyOneSelected);
         m.addSeparator ();
 
-        m.addItem (3, TRANS ("Import..."), exist && !isDoc && onlyOneSelected);
         m.addItem (4, TRANS ("Export..."), exist && onlyOneSelected);
         m.addSeparator ();
 
@@ -239,8 +241,6 @@ void DocTreeViewItem::menuPerform (const int index)
         createNewFolder ();
     else if (index == 2)
         createNewDocument ();
-    else if (index == 3)
-        importDocuments ();
     else if (index == 4)
         exportAsMdFile ();
     else if (index == 10)
@@ -302,8 +302,7 @@ void DocTreeViewItem::renameSelectedItem ()
         if (docFileOrDir.moveFileTo (newDocFile))
         {
             // save the project file
-            tree.setProperty ("name", newDocFile.getFileNameWithoutExtension (), nullptr);
-            tree.setProperty ("modifyDate", SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), true), nullptr);
+            tree.setProperty ("name", newDocFile.getFileNameWithoutExtension (), nullptr);            
             needCreateHtml (tree);
 
             // rename the site dir or html-file
@@ -371,7 +370,7 @@ void DocTreeViewItem::exportAsMdFile ()
 
     // single doc or dir-docs
     if ((tree.getType ().toString () == "doc") ? getMdFileOrDir (tree).copyFileTo (mdFile)
-        : exportDocsAsMd (this, tree, mdFile))
+        : exportDocsAsMd (this, mdFile))
     {
         if (AlertWindow::showOkCancelBox (AlertWindow::InfoIcon, TRANS ("Message"),
                                           TRANS ("File: \"") + mdFile.getFullPathName () + "\""
@@ -383,48 +382,6 @@ void DocTreeViewItem::exportAsMdFile ()
     {
         SHOW_MESSAGE (TRANS ("Export Failed."));
     }
-}
-
-//=================================================================================================
-void DocTreeViewItem::importDocuments ()
-{
-    // can't import any doc under a doc!
-    jassert (tree.getType ().toString () != "doc");
-
-    FileChooser fc (TRANS ("Import document(s)..."), File::nonexistent, String(), false);
-
-    if (!fc.browseForMultipleFilesToOpen ())
-        return;
-
-    const Array<File> docFiles (fc.getResults ());
-    const File thisDir (getMdFileOrDir (tree));
-    jassert (thisDir.isDirectory ()); // can't copy external docs to a nonexists dir
-    
-    for (int i = docFiles.size (); --i >= 0; )
-    {
-        // copy md-file to current dir
-        const String& docName (docFiles[i].getFileNameWithoutExtension ());
-        const File& targetFile (thisDir.getChildFile (docName + ".md").getNonexistentSibling (true));
-        
-        if (docFiles[i].copyFileTo (targetFile))
-        {
-            ValueTree docTree ("doc");
-            docTree.setProperty ("name", targetFile.getFileNameWithoutExtension (), nullptr);
-            docTree.setProperty ("title", targetFile.getFileNameWithoutExtension (), nullptr);
-            docTree.setProperty ("js", String (), nullptr);
-            docTree.setProperty ("needCreateHtml", true, nullptr);
-
-            tree.addChild (docTree, 0, nullptr);
-        }
-        else
-        {
-            SHOW_MESSAGE (TRANS ("Can't import this document: ") + newLine +
-                          docFiles[i].getFullPathName());
-        }
-    }
-
-    needCreateHtml (tree);
-    FileTreeContainer::saveProject ();
 }
 
 //=================================================================================================
@@ -465,7 +422,6 @@ void DocTreeViewItem::createNewDocument ()
         docTree.setProperty ("createDate", 
                              SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), true), 
                              nullptr);
-        docTree.setProperty ("modifyDate", docTree.getProperty("createDate").toString(), nullptr);
         
         // must update this tree before show this new item
         tree.removeListener (this);
@@ -518,7 +474,6 @@ void DocTreeViewItem::createNewFolder ()
         dirTree.setProperty ("createDate",
                              SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), true),
                              nullptr);
-        dirTree.setProperty ("modifyDate", dirTree.getProperty("createDate").toString(), nullptr);
 
         // must update this tree before show this new item
         tree.removeListener (this);
@@ -570,6 +525,8 @@ void DocTreeViewItem::deleteSelected ()
             {
                 const File mdFile (getMdFileOrDir (v));
                 const File siteFile (getHtmlFileOrDir (mdFile));
+
+                // TODO... here should also delete its media-file(s)
 
                 mdFile.moveToTrash ();
                 siteFile.deleteRecursively ();
@@ -630,28 +587,25 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
 
 //=================================================================================================
 const bool DocTreeViewItem::exportDocsAsMd (DocTreeViewItem* item,
-                                            const ValueTree& tree,
                                             const File& fileAppendTo)
 {
     item->setOpen (true);
 
     if (item->getNumSubItems () > 0)
-    {
-        jassert (item->getNumSubItems () == tree.getNumChildren ());
-
+    {       
         for (int i = 0; i < item->getNumSubItems (); ++i)
         {
             DocTreeViewItem* currentItem = dynamic_cast<DocTreeViewItem*> (item->getSubItem (i));
             jassert (currentItem != nullptr);
 
             // recursive traversal
-            if (!exportDocsAsMd (currentItem, tree.getChild (i), fileAppendTo))
+            if (!exportDocsAsMd (currentItem, fileAppendTo))
                 return false;
         }
     }
     else
     {
-        const File& currentFile (getMdFileOrDir (tree));
+        const File& currentFile (getMdFileOrDir (item->getTree()));
 
         if (currentFile.existsAsFile () && currentFile.getSize () > 0)
             return fileAppendTo.appendText (currentFile.loadFileAsString ().trimEnd () + newLine + newLine);

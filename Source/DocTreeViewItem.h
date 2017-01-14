@@ -66,7 +66,6 @@ private:
     //=========================================================================
     /** export the selected item (all project-docs, a dir-docs or a doc) as a single md file. */
     static const bool exportDocsAsMd (DocTreeViewItem* item,
-                                      const ValueTree& tree,
                                       const File& fileAppendTo);
 
     static DocTreeViewItem* getRootItem (DocTreeViewItem* subItem);
@@ -77,7 +76,6 @@ private:
     // internal call the static method exportDocsAsMd()
     void exportAsMdFile ();
     void renameSelectedItem ();
-    void importDocuments ();
     void createNewDocument ();
     void createNewFolder ();
     void deleteSelected ();

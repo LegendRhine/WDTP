@@ -346,7 +346,7 @@ void SetupPanel::valueChanged (Value& value)
     else if (value.refersToSameSourceAs (*values[docJs]))
         currentTree.setProperty ("js", values[docJs]->getValue (), nullptr);
 
-    DocTreeViewItem::needCreateHtml (currentTree);
+    DocTreeViewItem::needCreateAndUpload (currentTree);
     projectHasChanged = true;
     startTimer (200);
 }

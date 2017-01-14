@@ -54,9 +54,11 @@ EditAndPreview::~EditAndPreview()
 //=========================================================================
 void EditAndPreview::resized()
 {
-    Component* wordArea = (webView.isVisible () ? static_cast<Component*>(&webView)
-                                                       : static_cast<Component*>(editor));
-    
+    Component* wordArea = (webView.isVisible () ? dynamic_cast<Component*>(&webView)
+                                                : dynamic_cast<Component*>(editor.get()));
+
+    jassert (wordArea != nullptr);
+
     if (getParentComponent()->getWidth() > 1020)  // stretched layout
     {
         setupPanel->setVisible(true);
@@ -134,7 +136,6 @@ void EditAndPreview::editCurrentDoc ()
     editor->setEnabled (true);
     editor->grabKeyboardFocus ();    
 
-    //setupPanel->setEnabled (true);
     resized ();
 }
 
@@ -163,7 +164,6 @@ void EditAndPreview::previewCurrentDoc ()
         webView.goToURL (HtmlProcessor::createIndexHtml (docOrDirTree, true).getFullPathName());
     }
     
-    //setupPanel->setEnabled (docOrDirFile.isDirectory());
     resized ();
 }
 
@@ -211,7 +211,7 @@ void EditAndPreview::textEditorTextChanged (TextEditor&)
     {
         currentContent = editor->getText ();
         docHasChanged = true;
-        DocTreeViewItem::needCreateHtml (docOrDirTree);
+        DocTreeViewItem::needCreateAndUpload (docOrDirTree);
 
         startTimer (3000);
     }    
@@ -615,7 +615,7 @@ void EditorForMd::performPopupMenuAction (int index)
         moveCaretToEndOfLine (false);
     }
 
-    DocTreeViewItem::needCreateHtml (docTree);
+    DocTreeViewItem::needCreateAndUpload (docTree);
 
     // save the project then update the setup panel
     FileTreeContainer::saveProject ();

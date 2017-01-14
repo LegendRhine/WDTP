@@ -33,7 +33,7 @@ public:
     static const File getHtmlFileOrDir (const ValueTree& tree);
 
     /** set the arg tree and all its parents to needCreateHtml. */
-    static void needCreateHtml (const ValueTree& tree);
+    static void needCreateAndUpload (const ValueTree& tree);
 
     // static public methods for drag-drop moving items..
     static void moveItems (const OwnedArray<ValueTree>& items, 

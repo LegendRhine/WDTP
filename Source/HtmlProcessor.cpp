@@ -147,7 +147,7 @@ const File HtmlProcessor::createArticleHtml (ValueTree& docTree, bool saveProjec
             {
                 htmlMedias[i].create ();
 
-                if (!docMedias[i].copyFileTo (htmlMedias[i]))
+                if (docMedias[i].existsAsFile() && !docMedias[i].copyFileTo (htmlMedias[i]))
                     errorStr << docMedias[i].getFullPathName () << newLine;
             }
 

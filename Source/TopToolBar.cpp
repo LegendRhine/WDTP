@@ -445,7 +445,8 @@ void TopToolBar::createNewProject ()
     p.setProperty ("tooltip", 0, nullptr);
     p.setProperty ("render", "blog", nullptr);
     p.setProperty ("tplFile", "index.html", nullptr);
-    p.setProperty ("needCreateHtml", true, nullptr);
+    p.setProperty("needCreateHtml", true, nullptr);
+    p.setProperty("needUpload", true, nullptr);
 
     // create dirs and default template files
     projectFile.getSiblingFile ("docs").createDirectory();
@@ -507,7 +508,8 @@ void TopToolBar::cleanAndGenerateAll ()
 //=================================================================================================
 void TopToolBar::generateHtmlFiles (ValueTree tree)
 {
-    tree.setProperty ("needCreateHtml", true, nullptr);
+    tree.setProperty("needCreateHtml", true, nullptr);
+    tree.setProperty("needUpload", true, nullptr);
 
     if (tree.getType().toString() == "doc")
         HtmlProcessor::createArticleHtml (tree, false);

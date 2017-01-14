@@ -80,8 +80,8 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
     // mark of doc and dir item
     String markStr;
 
-    if (tree.getType().toString() == "doc")
-        markStr = CharPointer_UTF8("\xe2\x97\x8f ");
+    if (tree.getType().toString() != "wdtpProject")
+        markStr = CharPointer_UTF8((bool)tree.getProperty("needUpload") ? "* " : "\xe2\x97\x8f ");
 
     g.drawText (markStr + itemName, leftGap, 0, width - 4, height, Justification::centredLeft, true);
 }
@@ -132,19 +132,21 @@ const File DocTreeViewItem::getHtmlFileOrDir (const ValueTree& tree)
 }
 
 //=================================================================================================
-void DocTreeViewItem::needCreateHtml (const ValueTree& tree)
+void DocTreeViewItem::needCreateAndUpload (const ValueTree& tree)
 {
     ValueTree parentTree = tree;
+    const String modifyDate(SwingUtilities::getTimeStringWithSeparator(SwingUtilities::getCurrentTimeString(), true));
+
     parentTree.setProperty("needCreateHtml", true, nullptr);
-    parentTree.setProperty("modifyDate",
-                           SwingUtilities::getTimeStringWithSeparator(SwingUtilities::getCurrentTimeString(), true), nullptr);
+    parentTree.setProperty("modifyDate", modifyDate, nullptr);
+    parentTree.setProperty("needUpload", true, nullptr);
 
     while (parentTree.getParent().isValid ())
     {
         parentTree = parentTree.getParent ();
         parentTree.setProperty("needCreateHtml", true, nullptr);
-        parentTree.setProperty("modifyDate",
-                               SwingUtilities::getTimeStringWithSeparator(SwingUtilities::getCurrentTimeString(), true), nullptr);
+        parentTree.setProperty("modifyDate", modifyDate, nullptr);
+        parentTree.setProperty("needUpload", true, nullptr);
     }
 }
 
@@ -303,7 +305,7 @@ void DocTreeViewItem::renameSelectedItem ()
         {
             // save the project file
             tree.setProperty ("name", newDocFile.getFileNameWithoutExtension (), nullptr);            
-            needCreateHtml (tree);
+            needCreateAndUpload (tree);
 
             // rename the site dir or html-file
             File siteOldFile;
@@ -426,7 +428,7 @@ void DocTreeViewItem::createNewDocument ()
         // must update this tree before show this new item
         tree.removeListener (this);
         tree.addChild (docTree, 0, nullptr);
-        needCreateHtml (docTree);
+        needCreateAndUpload (docTree);
         tree.addListener (this);
 
         // add and select the new item 
@@ -478,7 +480,7 @@ void DocTreeViewItem::createNewFolder ()
         // must update this tree before show this new item
         tree.removeListener (this);
         tree.addChild (dirTree, 0, nullptr);
-        needCreateHtml (dirTree);
+        needCreateAndUpload (dirTree);
         tree.addListener (this);
 
         // this item add the new dir, then select the index item 
@@ -519,7 +521,7 @@ void DocTreeViewItem::deleteSelected ()
         for (int i = selectedTrees.size (); --i >= 0; )
         {
             ValueTree& v = *selectedTrees.getUnchecked (i);
-            needCreateHtml (v);
+            needCreateAndUpload (v);
 
             if (v.getParent ().isValid ())
             {
@@ -706,10 +708,10 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items,
             {
                 v.setProperty ("name", targetFile.getFileNameWithoutExtension (), nullptr);
                 v.getParent ().removeChild (v, nullptr);
-                needCreateHtml (v.getParent ());
+                needCreateAndUpload (v.getParent ());
 
                 thisTree.addChild (v, 0, nullptr);
-                needCreateHtml (thisTree);
+                needCreateAndUpload (thisTree);
             }
             else
             {

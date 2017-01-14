@@ -12,10 +12,10 @@
 
 //=================================================================================================
 const String HtmlProcessor::getFileList (const ValueTree& dirTree_,
-                                           const bool reverse,
-                                           const bool includeDir,
-                                           const bool extrctIntro,
-                                           const int itemsPrePage/* = 0*/)
+                                         const bool reverse,
+                                         const bool includeDir,
+                                         const bool extrctIntro,
+                                         const int itemsPerPage/* = 0*/)
 {   
     jassert (dirTree_.getType ().toString () != "doc");
 

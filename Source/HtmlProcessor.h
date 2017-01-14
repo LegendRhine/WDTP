@@ -25,7 +25,7 @@ struct HtmlProcessor
                                      const bool reverse,
                                      const bool includeDir,
                                      const bool extrctIntro,
-                                     const int itemsPrePage = 0);
+                                     const int itemsPerPage = 0);
 
     static const File createArticleHtml (ValueTree& docTree, bool saveProjectAfterCreated);
     static const File createIndexHtml (ValueTree& dirTree, bool saveProjectAfterCreated);

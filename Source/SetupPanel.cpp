@@ -107,9 +107,9 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     projectProperties.add (new TextPropertyComponent (*values[projectJs], TRANS ("JavaScript: "), 0, true));
     projectProperties.add(new TextPropertyComponent(Value(pTree.getProperty("modifyDate")), TRANS("Last Modified: "), 0, false));
 
-    projectProperties.add(new TextPropertyComponent(Value(pTree.getProperty("ftpAddress")), TRANS("FTP Address: "), 0, false));
-    projectProperties.add(new TextPropertyComponent(Value(pTree.getProperty("ftpUserName")), TRANS("FTP Account: "), 0, false));
-    projectProperties.add(new PasswordPropertyComponent(Value(pTree.getProperty("ftpPassword")), TRANS("FTP Password: ")));
+    projectProperties.add(new TextPropertyComponent(*values[ftpAddress], TRANS("FTP Address: "), 0, false));
+    projectProperties.add(new TextPropertyComponent(*values[ftpUserName], TRANS("FTP Account: "), 0, false));
+    projectProperties.add(new PasswordPropertyComponent(*values[ftpPassword], TRANS("FTP Password: ")));
 
     for (auto p : projectProperties)  p->setPreferredHeight (28);
     projectProperties[2]->setPreferredHeight (28 * 3);
@@ -345,10 +345,6 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("tplFile", values[docTpl]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[docJs]))
         currentTree.setProperty ("js", values[docJs]->getValue (), nullptr);
-
-    String pw(values[ftpPassword]->getValue().toString());
-    DBG(pw.getHexValue64());
-    DBG(String::toHexString(pw.getHexValue64()));
 
     DocTreeViewItem::needCreateHtml (currentTree);
     projectHasChanged = true;

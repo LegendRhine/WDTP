@@ -2,8 +2,8 @@
   ==============================================================================
 
     PasswordPropertyComponent.cpp
-    Created: 18 Sep 2016 9:35:48am
-    Author:  SwingCoder
+    Created: 12 Jan 2017 9:35:48am
+    Author:  LoopFine
 
   ==============================================================================
 */
@@ -12,76 +12,133 @@
 #include "PasswordPropertyComponent.h"
 
 //==============================================================================
-PasswordPropertyComponent::PasswordPropertyComponent (const String& name)
-    : PropertyComponent (name)
+class PasswordPropertyComponent::LabelComp : public Label
 {
-    createEditor ();
+public:
+    LabelComp(PasswordPropertyComponent& tpc)
+        : Label(String(), String()),
+        owner(tpc)
+    {
+        setEditable(true, true, false);
+        updateColours();
+    }
+    
+    TextEditor* createEditorComponent() override
+    {
+        TextEditor* const ed = Label::createEditorComponent();
+        //ed->setPasswordCharacter('*');
+        ed->setInputRestrictions(120);
+
+        return ed;
+    }
+
+    void paint (Graphics& g) override
+    {
+        g.fillAll(findColour(Label::backgroundColourId));
+
+        if (!isBeingEdited())
+        {
+            const float alpha = isEnabled() ? 1.0f : 0.5f;
+            const Font f(LookAndFeel::getDefaultLookAndFeel().getLabelFont(*this));
+
+            g.setColour(findColour(Label::textColourId).withMultipliedAlpha(alpha));
+            g.setFont(f);
+
+            Rectangle<int> textArea(getBorderSize().subtractedFrom(getLocalBounds()));
+
+            const String passwordChars (String::repeatedString("*", getText().length()));
+            g.drawFittedText(passwordChars, textArea, getJustificationType(),
+                             jmax(1, (int) (textArea.getHeight() / f.getHeight())),
+                             getMinimumHorizontalScale());
+
+            g.setColour(findColour(Label::outlineColourId).withMultipliedAlpha(alpha));
+        }
+        else if (isEnabled())
+        {
+            g.setColour(findColour(Label::outlineColourId));
+        }
+
+        g.drawRect(getLocalBounds());
+    }
+
+    void textWasEdited() override
+    {
+        owner.textWasEdited();
+    }
+
+    void updateColours()
+    {
+        setColour(backgroundColourId, owner.findColour(TextPropertyComponent::backgroundColourId));
+        setColour(outlineColourId, owner.findColour(TextPropertyComponent::outlineColourId));
+        setColour(textColourId, owner.findColour(TextPropertyComponent::textColourId));
+        repaint();
+    }
+
+private:
+    PasswordPropertyComponent& owner;
+};
+
+//===============================================================================
+PasswordPropertyComponent::PasswordPropertyComponent(const Value& valueToControl,
+                                                     const String& name)
+    : PropertyComponent(name)
+{
+    addAndMakeVisible(textEditor = new LabelComp(*this));
+    textEditor->getTextValue().referTo(valueToControl);
 }
 
-PasswordPropertyComponent::PasswordPropertyComponent (const Value& valueToControl,
-                                              const String& name)
-    : PropertyComponent (name)
+PasswordPropertyComponent::~PasswordPropertyComponent()
+{ }
+
+void PasswordPropertyComponent::setText(const String& newText)
 {
-    createEditor ();
-    textEditor->getTextValue().referTo (valueToControl);
+    textEditor->setText(newText, sendNotificationSync);
 }
 
-//=========================================================================
-PasswordPropertyComponent::~PasswordPropertyComponent ()
+String PasswordPropertyComponent::getText() const
 {
+    return textEditor->getText();
 }
 
-//=========================================================================
-void PasswordPropertyComponent::setText (const String& newText)
+Value& PasswordPropertyComponent::getValue() const
 {
-    textEditor->setText (newText, true);
+    return textEditor->getTextValue();
 }
 
-//=========================================================================
-String PasswordPropertyComponent::getText () const
+void PasswordPropertyComponent::refresh()
 {
-    return textEditor->getText ();
+    textEditor->setText(getText(), dontSendNotification);
 }
 
-//=========================================================================
-Value& PasswordPropertyComponent::getValue () const
+void PasswordPropertyComponent::textWasEdited()
 {
-    return textEditor->getTextValue ();
+    const String newText(textEditor->getText());
+
+    if (getText() != newText)
+        setText(newText);
+
+    callListeners();
 }
 
-//=========================================================================
-void PasswordPropertyComponent::createEditor ()
+void PasswordPropertyComponent::addListener(PasswordPropertyComponent::Listener* const listener)
 {
-    addAndMakeVisible (textEditor = new TextEditor (String(), '*'));
-    textEditor->setColour (TextEditor::outlineColourId, findColour (TextPropertyComponent::outlineColourId));
-    textEditor->setInputRestrictions (60);
-    textEditor->setSelectAllWhenFocused (true);
+    listenerList.add(listener);
 }
 
-//=========================================================================
-void PasswordPropertyComponent::refresh ()
+void PasswordPropertyComponent::removeListener(PasswordPropertyComponent::Listener* const listener)
 {
-    textEditor->setText (getText(), dontSendNotification);
+    listenerList.remove(listener);
 }
 
-//=========================================================================
-void PasswordPropertyComponent::textWasEdited ()
+void PasswordPropertyComponent::callListeners()
 {
-    const String newText (textEditor->getText ());
-
-    if (getText () != newText)
-        setText (newText);
+    Component::BailOutChecker checker(this);
+    listenerList.callChecked(checker, &PasswordPropertyComponent::Listener::textPropertyComponentChanged, this);
 }
 
-//=================================================================================================
-void PasswordPropertyComponent::focusOfChildComponentChanged (FocusChangeType /*cause*/)
+void PasswordPropertyComponent::colourChanged()
 {
-    if (!hasKeyboardFocus (true))
-        textEditor->setHighlightedRegion (Range<int> (0, 0));
+    PropertyComponent::colourChanged();
+    textEditor->updateColours();
 }
 
-//=========================================================================
-void PasswordPropertyComponent::colourChanged ()
-{
-    PropertyComponent::colourChanged ();
-}

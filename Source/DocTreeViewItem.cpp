@@ -132,6 +132,43 @@ const File DocTreeViewItem::getHtmlFileOrDir (const ValueTree& tree)
 }
 
 //=================================================================================================
+const int DocTreeViewItem::getHtmlMediaFiles (const File& htmlFile, Array<File>& files)
+{
+    jassert (htmlFile.existsAsFile());
+    const String htmlStr (htmlFile.loadFileAsString());
+
+    if (htmlStr.trim() == String())
+        return 0;
+
+    int indexStart = htmlStr.indexOfIgnoreCase(0, "src=\"");
+    int indexEnd = htmlStr.indexOfIgnoreCase(indexStart + 5, "\"");
+    int fileNumber = 0;
+
+    while (indexStart != -1 && indexEnd != -1)
+    {
+        files.add (htmlFile.getSiblingFile("media").getChildFile(htmlStr.substring(indexStart + 11, indexEnd)));
+        ++fileNumber;
+
+        indexStart = htmlStr.indexOfIgnoreCase(indexEnd + 2, "src=\"");
+
+        if (indexStart != -1)
+            indexEnd = htmlStr.indexOfIgnoreCase(indexStart + 5, "\"");
+    }
+
+    // remove non-local media-file(s)
+    for (int i = files.size(); --i >= 0; )
+    {
+        if (! files[i].existsAsFile())
+        {
+            files.remove(i);
+            --fileNumber;
+        }         
+    }
+
+    return fileNumber;
+}
+
+//=================================================================================================
 void DocTreeViewItem::needCreateAndUpload (const ValueTree& tree)
 {
     ValueTree parentTree = tree;
@@ -528,8 +565,17 @@ void DocTreeViewItem::deleteSelected ()
                 const File mdFile (getMdFileOrDir (v));
                 const File siteFile (getHtmlFileOrDir (mdFile));
 
-                // TODO... here should also delete its media-file(s)
+                // here should delete its media-file(s) first
+                Array<File> htmlMedias;
 
+                for (int i = getHtmlMediaFiles (siteFile, htmlMedias); --i >= 0; )
+                {
+					const String mediaFileName (htmlMedias[i].getFullPathName ());
+					htmlMedias[i].moveToTrash ();
+					File (mediaFileName.replace ("site", "docs")).moveToTrash ();
+                }
+
+				// delete the two-files
                 mdFile.moveToTrash ();
                 siteFile.deleteRecursively ();
                 v.getParent ().removeChild (v, nullptr);

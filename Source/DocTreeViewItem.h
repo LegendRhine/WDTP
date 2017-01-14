@@ -32,6 +32,10 @@ public:
     static const File getHtmlFileOrDir (const File& mdFileOrDir);
     static const File getHtmlFileOrDir (const ValueTree& tree);
 
+    /** get a html-file's all local media files. the result will store in arg-2.
+        return: media-files' number of this html-file. */
+    static const int getHtmlMediaFiles (const File& htmlFile, Array<File>& files);
+
     /** set the arg tree and all its parents to needCreateHtml. */
     static void needCreateAndUpload (const ValueTree& tree);
 

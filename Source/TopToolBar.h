@@ -47,9 +47,11 @@ private:
     void createNewProject ();
     void openProject();
     void cleanAndGenerateAll ();
+	void cleanLocalMedias ();
 
     /** generate the tree and all its children's html file */
-    static void generateHtmlFiles (ValueTree tree);
+	static void generateHtmlFiles (ValueTree tree);
+	static void generateHtmlFilesIfNeeded (ValueTree tree);
 
     void setUiColour();
     void resetUiColour();

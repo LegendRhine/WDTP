@@ -36,11 +36,9 @@ public:
         return: media-files' number of this html-file. */
 	static const int getHtmlMediaFiles (const File& htmlFile, Array<File>& files);
 
-	/** 获取1参植树所代表的MD文件（目录）的媒体文件。所找到的媒体文件将保存在2参数组中。
-	    
-		注意：绝对不要在生成html网页文件的函数中调用此函数。因为此时html并未生成，
-		其媒体文件尚不存在。而本函数内部使用 getHtmlMediaFiles() 来获取并转换媒体文件。	*/
-	static const int getMdMediaFiles (const ValueTree& docOrDirTree, Array<File>& files);
+	/** get a doc-file's all local media files. the result will store in arg-2.
+		return: media-files' number of this doc-file.	*/
+	static const int getMdMediaFiles (const File& doc, Array<File>& files);
 
     /** set the arg tree and all its parents to needCreateHtml. */
     static void needCreateAndUpload (const ValueTree& tree);

@@ -67,7 +67,11 @@ private:
 
     /** http://xxx.com  open in new tab/window, must start with: " http" and end with " "   */
     static const String spaceLinkParse (const String& mdString);
+
+public:
     static const String imageParse (const String& mdString);  /**< ![](media/xxx.jpg) */
+
+private:
     static const String mdLinkParse (const String& mdString); /**< [](http://xxx.com) */    
 
     // only support two-level nested lists. + for ordered (true), - for unordered (false)

@@ -142,13 +142,10 @@ const int DocTreeViewItem::getHtmlMediaFiles (const File& htmlFile, Array<File>&
 
     int indexStart = htmlStr.indexOfIgnoreCase(0, "src=\"");
     int indexEnd = htmlStr.indexOfIgnoreCase(indexStart + 5, "\"");
-    int fileNumber = 0;
 
     while (indexStart != -1 && indexEnd != -1)
     {
         files.add (htmlFile.getSiblingFile("media").getChildFile(htmlStr.substring(indexStart + 11, indexEnd)));
-        ++fileNumber;
-
         indexStart = htmlStr.indexOfIgnoreCase(indexEnd + 2, "src=\"");
 
         if (indexStart != -1)
@@ -159,27 +156,40 @@ const int DocTreeViewItem::getHtmlMediaFiles (const File& htmlFile, Array<File>&
     for (int i = files.size(); --i >= 0; )
     {
         if (! files[i].existsAsFile())
-        {
             files.remove(i);
-            --fileNumber;
-        }         
     }
 
-    return fileNumber;
+    return files.size ();
 }
 
 //=================================================================================================
-const int DocTreeViewItem::getMdMediaFiles (const ValueTree & docOrDirTree, Array<File>& files)
+const int DocTreeViewItem::getMdMediaFiles (const File& doc, Array<File>& files)
 {
-	const File htmlFile (getHtmlFileOrDir (docOrDirTree));
-	Array<File> mediaFiles;
+	if (doc.isDirectory () || ! doc.getSiblingFile("media").exists ())
+		return 0;
 
-	for (int i = getHtmlMediaFiles (htmlFile, mediaFiles); --i >= 0; )
+	const String htmlStr = Md2Html::imageParse (doc.loadFileAsString ());
+
+	if (htmlStr.trim () == String ())
+		return 0;
+
+	int indexStart = htmlStr.indexOfIgnoreCase (0, "src=\"");
+	int indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
+
+	while (indexStart != -1 && indexEnd != -1)
 	{
-		const File f (File (mediaFiles[i].getFullPathName ().replace ("site", "docs")));
+		files.add (doc.getSiblingFile ("media").getChildFile (htmlStr.substring (indexStart + 11, indexEnd)));
+		indexStart = htmlStr.indexOfIgnoreCase (indexEnd + 2, "src=\"");
 
-		if (f.existsAsFile ())
-			files.add (f);
+		if (indexStart != -1)
+			indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
+	}
+
+	// remove non-local media-file(s)
+	for (int i = files.size (); --i >= 0; )
+	{
+		if (!files[i].existsAsFile ())
+			files.remove (i);
 	}
 
 	return files.size ();

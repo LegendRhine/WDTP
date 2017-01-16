@@ -323,7 +323,8 @@ void TopToolBar::popupSystemMenu ()
     m.addItem (3, TRANS ("Close Project"), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
-    m.addItem (5, TRANS ("Regenerate All..."), fileTreeContainer->hasLoadedProject ());
+	m.addItem (5, TRANS ("Regenerate All..."), fileTreeContainer->hasLoadedProject ());
+	m.addItem (6, TRANS ("Clean Local Medias..."), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
     PopupMenu lanMenu;
@@ -366,7 +367,8 @@ void TopToolBar::menuPerform (const int index)
     else if (index == 3)    fileTreeContainer->closeProject ();
 
     // clean up and re-generate the whole site
-    else if (index == 5)    cleanAndGenerateAll ();
+	else if (index == 5)    cleanAndGenerateAll ();
+	else if (index == 6)    cleanLocalMedias ();
 
     else if (index == 15)  setUiColour();
     else if (index == 16)  resetUiColour();
@@ -484,8 +486,8 @@ void TopToolBar::cleanAndGenerateAll ()
         // prevent it will be deleted
         const File addinDir (FileTreeContainer::projectFile.getSiblingFile ("site").getChildFile("add-in"));
         jassert (addinDir.isDirectory());
-        const File tempDirDorAddin (FileTreeContainer::projectFile.getSiblingFile ("add-in"));
-        addinDir.copyDirectoryTo (tempDirDorAddin);
+        const File tempDirForAddin (FileTreeContainer::projectFile.getSiblingFile ("add-in"));
+        addinDir.copyDirectoryTo (tempDirForAddin);
 
         // cleanup
         if (FileTreeContainer::projectFile.getSiblingFile ("site").deleteRecursively())
@@ -495,12 +497,12 @@ void TopToolBar::cleanAndGenerateAll ()
             FileTreeContainer::saveProject ();
 
             // restore the add-in dir
-            tempDirDorAddin.moveFileTo (addinDir);
-            SHOW_MESSAGE (TRANS ("Clean and regenerate successful!"));
+            tempDirForAddin.moveFileTo (addinDir);
+            SHOW_MESSAGE (TRANS ("Site clean and regenerate successful!"));
         }
         else
         {
-            tempDirDorAddin.deleteRecursively();
+            tempDirForAddin.deleteRecursively();
         }
     }
 }
@@ -511,13 +513,37 @@ void TopToolBar::generateHtmlFiles (ValueTree tree)
     tree.setProperty("needCreateHtml", true, nullptr);
     tree.setProperty("needUpload", true, nullptr);
 
-    if (tree.getType().toString() == "doc")
-        HtmlProcessor::createArticleHtml (tree, false);
-    else
-        HtmlProcessor::createIndexHtml (tree, false);
+	if (tree.getType ().toString () == "doc")
+	{
+		HtmlProcessor::createArticleHtml (tree, false);
+	}
+	else
+	{
+		HtmlProcessor::createIndexHtml (tree, false);
 
-    for (int i = tree.getNumChildren(); --i >= 0; )
-        generateHtmlFiles (tree.getChild (i));
+		for (int i = tree.getNumChildren (); --i >= 0; )
+			generateHtmlFiles (tree.getChild (i));
+	}
+}
+
+//=================================================================================================
+void TopToolBar::generateHtmlFilesIfNeeded (ValueTree tree)
+{
+	if (tree.getType ().toString () == "doc")
+	{
+		if ((bool)tree.getProperty ("needCreateHtml"))
+			HtmlProcessor::createArticleHtml (tree, false);
+	}
+	else
+	{
+		if ((bool)tree.getProperty ("needCreateHtml"))
+		{
+			HtmlProcessor::createIndexHtml (tree, false);
+
+			for (int i = tree.getNumChildren (); --i >= 0; )
+				generateHtmlFiles (tree.getChild (i));
+		}
+	}
 }
 
 //=================================================================================================
@@ -584,5 +610,56 @@ void TopToolBar::resetUiColour()
 
         systemFile->saveIfNeeded();
     }
+}
+
+//=================================================================================================
+void TopToolBar::cleanLocalMedias ()
+{
+	// exist medias
+	Array<File> allDirs;
+	Array<File> allMediasOnLocal;
+	FileTreeContainer::projectFile.getSiblingFile ("docs").findChildFiles (allDirs, File::findDirectories, true);
+
+	for (int i = allDirs.size () ; --i >= 0; )
+	{
+		if (allDirs[i].getFileName () != "media")
+			allDirs.remove (i);
+		else
+			allDirs[i].findChildFiles (allMediasOnLocal, File::findFiles, false);
+	}
+
+	// all medias in docs
+	Array<File> allDocs;
+	Array<File> allMediasInDocs;
+	FileTreeContainer::projectFile.getSiblingFile ("docs").findChildFiles (allDocs, File::findFiles, true);
+	
+	for (int i = allDocs.size(); --i >= 0; )
+		DocTreeViewItem::getMdMediaFiles (allDocs[i], allMediasInDocs);
+
+	allMediasOnLocal.removeValuesIn (allMediasInDocs);
+
+	if (allMediasOnLocal.size () < 1)
+	{
+		SHOW_MESSAGE (TRANS ("Your project is very neat. \nNo need to clean it up."));
+	}
+	else
+	{
+		String extraFilesName;
+
+		for (int i = allMediasOnLocal.size (); --i >= 0; )
+			extraFilesName += "  - " + allMediasOnLocal[i].getFullPathName () + newLine;
+
+		if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),
+			TRANS ("Find ") + String (allMediasOnLocal.size ()) + " " 
+			+TRANS ("redundant media-file(s):") + newLine
+			+ extraFilesName + newLine
+			+ TRANS ("Do you want to clean them up?")))
+		{
+			for (int i = allMediasOnLocal.size (); --i >= 0; )
+				allMediasOnLocal[i].moveToTrash ();
+
+			SHOW_MESSAGE (TRANS ("Local medias cleanup successful!"));
+		}
+	}
 }
 

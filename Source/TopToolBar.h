@@ -55,6 +55,7 @@ private:
 
     void setUiColour();
     void resetUiColour();
+	void uploadToFTP ();
 
     //==========================================================================
     enum { prevAll, nextAll, prevPjt, nextPjt, 

@@ -17,20 +17,24 @@ void SwingUtilities::showAbout (const String& shortDescription,
 {
     SwingDialog* window = new SwingDialog (shortDescription);
 
-    window->addTextBlock (TRANS("Version: ") + String (ProjectInfo::versionString) + 
-                          newLine + newLine +  
-                          TRANS ("Author: ") + "SwingCoder" + newLine + 
-                          "underwaySoft@126.com" + newLine +
-                          "QQ: 843775" + newLine + newLine +
-                          String (CharPointer_UTF8 ("\xc2\xa9")) + copyrightYear + " UnderwaySoft. " +
-                          TRANS ("All Right Reserved.") + newLine);
+    window->addTextBlock (TRANS ("Author: ") + "SwingCoder" + newLine + 
+		"underwaySoft@126.com" + newLine +
+		"QQ: 843775" + newLine + newLine +
+		String (CharPointer_UTF8 ("\xc2\xa9")) + copyrightYear + " UnderwaySoft. " +
+		TRANS ("All Right Reserved.") + newLine + 
+		"=================================\n" +
+		TRANS ("Acknowledgements:") + newLine +
+		"  - Framework: JUCE (https://juce.com)\n" +
+		"  - Library: cURL (https://curl.haxx.se)\n" +
+		"  - Highlight.js (https://highlightjs.org)");
 
     Component* linkButton = new HyperlinkButton ("UnderwaySoft", URL ("http://underwaySoft.com"));
     linkButton->setSize (150, 25);
     window->addCustomComponent (linkButton);
 
     window->setSize (400, 150);
-    window->showDialog (TRANS ("About ") + ProjectInfo::projectName);
+    window->showDialog (TRANS ("About ") + ProjectInfo::projectName + " " 
+		+ String (ProjectInfo::versionString));
 }
 
 //=================================================================================================

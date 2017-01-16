@@ -283,27 +283,29 @@ void TopToolBar::findInDoc (const bool next)
 //=========================================================================
 void TopToolBar::buttonClicked (Button* bt)
 {
-    if (bt == bts[view])
-    {
-        bts[view]->setToggleState (!bts[view]->getToggleState (), dontSendNotification);
-        editAndPreview->startWork (editAndPreview->getCurrentTree());
-    }
-    else if (bt == bts[width])
-    {
-        bts[width]->setToggleState (!bts[width]->getToggleState (), dontSendNotification);
-        getParentComponent()->setSize ((bts[width]->getToggleState() ? 1200 : 600), 780);
-        getTopLevelComponent()->setCentreRelative(0.5f, 0.53f);
-    }
-    else if (bt == bts[system])
-        popupSystemMenu ();
-    else if (bt == bts[prevAll])
-        findInProject (false);
-    else if (bt == bts[nextAll])
-        findInProject (true);
-    else if (bt == bts[prevPjt])
-        findInDoc (false);
-    else if (bt == bts[nextPjt])
-        findInDoc (true);
+	if (bt == bts[view])
+	{
+		bts[view]->setToggleState (!bts[view]->getToggleState (), dontSendNotification);
+		editAndPreview->startWork (editAndPreview->getCurrentTree ());
+	}
+	else if (bt == bts[width])
+	{
+		bts[width]->setToggleState (!bts[width]->getToggleState (), dontSendNotification);
+		getParentComponent ()->setSize ((bts[width]->getToggleState () ? 1200 : 600), 780);
+		getTopLevelComponent ()->setCentreRelative (0.5f, 0.53f);
+	}
+	else if (bt == bts[system])
+		popupSystemMenu ();
+	else if (bt == bts[prevAll])
+		findInProject (false);
+	else if (bt == bts[nextAll])
+		findInProject (true);
+	else if (bt == bts[prevPjt])
+		findInDoc (false);
+	else if (bt == bts[nextPjt])
+		findInDoc (true);
+	else if (bt == bts[upload])
+		uploadToFTP ();
 }
 
 //=================================================================================================
@@ -340,9 +342,6 @@ void TopToolBar::popupSystemMenu ()
 
     m.addItem (18, TRANS ("Getting Started..."), true);
     m.addItem (19, TRANS ("Check New Version..."), true);
-    m.addSeparator ();
-
-    m.addItem (20, TRANS ("Acknowledgements..."), true);
     m.addItem (21, TRANS ("About..."), true);
 
     // display the menu
@@ -378,17 +377,9 @@ void TopToolBar::menuPerform (const int index)
 
     // check new version
     else if (index == 19)   URL ("http://underwaySoft.com").launchInDefaultBrowser ();
-
-    // acknowledgements
-    else if (index == 20)  
-    {
-        AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS ("Acknowledgements"),
-                                     "- Framework: JUCE (https://juce.com)\n"
-                                     "- Library: cURL (https://curl.haxx.se)\n"
-                                     "- Highlight.js (https://highlightjs.org)");
-    }
+	   
     // about
-    else if (index == 21)   SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2016");
+    else if (index == 21)   SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2017");
 
     // language
     else if (index == 30)
@@ -494,7 +485,7 @@ void TopToolBar::cleanAndGenerateAll ()
         {
             // generate
             generateHtmlFiles (FileTreeContainer::projectTree);
-            FileTreeContainer::saveProject ();
+			FileTreeContainer::saveProject ();
 
             // restore the add-in dir
             tempDirForAddin.moveFileTo (addinDir);
@@ -541,7 +532,7 @@ void TopToolBar::generateHtmlFilesIfNeeded (ValueTree tree)
 			HtmlProcessor::createIndexHtml (tree, false);
 
 			for (int i = tree.getNumChildren (); --i >= 0; )
-				generateHtmlFiles (tree.getChild (i));
+				generateHtmlFilesIfNeeded (tree.getChild (i));
 		}
 	}
 }
@@ -661,5 +652,14 @@ void TopToolBar::cleanLocalMedias ()
 			SHOW_MESSAGE (TRANS ("Local medias cleanup successful!"));
 		}
 	}
+}
+
+//=================================================================================================
+void TopToolBar::uploadToFTP ()
+{
+	generateHtmlFilesIfNeeded (FileTreeContainer::projectTree);
+	FileTreeContainer::saveProject ();
+
+
 }
 

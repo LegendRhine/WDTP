@@ -23,6 +23,7 @@
 #include "HtmlProcessor.h"
 #include "FileTreeContainer.h"
 #include "DocTreeViewItem.h"
+#include "UploadComponent.h"
 
 
 #endif  // HEADERGUA

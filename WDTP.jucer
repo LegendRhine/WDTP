@@ -70,6 +70,10 @@
       <FILE id="BBKmUd" name="SetupPanel.h" compile="0" resource="0" file="Source/SetupPanel.h"/>
       <FILE id="pSSMLr" name="TopToolBar.cpp" compile="1" resource="0" file="Source/TopToolBar.cpp"/>
       <FILE id="P6zan5" name="TopToolBar.h" compile="0" resource="0" file="Source/TopToolBar.h"/>
+      <FILE id="YCBojN" name="UploadComponent.cpp" compile="1" resource="0"
+            file="Source/UploadComponent.cpp"/>
+      <FILE id="DZhwvl" name="UploadComponent.h" compile="0" resource="0"
+            file="Source/UploadComponent.h"/>
       <FILE id="PqDad8" name="WdtpHeader.h" compile="0" resource="0" file="Source/WdtpHeader.h"/>
     </GROUP>
   </MAINGROUP>

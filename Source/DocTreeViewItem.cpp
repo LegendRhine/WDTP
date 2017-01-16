@@ -145,18 +145,17 @@ const int DocTreeViewItem::getHtmlMediaFiles (const File& htmlFile, Array<File>&
 
     while (indexStart != -1 && indexEnd != -1)
     {
-        files.add (htmlFile.getSiblingFile("media").getChildFile(htmlStr.substring(indexStart + 11, indexEnd)));
+		const File& f (htmlFile.getSiblingFile ("media")
+			.getChildFile (htmlStr.substring (indexStart + 11, indexEnd) // 11: src="media/
+				.trimCharactersAtStart ("/")));
+		
+		if (f.existsAsFile () && f.getSize () > 0)
+			files.add (f);
+
         indexStart = htmlStr.indexOfIgnoreCase(indexEnd + 2, "src=\"");
 
         if (indexStart != -1)
             indexEnd = htmlStr.indexOfIgnoreCase(indexStart + 5, "\"");
-    }
-
-    // remove non-local media-file(s)
-    for (int i = files.size(); --i >= 0; )
-    {
-        if (! files[i].existsAsFile())
-            files.remove(i);
     }
 
     return files.size ();
@@ -178,18 +177,17 @@ const int DocTreeViewItem::getMdMediaFiles (const File& doc, Array<File>& files)
 
 	while (indexStart != -1 && indexEnd != -1)
 	{
-		files.add (doc.getSiblingFile ("media").getChildFile (htmlStr.substring (indexStart + 11, indexEnd)));
+		const File& f (doc.getSiblingFile ("media")
+			.getChildFile (htmlStr.substring (indexStart + 11, indexEnd) // 11: src="media/
+				.trimCharactersAtStart ("/")));
+
+		if (f.existsAsFile () && f.getSize () > 0)
+			files.add (f);
+
 		indexStart = htmlStr.indexOfIgnoreCase (indexEnd + 2, "src=\"");
 
 		if (indexStart != -1)
 			indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
-	}
-
-	// remove non-local media-file(s)
-	for (int i = files.size (); --i >= 0; )
-	{
-		if (!files[i].existsAsFile ())
-			files.remove (i);
 	}
 
 	return files.size ();

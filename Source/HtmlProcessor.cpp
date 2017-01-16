@@ -131,8 +131,13 @@ const File HtmlProcessor::createArticleHtml (ValueTree& docTree, bool saveProjec
 
             while (indexStart != -1 && indexEnd != -1)
             {
-                docMedias.add (File (docMediaDirStr + File::separator + htmlStr.substring (indexStart + 11, indexEnd)));
-                htmlMedias.add (File (htmlMediaDirStr + File::separator + htmlStr.substring (indexStart + 11, indexEnd)));
+				const String fileName (htmlStr.substring (indexStart + 11, indexEnd));
+
+				if (! fileName.contains (String (File::separator)))
+				{
+					docMedias.add (File (docMediaDirStr + File::separator + fileName));
+					htmlMedias.add (File (htmlMediaDirStr + File::separator + fileName));
+				}
 
                 indexStart = htmlStr.indexOfIgnoreCase (indexEnd + 2, "src=\"");
 
@@ -145,10 +150,13 @@ const File HtmlProcessor::createArticleHtml (ValueTree& docTree, bool saveProjec
 
             for (int i = docMedias.size (); --i >= 0; )
             {
-                htmlMedias[i].create ();
+				if (docMedias[i].existsAsFile ())
+				{
+					htmlMedias[i].create ();
 
-                if (docMedias[i].existsAsFile() && !docMedias[i].copyFileTo (htmlMedias[i]))
-                    errorStr << docMedias[i].getFullPathName () << newLine;
+					if (!docMedias[i].copyFileTo (htmlMedias[i]))
+						errorStr << docMedias[i].getFullPathName () << newLine;
+				}
             }
 
             if (errorStr.isNotEmpty ())

@@ -25,7 +25,8 @@ UploadComponent::UploadComponent () :
 	//table.getHeader ().setPopupMenuActive (false);
 	addAndMakeVisible (lb);
 	lb.setJustificationType (Justification::centred);
-	lb.setText (TRANS ("If you don't want to publish a certian file, click the checkbox on the right to unselect it."), 
+	lb.setFont (SwingUtilities::getFontSize () - 3.0f);
+	lb.setText (TRANS ("Click the checkbox to unselect the file if you don't want to publish it."), 
 		dontSendNotification);
 
 	// bts
@@ -52,7 +53,7 @@ UploadComponent::UploadComponent () :
 	table.setColour (ListBox::backgroundColourId, Colour (0x00));
 	table.updateContent ();
 
-	setSize (510, 360);
+	setSize (512, 360);
 }
 
 //=================================================================================================
@@ -72,7 +73,7 @@ void UploadComponent::loadData (const ValueTree& tree)
 	}
 
 	for (int i = 0; i < tree.getNumChildren (); ++i)
-		loadData (tree.getChild (i));
+		loadData (tree.getChild (i));	
 }
 
 //=================================================================================================
@@ -102,8 +103,8 @@ int UploadComponent::getNumRows ()
 //=================================================================================================
 void UploadComponent::paintRowBackground (Graphics& g, 
 										int rowNumber, 
-										int width, 
-										int height, 
+										int /*width*/, 
+										int /*height*/, 
 										bool rowIsSelected)
 {
 	if (rowIsSelected)
@@ -118,7 +119,7 @@ void UploadComponent::paintCell (Graphics& g,
 								int columnId, 
 								int width, 
 								int height, 
-								bool rowIsSelected)
+								bool /*rowIsSelected*/)
 {
 	if (1 == columnId)
 	{
@@ -130,9 +131,11 @@ void UploadComponent::paintCell (Graphics& g,
 				.getSiblingFile("site").getFullPathName () + File::separator, String()));
 
 		if (text.getLastCharacters (4) != "html")
-			text = "    |-- " + text.fromFirstOccurrenceOf ("media", false, true).substring (1);
+			text = "      |-- " + text.fromFirstOccurrenceOf ("media", false, true).substring (1);
+		else
+			text = "- " + text;
 
-		g.drawText (text, 2, 0, width - 4, height, Justification::centredLeft, true);
+		g.drawText (text, 5, 0, width - 10, height, Justification::centredLeft, true);
 
 		g.setColour (Colours::black.withAlpha (0.2f));
 		g.fillRect (width - 1, 0, 1, height);
@@ -140,16 +143,28 @@ void UploadComponent::paintCell (Graphics& g,
 }
 
 //=================================================================================================
-Component* UploadComponent::refreshComponentForCell (int rowNumber, 
+Component* UploadComponent::refreshComponentForCell (int /*rowNumber*/, 
 													int columnId, 
-													bool isRowSelected, 
+													bool /*isRowSelected*/, 
 													Component* existingComponentToUpdate)
 {
-	return nullptr;
+	if (2 == columnId)
+	{
+		ToggleButton* tb = (ToggleButton*)existingComponentToUpdate;
+		if (tb == nullptr)	tb = new ToggleButton ();
+		tb->setToggleState (true, dontSendNotification);
+
+		return tb;
+	}
+	else
+	{
+		jassert (existingComponentToUpdate == nullptr);
+		return nullptr;
+	}
 }
 
 //=================================================================================================
-String UploadComponent::getCellTooltip (int rowNumber, int columnId)
+String UploadComponent::getCellTooltip (int /*rowNumber*/, int /*columnId*/)
 {
 	return String ();
 }

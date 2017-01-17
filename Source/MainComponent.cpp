@@ -31,7 +31,7 @@ MainContentComponent::MainContentComponent()
     layoutManager.setItemLayout (1, 2, 2, 2);            // layoutBar
     layoutManager.setItemLayout (2, -0.7, -1.0, -0.79);   // editAndPreview
 
-    setSize (1200, 780);
+    setSize (1260, 780);
 }
 
 //=======================================================================

@@ -466,7 +466,7 @@ void SwingDialog::showDialog (const String& windowTitle)
     option.content = comp;
     option.escapeKeyTriggersCloseButton = true;
     option.useNativeTitleBar = true;
-    option.resizable = true;
+    option.resizable = false;
     option.useBottomRightCornerResizer = false;
 
     option.launchAsync ();

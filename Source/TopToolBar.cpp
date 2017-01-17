@@ -105,7 +105,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                             Image::null, 1.000f, Colours::darkcyan,
                             Image::null, 1.000f, Colours::darkcyan);
     
-    bts[upload]->setTooltip (TRANS ("Publish The Changed"));
+    bts[upload]->setTooltip (TRANS ("Publish The Changes"));
     bts[upload]->setImages (false, true, true,
                             ImageCache::getFromMemory (BinaryData::upload_png,
                                                        BinaryData::upload_pngSize),
@@ -330,8 +330,8 @@ void TopToolBar::popupSystemMenu ()
     m.addSeparator ();
 
     PopupMenu lanMenu;
-    lanMenu.addItem (30, TRANS ("English"), true, systemFile->getValue ("language") == "English");
-    lanMenu.addItem (31, TRANS ("Chinese"), true, systemFile->getValue ("language") == "Chinese");
+    lanMenu.addItem (30, "English", true, systemFile->getValue ("language") == "English");
+    lanMenu.addItem (31, CharPointer_UTF8 ("\xe4\xb8\xad\xe6\x96\x87"), true, systemFile->getValue ("language") == "Chinese");
     m.addSubMenu (TRANS ("UI Language"), lanMenu);
 
     PopupMenu uiMenu;
@@ -342,7 +342,7 @@ void TopToolBar::popupSystemMenu ()
 
     m.addItem (18, TRANS ("Getting Started..."), true);
     m.addItem (19, TRANS ("Check New Version..."), true);
-    m.addItem (21, TRANS ("About..."), true);
+    m.addItem (20, TRANS ("About..."), true);
 
     // display the menu
     const int index = m.show ();
@@ -379,7 +379,7 @@ void TopToolBar::menuPerform (const int index)
     else if (index == 19)   URL ("http://underwaySoft.com").launchInDefaultBrowser ();
 	   
     // about
-    else if (index == 21)   SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2017");
+    else if (index == 20)   SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2017");
 
     // language
     else if (index == 30)
@@ -657,9 +657,34 @@ void TopToolBar::cleanLocalMedias ()
 //=================================================================================================
 void TopToolBar::uploadToFTP ()
 {
-	generateHtmlFilesIfNeeded (FileTreeContainer::projectTree);
-	FileTreeContainer::saveProject ();
+	const ValueTree& pTree (FileTreeContainer::projectTree);
 
+	if (pTree.isValid () )
+	{
+		if (pTree.getProperty ("ftpAddress").toString ().isNotEmpty () 
+			&& pTree.getProperty ("ftpUserName").toString ().isNotEmpty ()
+			&& pTree.getProperty ("ftpPassword").toString ().isNotEmpty ())
+		{
+			generateHtmlFilesIfNeeded (pTree);
+			FileTreeContainer::saveProject ();
 
+			OptionalScopedPointer<Component> comp (new UploadComponent (), true);
+			DialogWindow::LaunchOptions option;
+
+			option.dialogTitle = TRANS ("Publish The Changes");
+			option.content = comp;
+			option.escapeKeyTriggersCloseButton = true;
+			option.useNativeTitleBar = true;
+			option.resizable = false;
+			option.useBottomRightCornerResizer = false;
+
+			option.launchAsync ();
+		}
+		else
+		{
+			SHOW_MESSAGE (TRANS ("Please setup your FTP connection first.") + newLine
+						+ TRANS ("Click the project root-item on the left."));
+		}
+	}
 }
 

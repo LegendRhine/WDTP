@@ -11,13 +11,15 @@
 #ifndef UPLOADCOMPONENT_H_INCLUDED
 #define UPLOADCOMPONENT_H_INCLUDED
 
+#include "SwingLibrary/FtpProcessor.h"
 
 //==============================================================================
 /**
 */
 class UploadComponent    : public Component,
 	public TableListBoxModel,
-	public Button::Listener
+	public Button::Listener,
+	public FtpProcessor::Listener
 {
 public:
     UploadComponent ();
@@ -25,7 +27,8 @@ public:
 
     void paint (Graphics&) override;
     void resized() override;
-	
+	void selectRow (const int row, bool selected);
+
 	virtual int getNumRows () override;
 	virtual void paintRowBackground (Graphics&, int , int , int , bool ) override;
 	virtual void paintCell (Graphics&, int , int , int , int , bool ) override;
@@ -33,6 +36,7 @@ public:
 	virtual String getCellTooltip (int , int ) override;
 
 	virtual void buttonClicked (Button*) override;
+	virtual void transferSuccess (FtpProcessor*) override;
 
 	//=================================================================================================
 private:
@@ -40,13 +44,14 @@ private:
 
 	enum { upload = 0, test, totalBts };
 
-	Array<File> files;
+	ValueTree filesTree;
 	OwnedArray<TextButton> bts;
 	TableListBox table;
 	Label lb;
 
 	double progressValue = 0.0;
-	ProgressBar progressBar;	
+	ProgressBar progressBar;
+	ScopedPointer<FtpProcessor> ftp;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UploadComponent)
 };

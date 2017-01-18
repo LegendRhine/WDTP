@@ -12,17 +12,19 @@
 
 //==============================================================================
 UploadComponent::UploadComponent () :
+	filesTree ("filesToUpload"),
 	table (String(), this),
 	progressBar (progressValue)
 {
-	loadData (FileTreeContainer::projectTree);
+	ValueTree pTree (FileTreeContainer::projectTree);
+	loadData (pTree);
+
 	addAndMakeVisible (table);
 	addAndMakeVisible (progressBar);
 	progressBar.setColour (ProgressBar::backgroundColourId, Colour (0x00));
 	progressBar.setPercentageDisplay (false);
 
 	table.getHeader ().setVisible (false);
-	//table.getHeader ().setPopupMenuActive (false);
 	addAndMakeVisible (lb);
 	lb.setJustificationType (Justification::centred);
 	lb.setFont (SwingUtilities::getFontSize () - 3.0f);
@@ -33,7 +35,7 @@ UploadComponent::UploadComponent () :
 	for (int i = totalBts; --i >= 0; )
 	{
 		TextButton* bt = new TextButton ();
-		bt->setSize (60, 25);
+		bt->setSize (70, 25);
 		bt->addListener (this);
 		bts.add (bt);
 		addAndMakeVisible (bt);
@@ -41,7 +43,7 @@ UploadComponent::UploadComponent () :
 
 	bts[upload]->setButtonText (TRANS ("Publish"));
 	bts[test]->setButtonText (TRANS ("Test Connection"));
-	bts[test]->setSize (150, 25);
+	bts[test]->setSize (130, 25);
 
 	// table
 	table.getHeader ().addColumn (TRANS ("File"), 1, 460);
@@ -52,6 +54,13 @@ UploadComponent::UploadComponent () :
 	table.setMultipleSelectionEnabled (false);
 	table.setColour (ListBox::backgroundColourId, Colour (0x00));
 	table.updateContent ();
+
+	// ftp upload
+	ftp = new FtpProcessor ();
+	ftp->addListener (this);
+	ftp->setRemoteRootDir (pTree.getProperty ("ftpAddress").toString());
+	ftp->setUserNameAndPassword (pTree.getProperty ("ftpUserName").toString(), 
+		pTree.getProperty ("ftpPassword").toString ());
 
 	setSize (512, 360);
 }
@@ -67,9 +76,24 @@ void UploadComponent::loadData (const ValueTree& tree)
 	if ((bool)tree.getProperty ("needUpload"))
 	{
 		const File& f (DocTreeViewItem::getHtmlFileOrDir (tree));
-		files.add (f);
 
+		ValueTree vf ("file");
+		vf.setProperty ("filePath", f.getFullPathName (), nullptr);
+		vf.setProperty ("upload", true, nullptr);
+
+		filesTree.addChild (vf, -1, nullptr);
+
+		Array<File> files;
 		DocTreeViewItem::getHtmlMediaFiles (f, files);
+
+		for (int i = 0; i < files.size (); ++i)
+		{
+			ValueTree vm ("file");
+			vm.setProperty ("filePath", files[i].getFullPathName (), nullptr);
+			vm.setProperty ("upload", true, nullptr);
+
+			filesTree.addChild (vm, -1, nullptr);
+		}
 	}
 
 	for (int i = 0; i < tree.getNumChildren (); ++i)
@@ -97,7 +121,7 @@ void UploadComponent::resized()
 //=================================================================================================
 int UploadComponent::getNumRows ()
 {
-	return files.size ();
+	return filesTree.getNumChildren();
 }
 
 //=================================================================================================
@@ -126,7 +150,7 @@ void UploadComponent::paintCell (Graphics& g,
 		g.setColour (Colour (0xff303030));
 		g.setFont (SwingUtilities::getFontSize () - 4.0f);
 
-		String text (files[rowNumber].getFullPathName ()
+		String text (filesTree.getChild (rowNumber).getProperty ("filePath").toString ()
 			.replace (FileTreeContainer::projectFile
 				.getSiblingFile("site").getFullPathName () + File::separator, String()));
 
@@ -143,16 +167,65 @@ void UploadComponent::paintCell (Graphics& g,
 }
 
 //=================================================================================================
-Component* UploadComponent::refreshComponentForCell (int /*rowNumber*/, 
+void UploadComponent::selectRow (const int row, bool selected)
+{
+	filesTree.getChild (row).setProperty ("upload", selected, nullptr);
+}
+
+//=================================================================================================
+
+class ToggleComp : public Component,
+				   public Button::Listener
+{
+public:
+	ToggleComp (UploadComponent& uc) :
+		uploadComp (uc)
+	{
+		addAndMakeVisible (tb);
+		tb.setToggleState (true, dontSendNotification);
+		tb.addListener (this);
+	}
+
+	~ToggleComp ()
+	{
+
+	}
+
+	void resized () override
+	{
+		tb.setBoundsInset (BorderSize<int> (2));
+	}
+
+	void setRow (const int newRow)
+	{
+		row = newRow;
+		tb.setToggleState (true, dontSendNotification);
+	}
+	
+	virtual void buttonClicked (Button*) override
+	{
+		uploadComp.selectRow (row, tb.getToggleState());
+	}
+
+private:
+	UploadComponent& uploadComp;
+	ToggleButton tb;
+	int row;
+
+	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ToggleComp)
+};
+
+//=================================================================================================
+Component* UploadComponent::refreshComponentForCell (int rowNumber, 
 													int columnId, 
 													bool /*isRowSelected*/, 
 													Component* existingComponentToUpdate)
 {
 	if (2 == columnId)
 	{
-		ToggleButton* tb = (ToggleButton*)existingComponentToUpdate;
-		if (tb == nullptr)	tb = new ToggleButton ();
-		tb->setToggleState (true, dontSendNotification);
+		ToggleComp* tb = static_cast<ToggleComp*>(existingComponentToUpdate);
+		if (tb == nullptr)	tb = new ToggleComp (*this);
+		tb->setRow (rowNumber);
 
 		return tb;
 	}
@@ -172,6 +245,35 @@ String UploadComponent::getCellTooltip (int /*rowNumber*/, int /*columnId*/)
 //=================================================================================================
 void UploadComponent::buttonClicked (Button* bt)
 {
+	if (bt == bts[upload])
+	{
+		for (int i = filesTree.getNumChildren(); --i >= 0; )
+		{
+			if (!(bool)filesTree.getChild (i).getProperty ("upload"))
+			{
+				const String& localPath (filesTree.getChild (i).getProperty ("filePath").toString());
+				const String& ftpPath (localPath.replace (FileTreeContainer::projectFile
+						.getSiblingFile ("site").getFullPathName () + File::separator, String ()));
 
+				ftp->uploadToRemote (File (localPath), ftpPath);
+
+			}
+		}
+	} 
+	else if (bt == bts[test])
+	{
+		String result;
+
+		if (ftp->connectOk (result))
+			SHOW_MESSAGE (TRANS ("Connect successful! "));
+		else
+			AlertWindow::showMessageBox (AlertWindow::WarningIcon, TRANS ("Connect failed"), result);
+	}
+}
+
+//=================================================================================================
+void UploadComponent::transferSuccess (FtpProcessor* )
+{
+	table.updateContent ();
 }
 

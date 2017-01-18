@@ -28,7 +28,7 @@ typedef void CURL;
 
     1. Create object, setRemoteRootDir() for your ftp server, all of the succedent operations
        will base on this root-dir. Then setUserNameAndPassword(). 
-       Then call connectOk () to check out if the connection successful or not.
+       Then call connectOk() to check out if the connection successful or not.
 
     2. If everything is OK, call the functions do what you want.
 

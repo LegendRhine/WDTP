@@ -132,6 +132,28 @@ const File DocTreeViewItem::getHtmlFileOrDir (const ValueTree& tree)
 }
 
 //=================================================================================================
+ValueTree DocTreeViewItem::getTreeFromHtmlFile (ValueTree tree, const File& htmlFile)
+{
+	jassert (htmlFile.getFileExtension () == "html");
+	String name (htmlFile.withFileExtension (String ()).getFullPathName ().replace ("site", "docs"));
+
+	if (name.getLastCharacters (5) == "index")
+		name = name.dropLastCharacters (6);
+
+	if (tree.getProperty ("name").toString () == name)
+	{
+		return tree;
+	}
+	else
+	{
+		for (int i = tree.getNumChildren (); --i >= 0; )
+			return getTreeFromHtmlFile (tree.getChild (i), htmlFile);
+	}
+
+	return ValueTree();
+}
+
+//=================================================================================================
 const int DocTreeViewItem::getHtmlMediaFiles (const File& htmlFile, Array<File>& files)
 {
     jassert (htmlFile.existsAsFile());
@@ -357,7 +379,8 @@ void DocTreeViewItem::renameSelectedItem ()
 
         if (newName.isEmpty ())
             newName = TRANS ("Untitled");
-        else if (newName == "index" || newName == "media" || newName == "add-in")
+        else if (newName == "index" || newName == "media" 
+			|| newName == "add-in" || newName == "docs" || newName == "site")
             newName += "(2)";
 
         File newDocFile (docFileOrDir.getSiblingFile (newName + (docFileOrDir.isDirectory() ? String() : ".md")));
@@ -469,6 +492,12 @@ void DocTreeViewItem::createNewDocument ()
             docName = TRANS ("Untitled");
         else if (docName == "index")
             docName = "index(2)";
+		else if (docName == "site")
+			docName = "site-doc";
+		else if (docName == "docs")
+			docName = "docs-1";
+		else if (docName == "media")
+			docName = "media-doc";
 
         // create this doc on disk
         const File& thisDoc (getMdFileOrDir (tree).getChildFile (docName + ".md")
@@ -522,7 +551,7 @@ void DocTreeViewItem::createNewFolder ()
 
         if (dirName.isEmpty ())
             dirName = TRANS ("New folder");
-        else if (dirName == "media" || dirName == "add-in")
+        else if (dirName == "media" || dirName == "add-in" || dirName == "docs" || dirName == "site")
             dirName += "(2)";
 
         // create this dir on disk

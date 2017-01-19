@@ -50,15 +50,16 @@ private:
         // project properties' values
         projectTitle = 0, projectKeywords, projectDesc, owner,  
         copyrightInfo, projectRenderDir, indexTpl, projectJs, 
+		projectNeedUpload,
         ftpAddress, ftpUserName, ftpPassword,
 
         // dir properties' values
         dirName, dirTitle, dirKeywords, dirDesc, isMenu, dirTpl, dirJs,
-        dirCreateDate, dirModifyDate,
+        dirCreateDate, dirModifyDate, dirNeedUpload,
 
         // doc properties' values
         docName, docTitle, docKeywords, docDesc, isPage, docTpl,
-        docCreateDate, docModifyDate, docJs, wordCount,
+        docCreateDate, docModifyDate, docJs, wordCount, docNeedUpload,
 
         totalValues
     };

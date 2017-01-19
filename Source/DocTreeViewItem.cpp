@@ -134,23 +134,25 @@ const File DocTreeViewItem::getHtmlFileOrDir (const ValueTree& tree)
 //=================================================================================================
 ValueTree DocTreeViewItem::getTreeFromHtmlFile (ValueTree tree, const File& htmlFile)
 {
-	jassert (htmlFile.getFileExtension () == "html");
-	String name (htmlFile.withFileExtension (String ()).getFullPathName ().replace ("site", "docs"));
-
-	if (name.getLastCharacters (5) == "index")
-		name = name.dropLastCharacters (6);
-
-	if (tree.getProperty ("name").toString () == name)
+	if (htmlFile.getFileExtension () == "html")
 	{
-		return tree;
-	}
-	else
-	{
-		for (int i = tree.getNumChildren (); --i >= 0; )
-			return getTreeFromHtmlFile (tree.getChild (i), htmlFile);
+		String name (htmlFile.withFileExtension (String ()).getFullPathName ().replace ("site", "docs"));
+
+		if (name.getLastCharacters (5) == "index")
+			name = name.dropLastCharacters (6);
+
+		if (tree.getProperty ("name").toString () == name)
+		{
+			return tree;
+		}
+		else
+		{
+			for (int i = tree.getNumChildren (); --i >= 0; )
+				return getTreeFromHtmlFile (tree.getChild (i), htmlFile);
+		}
 	}
 
-	return ValueTree();
+	return ValueTree ();
 }
 
 //=================================================================================================

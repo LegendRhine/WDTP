@@ -400,7 +400,7 @@ void FtpProcessor::curlSetToCreateRemoteDir ()
 //=========================================================================
 void FtpProcessor::setRemotePathForFtp(const String& destRemotePath,
                                        const String& tempPathForUse/* = String::empty*/) {
-    remoteFileOrDirPath = destRemotePath;
+    remoteFileOrDirPath = destRemotePath.replace ("\\", "/");
 
     if (remoteFileOrDirPath.substring(0, 1) == String(File::separator))
         remoteFileOrDirPath = remoteFileOrDirPath.substring(1);

@@ -40,15 +40,15 @@ public:
 private:
 	void loadData (const ValueTree& tree);
 
-	enum { upload = 0, test, totalBts };
+	enum { upload = 0, totalBts };
 
 	Array<File> files;
 	OwnedArray<TextButton> bts;
+	OwnedArray<FtpProcessor> ftps;
 	TableListBox table;
 
 	double progressValue = 0.0;
 	ProgressBar progressBar;
-	ScopedPointer<FtpProcessor> ftp;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (UploadComponent)
 };

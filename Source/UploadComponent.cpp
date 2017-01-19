@@ -15,14 +15,21 @@ UploadComponent::UploadComponent () :
 	table (String(), this),
 	progressBar (progressValue)
 {
-	ValueTree pTree (FileTreeContainer::projectTree);
-	loadData (pTree);
+	loadData (FileTreeContainer::projectTree);
 
 	addAndMakeVisible (table);
 	addAndMakeVisible (progressBar);
 	progressBar.setColour (ProgressBar::backgroundColourId, Colour (0x00));
 	progressBar.setPercentageDisplay (false);
 	
+	// table
+	table.getHeader ().setVisible (false);
+	table.getHeader ().addColumn ("File", 1, 435);
+	table.setHeaderHeight (1);
+	table.setMultipleSelectionEnabled (false);
+	table.setColour (ListBox::backgroundColourId, Colour (0x00));
+	table.updateContent ();	
+
 	// bts
 	for (int i = totalBts; --i >= 0; )
 	{
@@ -34,23 +41,6 @@ UploadComponent::UploadComponent () :
 	}
 
 	bts[upload]->setButtonText (TRANS ("Publish"));
-	bts[test]->setButtonText (TRANS ("Test Connection"));
-	bts[test]->setSize (130, 25);
-
-	// table
-	table.getHeader ().setVisible (false);
-	table.getHeader ().addColumn ("File", 1, 435);
-	table.setHeaderHeight (1);
-	table.setMultipleSelectionEnabled (false);
-	table.setColour (ListBox::backgroundColourId, Colour (0x00));
-	table.updateContent ();
-
-	// ftp upload
-	ftp = new FtpProcessor ();
-	ftp->addListener (this);
-	ftp->setRemoteRootDir (pTree.getProperty ("ftpAddress").toString());
-	ftp->setUserNameAndPassword (pTree.getProperty ("ftpUserName").toString(), 
-		pTree.getProperty ("ftpPassword").toString ());
 
 	setSize (458, 300);
 }
@@ -58,6 +48,7 @@ UploadComponent::UploadComponent () :
 //=================================================================================================
 UploadComponent::~UploadComponent()
 {
+	ftps.clear (true);
 }
 
 //=================================================================================================
@@ -89,7 +80,6 @@ void UploadComponent::resized()
 	progressBar.setBounds (2, getHeight () - 47, getWidth () - 4, 12);
 
 	bts[upload]->setTopRightPosition (getWidth () - 10, getHeight () - 30);
-	bts[test]->setTopRightPosition (bts[upload]->getX () - 10, bts[upload]->getY ());
 }
 
 //=================================================================================================
@@ -144,31 +134,63 @@ void UploadComponent::buttonClicked (Button* bt)
 {
 	if (bt == bts[upload])
 	{
+		ftps.clear (true);
+
 		for (int i = files.size(); --i >= 0; )
 		{
-			const String& localPath (files[i].getFullPathName());
-			const String& ftpPath (localPath.replace (FileTreeContainer::projectFile
+			const String& ftpPath (files[i].getFullPathName ()
+				.replace (FileTreeContainer::projectFile
 				.getSiblingFile ("site").getFullPathName () + File::separator, String ()));
 
-			//ftp->uploadToRemote (File (localPath), ftpPath);
+			// ftp upload
+			FtpProcessor* ftp = new FtpProcessor ();
+			ftp->addListener (this);
+			ftp->setRemoteRootDir (FileTreeContainer::projectTree.getProperty ("ftpAddress").toString ());
+			ftp->setUserNameAndPassword (FileTreeContainer::projectTree.getProperty ("ftpUserName").toString (),
+				FileTreeContainer::projectTree.getProperty ("ftpPassword").toString ());
+			
+			String result;
 
+			if (ftp->connectOk (result))
+			{
+				ftp->uploadToRemote (files[i], ftpPath);
+				progressValue = ftp->getProgress ();
+				ftps.add (ftp);
+			}
+			else
+			{
+				AlertWindow::showMessageBox (AlertWindow::WarningIcon, TRANS ("Connect failed"), result);
+			}			
 		}
-	} 
-	else if (bt == bts[test])
-	{
-		String result;
-
-		if (ftp->connectOk (result))
-			SHOW_MESSAGE (TRANS ("Connect successful! "));
-		else
-			AlertWindow::showMessageBox (AlertWindow::WarningIcon, TRANS ("Connect failed"), result);
-	}
+	} 	
 }
 
 //=================================================================================================
-void UploadComponent::transferSuccess (FtpProcessor* )
+void UploadComponent::transferSuccess (FtpProcessor* f)
 {
-	table.updateContent ();
+	for (int i = ftps.size(); --i >= 0; )
+	{
+		if (ftps[i] == f)
+		{
+			const File& file (f->getLocalFile ());
+
+			for (int j = files.size (); --j >= 0; )
+			{
+				if (files[j] == file)
+					files.remove (j);
+			}
+
+			ftps.remove (i, false);
+
+			MessageManagerLock ml;
+			table.updateContent ();
+
+			ValueTree v (DocTreeViewItem::getTreeFromHtmlFile (FileTreeContainer::projectTree, file));
+
+			if (v.isValid ())
+				v.setProperty ("needUpload", false, nullptr);
+		}
+	}	
 }
 
 //=================================================================================================

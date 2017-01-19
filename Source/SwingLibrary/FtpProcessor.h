@@ -90,6 +90,8 @@ public:
         beginTransfer (typeForUpload);
     }
 
+	const File& getLocalFile()                          { return localFile; }
+
     /** The remoteFileName may contain relative pathes to remoteRootDir path, 
         all the pathes which relative to the root dir will be auto created.
 

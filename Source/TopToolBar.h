@@ -55,11 +55,10 @@ private:
 
     void setUiColour();
     void resetUiColour();
-	void uploadToFTP ();
 
     //==========================================================================
     enum { prevAll, nextAll, prevPjt, nextPjt, 
-           view, system, upload, width, totalBts };
+           view, system, width, totalBts };
 
     /** When mouse enter the button, the cursor will change to a finger */
     class MyImageButton : public ImageButton

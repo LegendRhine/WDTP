@@ -105,14 +105,6 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                             Image::null, 1.000f, Colours::darkcyan,
                             Image::null, 1.000f, Colours::darkcyan);
     
-    bts[upload]->setTooltip (TRANS ("Publish The Changes"));
-    bts[upload]->setImages (false, true, true,
-                            ImageCache::getFromMemory (BinaryData::upload_png,
-                                                       BinaryData::upload_pngSize),
-                            imageTrans, Colour (0x00),
-                            Image::null, 1.000f, Colours::darkcyan,
-                            Image::null, 1.000f, Colours::darkcyan);
-    
     bts[width]->setTooltip (TRANS ("Switch Simply / Full Mode"));
     bts[width]->setImages (false, true, true,
                           ImageCache::getFromMemory (BinaryData::width_png,
@@ -168,10 +160,9 @@ void TopToolBar::resized ()
     }
 
     // image buttons
-    bts[system]->setTopLeftPosition(getWidth() / 2 - 41, 12);
+    bts[system]->setTopLeftPosition(getWidth() / 2 - 9, 12);
     bts[view]->setTopRightPosition (bts[system]->getX() - 40, 12);
-    bts[upload]->setTopLeftPosition (bts[system]->getRight() + 40, 13);
-    bts[width]->setTopLeftPosition (bts[upload]->getRight() + 40, 12);
+    bts[width]->setTopLeftPosition (bts[system]->getRight() + 40, 12);
 }
 
 //=================================================================================================
@@ -304,8 +295,6 @@ void TopToolBar::buttonClicked (Button* bt)
 		findInDoc (false);
 	else if (bt == bts[nextPjt])
 		findInDoc (true);
-	else if (bt == bts[upload])
-		uploadToFTP ();
 }
 
 //=================================================================================================
@@ -439,7 +428,6 @@ void TopToolBar::createNewProject ()
     p.setProperty ("render", "blog", nullptr);
     p.setProperty ("tplFile", "index.html", nullptr);
     p.setProperty("needCreateHtml", true, nullptr);
-    p.setProperty("needUpload", true, nullptr);
 
     // create dirs and default template files
     projectFile.getSiblingFile ("docs").createDirectory();
@@ -502,7 +490,6 @@ void TopToolBar::cleanAndGenerateAll ()
 void TopToolBar::generateHtmlFiles (ValueTree tree)
 {
     tree.setProperty("needCreateHtml", true, nullptr);
-    tree.setProperty("needUpload", true, nullptr);
 
 	if (tree.getType ().toString () == "doc")
 	{
@@ -650,39 +637,6 @@ void TopToolBar::cleanLocalMedias ()
 				allMediasOnLocal[i].moveToTrash ();
 
 			SHOW_MESSAGE (TRANS ("Local medias cleanup successful!"));
-		}
-	}
-}
-
-//=================================================================================================
-void TopToolBar::uploadToFTP ()
-{
-	const ValueTree& pTree (FileTreeContainer::projectTree);
-
-	if (pTree.isValid () )
-	{
-		if (pTree.getProperty ("ftpAddress").toString ().isNotEmpty () 
-			&& pTree.getProperty ("ftpUserName").toString ().isNotEmpty ()
-			&& pTree.getProperty ("ftpPassword").toString ().isNotEmpty ())
-		{
-			generateHtmlFilesIfNeeded (pTree);
-			FileTreeContainer::saveProject ();
-
-			OptionalScopedPointer<Component> comp (new UploadComponent (), true);
-			DialogWindow::LaunchOptions option;
-
-			option.dialogTitle = TRANS ("Publish The Changes");
-			option.content = comp;
-			option.escapeKeyTriggersCloseButton = true;
-			option.useNativeTitleBar = true;
-			option.resizable = false;
-			option.useBottomRightCornerResizer = false;
-
-			option.launchAsync ();
-		}
-		else
-		{
-			SHOW_MESSAGE (TRANS ("Please setup your FTP connection first."));
 		}
 	}
 }

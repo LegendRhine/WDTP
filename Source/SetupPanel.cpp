@@ -50,11 +50,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     values[projectRenderDir]->setValue (pTree.getProperty ("render"));
     values[indexTpl]->setValue (pTree.getProperty ("tplFile"));
     values[projectJs]->setValue(pTree.getProperty("js"));
-    values[ftpAddress]->setValue(pTree.getProperty("ftpAddress"));
-    values[ftpUserName]->setValue(pTree.getProperty("ftpAddress"));
-	values[ftpPassword]->setValue (pTree.getProperty ("ftpPassword"));
-	values[projectNeedUpload]->setValue (pTree.getProperty ("needUpload"));
-
+    
     Array<PropertyComponent*> projectProperties;
 
     projectProperties.add (new TextPropertyComponent (*values[projectTitle], TRANS ("Title: "), 0, false));
@@ -107,11 +103,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
 
     projectProperties.add (new TextPropertyComponent (*values[projectJs], TRANS ("JavaScript: "), 0, true));
     projectProperties.add(new TextPropertyComponent(Value(pTree.getProperty("modifyDate")), TRANS("Last Modified: "), 0, false));
-	projectProperties.add (new BooleanPropertyComponent (*values[projectNeedUpload], TRANS ("Publish: "), TRANS ("Yes")));
-    projectProperties.add(new TextPropertyComponent(*values[ftpAddress], TRANS("FTP Address: "), 0, false));
-    projectProperties.add(new TextPropertyComponent(*values[ftpUserName], TRANS("FTP Account: "), 0, false));
-    projectProperties.add(new PasswordPropertyComponent(*values[ftpPassword], TRANS("FTP Password: ")));
-
+	
     for (auto p : projectProperties)  p->setPreferredHeight (28);
     projectProperties[2]->setPreferredHeight (28 * 3);
     projectProperties[4]->setPreferredHeight (28 * 3);
@@ -139,7 +131,6 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     values[dirJs]->setValue (currentTree.getProperty ("js"));
     values[dirCreateDate]->setValue (currentTree.getProperty ("createDate"));
 	values[dirModifyDate]->setValue (currentTree.getProperty ("modifyDate"));
-	values[dirNeedUpload]->setValue (currentTree.getProperty ("needUpload"));
     
     Array<PropertyComponent*> dirProperties;
     dirProperties.add (new TextPropertyComponent (*values[dirName], TRANS ("Name: "), 0, false));
@@ -169,10 +160,8 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
         }
     }
 
-    dirProperties.add (new ChoicePropertyComponent (*values[dirTpl], TRANS ("Render TPL: "),
-                                                        tplFileSa, tplFileVar));
+    dirProperties.add (new ChoicePropertyComponent (*values[dirTpl], TRANS ("Render TPL: "), tplFileSa, tplFileVar));
     dirProperties.add (new TextPropertyComponent (*values[dirModifyDate], TRANS ("Last Modified: "), 0, false));
-	dirProperties.add (new BooleanPropertyComponent (*values[dirNeedUpload], TRANS ("Publish: "), TRANS ("Yes")));
 
     for (auto p : dirProperties)
         p->setPreferredHeight (28);
@@ -202,7 +191,6 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     values[docJs]->setValue (currentTree.getProperty ("js"));
     values[docCreateDate]->setValue (currentTree.getProperty ("createDate"));
 	values[docModifyDate]->setValue (currentTree.getProperty ("modifyDate"));
-	values[docNeedUpload]->setValue (currentTree.getProperty ("needUpload"));
 
     Array<PropertyComponent*> docProperties;
     docProperties.add (new TextPropertyComponent (*values[docName], TRANS ("Name: "), 0, false));
@@ -235,14 +223,13 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docProperties.add (new ChoicePropertyComponent (*values[docTpl], TRANS ("Render TPL: "),
                                                     tplFileSa, tplFileVar));
     docProperties.add (new TextPropertyComponent (*values[docModifyDate], TRANS ("Last Modified: "), 0, false));
-	docProperties.add (new BooleanPropertyComponent (*values[docNeedUpload], TRANS ("Publish: "), TRANS ("Yes")));
 	docProperties.add (new TextPropertyComponent (*values[wordCount], TRANS ("Word Count: "), 0, false));
 
     for (auto p : docProperties)           
         p->setPreferredHeight (28);
 
     docProperties[0]->setEnabled (false);
-    docProperties[10]->setEnabled (false);
+    docProperties[9]->setEnabled (false);
 
     docProperties[3]->setPreferredHeight (28 * 3);
     docProperties[6]->setPreferredHeight (28 * 6);
@@ -307,14 +294,6 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("tplFile", values[indexTpl]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[projectJs]))
         currentTree.setProperty ("js", values[projectJs]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs(*values[ftpAddress]))
-        currentTree.setProperty("ftpAddress", values[ftpAddress]->getValue(), nullptr);
-    else if (value.refersToSameSourceAs(*values[ftpUserName]))
-        currentTree.setProperty("ftpUserName", values[ftpUserName]->getValue(), nullptr);
-    else if (value.refersToSameSourceAs(*values[ftpPassword]))
-        currentTree.setProperty("ftpPassword", values[ftpPassword]->getValue(), nullptr);  
-	else if (value.refersToSameSourceAs (*values[projectNeedUpload]))
-		currentTree.setProperty ("needUpload", values[projectNeedUpload]->getValue (), nullptr);
     
     // dir properties
     else if (value.refersToSameSourceAs (*values[dirTitle]))
@@ -333,9 +312,7 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("tplFile", values[dirTpl]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[dirJs]))
         currentTree.setProperty ("js", values[dirJs]->getValue (), nullptr);
-	else if (value.refersToSameSourceAs (*values[dirNeedUpload]))
-		currentTree.setProperty ("needUpload", values[dirNeedUpload]->getValue (), nullptr);
-
+	
     // doc properties
     else if (value.refersToSameSourceAs (*values[docTitle]))
         currentTree.setProperty ("title", values[docTitle]->getValue (), nullptr);
@@ -353,9 +330,7 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("tplFile", values[docTpl]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[docJs]))
         currentTree.setProperty ("js", values[docJs]->getValue (), nullptr);
-	else if (value.refersToSameSourceAs (*values[docNeedUpload]))
-		currentTree.setProperty ("needUpload", values[docNeedUpload]->getValue (), nullptr);
-
+	
     DocTreeViewItem::needCreateAndUpload (currentTree);
     projectHasChanged = true;
     startTimer (200);
@@ -382,5 +357,4 @@ void SetupPanel::savePropertiesIfNeeded ()
     projectHasChanged = false;
     stopTimer ();
 }
-
 

@@ -116,12 +116,8 @@
 	- js: 首页所需的js代码
     - modifyDate: 最后一次修改的日期
 	- needCreateHtml: 本站根目录下的index.html是否需要生成
-	- needUpload: 本站根目录下的index.html是否需要上传
 	- identityOfLastSelectedItem: 文件树中最后一次选择的文档的标示，可由TreeView的findItemFromIdentifierString()找到对应的item，
 	  此值用于文件树中移动项目、打开项目时自动选择最后一次点选的item
-    - ftpAddress:
-    - ftpUserName:
-    - ftpPassword:
 
 - 值树中各个dir（目录）的属性：
     - name：目录名 (不包含任何上级路径。上级路径可通过其父节点的name获取）
@@ -134,7 +130,6 @@
 	- tplFile: 渲染目录index页所使用的模板文件，位于项目属性render所设置的目录下
 	- js: 目录index页所需的js代码
 	- needCreateHtml: 本目录下的index.html是否需要生成
-	- needUpload: 本目录下的index.html是否需要上传
 
 - 值树中各个doc（文档）的属性：
     - name：文件名（不含文件扩展名，不包含任何上级路径。上级路径可通过其父节点的name获取）
@@ -147,7 +142,6 @@
 	- tplFile: 渲染本文档所使用的模板文件，位于项目属性render所设置的目录下
 	- js: 网页所需的js代码
 	- needCreateHtml: 本文档是否需要生成网页
-	- needUpload: 本文档的html文件是否需要上传
 
 - MD文档生成html时，替换模板html中的“标签项”（格式为：{{xxxx}}），要替换的项目如下：
     - {{siteRelativeRootPath}} 该网页相对于网站根目录的路径，用于该网页链接网站根目录下的css样式表文件。

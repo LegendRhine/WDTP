@@ -81,7 +81,7 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
     String markStr;
 
     if (tree.getType().toString() != "wdtpProject")
-        markStr = CharPointer_UTF8((bool)tree.getProperty("needUpload") ? "* " : "\xe2\x97\x8f ");
+        markStr = CharPointer_UTF8("\xe2\x97\x8f ");
 
     g.drawText (markStr + itemName, leftGap, 0, width - 4, height, Justification::centredLeft, true);
 }
@@ -225,14 +225,12 @@ void DocTreeViewItem::needCreateAndUpload (const ValueTree& tree)
 
     parentTree.setProperty("needCreateHtml", true, nullptr);
     parentTree.setProperty("modifyDate", modifyDate, nullptr);
-	parentTree.setProperty ("needUpload", true, nullptr);
 
     while (parentTree.getParent().isValid ())
     {
         parentTree = parentTree.getParent ();
         parentTree.setProperty("needCreateHtml", true, nullptr);
         parentTree.setProperty("modifyDate", modifyDate, nullptr);
-        parentTree.setProperty("needUpload", true, nullptr);
 	}
 }
 

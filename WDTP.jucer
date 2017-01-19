@@ -8,7 +8,6 @@
     <GROUP id="{24163B05-55E9-9D57-4AF2-ACA9BBF8DA1F}" name="Source">
       <GROUP id="{5C5311BB-5266-DB1B-DE96-35AA97A1E8E3}" name="BinaryData">
         <FILE id="m8JFGm" name="width.png" compile="0" resource="1" file="Source/BinaryData/width.png"/>
-        <FILE id="PVYsb7" name="upload.png" compile="0" resource="1" file="Source/BinaryData/upload.png"/>
         <FILE id="y5tJ2y" name="next.png" compile="0" resource="1" file="Source/BinaryData/next.png"/>
         <FILE id="GoyUvi" name="prev.png" compile="0" resource="1" file="Source/BinaryData/prev.png"/>
         <FILE id="Q51HWs" name="system.png" compile="0" resource="1" file="Source/BinaryData/system.png"/>
@@ -17,26 +16,8 @@
         <FILE id="S5pEoV" name="icon.png" compile="0" resource="1" file="Source/BinaryData/icon.png"/>
       </GROUP>
       <GROUP id="{83694581-DB15-8946-3B2A-EBBCEDD57AAD}" name="SwingLibrary">
-        <GROUP id="{4D8C32FE-CD23-59B4-41FD-DAE3DA1AA368}" name="curl">
-          <FILE id="mxIT6m" name="curl.h" compile="0" resource="0" file="Source/SwingLibrary/curl/curl.h"/>
-          <FILE id="pmZdAk" name="curlbuild.h" compile="0" resource="0" file="Source/SwingLibrary/curl/curlbuild.h"/>
-          <FILE id="mUVNDo" name="curlrules.h" compile="0" resource="0" file="Source/SwingLibrary/curl/curlrules.h"/>
-          <FILE id="wAExjg" name="curlver.h" compile="0" resource="0" file="Source/SwingLibrary/curl/curlver.h"/>
-          <FILE id="Syr2mb" name="easy.h" compile="0" resource="0" file="Source/SwingLibrary/curl/easy.h"/>
-          <FILE id="C8NFtz" name="mprintf.h" compile="0" resource="0" file="Source/SwingLibrary/curl/mprintf.h"/>
-          <FILE id="wgQjZu" name="multi.h" compile="0" resource="0" file="Source/SwingLibrary/curl/multi.h"/>
-          <FILE id="q3zbw4" name="stdcheaders.h" compile="0" resource="0" file="Source/SwingLibrary/curl/stdcheaders.h"/>
-          <FILE id="FmquOA" name="typecheck-gcc.h" compile="0" resource="0" file="Source/SwingLibrary/curl/typecheck-gcc.h"/>
-        </GROUP>
-        <FILE id="XbYwVK" name="FtpProcessor.cpp" compile="1" resource="0"
-              file="Source/SwingLibrary/FtpProcessor.cpp"/>
-        <FILE id="fh0j5G" name="FtpProcessor.h" compile="0" resource="0" file="Source/SwingLibrary/FtpProcessor.h"/>
         <FILE id="mijKP1" name="MD2Html.cpp" compile="1" resource="0" file="Source/SwingLibrary/MD2Html.cpp"/>
         <FILE id="snx2Eb" name="MD2Html.h" compile="0" resource="0" file="Source/SwingLibrary/MD2Html.h"/>
-        <FILE id="rbttYH" name="PasswordPropertyComponent.cpp" compile="1"
-              resource="0" file="Source/SwingLibrary/PasswordPropertyComponent.cpp"/>
-        <FILE id="ujJwm2" name="PasswordPropertyComponent.h" compile="0" resource="0"
-              file="Source/SwingLibrary/PasswordPropertyComponent.h"/>
         <FILE id="xPreeF" name="SwingLookAndFeel.cpp" compile="1" resource="0"
               file="Source/SwingLibrary/SwingLookAndFeel.cpp"/>
         <FILE id="qeBKcI" name="SwingLookAndFeel.h" compile="0" resource="0"
@@ -70,10 +51,6 @@
       <FILE id="BBKmUd" name="SetupPanel.h" compile="0" resource="0" file="Source/SetupPanel.h"/>
       <FILE id="pSSMLr" name="TopToolBar.cpp" compile="1" resource="0" file="Source/TopToolBar.cpp"/>
       <FILE id="P6zan5" name="TopToolBar.h" compile="0" resource="0" file="Source/TopToolBar.h"/>
-      <FILE id="YCBojN" name="UploadComponent.cpp" compile="1" resource="0"
-            file="Source/UploadComponent.cpp"/>
-      <FILE id="DZhwvl" name="UploadComponent.h" compile="0" resource="0"
-            file="Source/UploadComponent.h"/>
       <FILE id="PqDad8" name="WdtpHeader.h" compile="0" resource="0" file="Source/WdtpHeader.h"/>
     </GROUP>
   </MAINGROUP>

@@ -14,7 +14,6 @@
 #include "JuceHeader.h"
 #include "SwingLibrary/SwingUtilities.h"
 #include "SwingLibrary/SwingLookAndFeel.h"
-#include "SwingLibrary/PasswordPropertyComponent.h"
 #include "SwingLibrary/MD2Html.h"
 #include "MainComponent.h"
 #include "TopToolBar.h"
@@ -23,7 +22,6 @@
 #include "HtmlProcessor.h"
 #include "FileTreeContainer.h"
 #include "DocTreeViewItem.h"
-#include "UploadComponent.h"
 
 
 #endif  // HEADERGUA

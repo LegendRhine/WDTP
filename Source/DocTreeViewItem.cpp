@@ -201,7 +201,7 @@ void DocTreeViewItem::needCreateAndUpload (const ValueTree& tree)
 
     parentTree.setProperty("needCreateHtml", true, nullptr);
     parentTree.setProperty("modifyDate", modifyDate, nullptr);
-    parentTree.setProperty("needUpload", true, nullptr);
+	parentTree.setProperty ("needUpload", true, nullptr);
 
     while (parentTree.getParent().isValid ())
     {
@@ -209,7 +209,7 @@ void DocTreeViewItem::needCreateAndUpload (const ValueTree& tree)
         parentTree.setProperty("needCreateHtml", true, nullptr);
         parentTree.setProperty("modifyDate", modifyDate, nullptr);
         parentTree.setProperty("needUpload", true, nullptr);
-    }
+	}
 }
 
 //=================================================================================================

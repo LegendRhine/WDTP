@@ -682,8 +682,7 @@ void TopToolBar::uploadToFTP ()
 		}
 		else
 		{
-			SHOW_MESSAGE (TRANS ("Please setup your FTP connection first.") + newLine
-						+ TRANS ("Click the project root-item on the left."));
+			SHOW_MESSAGE (TRANS ("Please setup your FTP connection first."));
 		}
 	}
 }

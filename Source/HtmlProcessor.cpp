@@ -102,6 +102,18 @@ const String HtmlProcessor::getRelativePathToRoot (const File &htmlFile)
 }
 
 //=================================================================================================
+const bool HtmlProcessor::hasDirAndAtLeadOneIsMenu(const ValueTree& tree)
+{
+	for (int i = tree.getNumChildren(); --i >= 0; )
+	{
+		if (tree.getChild(i).getType().toString() == "dir" && (bool)tree.getChild(i).getProperty("isMenu"))
+			return true;
+	}
+
+	return false;
+}
+
+//=================================================================================================
 const String HtmlProcessor::getFileList (const ValueTree& dirTree_,
                                          const bool reverse,
                                          const bool includeDir,
@@ -349,28 +361,56 @@ const int HtmlProcessor::compareElements (const ValueTree& ft, const ValueTree& 
 }
 
 //=================================================================================================
-String HtmlProcessor::getSiteMenu (const ValueTree& parent)
+String HtmlProcessor::getSiteMenu (const ValueTree& tree)
 {
-	/*const File& indexFile (DocTreeViewItem::getHtmlFileOrDir (parent));
-	jassert (indexFile.getFileNameWithoutExtension () == "index");  // the arg 'parent' is not a dir??
+	const ValueTree& pTree(FileTreeContainer::projectTree);
+	StringArray menuHtmlStr;
 
-	const String& relativeRoot (getRelativePathToRoot (indexFile));
-	StringArray menuStr;
+	if (hasDirAndAtLeadOneIsMenu(pTree))
+		menuHtmlStr.add("<ul>");
+	else
+		return String();
 
-	for (int i = 0;  i < parent.getNumChildren(); ++i)
+	for (int i = 0; i < pTree.getNumChildren(); ++i)
 	{
-		if (parent.getChild (i).getType ().toString () == "dir" 
-			&& (bool)parent.getChild (i).getProperty ("isMenu"))
+		const ValueTree& fd(pTree.getChild(i));
+
+		if (fd.getType().toString() == "dir" && (bool)fd.getProperty("isMenu"))
 		{
-			const String menuName (parent.getChild (i).getProperty ("title").toString ());
-			menuStr.add ("<a href=\"" + relativeRoot
-				+ DocTreeViewItem::getHtmlFileOrDir (parent.getChild (i)).getParentDirectory ().getFileName ()
-				+ "/index.html\">" + menuName + "</a> &nbsp; ");
+			const File& dirIndex(DocTreeViewItem::getHtmlFileOrDir(fd));
+			const String& menuName(fd.getProperty("title").toString());
+			const String& path(getRelativePathToRoot(DocTreeViewItem::getHtmlFileOrDir(tree)) 
+							   + dirIndex.getParentDirectory().getFileName() + "/index.html");
+			const String& linkStr("<li><a href=\"" + path + "\">" + menuName + "</a></li> ");
+			menuHtmlStr.add(linkStr);
+
+			if (hasDirAndAtLeadOneIsMenu(fd))
+			{
+				menuHtmlStr.add("<ul>");
+
+				for (int j = 0; j < fd.getNumChildren(); ++j)
+				{
+					const ValueTree& sd(fd.getChild(j));
+
+					if (sd.getType().toString() == "dir" && (bool)sd.getProperty("isMenu"))
+					{
+						const File& sDirIndex(DocTreeViewItem::getHtmlFileOrDir(sd));
+						const String& sMenuName(sd.getProperty("title").toString());
+						const String& sPath(getRelativePathToRoot(DocTreeViewItem::getHtmlFileOrDir(tree))
+											+ dirIndex.getParentDirectory().getFileName() + "/"
+											+ sDirIndex.getParentDirectory().getFileName() + "/index.html");
+						const String& sLinkStr("<li><a href=\"" + sPath + "\">" + sMenuName + "</a></li> ");
+						menuHtmlStr.add(sLinkStr);
+					}
+				}
+
+				menuHtmlStr.add("</ul>");
+			}
 		}
 	}
 
-	return menuStr.joinIntoString (newLine).dropLastCharacters (8);*/
-	return "menu";
+	menuHtmlStr.add("</ul>");
+	return menuHtmlStr.joinIntoString(newLine);
 }
 
 //=================================================================================================

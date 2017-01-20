@@ -44,13 +44,15 @@ struct HtmlProcessor
 
 private:
 	/** get dirs of the arg dir */
-	static String getSiteMenu (const ValueTree& parent);
+	static String getSiteMenu (const ValueTree& tree);
 
 	/** get dirs-chain of the arg doc */
 	static String getSiteNavi (const ValueTree& docTree);
 
 	static void copyDocMediasToSite (const File& mdFile, const File& htmlFile, const String& htmlStr);
 	static const String getRelativePathToRoot (const File &htmlFile);
+
+	static const bool hasDirAndAtLeadOneIsMenu(const ValueTree& tree);
 };
 
 

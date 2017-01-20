@@ -40,48 +40,6 @@ const String Md2Html::mdStringToHtml (const String& mdString)
 }
 
 //=================================================================================================
-const String Md2Html::renderHtmlContent (const String& htmlContentStr, 
-                                         const File& tplFile,
-                                         const String& htmlKeywords,
-                                         const String& htmlAuthor,
-                                         const String& htmlDescription,
-                                         const String& htmlTitle,
-                                         const String& cssPath,
-                                         const bool codeHighlight,
-                                         const String& jsCode)
-{
-    String htmlStr (tplFile.existsAsFile () ? tplFile.loadFileAsString () 
-                    : TRANS ("Please specify a template file. "));
-
-    if (htmlContentStr.isEmpty ())
-        return String();
-
-    if (codeHighlight)
-    {
-        htmlStr = htmlStr.replace ("\n  <title>",
-                                   "\n  <script src = \""
-                                   + cssPath + "add-in/hl.js\"></script>\n"
-                                   "  <script>hljs.initHighlightingOnLoad(); </script>\n"
-                                   "  <title>");
-    }
-
-    if (jsCode.trim().isNotEmpty())
-    {
-        htmlStr = htmlStr.replace ("\n  <title>",
-                                   "\n  <script type=\"text/javascript\">\n"
-                                   + jsCode.trim() + "\n  </script>\n"
-                                   "  <title>");
-    }
-
-    return htmlStr.replace ("{{keywords}}", htmlKeywords)
-        .replace ("{{author}}", htmlAuthor)
-        .replace ("{{description}}", htmlDescription)
-        .replace ("{{title}}", htmlTitle)
-        .replace ("{{siteRelativeRootPath}}", cssPath)
-        .replace ("{{content}}", htmlContentStr);
-}
-
-//=================================================================================================
 const String Md2Html::tableParse (const String& mdString)
 {
     if (mdString.isEmpty ())

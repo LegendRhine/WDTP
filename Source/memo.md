@@ -152,6 +152,13 @@
 	- {{title}} <head>区meta属性中的标题，即：MD文档的第一行（标题）
 	- {{content}} <body>区中所显示的网页内容，即：MD文档的所有内容
 
+ - 其他标签
+	- {{siteLogo}} 显示网站LOGO图片，图片位于网站根目录add-in文件夹下，文件名为logo.png
+	- {{siteMenu}} 网站主菜单
+	- {{siteNavi}} 当前页面的导航菜单
+	- {{previousAndNext}} 上一篇，下一篇
+	- {{random-5}} 随机推荐5篇本站文章
+
 	- {{titleOfDir}} <body>区中所显示的当前目录的标题
 	- {{fileAndDirList_Y_Y_N_0}} <body>区中所显示的文章/目录列表，倒序（新的在上），包括目录，不含描述，不分页（一页内显示全部）
 	- {{fileAndDirList_N_Y_N_0}} <body>区中所显示的文章/目录列表，正序，包括目录，不含描述，不分页（一页内显示全部）

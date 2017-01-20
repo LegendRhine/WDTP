@@ -26,7 +26,7 @@ public:
     bool moreThanOneInstanceAllowed() override       { return true; }
       
     //==============================================================================
-    void initialise (const String& /*commandLine*/) override
+    void initialise (const String& commandLine) override
     {
         // for WebBroswerComponent's web-core on Windows (IE7-IE11)
         // otherwise, the embedded broswer cannot load any js-script (e.g. code-hightlight..)
@@ -55,13 +55,20 @@ public:
         LookAndFeel::setDefaultLookAndFeel (lnf = new SwingLookAndFeel());
         mainWindow = new MainWindow (getApplicationName());
 
-        // open the previous project
-        RecentlyOpenedFilesList  recentFiles;
-        recentFiles.restoreFromString (systemFile->getValue ("recentFiles"));
-        const File& projectFile (recentFiles.getFile (0));
+        // open the previous project or double click to open a project
+		if (commandLine.isNotEmpty ())
+		{
+			mainWindow->openProject (File (commandLine.unquoted()));
+		}
+		else
+		{
+			RecentlyOpenedFilesList  recentFiles;
+			recentFiles.restoreFromString (systemFile->getValue ("recentFiles"));
+			const File& projectFile (recentFiles.getFile (0));
 
-        if (projectFile.existsAsFile())
-            mainWindow->openProject (projectFile);
+			if (projectFile.existsAsFile ())
+				mainWindow->openProject (projectFile);
+		}
     }
     //=========================================================================
     void shutdown() override

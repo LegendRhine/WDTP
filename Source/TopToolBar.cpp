@@ -336,8 +336,8 @@ void TopToolBar::popupSystemMenu ()
     // display the menu
     const int index = m.show ();
 
-    if (index >= 100 && index < 200)   // recently opened files..
-        fileTreeContainer->openProject (recentFiles.getFile (index - 100));
+	if (index >= 100 && index < 200)   // recently opened files..
+		fileTreeContainer->openProject (recentFiles.getFile (index - 100));
     else
         menuPerform (index);
 }

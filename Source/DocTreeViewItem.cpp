@@ -80,8 +80,10 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
     // mark of doc and dir item
     String markStr;
 
-    if (tree.getType().toString() != "wdtpProject")
+    if (tree.getType().toString() == "doc")
         markStr = CharPointer_UTF8("\xe2\x97\x8f ");
+	else if (tree.getType ().toString () == "dir")
+		markStr = CharPointer_UTF8 ("\xe2\x96\xa0 ");
 
     g.drawText (markStr + itemName, leftGap, 0, width - 4, height, Justification::centredLeft, true);
 }
@@ -232,6 +234,9 @@ void DocTreeViewItem::needCreateAndUpload (const ValueTree& tree)
         parentTree.setProperty("needCreateHtml", true, nullptr);
         parentTree.setProperty("modifyDate", modifyDate, nullptr);
 	}
+
+	for (int i = tree.getNumChildren (); --i >= 0; )
+		tree.getChild (i).setProperty ("needCreateHtml", true, nullptr);
 }
 
 //=================================================================================================

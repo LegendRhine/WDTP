@@ -11,6 +11,97 @@
 #include "WdtpHeader.h"
 
 //=================================================================================================
+void HtmlProcessor::renderHtmlContent (const ValueTree& docTree, 
+	const File& tplFile,
+	const File& htmlFile)
+{
+	String tplStr (tplFile.existsAsFile () ? tplFile.loadFileAsString ()
+		: TRANS ("Please specify a template file. "));
+		
+	// md to html
+	const File mdDoc (DocTreeViewItem::getMdFileOrDir (docTree));
+	jassert (mdDoc.existsAsFile ());  // selected a dir currently?? 
+	const String htmlContentStr (Md2Html::mdStringToHtml (mdDoc.loadFileAsString ()));
+
+	if (htmlContentStr.isEmpty ())
+		return;
+
+	// get the path which relative the site root-dir            
+	const String& rootRelativePath (getRelativePathToRoot (htmlFile));
+
+	// process code
+	if (htmlContentStr.contains ("<pre><code>"))
+	{
+		tplStr = tplStr.replace ("\n  <title>",
+			"\n  <script src = \""
+			+ rootRelativePath + "add-in/hl.js\"></script>\n"
+			"  <script>hljs.initHighlightingOnLoad(); </script>\n"
+			"  <title>");
+	}
+
+	// process doc's js
+	if (docTree.getProperty ("js").toString().trim ().isNotEmpty ())
+	{
+		tplStr = tplStr.replace ("\n  <title>",
+			"\n  <script type=\"text/javascript\">\n"
+			+ docTree.getProperty ("js").toString().trim () + "\n  </script>\n"
+			"  <title>");
+	}
+
+	/* process tags...
+	- {{siteLogo}} 显示网站LOGO图片，图片位于网站根目录add-in文件夹下，文件名为logo.png
+	- {{siteMenu}} 网站主菜单
+	- {{siteNavi}} 当前页面的导航菜单
+	- {{previousAndNext}} 上一篇，下一篇
+	- {{random-5}} 随机推荐5篇本站文章
+	*/
+	if (tplStr.contains ("{{siteLogo}}"))
+	{
+		tplStr = tplStr.replace ("{{siteLogo}}",
+			"  <a href = \"" + rootRelativePath + "index.html\"><img src = \"" 
+			+ rootRelativePath + "add-in/logo.png\" /></a>\n");
+	}
+
+	if (tplStr.contains ("{{siteMenu}}"))
+	{
+		tplStr = tplStr.replace ("{{siteMenu}}", getSiteMenu (docTree.getParent()));
+	}
+
+	if (tplStr.contains ("{{siteNavi}}"))
+	{
+		tplStr = tplStr.replace ("{{siteNavi}}", getSiteNavi (docTree));
+	}
+
+	// generate the html file
+	htmlFile.appendText (tplStr.replace ("{{keywords}}", docTree.getProperty ("keywords").toString ())
+		.replace ("{{author}}", FileTreeContainer::projectTree.getProperty ("owner").toString ())
+		.replace ("{{description}}", docTree.getProperty ("description").toString ())
+		.replace ("{{title}}", docTree.getProperty ("title").toString ())
+		.replace ("{{siteRelativeRootPath}}", rootRelativePath)
+		.replace ("{{content}}", htmlContentStr));
+
+	copyDocMediasToSite (mdDoc, htmlFile, htmlContentStr);
+}
+
+//=================================================================================================
+const String HtmlProcessor::getRelativePathToRoot (const File &htmlFile)
+{
+	const String htmlFilePath (htmlFile.getFullPathName ());
+	const String webRootDirPath (FileTreeContainer::projectFile.getParentDirectory ().getFullPathName ()
+		+ File::separator + "site");
+	const String tempStr (htmlFilePath.trimCharactersAtStart (webRootDirPath));
+	String cssRelativePath;
+
+	for (int i = tempStr.length (); --i >= 0;)
+	{
+		if (tempStr[i] == File::separator)
+			cssRelativePath << String ("../");
+	}
+
+	return cssRelativePath;
+}
+
+//=================================================================================================
 const String HtmlProcessor::getFileList (const ValueTree& dirTree_,
                                          const bool reverse,
                                          const bool includeDir,
@@ -75,12 +166,9 @@ const String HtmlProcessor::getFileList (const ValueTree& dirTree_,
 //=================================================================================================
 const File HtmlProcessor::createArticleHtml (ValueTree& docTree, bool saveProject)
 {
-    jassert (FileTreeContainer::projectTree.isValid ());
+    jassert (FileTreeContainer::projectTree.isValid ());   
 
-    const File mdDoc (DocTreeViewItem::getMdFileOrDir (docTree));
-    jassert (mdDoc.existsAsFile ());  // selected a dir currently??    
-
-    const String docPath (mdDoc.getFullPathName ());
+    const String docPath (DocTreeViewItem::getMdFileOrDir (docTree).getFullPathName ());
     const File htmlFile (File (docPath.replace ("docs", "site")).withFileExtension ("html"));
 
     if ((bool) docTree.getProperty ("needCreateHtml") || !htmlFile.existsAsFile ())
@@ -92,78 +180,11 @@ const File HtmlProcessor::createArticleHtml (ValueTree& docTree, bool saveProjec
                                   + FileTreeContainer::projectTree.getProperty ("render").toString ()
                                   + File::separator);
 
-            const File tplFile (tplPath + docTree.getProperty("tplFile").toString());
-
-            // get the path which relative the site root-dir, for css path            
-            const String htmlFilePath (htmlFile.getFullPathName ());
-            const String webRootDirPath (FileTreeContainer::projectFile.getParentDirectory ().getFullPathName ()
-                                         + File::separator + "site");
-            const String tempStr (htmlFilePath.trimCharactersAtStart (webRootDirPath));
-            String cssRelativePath;
-
-            for (int i = tempStr.length (); --i >= 0;)
-            {
-                if (tempStr[i] == File::separator)
-                    cssRelativePath << String ("../");
-            }
+            const File tplFile (tplPath + docTree.getProperty("tplFile").toString());            
 
             // generate the doc's html
             htmlFile.create ();
-            const String htmlStr (Md2Html::mdStringToHtml (mdDoc.loadFileAsString ()));
-            htmlFile.appendText (Md2Html::renderHtmlContent (htmlStr,
-                                                             tplFile,
-                                                             docTree.getProperty ("keywords").toString (),
-                                                             FileTreeContainer::projectTree.getProperty ("owner").toString (),
-                                                             docTree.getProperty ("description").toString (),
-                                                             docTree.getProperty ("title").toString (),
-                                                             cssRelativePath,
-                                                             htmlStr.contains ("<pre><code>"),
-                                                             docTree.getProperty ("js").toString ()));
-
-            // here, we copy this doc's media file to the site's
-            const String docMediaDirStr (mdDoc.getSiblingFile ("media").getFullPathName ());
-            const String htmlMediaDirStr (htmlFile.getSiblingFile ("media").getFullPathName ());
-            Array<File> docMedias;
-            Array<File> htmlMedias;
-
-            int indexStart = htmlStr.indexOfIgnoreCase (0, "src=\"");
-            int indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
-
-            while (indexStart != -1 && indexEnd != -1)
-            {
-				const String fileName (htmlStr.substring (indexStart + 11, indexEnd));
-
-				if (! fileName.contains (String (File::separator)))
-				{
-					docMedias.add (File (docMediaDirStr + File::separator + fileName));
-					htmlMedias.add (File (htmlMediaDirStr + File::separator + fileName));
-				}
-
-                indexStart = htmlStr.indexOfIgnoreCase (indexEnd + 2, "src=\"");
-
-                if (indexStart != -1)
-                    indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
-            }
-
-            jassert (docMedias.size () == htmlMedias.size ());
-            String errorStr;
-
-            for (int i = docMedias.size (); --i >= 0; )
-            {
-				if (docMedias[i].existsAsFile ())
-				{
-					htmlMedias[i].create ();
-
-					if (!docMedias[i].copyFileTo (htmlMedias[i]))
-						errorStr << docMedias[i].getFullPathName () << newLine;
-				}
-            }
-
-            if (errorStr.isNotEmpty ())
-            {
-                SHOW_MESSAGE (TRANS ("Can't generate these media-files:")
-                              + newLine + newLine + errorStr + newLine);
-            }
+			renderHtmlContent (docTree, tplFile, htmlFile);
 
 			docTree.setProperty ("needCreateHtml", false, nullptr);
 
@@ -177,6 +198,56 @@ const File HtmlProcessor::createArticleHtml (ValueTree& docTree, bool saveProjec
     }
 
     return htmlFile;
+}
+
+//=================================================================================================
+void HtmlProcessor::copyDocMediasToSite (const File& mdFile, 
+	const File& htmlFile, 
+	const String& htmlStr)
+{
+	const String docMediaDirStr (mdFile.getSiblingFile ("media").getFullPathName ());
+	const String htmlMediaDirStr (htmlFile.getSiblingFile ("media").getFullPathName ());
+	Array<File> docMedias;
+	Array<File> htmlMedias;
+
+	int indexStart = htmlStr.indexOfIgnoreCase (0, "src=\"");
+	int indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
+
+	while (indexStart != -1 && indexEnd != -1)
+	{
+		const String fileName (htmlStr.substring (indexStart + 11, indexEnd));
+
+		if (!fileName.contains (String (File::separator)))
+		{
+			docMedias.add (File (docMediaDirStr + File::separator + fileName));
+			htmlMedias.add (File (htmlMediaDirStr + File::separator + fileName));
+		}
+
+		indexStart = htmlStr.indexOfIgnoreCase (indexEnd + 2, "src=\"");
+
+		if (indexStart != -1)
+			indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
+	}
+
+	jassert (docMedias.size () == htmlMedias.size ());
+	String errorStr;
+
+	for (int i = docMedias.size (); --i >= 0; )
+	{
+		if (docMedias[i].existsAsFile ())
+		{
+			htmlMedias[i].create ();
+
+			if (!docMedias[i].copyFileTo (htmlMedias[i]))
+				errorStr << docMedias[i].getFullPathName () << newLine;
+		}
+	}
+
+	if (errorStr.isNotEmpty ())
+	{
+		SHOW_MESSAGE (TRANS ("Can't generate these media-files:")
+			+ newLine + newLine + errorStr + newLine);
+	}
 }
 
 //=================================================================================================
@@ -275,6 +346,50 @@ const int HtmlProcessor::compareElements (const ValueTree& ft, const ValueTree& 
     else  // doc vs doc and dir vs dir..
         return ft.getProperty("createDate").toString().compareIgnoreCase
         (st.getProperty("createDate").toString());
+}
+
+//=================================================================================================
+String HtmlProcessor::getSiteMenu (const ValueTree& parent)
+{
+	/*const File& indexFile (DocTreeViewItem::getHtmlFileOrDir (parent));
+	jassert (indexFile.getFileNameWithoutExtension () == "index");  // the arg 'parent' is not a dir??
+
+	const String& relativeRoot (getRelativePathToRoot (indexFile));
+	StringArray menuStr;
+
+	for (int i = 0;  i < parent.getNumChildren(); ++i)
+	{
+		if (parent.getChild (i).getType ().toString () == "dir" 
+			&& (bool)parent.getChild (i).getProperty ("isMenu"))
+		{
+			const String menuName (parent.getChild (i).getProperty ("title").toString ());
+			menuStr.add ("<a href=\"" + relativeRoot
+				+ DocTreeViewItem::getHtmlFileOrDir (parent.getChild (i)).getParentDirectory ().getFileName ()
+				+ "/index.html\">" + menuName + "</a> &nbsp; ");
+		}
+	}
+
+	return menuStr.joinIntoString (newLine).dropLastCharacters (8);*/
+	return "menu";
+}
+
+//=================================================================================================
+String HtmlProcessor::getSiteNavi (const ValueTree& docTree)
+{
+	String navi;
+	ValueTree parent (docTree.getParent());
+	String path;
+
+	while (parent.isValid())
+    {
+		const String& text (parent.getProperty("title").toString());
+		navi = "<a href=\"" + path + "index.html\">" + text + "</a>/" + navi;
+		path += "../";
+
+		parent = parent.getParent();
+	}
+
+	return navi;
 }
 
 //=========================================================================

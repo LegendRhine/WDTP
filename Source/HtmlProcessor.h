@@ -35,8 +35,7 @@ struct HtmlProcessor
     static const File createArticleHtml (ValueTree& docTree, bool saveProjectAfterCreated);
 	static const File createIndexHtml (ValueTree& dirTree, bool saveProjectAfterCreated);
 
-    /** The return result could be showed on the very bottom of every web-page */
-    static const String getCopyrightInfo();
+   
 
     //=========================================================================
     /** Use for file/dir list sort. Base on create-date */
@@ -44,13 +43,18 @@ struct HtmlProcessor
 
 private:
 	/** generate site menu. 2 level. */
-	static String getSiteMenu (const ValueTree& tree);
-
-	/** get dirs-chain of the arg doc */
-	static String getSiteNavi (const ValueTree& docTree);
+	static const String getSiteMenu (const ValueTree& tree);
+	static const String getSiteNavi (const ValueTree& docTree);
+    static const String getContentTitle(const ValueTree& tree);
+    static const String getCreateAndModifyTime(const ValueTree& tree);
+    static const String getPrevAndNextArticel(const ValueTree& tree);
+    
+    /** The return result could be showed on the very bottom of every web-page */
+    static const String getCopyrightInfo();
 
 	static void copyDocMediasToSite (const File& mdFile, const File& htmlFile, const String& htmlStr);
 	static const String getRelativePathToRoot (const File &htmlFile);
+    static void getAllArticels(ValueTree fromThisTree, ValueTree& allArticels);
 
 	static const bool hasDirAndAtLeadOneIsMenu(const ValueTree& tree);
 };

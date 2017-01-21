@@ -32,10 +32,8 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     htmlContent = orderedListParse (htmlContent, true);
     htmlContent = orderedListParse (htmlContent, false);
     htmlContent = cleanUp (htmlContent);
-    
-    htmlContent += HtmlProcessor::getCopyrightInfo();
-    //DBG (htmlContent);
 
+    //DBG (htmlContent);
     return htmlContent;
 }
 
@@ -251,7 +249,7 @@ const String Md2Html::processByLine (const String& mdString)
             currentLine = "<h2>" + currentLine.trimStart ().substring (3) + "</h2>";
 
         else if (currentLine.trimStart ().substring (0, 2) == "# ")
-            currentLine = "<div align=center><h1>" + currentLine.trimStart ().substring (2) + "</h1></div>";
+            currentLine = "<h1>" + currentLine.trimStart ().substring (2) + "</h1>";
 
         // align
         else if (currentLine.trimStart ().substring (0, 4) == ">|< ")

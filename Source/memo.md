@@ -150,14 +150,15 @@
 	- {{keywords}} <head>区meta属性中的的关键字
 	- {{description}} <head>区meta属性中的描述，即：MD文档中有实际内容的第二段（标题后面的非空行段落）
 	- {{title}} <head>区meta属性中的标题，即：MD文档的第一行（标题）
+	- {{contentTitle}} <body>区文章或目录的标题
 	- {{content}} <body>区中所显示的网页内容，即：MD文档的所有内容
-
- - 其他标签
 	- {{siteLogo}} 显示网站LOGO图片，图片位于网站根目录add-in文件夹下，文件名为logo.png
 	- {{siteMenu}} 网站主菜单
 	- {{siteNavi}} 当前页面的导航菜单
+	- {{createAndModifyTime}} 创作及最后修改时间
 	- {{previousAndNext}} 上一篇，下一篇
 	- {{random-5}} 随机推荐5篇本站文章
+	- {{bottomCopyright}} 每页页底的版权信息
 
 	- {{titleOfDir}} <body>区中所显示的当前目录的标题
 	- {{fileAndDirList_Y_Y_N_0}} <body>区中所显示的文章/目录列表，倒序（新的在上），包括目录，不含描述，不分页（一页内显示全部）

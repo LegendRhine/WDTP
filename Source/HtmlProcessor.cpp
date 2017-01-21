@@ -48,10 +48,11 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
 			"  <title>");
 	}
 
-	/* process tags...
+	/* process tags of TPL-file...
 	- {{siteLogo}} 显示网站LOGO图片，图片位于网站根目录add-in文件夹下，文件名为logo.png
 	- {{siteMenu}} 网站主菜单
 	- {{siteNavi}} 当前页面的导航菜单
+    - {{contentTitle}} 文章或目录的标题
 	- {{previousAndNext}} 上一篇，下一篇
 	- {{random-5}} 随机推荐5篇本站文章
 	*/
@@ -66,11 +67,26 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
 	{
 		tplStr = tplStr.replace ("{{siteMenu}}", getSiteMenu (docTree.getParent()));
 	}
-
 	if (tplStr.contains ("{{siteNavi}}"))
 	{
 		tplStr = tplStr.replace ("{{siteNavi}}", getSiteNavi (docTree));
 	}
+    if (tplStr.contains("{{contentTitle}}"))
+    {
+        tplStr = tplStr.replace("{{contentTitle}}", getContentTitle(docTree));
+    }
+    if (tplStr.contains("{{createAndModifyTime}}"))
+    {
+        tplStr = tplStr.replace("{{createAndModifyTime}}", getCreateAndModifyTime(docTree));
+    }
+    if (tplStr.contains("{{previousAndNext}}"))
+    {
+        tplStr = tplStr.replace("{{previousAndNext}}", getPrevAndNextArticel(docTree));
+    }
+    if (tplStr.contains("{{bottomCopyright}}"))
+    {
+        tplStr = tplStr.replace("{{bottomCopyright}}", getCopyrightInfo());
+    }
 
 	// generate the html file
 	htmlFile.appendText (tplStr.replace ("{{keywords}}", docTree.getProperty ("keywords").toString ())
@@ -99,6 +115,20 @@ const String HtmlProcessor::getRelativePathToRoot (const File &htmlFile)
 	}
 
 	return cssRelativePath;
+}
+
+//=================================================================================================
+void HtmlProcessor::getAllArticels(ValueTree fromThisTree, ValueTree& allArticels)
+{
+    if (fromThisTree.getType().toString() == "doc")
+    {
+        allArticels.addChild(fromThisTree.createCopy(), -1, nullptr);
+    }
+    else
+    {
+        for (int i = 0; i < fromThisTree.getNumChildren(); ++i)
+            getAllArticels(fromThisTree.getChild(i), allArticels);
+    }
 }
 
 //=================================================================================================
@@ -361,7 +391,7 @@ const int HtmlProcessor::compareElements (const ValueTree& ft, const ValueTree& 
 }
 
 //=================================================================================================
-String HtmlProcessor::getSiteMenu (const ValueTree& tree)
+const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
 {
 	const ValueTree& pTree(FileTreeContainer::projectTree);
 	StringArray menuHtmlStr;
@@ -414,7 +444,7 @@ String HtmlProcessor::getSiteMenu (const ValueTree& tree)
 }
 
 //=================================================================================================
-String HtmlProcessor::getSiteNavi (const ValueTree& docTree)
+const String HtmlProcessor::getSiteNavi (const ValueTree& docTree)
 {
 	String navi;
 	ValueTree parent (docTree.getParent());
@@ -430,6 +460,66 @@ String HtmlProcessor::getSiteNavi (const ValueTree& docTree)
 	}
 
 	return "<div class=\"siteNavi\">" + navi + "</div>";
+}
+
+//=================================================================================================
+const String HtmlProcessor::getContentTitle(const ValueTree& tree)
+{
+    return tree.getProperty("title").toString();
+}
+
+//=================================================================================================
+const String HtmlProcessor::getCreateAndModifyTime(const ValueTree& tree)
+{
+    const String& createStr(TRANS ("Publish Time: ") + tree.getProperty("createDate").toString().dropLastCharacters(3));
+    const String& modifyStr(TRANS ("Last Modified: ") + tree.getProperty("modifyDate").toString().dropLastCharacters(3));
+
+    return "<div class=timeStr>" + createStr + "<br>" + modifyStr + "</div>";
+}
+
+//=================================================================================================
+const String HtmlProcessor::getPrevAndNextArticel(const ValueTree& tree)
+{
+    ValueTree pTree(FileTreeContainer::projectTree.createCopy());
+    ValueTree allArticels("articels");
+
+    getAllArticels(pTree, allArticels);
+    HtmlProcessor sorter;
+    allArticels.sort(sorter, nullptr, false);
+
+    int prevNum = -1;
+    int nextNum = -1;
+    String prevStr, nextStr;
+
+    for (int i = 0; i < allArticels.getNumChildren(); ++i)
+    {
+        if (allArticels.getChild(i).isEquivalentTo(tree))
+        {
+            prevNum = i - 1;
+            nextNum = i + 1;
+            break;
+        }
+    }
+
+    if (prevNum >= 0)
+    {
+        const String prevName = allArticels.getChild(prevNum).getProperty("title").toString();
+        String path = allArticels.getChild(prevNum).getProperty("name").toString().replace("docs", "site");
+
+        path = path.removeCharacters(FileTreeContainer::projectFile.getParentDirectory().getFullPathName());
+        path = getRelativePathToRoot(DocTreeViewItem::getHtmlFileOrDir(tree)) + path;
+        prevStr = TRANS("Prev: ") + "<a href=\"" + path + ".html\">" + prevName + "</a>";
+    }
+    if (nextNum >= 0)
+    {
+        const String nextName = allArticels.getChild(nextNum).getProperty("title").toString();
+        String path = allArticels.getChild(nextNum).getProperty("name").toString().replace("docs", "site");
+        path = path.removeCharacters(FileTreeContainer::projectFile.getParentDirectory().getFullPathName());
+        path = getRelativePathToRoot(DocTreeViewItem::getHtmlFileOrDir(tree)) + path;
+        nextStr = TRANS("Next: ") + "<a href=\"" + path + ".html\">" + nextName + "</a>";
+    }
+
+    return "<div class=prevAndNext>" + prevStr + "<br>" + nextStr + "</div>";
 }
 
 //=========================================================================

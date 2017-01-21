@@ -543,6 +543,43 @@ void HtmlProcessor::getNextTree(const ValueTree& oTree,
         getNextTree(oTree.getChild(i), tree, result);
 }
 
+//=================================================================================================
+void HtmlProcessor::getDocNumbersOfTheDir(const ValueTree& dirTree, int& num)
+{
+    if (dirTree.getType().toString() == "doc")
+        ++num;
+    else
+        for (int i = dirTree.getNumChildren(); --i >= 0; )
+            getDocNumbersOfTheDir(dirTree.getChild(i), num);
+}
+
+//=================================================================================================
+const Array<int> HtmlProcessor::getFiveRandomInt(const int howMany)
+{
+    Array<int> values;
+    int maxValue = 0;
+    getDocNumbersOfTheDir(FileTreeContainer::projectTree, maxValue);
+
+    for (int i = jmin (maxValue, howMany); --i >= 0; )
+    {
+        Random r(Time::currentTimeMillis());
+        int randomValue = r.nextInt(maxValue);
+
+        for (int j = 0; j < values.size(); ++j)
+        {
+            if (values[j] == randomValue)
+            {
+                randomValue = r.nextInt(maxValue);
+                j = 0;
+            }
+        }
+
+        values.add(randomValue);
+    }
+
+    return values;
+}
+
 //=========================================================================
 const String HtmlProcessor::getCopyrightInfo()
 {

@@ -62,6 +62,11 @@ private:
     static void getPreviousTree(const ValueTree& oTree, const ValueTree& tree, ValueTree& result);
     static void getNextTree(const ValueTree& oTree, const ValueTree& tree, ValueTree& result);
 
+    static void getDocNumbersOfTheDir(const ValueTree& dirTree, int& num);
+
+    /** return 'howMany' ints, range: 0 ~ getDocNumbersOfTheDir (projectTree). */
+    static const Array<int> getFiveRandomInt (const int howMany);
+
 };
 
 

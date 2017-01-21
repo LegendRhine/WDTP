@@ -43,7 +43,7 @@ struct HtmlProcessor
     const int compareElements (const ValueTree& ft, const ValueTree& st);
 
 private:
-	/** get dirs of the arg dir */
+	/** generate site menu. 2 level. */
 	static String getSiteMenu (const ValueTree& tree);
 
 	/** get dirs-chain of the arg doc */

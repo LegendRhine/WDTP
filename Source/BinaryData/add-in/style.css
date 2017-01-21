@@ -1,5 +1,57 @@
 ﻿/* Default style of WDTP */
 
+
+        .siteMenu ul
+        {
+            display: block;
+            width: 100%;
+			font-size:17px;	
+			position: absolute;
+			top:30px;
+			margin: -10px 0 0 130px;
+        }
+        .siteMenu ul li
+        {
+		    float:left;			
+            list-style-type: none;
+            height: 40px;
+            width: 100px;
+            line-height: 40px;
+            text-align: center;
+            background: #333;
+            color: #fff;
+        }
+        .siteMenu ul li ul
+        {
+		    list-style-type: none;
+            display: list-item;
+            margin: 0;
+            position: relative;
+			top: 0px;
+            right: 40px;
+            display: none;
+        }
+        .siteMenu ul li a
+        {
+            text-decoration: none;
+            color: #ffffff;
+        }
+        .siteMenu ul li:hover
+        {
+            background: #686868;
+            color: #000;
+            cursor: pointer;
+        }
+        .siteMenu ul li:hover ul
+        {
+            display: list-item;
+        }
+        .siteMenu ul li:hover ul li:hover
+        {
+            background: 868686;
+            color: #000;
+            cursor: pointer;
+        }
 html {
   background-color: #cdcdcd;	
 }
@@ -23,10 +75,12 @@ p {
 img {
   max-width: 700px;
 }
-h2, h3, h4, h5, h6 {
+
+h1, h2, h3, h4, h5, h6 {
   text-indent: 24pt;
   line-height: 0.5;
 }
+
 li, hr, div {
   text-indent: 0;
 }
@@ -55,6 +109,7 @@ ol, ul {
   margin: 5px 0;
   padding: 0 0 0 40px;
 }
+
 table  {
   position: relative;
   top: 1px;

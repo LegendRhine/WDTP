@@ -58,8 +58,8 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
 	if (tplStr.contains ("{{siteLogo}}"))
 	{
 		tplStr = tplStr.replace ("{{siteLogo}}",
-			"  <a href = \"" + rootRelativePath + "index.html\"><img src = \"" 
-			+ rootRelativePath + "add-in/logo.png\" /></a>\n");
+			"<div class=\"siteLogo\"><a href = \"" + rootRelativePath + "index.html\"><img src = \"" 
+			+ rootRelativePath + "add-in/logo.png\" /></a></div>");
 	}
 
 	if (tplStr.contains ("{{siteMenu}}"))
@@ -367,7 +367,7 @@ String HtmlProcessor::getSiteMenu (const ValueTree& tree)
 	StringArray menuHtmlStr;
 
 	if (hasDirAndAtLeadOneIsMenu(pTree))
-		menuHtmlStr.add("<ul>");
+		menuHtmlStr.add("<div class=\"siteMenu\"><ul>");
 	else
 		return String();
 
@@ -381,7 +381,7 @@ String HtmlProcessor::getSiteMenu (const ValueTree& tree)
 			const String& menuName(fd.getProperty("title").toString());
 			const String& path(getRelativePathToRoot(DocTreeViewItem::getHtmlFileOrDir(tree)) 
 							   + dirIndex.getParentDirectory().getFileName() + "/index.html");
-			const String& linkStr("<li><a href=\"" + path + "\">" + menuName + "</a></li> ");
+			const String& linkStr("<li><a href=\"" + path + "\">" + menuName + "</a>");
 			menuHtmlStr.add(linkStr);
 
 			if (hasDirAndAtLeadOneIsMenu(fd))
@@ -399,17 +399,17 @@ String HtmlProcessor::getSiteMenu (const ValueTree& tree)
 						const String& sPath(getRelativePathToRoot(DocTreeViewItem::getHtmlFileOrDir(tree))
 											+ dirIndex.getParentDirectory().getFileName() + "/"
 											+ sDirIndex.getParentDirectory().getFileName() + "/index.html");
-						const String& sLinkStr("<li><a href=\"" + sPath + "\">" + sMenuName + "</a></li> ");
+						const String& sLinkStr("<li><a href=\"" + sPath + "\">" + sMenuName + "</a></li>");
 						menuHtmlStr.add(sLinkStr);
 					}
 				}
 
-				menuHtmlStr.add("</ul>");
+				menuHtmlStr.add("</li></ul>");
 			}
 		}
 	}
 
-	menuHtmlStr.add("</ul>");
+	menuHtmlStr.add("</ul></div>");
 	return menuHtmlStr.joinIntoString(newLine);
 }
 
@@ -429,7 +429,7 @@ String HtmlProcessor::getSiteNavi (const ValueTree& docTree)
 		parent = parent.getParent();
 	}
 
-	return navi;
+	return "<div class=\"siteNavi\">" + navi + "</div>";
 }
 
 //=========================================================================

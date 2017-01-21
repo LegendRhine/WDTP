@@ -49,7 +49,7 @@ private:
     { 
         // project properties' values
         projectTitle = 0, projectKeywords, projectDesc, owner,  
-        copyrightInfo, projectRenderDir, indexTpl, projectJs, 
+        copyrightInfo, projectRenderDir, indexTpl, projectJs, ad,
 		
         // dir properties' values
         dirName, dirTitle, dirKeywords, dirDesc, isMenu, dirTpl, dirJs,

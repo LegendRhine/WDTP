@@ -83,6 +83,12 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
     {
         tplStr = tplStr.replace("{{previousAndNext}}", getPrevAndNextArticel(docTree));
     }
+    if (tplStr.contains("{{ad}}"))
+    {
+        tplStr = tplStr.replace("{{ad}}", "<div class=ad>" 
+                                + FileTreeContainer::projectTree.getProperty("ad").toString()
+                                + "</div>");
+    }
     if (tplStr.contains("{{bottomCopyright}}"))
     {
         tplStr = tplStr.replace("{{bottomCopyright}}", getCopyrightInfo());
@@ -457,7 +463,7 @@ const String HtmlProcessor::getContentTitle(const ValueTree& tree)
 //=================================================================================================
 const String HtmlProcessor::getCreateAndModifyTime(const ValueTree& tree)
 {
-    const String& createStr(TRANS ("Publish Time: ") + tree.getProperty("createDate").toString().dropLastCharacters(3));
+    const String& createStr(TRANS ("Create Time: ") + tree.getProperty("createDate").toString().dropLastCharacters(3));
     const String& modifyStr(TRANS ("Last Modified: ") + tree.getProperty("modifyDate").toString().dropLastCharacters(3));
 
     return "<div class=timeStr>" + createStr + "<br>" + modifyStr + "</div>";

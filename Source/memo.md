@@ -114,6 +114,7 @@
 	- render: 模板目录（磁盘Themes下的某个子目录，即已安装的某套模板）
 	- tplFile: 渲染网站首页所使用的模板文件，位于render所设置的目录下
 	- js: 首页所需的js代码
+	- ad: 广告代码（任意html代码），对应模板文件中的标签{{ad}}
     - modifyDate: 最后一次修改的日期
 	- needCreateHtml: 本站根目录下的index.html是否需要生成
 	- identityOfLastSelectedItem: 文件树中最后一次选择的文档的标示，可由TreeView的findItemFromIdentifierString()找到对应的item，
@@ -157,7 +158,8 @@
 	- {{siteNavi}} 当前页面的导航菜单
 	- {{createAndModifyTime}} 创作及最后修改时间
 	- {{previousAndNext}} 上一篇，下一篇
-	- {{random-5}} 随机推荐5篇本站文章
+	- {{ad}} 广告代码，在项目根目录中设置
+	- {{random}} 随机推荐5篇本站文章
 	- {{bottomCopyright}} 每页页底的版权信息
 
 	- {{titleOfDir}} <body>区中所显示的当前目录的标题

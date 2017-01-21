@@ -50,6 +50,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     values[projectRenderDir]->setValue (pTree.getProperty ("render"));
     values[indexTpl]->setValue (pTree.getProperty ("tplFile"));
     values[projectJs]->setValue(pTree.getProperty("js"));
+    values[ad]->setValue(pTree.getProperty("ad"));
     
     Array<PropertyComponent*> projectProperties;
 
@@ -101,14 +102,16 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     projectProperties.add (new ChoicePropertyComponent (*values[indexTpl], TRANS ("Render TPL: "),
                                                         tplFileSa, tplFileVar));
 
-    projectProperties.add (new TextPropertyComponent (*values[projectJs], TRANS ("JavaScript: "), 0, true));
+    projectProperties.add(new TextPropertyComponent(*values[projectJs], TRANS("JavaScript: "), 0, true));
+    projectProperties.add(new TextPropertyComponent(*values[ad], TRANS("Advertisement: "), 0, true));
     projectProperties.add(new TextPropertyComponent(Value(pTree.getProperty("modifyDate")), TRANS("Last Modified: "), 0, false));
 	
     for (auto p : projectProperties)  p->setPreferredHeight (28);
     projectProperties[2]->setPreferredHeight (28 * 3);
     projectProperties[4]->setPreferredHeight (28 * 3);
-    projectProperties[7]->setPreferredHeight (28 * 6);
-    projectProperties[8]->setEnabled(false);
+    projectProperties[7]->setPreferredHeight(28 * 4);
+    projectProperties[8]->setPreferredHeight(28 * 5);
+    projectProperties[9]->setEnabled(false);
     
     panel->addSection (TRANS ("Project Setup"), projectProperties);
     valuesAddListener ();
@@ -168,7 +171,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
 
     dirProperties[0]->setEnabled (false);
     dirProperties[3]->setPreferredHeight (28 * 3);
-    dirProperties[6]->setPreferredHeight (28 * 6);
+    dirProperties[6]->setPreferredHeight (28 * 5);
     
     panel->addSection (TRANS ("Folder Setup"), dirProperties);
     valuesAddListener ();
@@ -232,7 +235,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docProperties[9]->setEnabled (false);
 
     docProperties[3]->setPreferredHeight (28 * 3);
-    docProperties[6]->setPreferredHeight (28 * 6);
+    docProperties[6]->setPreferredHeight (28 * 5);
 
     panel->addSection (TRANS ("Document Setup"), docProperties);
     valuesAddListener ();
@@ -294,6 +297,8 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("tplFile", values[indexTpl]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[projectJs]))
         currentTree.setProperty ("js", values[projectJs]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs(*values[ad]))
+        currentTree.setProperty("ad", values[ad]->getValue(), nullptr);
     
     // dir properties
     else if (value.refersToSameSourceAs (*values[dirTitle]))

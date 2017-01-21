@@ -118,20 +118,6 @@ const String HtmlProcessor::getRelativePathToRoot (const File &htmlFile)
 }
 
 //=================================================================================================
-void HtmlProcessor::getAllArticels(ValueTree fromThisTree, ValueTree& allArticels)
-{
-    if (fromThisTree.getType().toString() == "doc")
-    {
-        allArticels.addChild(fromThisTree.createCopy(), -1, nullptr);
-    }
-    else
-    {
-        for (int i = 0; i < fromThisTree.getNumChildren(); ++i)
-            getAllArticels(fromThisTree.getChild(i), allArticels);
-    }
-}
-
-//=================================================================================================
 const bool HtmlProcessor::hasDirAndAtLeadOneIsMenu(const ValueTree& tree)
 {
 	for (int i = tree.getNumChildren(); --i >= 0; )
@@ -480,46 +466,75 @@ const String HtmlProcessor::getCreateAndModifyTime(const ValueTree& tree)
 //=================================================================================================
 const String HtmlProcessor::getPrevAndNextArticel(const ValueTree& tree)
 {
-    ValueTree pTree(FileTreeContainer::projectTree.createCopy());
-    ValueTree allArticels("articels");
-
-    getAllArticels(pTree, allArticels);
-    HtmlProcessor sorter;
-    allArticels.sort(sorter, nullptr, false);
-
-    int prevNum = -1;
-    int nextNum = -1;
     String prevStr, nextStr;
 
-    for (int i = 0; i < allArticels.getNumChildren(); ++i)
+    ValueTree prevTree("doc");
+    getPreviousTree(FileTreeContainer::projectTree, tree, prevTree);
+    const String prevName = prevTree.getProperty("title").toString();
+
+    if (prevName.isNotEmpty())
     {
-        if (allArticels.getChild(i).isEquivalentTo(tree))
-        {
-            prevNum = i - 1;
-            nextNum = i + 1;
-            break;
-        }
+        String prevPath = DocTreeViewItem::getHtmlFileOrDir(prevTree).getFullPathName();
+        prevPath = prevPath.replace(FileTreeContainer::projectFile.getSiblingFile("site").getFullPathName(), String());
+        prevPath = getRelativePathToRoot(DocTreeViewItem::getHtmlFileOrDir(tree)) + prevPath.substring(1);
+        prevPath= prevPath.replace("\\", "/");
+        prevStr = TRANS("Prev: ") + "<a href=\"" + prevPath + "\">" + prevName + "</a><br>";
     }
 
-    if (prevNum >= 0)
-    {
-        const String prevName = allArticels.getChild(prevNum).getProperty("title").toString();
-        String path = allArticels.getChild(prevNum).getProperty("name").toString().replace("docs", "site");
+    ValueTree nextTree("doc");
+    getNextTree(FileTreeContainer::projectTree, tree, nextTree);
+    const String nextName = nextTree.getProperty("title").toString();
 
-        path = path.removeCharacters(FileTreeContainer::projectFile.getParentDirectory().getFullPathName());
-        path = getRelativePathToRoot(DocTreeViewItem::getHtmlFileOrDir(tree)) + path;
-        prevStr = TRANS("Prev: ") + "<a href=\"" + path + ".html\">" + prevName + "</a>";
-    }
-    if (nextNum >= 0)
+    if (nextName.isNotEmpty())
     {
-        const String nextName = allArticels.getChild(nextNum).getProperty("title").toString();
-        String path = allArticels.getChild(nextNum).getProperty("name").toString().replace("docs", "site");
-        path = path.removeCharacters(FileTreeContainer::projectFile.getParentDirectory().getFullPathName());
-        path = getRelativePathToRoot(DocTreeViewItem::getHtmlFileOrDir(tree)) + path;
-        nextStr = TRANS("Next: ") + "<a href=\"" + path + ".html\">" + nextName + "</a>";
+        String nextPath = DocTreeViewItem::getHtmlFileOrDir(nextTree).getFullPathName();
+        nextPath = nextPath.replace(FileTreeContainer::projectFile.getSiblingFile("site").getFullPathName(), String());
+        nextPath = getRelativePathToRoot(DocTreeViewItem::getHtmlFileOrDir(tree)) + nextPath.substring(1);
+        nextPath = nextPath.replace("\\", "/");
+        nextStr = TRANS("Next: ") + "<a href=\"" + nextPath + "\">" + nextName + "</a>";
     }
 
-    return "<div class=prevAndNext>" + prevStr + "<br>" + nextStr + "</div>";
+    return "<div class=prevAndNext>" + prevStr + nextStr + "</div>";
+}
+
+//=================================================================================================
+void HtmlProcessor::getPreviousTree(const ValueTree& oTree,
+                                    const ValueTree& tree,
+                                    ValueTree& result)
+{
+    // prevent createDate is empty
+    if (result.getProperty("createDate").toString() == String())
+        result.setProperty("createDate", 1, nullptr);
+
+    if (oTree.getType().toString() == "doc" && !(bool)oTree.getProperty("isPage"))
+    {
+        if ((oTree.getProperty("createDate").toString() < tree.getProperty("createDate").toString())
+            && (oTree.getProperty("createDate").toString() > result.getProperty("createDate").toString()))
+            result = oTree;
+    }
+
+    for (int i = oTree.getNumChildren(); --i >= 0; )
+        getPreviousTree(oTree.getChild(i), tree, result);
+}
+
+//=================================================================================================
+void HtmlProcessor::getNextTree(const ValueTree& oTree,
+                                const ValueTree& tree,
+                                ValueTree& result)
+{
+    // prevent createDate is empty
+    if (result.getProperty("createDate").toString() == String())
+        result.setProperty("createDate", 3, nullptr);
+
+    if (oTree.getType().toString() == "doc" && !(bool)oTree.getProperty("isPage"))
+    {
+        if ((oTree.getProperty("createDate").toString() > tree.getProperty("createDate").toString())
+            && (oTree.getProperty("createDate").toString() < result.getProperty("createDate").toString()))
+            result = oTree;
+    }
+
+    for (int i = oTree.getNumChildren(); --i >= 0; )
+        getNextTree(oTree.getChild(i), tree, result);
 }
 
 //=========================================================================

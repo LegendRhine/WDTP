@@ -54,9 +54,14 @@ private:
 
 	static void copyDocMediasToSite (const File& mdFile, const File& htmlFile, const String& htmlStr);
 	static const String getRelativePathToRoot (const File &htmlFile);
-    static void getAllArticels(ValueTree fromThisTree, ValueTree& allArticels);
 
 	static const bool hasDirAndAtLeadOneIsMenu(const ValueTree& tree);
+    
+    //=================================================================================================
+    /** get a tree that create time previous/next the arg tree */
+    static void getPreviousTree(const ValueTree& oTree, const ValueTree& tree, ValueTree& result);
+    static void getNextTree(const ValueTree& oTree, const ValueTree& tree, ValueTree& result);
+
 };
 
 

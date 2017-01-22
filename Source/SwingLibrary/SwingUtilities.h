@@ -351,24 +351,6 @@ private:
 };
 
 //=========================================================================
-/** A WebBrowserComponent, it can load an url which with the tag "target=_blank" 
-    in a new modal window. By default, juce's webBrowser can't load it. 
-
-    Usage: same as JUCE's WebBrowserComponent */
-class WebBrowserComp : public WebBrowserComponent
-{
-public:
-    WebBrowserComp() {}
-    ~WebBrowserComp() {}
-
-    /** new dialog window to display the URL */
-    virtual void newWindowAttemptingToLoad (const String& newURL) override;
-
-private:
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (WebBrowserComp)
-};
-
-//=========================================================================
 /** Change the default backgroud colour of the parent class */
 class StrechableBar : public StretchableLayoutResizerBar
 {

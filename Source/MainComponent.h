@@ -24,11 +24,13 @@ public:
     ~MainContentComponent();
 
     void paint (Graphics&) override;
-    void resized() override;
+    void resized() override;    
 
     FileTreeContainer* getFileTree () const      { return fileTree; }
     TopToolBar* getToolbar() const               { return toolBar; }
     EditAndPreview* getEditAndPreview() const    { return editAndPreview; }
+
+    const bool selectItemFromHtmlFile(const File& htmlFile);
 
 private:
     //=========================================================================

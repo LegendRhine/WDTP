@@ -82,6 +82,8 @@ public:
     void selectIdentityItem();
 
     static bool saveProject ();
+    const bool selectItemFromHtmlFile(const File& html);
+
     static File projectFile;
     static ValueTree projectTree;
 

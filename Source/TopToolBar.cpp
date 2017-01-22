@@ -424,7 +424,7 @@ void TopToolBar::createNewProject ()
     projectFile.create ();
 
     ValueTree p ("wdtpProject");
-    p.setProperty ("name", projectFile.getFileNameWithoutExtension (), nullptr);
+    p.setProperty ("name", "site", nullptr);
     p.setProperty ("title", projectFile.getFileNameWithoutExtension (), nullptr);
     p.setProperty ("description", TRANS ("Description of this project..."), nullptr);
     p.setProperty ("owner", SystemStats::getLogonName() , nullptr);

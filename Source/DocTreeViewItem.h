@@ -31,7 +31,6 @@ public:
     /** these two methods will return index.html when it's a dir. */
     static const File getHtmlFileOrDir (const File& mdFileOrDir);
     static const File getHtmlFileOrDir (const ValueTree& tree);
-	static ValueTree getTreeFromHtmlFile (ValueTree tree, const File& htmlFile);
 
     /** get a html-file's all local media files. the result will store in arg-2.
         return: media-files' number of this html-file. */

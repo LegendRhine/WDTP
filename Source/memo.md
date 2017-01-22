@@ -101,6 +101,7 @@
 - 项目文档的ValueTree中，可将doc文档子树直接作为总值树的一级子树（代表于磁盘Docs目录下的某个 Markdown 文档文件）
 
 - wdtpProject总值树的属性（项目属性）：
+    - name: 值为“site”
     - tile: 项目名称
 	- keywords: 关键字
     - description: 简述

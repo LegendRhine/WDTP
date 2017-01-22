@@ -13,9 +13,10 @@
 extern PropertiesFile* systemFile;
 
 //==============================================================================
-EditAndPreview::EditAndPreview () 
+EditAndPreview::EditAndPreview (MainContentComponent* mainComp_) :
+    mainComp(mainComp_)
 {
-    addAndMakeVisible (webView);
+    addAndMakeVisible (webView = new WebBrowserComp(this));
 
     // stretched layout, arg: index, min-width, max-width，default x%
     layoutManager.setItemLayout (0, -0.5, -1.0, -0.72);  // editor，
@@ -54,7 +55,7 @@ EditAndPreview::~EditAndPreview()
 //=========================================================================
 void EditAndPreview::resized()
 {
-    Component* wordArea = (webView.isVisible () ? dynamic_cast<Component*>(&webView)
+    Component* wordArea = (webView->isVisible () ? dynamic_cast<Component*>(webView.get())
                                                 : dynamic_cast<Component*>(editor.get()));
 
     jassert (wordArea != nullptr);
@@ -132,7 +133,7 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
 //=================================================================================================
 void EditAndPreview::editCurrentDoc ()
 {
-    webView.setVisible (false);
+    webView->setVisible (false);
     editor->setEnabled (true);
     editor->grabKeyboardFocus ();    
 
@@ -143,8 +144,8 @@ void EditAndPreview::editCurrentDoc ()
 void EditAndPreview::previewCurrentDoc ()
 {
     editor->setEnabled (false);
-    webView.setVisible (true);
-    webView.stop ();
+    webView->setVisible (true);
+    webView->stop ();
     
     if (docOrDirFile.existsAsFile ())
     {
@@ -157,14 +158,20 @@ void EditAndPreview::previewCurrentDoc ()
 
         //DBGX (URL::addEscapeChars (fileUrl, true));
         //DBGX (fileUrl);        
-        webView.goToURL(fileUrl);
+        webView->goToURL(fileUrl);
     }
     else
     {
-        webView.goToURL (HtmlProcessor::createIndexHtml (docOrDirTree, true).getFullPathName());
+        webView->goToURL (HtmlProcessor::createIndexHtml (docOrDirTree, true).getFullPathName());
     }
     
     resized ();
+}
+
+//=================================================================================================
+const bool EditAndPreview::getCureentState() const
+{
+    return webView->isVisible();
 }
 
 //=================================================================================================
@@ -177,7 +184,7 @@ void EditAndPreview::projectClosed ()
     editor->setEnabled (false);    
 
     setupPanel->projectClosed ();
-    webView.setVisible (false);
+    webView->setVisible (false);
 
     docOrDirFile = File::nonexistent;
     docOrDirTree = ValueTree::invalid;
@@ -201,6 +208,12 @@ void EditAndPreview::setDirProperties (ValueTree& dirTree)
 void EditAndPreview::setDocProperties (ValueTree& docTree_)
 {
     setupPanel->showDocProperties (docTree_);
+}
+
+//=================================================================================================
+const bool EditAndPreview::selectItemFromHtmlFile(const File& html)
+{
+    return mainComp->selectItemFromHtmlFile(html);
 }
 
 //=================================================================================================
@@ -657,6 +670,42 @@ void EditorForMd::changeListenerCallback (ChangeBroadcaster* source)
     else if (source == bgColourSelector)
     {
         parent->getEditor ()->setColour (TextEditor::backgroundColourId, bgColourSelector->getCurrentColour());
+    }
+}
+
+//=================================================================================================
+void WebBrowserComp::newWindowAttemptingToLoad(const String& newURL)
+{
+    WebBrowserComp* web = new WebBrowserComp(parent);
+    web->setSize(1000, 600);
+    web->goToURL(newURL);
+
+    OptionalScopedPointer<Component> comp(web, true);
+    DialogWindow::LaunchOptions option;
+
+    option.dialogTitle = newURL;
+    option.dialogBackgroundColour = Colours::black;
+    option.content = comp;
+    option.escapeKeyTriggersCloseButton = true;
+    option.useNativeTitleBar = true;
+    option.resizable = true;
+    option.useBottomRightCornerResizer = false;
+
+    option.launchAsync();
+}
+
+//=================================================================================================
+bool WebBrowserComp::pageAboutToLoad(const String& newURL)
+{
+    if (newURL.substring(0, 3) == "res"
+        || newURL == DocTreeViewItem::getHtmlFileOrDir(parent->getCurrentTree()).getFullPathName())
+    {
+        return true;
+    }
+    else
+    {
+        const File& htmlFile(newURL);
+        return !(parent->selectItemFromHtmlFile(htmlFile));
     }
 }
 

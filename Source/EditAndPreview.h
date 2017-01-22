@@ -13,6 +13,7 @@
 
 class SetupPanel;
 class EditorForMd;
+class WebBrowserComp;
 
 //==============================================================================
 /** Blank in initial, it'll show edit-mode or preview-mode base on user's click.
@@ -28,7 +29,7 @@ class EditAndPreview : public Component,
                        private Timer
 {
 public:
-    EditAndPreview ();
+    EditAndPreview (MainContentComponent* mainComp);
     ~EditAndPreview();
        
     void startWork (ValueTree& newDocTree);
@@ -41,7 +42,7 @@ public:
     ValueTree& getCurrentTree()                           { return docOrDirTree; }
 
     /** return true if current is preview state, flase for edit state. */
-    const bool getCureentState() const                    { return webView.isVisible(); }
+    const bool getCureentState() const;
     SetupPanel* getSetupPanel () const                    { return setupPanel; }
 
     void projectClosed();
@@ -50,6 +51,8 @@ public:
     void setProjectProperties (ValueTree& projectTree);
     void setDirProperties (ValueTree& dirTree);
     void setDocProperties (ValueTree& docTree);   
+
+    const bool selectItemFromHtmlFile(const File& htmlFile);
     
 private:
     //=========================================================================
@@ -65,8 +68,10 @@ private:
     bool docHasChanged = false;    
     String currentContent;
     
+    MainContentComponent* mainComp;
+
     ScopedPointer<TextEditor> editor;
-    WebBrowserComp webView;
+    ScopedPointer<WebBrowserComp> webView;
     ScopedPointer<SetupPanel> setupPanel;
 
     StretchableLayoutManager layoutManager;
@@ -101,6 +106,27 @@ private:
     ScopedPointer<ColourSelectorWithPreset> bgColourSelector;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditorForMd)
+};
+
+//=================================================================================================
+/** A WebBrowserComponent, it can load an url which with the tag "target=_blank"
+in a new modal window. By default, juce's webBrowser can't load it.
+
+Usage: same as JUCE's WebBrowserComponent */
+class WebBrowserComp : public WebBrowserComponent
+{
+public:
+    WebBrowserComp(EditAndPreview* parent_) : parent(parent_) {}
+    ~WebBrowserComp() {}
+
+    /** new dialog window to display the URL */
+    virtual void newWindowAttemptingToLoad(const String& newURL) override;
+    virtual bool pageAboutToLoad(const String& newURL) override;
+
+private:
+    EditAndPreview* parent;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(WebBrowserComp)
 };
 
 #endif  // EDITANDPREVIEW_H_INCLUDED

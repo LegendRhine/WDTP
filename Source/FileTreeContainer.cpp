@@ -304,3 +304,60 @@ bool FileTreeContainer::saveProject ()
     }
 }
 
+//=================================================================================================
+const bool FileTreeContainer::selectItemFromHtmlFile(const File& htmlFile)
+{
+    // get file's path relative to "../site"
+    jassert(htmlFile.getFileExtension() == ".html");
+    
+    String htmlPath(htmlFile.getFullPathName()
+                    .fromFirstOccurrenceOf(projectFile.getSiblingFile("site").getFullPathName(), false, false));
+    htmlPath = htmlPath.dropLastCharacters(5).substring(1);  // remove ".html" and the first character '/'
+
+    if (htmlPath.getLastCharacters(5) == "index") // is dir
+        htmlPath = htmlPath.dropLastCharacters(6);    // remove "/index"
+
+    if (htmlPath.isEmpty())  // root
+    {
+        fileTree.getItemOnRow(0)->setSelected(true, true);
+        return true;
+    }
+
+    //DBGX(htmlPath);
+    // find match item and select it
+    // here must shrink it first and then open it to make sure it'll open totally
+    fileTree.getRootItem()->setOpen(false);  
+    fileTree.getRootItem()->setOpen(true);
+
+    for (int i = fileTree.getNumRowsInTree(); --i >= 1; )  // 0 is root, see above
+    {
+        DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*>(fileTree.getItemOnRow(i));
+        jassert(item != nullptr);
+        ValueTree v = item->getTree();
+
+        // get the tree's full path
+        const ValueTree orignal(v.createCopy());
+        String treePath = v.getProperty("name").toString();
+        v = v.getParent();
+
+        while (v.isValid() && v.getType().toString() != "wdtpProject")
+        {
+            treePath = v.getProperty("name").toString() + File::separatorString + treePath;
+            v = v.getParent();
+        }
+
+        v = orignal.createCopy();
+        //DBGX(treePath);
+
+        if (htmlPath == treePath)
+        {
+            item->setSelected(true, true);
+            fileTree.scrollToKeepItemVisible(item);
+
+            return true;
+        }
+    }
+
+    return false;
+}
+

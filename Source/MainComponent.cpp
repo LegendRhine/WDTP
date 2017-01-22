@@ -16,7 +16,7 @@ extern PropertiesFile* systemFile;
 MainContentComponent::MainContentComponent() 
 {
     // must be these order...
-    addAndMakeVisible (editAndPreview = new EditAndPreview ());
+    addAndMakeVisible (editAndPreview = new EditAndPreview (this));
     addAndMakeVisible (fileTree = new FileTreeContainer (editAndPreview));
     addAndMakeVisible (toolBar = new TopToolBar (fileTree, editAndPreview));
     addAndMakeVisible (layoutBar = new StrechableBar (&layoutManager, 1, true));
@@ -64,6 +64,12 @@ void MainContentComponent::resized()
         layoutBar->setVisible(false);
         editAndPreview->setBounds (0, 45, getWidth (), getHeight () - 45);
     }    
+}
+
+//=================================================================================================
+const bool MainContentComponent::selectItemFromHtmlFile(const File& html)
+{
+    return fileTree->selectItemFromHtmlFile(html);
 }
 
 //=================================================================================================

@@ -41,6 +41,8 @@ struct HtmlProcessor
     /** Use for file/dir list sort. Base on create-date */
     const int compareElements (const ValueTree& ft, const ValueTree& st);
 
+    static void getDocNumbersOfTheDir(const ValueTree& dirTree, int& num);
+
 private:
 	/** generate site menu. 2 level. */
 	static const String getSiteMenu (const ValueTree& tree);
@@ -66,8 +68,6 @@ private:
     /** ad text from the project setup. its formmat should be "imgName link" 
         the img should place in site's add-in folder. */
     static const String getAdStr(const String& text, const File& htmlFile);
-
-    static void getDocNumbersOfTheDir(const ValueTree& dirTree, int& num);
 
     /** return 'howMany' ints, range: 0 ~ getDocNumbersOfTheDir (projectTree). */
     static const Array<int> getRandomInts (const int howMany);

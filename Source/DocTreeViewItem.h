@@ -79,6 +79,11 @@ private:
 
     static DocTreeViewItem* getRootItem (DocTreeViewItem* subItem);
 
+    static void statis(const ValueTree& tree, 
+                       int& dirNums, 
+                       int& totalWords, 
+                       int& totalImgs);
+
     //=========================================================================
     void menuPerform (const int menuIndex);
 
@@ -88,6 +93,8 @@ private:
     void createNewDocument ();
     void createNewFolder ();
     void deleteSelected ();
+    void statistics();
+    static void getWordsAndImgNumsInDoc(const ValueTree& tree, int& words, int& imgNums);
 
     //=========================================================================
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
@@ -104,6 +111,7 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DocTreeViewItem)
 
+        
 };
 
 

@@ -283,7 +283,8 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addItem (2, TRANS ("New Document..."), exist && !isDoc && onlyOneSelected);
         m.addSeparator ();
 
-        m.addItem (4, TRANS ("Export..."), exist && onlyOneSelected);
+        m.addItem(4, TRANS("Export..."), exist && onlyOneSelected);
+        m.addItem(5, TRANS("Statistics..."), exist && onlyOneSelected);
         m.addSeparator ();
 
         PopupMenu sortMenu;
@@ -334,6 +335,8 @@ void DocTreeViewItem::menuPerform (const int index)
         createNewDocument ();
     else if (index == 4)
         exportAsMdFile ();
+    else if (index == 5)
+        statistics();
     else if (index == 10)
         renameSelectedItem ();
     else if (index == 12)
@@ -646,6 +649,43 @@ void DocTreeViewItem::deleteSelected ()
 }
 
 //=================================================================================================
+void DocTreeViewItem::statistics()
+{
+    if (tree.getType().toString() == "doc")
+    {
+        int words = 0;
+        int imgNums = 0;
+        getWordsAndImgNumsInDoc(tree, words, imgNums);
+
+        AlertWindow::showMessageBox(AlertWindow::InfoIcon, TRANS("Statistics Info"),
+                                    TRANS("File:") + tree.getProperty("name").toString() + newLine
+                                    + TRANS("Title: ") + tree.getProperty("title").toString() + newLine + newLine
+                                    + TRANS("Words: ") + String(words) + newLine
+                                    + TRANS("Images: ") + String(imgNums));
+    } 
+    else
+    {
+        int docNums = 0;
+        HtmlProcessor::getDocNumbersOfTheDir(tree, docNums);
+
+        int dirNums = -1;  // non-include itself
+        int totalWords = 0;
+        int totalImgs = 0;
+
+        statis(tree, dirNums, totalWords, totalImgs);
+        const String& name(tree.getType().toString() == "dir" ? TRANS("Dir Name: ") : TRANS("Project: "));
+
+        AlertWindow::showMessageBox(AlertWindow::InfoIcon, TRANS("Statistics Info"),
+                                    name + tree.getProperty("name").toString() + newLine
+                                    + TRANS("Title: ") + tree.getProperty("title").toString() + newLine + newLine
+                                    + TRANS("Sub-dirs: ") + String(dirNums) + newLine
+                                    + TRANS("Docs: ") + String(docNums) + newLine
+                                    + TRANS("Total Words: ") + String(totalWords) + newLine
+                                    + TRANS("Total Images: ") + String(totalImgs));
+    }
+}
+
+//=================================================================================================
 void DocTreeViewItem::refreshDisplay ()
 {
     clearSubItems();
@@ -693,6 +733,29 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
 }
 
 //=================================================================================================
+void DocTreeViewItem::getWordsAndImgNumsInDoc(const ValueTree& tree, int& words, int& imgNums)
+{
+    const String& content(getMdFileOrDir(tree).loadFileAsString());
+    words = content.removeCharacters(" ").removeCharacters(newLine).length() + words;
+       
+    int index = content.indexOf(0, "![");
+
+    while (index != -1)
+    {
+        ++imgNums;
+        index = content.indexOf(index + 1, "![");
+    }
+
+    index = content.indexOf(0, "<img src=");
+
+    while (index != -1)
+    {
+        ++imgNums;
+        index = content.indexOf(index + 8, "<img src=");
+    }
+}
+
+//=================================================================================================
 const bool DocTreeViewItem::exportDocsAsMd (DocTreeViewItem* item,
                                             const File& fileAppendTo)
 {
@@ -731,6 +794,22 @@ DocTreeViewItem* DocTreeViewItem::getRootItem (DocTreeViewItem* subItem)
         item = dynamic_cast<DocTreeViewItem*>(item->getParentItem ());
 
     return item;
+}
+
+//=================================================================================================
+void DocTreeViewItem::statis(const ValueTree& tree, int& dirNums, int& totalWords, int& totalImgs)
+{
+    if (tree.getType().toString() == "doc")
+    {
+        getWordsAndImgNumsInDoc(tree, totalWords, totalImgs);
+    }
+    else
+    {
+        ++dirNums;
+
+        for (int i = tree.getNumChildren(); --i >= 0; )
+            statis(tree.getChild(i), dirNums, totalWords, totalImgs);
+    }
 }
 
 //=================================================================================================

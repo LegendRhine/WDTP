@@ -116,7 +116,7 @@ Usage: same as JUCE's WebBrowserComponent */
 class WebBrowserComp : public WebBrowserComponent
 {
 public:
-    WebBrowserComp(EditAndPreview* parent_) : parent(parent_) {}
+    WebBrowserComp(EditAndPreview* parent_);
     ~WebBrowserComp() {}
 
     /** new dialog window to display the URL */

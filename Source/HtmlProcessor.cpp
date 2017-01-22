@@ -513,7 +513,8 @@ const String HtmlProcessor::getRandomArticels(const ValueTree& notIncludeThisTre
     StringArray links;
     getLinkStrOfAlllDocTrees(FileTreeContainer::projectTree, notIncludeThisTree, links);
 
-    Array<int> randoms = getRandomInts(howMany);
+    // + 1: prevent a articel is the current, make sure enough
+    Array<int> randoms = getRandomInts(howMany + 1); 
     StringArray randomLinks;
 
     for (int i = 0; i < randoms.size(); ++i)
@@ -521,6 +522,11 @@ const String HtmlProcessor::getRandomArticels(const ValueTree& notIncludeThisTre
         const int order = randoms[i];
         randomLinks.add(links[order]);
     }
+
+    randomLinks.removeEmptyStrings(true);
+
+    if (randomLinks.size() > howMany)
+        randomLinks.remove(0);  // remove the newest one
 
     randomLinks.insert(0, "<div class=randomArticels><ul>");
     randomLinks.insert(0, "<b>" + TRANS("Random Posts:") + "</b>");
@@ -610,10 +616,10 @@ const Array<int> HtmlProcessor::getRandomInts(const int howMany)
     Array<int> values;
     int maxValue = 0;
     getDocNumbersOfTheDir(FileTreeContainer::projectTree, maxValue);
+    Random r(Time::currentTimeMillis());
 
     for (int i = jmin (maxValue, howMany); --i >= 0; )
     {
-        Random r(Time::currentTimeMillis());
         int randomValue = r.nextInt(maxValue);
 
         for (int j = 0; j < values.size(); ++j)
@@ -621,14 +627,13 @@ const Array<int> HtmlProcessor::getRandomInts(const int howMany)
             if (values[j] == randomValue)
             {
                 randomValue = r.nextInt(maxValue);
-                j = 0;
+                j = -1;  // here must be -1, because it'll ++j in for ()
             }
         }
 
-        values.add(randomValue);
+        values.addUsingDefaultSort(randomValue);
     }
 
-    values.sort();
     return values;
 }
 

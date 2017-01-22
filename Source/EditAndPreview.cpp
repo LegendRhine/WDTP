@@ -674,6 +674,14 @@ void EditorForMd::changeListenerCallback (ChangeBroadcaster* source)
 }
 
 //=================================================================================================
+WebBrowserComp::WebBrowserComp(EditAndPreview* parent_) 
+    : WebBrowserComponent (false),
+    parent(parent_)
+{
+
+}
+
+//=================================================================================================
 void WebBrowserComp::newWindowAttemptingToLoad(const String& newURL)
 {
     WebBrowserComp* web = new WebBrowserComp(parent);
@@ -697,8 +705,9 @@ void WebBrowserComp::newWindowAttemptingToLoad(const String& newURL)
 //=================================================================================================
 bool WebBrowserComp::pageAboutToLoad(const String& newURL)
 {
-    if (newURL.substring(0, 3) == "res"
-        || newURL == DocTreeViewItem::getHtmlFileOrDir(parent->getCurrentTree()).getFullPathName())
+    if (newURL.substring(0, 3) == "res" ||
+        newURL == "about:blank" ||
+        newURL == DocTreeViewItem::getHtmlFileOrDir(parent->getCurrentTree()).getFullPathName())
     {
         return true;
     }

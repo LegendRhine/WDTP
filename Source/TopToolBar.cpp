@@ -336,10 +336,19 @@ void TopToolBar::popupSystemMenu ()
     // display the menu
     const int index = m.show ();
 
-	if (index >= 100 && index < 200)   // recently opened files..
-		fileTreeContainer->openProject (recentFiles.getFile (index - 100));
+    if (index >= 100 && index < 200)   // recently opened files..
+    {
+        //fileTreeContainer->openProject(recentFiles.getFile(index - 100));
+        const File& project(recentFiles.getFile(index - 100));
+
+        if (project != FileTreeContainer::projectFile)
+            Process::openDocument(File::getSpecialLocation(File::currentApplicationFile).getFullPathName(),
+                                  project.getFullPathName());
+    }
     else
-        menuPerform (index);
+    {
+        menuPerform(index);
+    }
 }
 
 //=================================================================================================

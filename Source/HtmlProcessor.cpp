@@ -89,6 +89,11 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
                                 + FileTreeContainer::projectTree.getProperty("ad").toString()
                                 + "</div>");
     }
+    if (tplStr.contains("{{random}}"))
+    {
+        const String& links((bool)docTree.getProperty("isPage") ? String() : getRandomArticels(docTree, 5));
+        tplStr = tplStr.replace("{{random}}", links);
+    }
     if (tplStr.contains("{{bottomCopyright}}"))
     {
         tplStr = tplStr.replace("{{bottomCopyright}}", getCopyrightInfo());
@@ -504,6 +509,33 @@ const String HtmlProcessor::getPrevAndNextArticel(const ValueTree& tree)
 }
 
 //=================================================================================================
+const String HtmlProcessor::getRandomArticels(const ValueTree& notIncludeThisTree, 
+                                              const int howMany)
+{
+    StringArray links;
+    getLinkStrOfAlllDocTrees(FileTreeContainer::projectTree, notIncludeThisTree, links);
+
+    Array<int> randoms = getRandomInts(howMany);
+    StringArray randomLinks;
+
+    for (int i = 0; i < randoms.size(); ++i)
+    {
+        const int order = randoms[i];
+        randomLinks.add(links[order]);
+    }
+
+    randomLinks.insert(0, "<div class=randomArticels><ul>");
+    randomLinks.insert(0, "<b>" + TRANS("Random Posts:") + "</b>");
+
+    for (int j = randomLinks.size(); --j >= 2; )
+        randomLinks.getReference(j) = "<li>" + randomLinks[j] + "</li>";
+
+    randomLinks.add("</ul></div>");
+
+    return randomLinks.joinIntoString(newLine);
+}
+
+//=================================================================================================
 void HtmlProcessor::getPreviousTree(const ValueTree& oTree,
                                     const ValueTree& tree,
                                     ValueTree& result)
@@ -554,7 +586,7 @@ void HtmlProcessor::getDocNumbersOfTheDir(const ValueTree& dirTree, int& num)
 }
 
 //=================================================================================================
-const Array<int> HtmlProcessor::getFiveRandomInt(const int howMany)
+const Array<int> HtmlProcessor::getRandomInts(const int howMany)
 {
     Array<int> values;
     int maxValue = 0;
@@ -577,7 +609,31 @@ const Array<int> HtmlProcessor::getFiveRandomInt(const int howMany)
         values.add(randomValue);
     }
 
+    values.sort();
     return values;
+}
+
+//=================================================================================================
+void HtmlProcessor::getLinkStrOfAlllDocTrees(const ValueTree& fromThisTree, 
+                                             const ValueTree& baseOnThisTree, 
+                                             StringArray& linkStr)
+{
+    if (fromThisTree.getType().toString() == "doc" && fromThisTree != baseOnThisTree)
+    {
+        const String text = fromThisTree.getProperty("title").toString();
+
+        String path = DocTreeViewItem::getHtmlFileOrDir(fromThisTree).getFullPathName();
+        path = path.replace(FileTreeContainer::projectFile.getSiblingFile("site").getFullPathName(), String());
+        path = getRelativePathToRoot(DocTreeViewItem::getHtmlFileOrDir(baseOnThisTree)) + path.substring(1);
+        path = path.replace("\\", "/");
+
+        linkStr.add("<a href=\"" + path + "\">" + text + "</a>");
+    } 
+    else
+    {
+        for (int i = fromThisTree.getNumChildren(); --i >= 0; )
+            getLinkStrOfAlllDocTrees(fromThisTree.getChild(i), baseOnThisTree, linkStr);
+    }
 }
 
 //=========================================================================

@@ -48,7 +48,8 @@ private:
     static const String getContentTitle(const ValueTree& tree);
     static const String getCreateAndModifyTime(const ValueTree& tree);
     static const String getPrevAndNextArticel(const ValueTree& tree);
-    
+    static const String getRandomArticels(const ValueTree& notIncludeThisTree, const int howMany);
+
     /** The return result could be showed on the very bottom of every web-page */
     static const String getCopyrightInfo();
 
@@ -65,7 +66,13 @@ private:
     static void getDocNumbersOfTheDir(const ValueTree& dirTree, int& num);
 
     /** return 'howMany' ints, range: 0 ~ getDocNumbersOfTheDir (projectTree). */
-    static const Array<int> getFiveRandomInt (const int howMany);
+    static const Array<int> getRandomInts (const int howMany);
+
+    /** get the arg tree's all child tree's link string. their path base on the arg 2 tree.
+        Note: not include the baseOnThisTree's link */
+    static void getLinkStrOfAlllDocTrees(const ValueTree& fromThisTree, 
+                                         const ValueTree& baseOnThisTree, 
+                                         StringArray& linkStr);
 
 };
 

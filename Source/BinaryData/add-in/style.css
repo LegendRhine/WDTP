@@ -1,61 +1,11 @@
 ﻿/* Default style of WDTP */
 
-
-        .siteMenu ul
-        {
-            display: block;
-            width: 100%;
-			font-size:17px;	
-			position: absolute;
-			top:30px;
-			margin: -10px 0 0 130px;
-        }
-        .siteMenu ul li
-        {
-		    float:left;			
-            list-style-type: none;
-            height: 40px;
-            width: 100px;
-            line-height: 40px;
-            text-align: center;
-            background: #333;
-            color: #fff;
-        }
-        .siteMenu ul li ul
-        {
-		    list-style-type: none;
-            display: list-item;
-            margin: 0;
-            position: relative;
-			top: 0px;
-            right: 40px;
-            display: none;
-        }
-        .siteMenu ul li a
-        {
-            text-decoration: none;
-            color: #ffffff;
-        }
-        .siteMenu ul li:hover
-        {
-            background: #686868;
-            color: #000;
-            cursor: pointer;
-        }
-        .siteMenu ul li:hover ul
-        {
-            display: list-item;
-        }
-        .siteMenu ul li:hover ul li:hover
-        {
-            background: 868686;
-            color: #000;
-            cursor: pointer;
-        }
-html {
+html 
+{
   background-color: #cdcdcd;	
 }
-body, p {
+body, p
+{
   max-width: 708px;
   margin: 0 auto;
   background-color: #dedede;
@@ -63,54 +13,138 @@ body, p {
   text-indent: 2em;
   line-height: 1.8;
 }
-body {
+body 
+{
   border-style: solid;
   border-width: 1px;
   border-color: #bcbcbc;
   padding: 0 45px 0px 45px;
 }
-p {
+p
+{
   margin: 10px 0;
 }
-img {
+.siteMenu ul 
+{
+  display: block;
+  width: 100%;
+  font-size:90%;	
+  position: absolute;
+  top:30px;
+  margin: -10px 0 0 130px;
+}
+.siteMenu ul li
+{
+  float:left;			
+  list-style-type: none;
+  height: 40px;
+  width: 100px;
+  line-height: 40px;
+  text-align: center;
+  background: #333;
+  color: #fff;
+}
+.siteMenu ul li ul
+{
+  list-style-type: none;
+  display: list-item;
+  margin: 0;
+  position: relative;
+  top: 0px;
+  right: 40px;
+  display: none;
+}
+.siteMenu ul li a
+{
+  text-decoration: none;
+  color: #ffffff;
+}
+.siteMenu ul li:hover
+{
+  background: #686868;
+  color: #000;
+  cursor: pointer;
+}
+.siteMenu ul li:hover ul
+{
+  display: list-item;
+}
+.siteMenu ul li:hover ul li:hover
+{
+  background: 868686;
+  color: #000;
+  cursor: pointer;
+}
+.siteNavi,
+.timeStr, 
+.prevAndNext,
+.ad,
+.randomArticels
+{    
+	font-size: 90%;
+	line-height: 1.5;
+}
+.ad
+{
+    text-align:center;
+	width:100%;
+}
+.timeStr
+{
+  text-align: right;
+}
+
+img
+{
   max-width: 700px;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6
+{
   text-indent: 24pt;
   line-height: 0.5;
 }
-
-li, hr, div {
+h1
+{
+  text-align:center;
+}
+li, hr, div 
+{
   text-indent: 0;
 }
-div {
+div 
+{
   padding: 5px 15px 0px 15px;
 }
 a { 
   text-decoration: none;
 }
-blockquote {
+blockquote
+{
   background-color: #cdcdcd;
   padding: 10px 15px 10px 15px;
   margin: 0 0 20px 0;
   font-family: 'KaiTi', 'Consolas';
 }
-pre {
+pre 
+{
   text-indent: 0;
   font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
-  font-size: 15px;
+  font-size: 85%;
   line-height: 1.2;
 }
-code {
+code
+{
   background-color: #cdcdcd;
+  font-family: 'Consolas';
 }
 ol, ul {
   margin: 5px 0;
   padding: 0 0 0 40px;
 }
 
-table  {
+table 
+{
   position: relative;
   top: 1px;
   bottom: 1px;
@@ -121,17 +155,20 @@ table  {
   width: 98%;
   line-height: 1.5;
 }
-table, td, th  {
+table, td, th
+{
   border: 1px solid black;
 }
-#copyright {
+#copyright
+{
   position: relative;
   top: 0;
   border: 0px solid black;
   font-size: 90%;
   font-weight: bold;
 }
-th {
+th 
+{
   background-color: #cdcdcd;
   text-indent: 0;
 }

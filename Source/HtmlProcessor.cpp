@@ -85,9 +85,7 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
     }
     if (tplStr.contains("{{ad}}"))
     {
-        tplStr = tplStr.replace("{{ad}}", "<div class=ad>" 
-                                + FileTreeContainer::projectTree.getProperty("ad").toString()
-                                + "</div>");
+        tplStr = tplStr.replace("{{ad}}", getAdStr(FileTreeContainer::projectTree.getProperty("ad").toString(), htmlFile));
     }
     if (tplStr.contains("{{random}}"))
     {
@@ -573,6 +571,27 @@ void HtmlProcessor::getNextTree(const ValueTree& oTree,
 
     for (int i = oTree.getNumChildren(); --i >= 0; )
         getNextTree(oTree.getChild(i), tree, result);
+}
+
+//=================================================================================================
+const String HtmlProcessor::getAdStr(const String& text, const File& htmlFile)
+{
+    StringArray orignalText;
+    orignalText.addLines(text.trim());
+    StringArray links;
+
+    for (int i = 0; i < orignalText.size(); ++i)
+    {
+        const String& imgName(getRelativePathToRoot(htmlFile) + "add-in/" 
+                              + orignalText[i].trim().upToFirstOccurrenceOf(" ", false, true));
+        const String& link(orignalText[i].trim().fromFirstOccurrenceOf(" ", false, true));
+        links.add("<a href=\"" + link +"\" target=\"_blank\"><img src=\"" + imgName + "\"></a><br>");
+    }
+
+    links.insert(0, "<div class=ad>");
+    links.add("</div>");    
+
+    return links.joinIntoString(newLine);
 }
 
 //=================================================================================================

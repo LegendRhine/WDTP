@@ -58,7 +58,6 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     projectProperties.add (new TextPropertyComponent (*values[projectKeywords], TRANS ("Keywords: "), 0, false));
     projectProperties.add (new TextPropertyComponent (*values[projectDesc], TRANS ("Description: "), 0, true));
     projectProperties.add (new TextPropertyComponent (*values[owner], TRANS ("Owner: "), 0, false));
-    projectProperties.add (new TextPropertyComponent (*values[copyrightInfo], TRANS ("Copyright: "), 0, true));
 
     // themes dirs
     StringArray themeDirsSa;
@@ -104,13 +103,14 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
 
     projectProperties.add(new TextPropertyComponent(*values[projectJs], TRANS("JavaScript: "), 0, true));
     projectProperties.add(new TextPropertyComponent(*values[ad], TRANS("Advertisement: "), 0, true));
+    projectProperties.add(new TextPropertyComponent(*values[copyrightInfo], TRANS("Copyright: "), 0, true));
     projectProperties.add(new TextPropertyComponent(Value(pTree.getProperty("modifyDate")), TRANS("Last Modified: "), 0, false));
 	
     for (auto p : projectProperties)  p->setPreferredHeight (28);
     projectProperties[2]->setPreferredHeight (28 * 3);
-    projectProperties[4]->setPreferredHeight (28 * 3);
+    projectProperties[6]->setPreferredHeight(28 * 4);
     projectProperties[7]->setPreferredHeight(28 * 4);
-    projectProperties[8]->setPreferredHeight(28 * 5);
+    projectProperties[8]->setPreferredHeight(28 * 4);
     projectProperties[9]->setEnabled(false);
     
     panel->addSection (TRANS ("Project Setup"), projectProperties);

@@ -63,6 +63,10 @@ private:
     static void getPreviousTree(const ValueTree& oTree, const ValueTree& tree, ValueTree& result);
     static void getNextTree(const ValueTree& oTree, const ValueTree& tree, ValueTree& result);
 
+    /** ad text from the project setup. its formmat should be "imgName link" 
+        the img should place in site's add-in folder. */
+    static const String getAdStr(const String& text, const File& htmlFile);
+
     static void getDocNumbersOfTheDir(const ValueTree& dirTree, int& num);
 
     /** return 'howMany' ints, range: 0 ~ getDocNumbersOfTheDir (projectTree). */

@@ -158,7 +158,7 @@
 	- {{siteNavi}} 当前页面的导航菜单
 	- {{createAndModifyTime}} 创作及最后修改时间
 	- {{previousAndNext}} 上一篇，下一篇
-	- {{ad}} 广告代码，在项目根目录中设置
+	- {{ad}} 广告代码，在项目根目录中设置. 格式：“图像文件名 链接地址”。图像文件应位于site/add-in目录下
 	- {{random}} 随机推荐5篇本站文章
 	- {{bottomCopyright}} 每页页底的版权信息
 

@@ -473,25 +473,20 @@ void TopToolBar::cleanAndGenerateAll ()
         // move the add-in dir which inlcude style.css, code-highlight.js
         // prevent it will be deleted
         const File addinDir (FileTreeContainer::projectFile.getSiblingFile ("site").getChildFile("add-in"));
-        jassert (addinDir.isDirectory());
         const File tempDirForAddin (FileTreeContainer::projectFile.getSiblingFile ("add-in"));
         addinDir.copyDirectoryTo (tempDirForAddin);
 
         // cleanup
-        if (FileTreeContainer::projectFile.getSiblingFile ("site").deleteRecursively())
-        {
-            // generate
-            generateHtmlFiles (FileTreeContainer::projectTree);
-			FileTreeContainer::saveProject ();
+        FileTreeContainer::projectFile.getSiblingFile("site").deleteRecursively();
+        
+        generateHtmlFiles(FileTreeContainer::projectTree);
+        FileTreeContainer::saveProject();
 
-            // restore the add-in dir
-            tempDirForAddin.moveFileTo (addinDir);
-            SHOW_MESSAGE (TRANS ("Site clean and regenerate successful!"));
-        }
-        else
-        {
-            tempDirForAddin.deleteRecursively();
-        }
+        // restore the add-in dir
+        tempDirForAddin.moveFileTo(addinDir);
+        SHOW_MESSAGE(TRANS("Site clean and regenerate successful!"));
+
+        tempDirForAddin.deleteRecursively();
     }
 }
 

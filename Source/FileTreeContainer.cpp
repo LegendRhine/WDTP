@@ -308,8 +308,6 @@ bool FileTreeContainer::saveProject ()
 const bool FileTreeContainer::selectItemFromHtmlFile(const File& htmlFile)
 {
     // get file's path relative to "../site"
-    jassert(htmlFile.getFileExtension() == ".html");
-    
     String htmlPath(htmlFile.getFullPathName()
                     .fromFirstOccurrenceOf(projectFile.getSiblingFile("site").getFullPathName(), false, false));
     htmlPath = htmlPath.dropLastCharacters(5).substring(1);  // remove ".html" and the first character '/'

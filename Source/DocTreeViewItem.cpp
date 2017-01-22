@@ -79,11 +79,12 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
 
     // mark of doc and dir item
     String markStr;
+    const bool needGenerate = (bool)tree.getProperty("needCreateHtml");
 
     if (tree.getType().toString() == "doc")
-        markStr = CharPointer_UTF8("\xe2\x97\x8f ");
+        markStr = CharPointer_UTF8(needGenerate ? "* " : "\xe2\x97\x8f ");
 	else if (tree.getType ().toString () == "dir")
-		markStr = CharPointer_UTF8 ("\xe2\x96\xa0 ");
+		markStr = CharPointer_UTF8 (needGenerate ? "* " : "\xe2\x96\xa0 ");
 
     g.drawText (markStr + itemName, leftGap, 0, width - 4, height, Justification::centredLeft, true);
 }
@@ -211,8 +212,21 @@ void DocTreeViewItem::needCreateAndUpload (const ValueTree& tree)
         parentTree.setProperty("modifyDate", modifyDate, nullptr);
 	}
 
-	for (int i = tree.getNumChildren (); --i >= 0; )
-		tree.getChild (i).setProperty ("needCreateHtml", true, nullptr);
+    // 3 level down
+    for (int i = tree.getNumChildren(); --i >= 0; )
+    {
+        ValueTree v(tree.getChild(i));
+        v.setProperty("needCreateHtml", true, nullptr);
+
+        for (int j = v.getNumChildren(); --j >= 0; )
+        {
+            ValueTree v2(v.getChild(j));
+            v2.setProperty("needCreateHtml", true, nullptr);
+
+            for (int n = v2.getNumChildren(); --n >= 0; )
+                v2.getChild(n).setProperty("needCreateHtml", true, nullptr);
+        }
+    }
 }
 
 //=================================================================================================

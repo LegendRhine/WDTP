@@ -706,6 +706,9 @@ void WebBrowserComp::newWindowAttemptingToLoad(const String& newURL)
 bool WebBrowserComp::pageAboutToLoad(const String& newURL)
 {
     if (newURL.substring(0, 3) == "res" ||
+        newURL.substring(0, 4) == "http" ||
+        newURL.substring(0, 3) == "ftp" ||
+        newURL.substring(0, 5) == "email" ||
         newURL == "about:blank" ||
         newURL == DocTreeViewItem::getHtmlFileOrDir(parent->getCurrentTree()).getFullPathName())
     {

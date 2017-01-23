@@ -47,6 +47,10 @@
             file="Source/MainComponent.cpp"/>
       <FILE id="czsEY9" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
       <FILE id="hzPDBZ" name="memo.md" compile="0" resource="0" file="Source/memo.md"/>
+      <FILE id="YEZNXG" name="ReplaceComponent.cpp" compile="1" resource="0"
+            file="Source/ReplaceComponent.cpp"/>
+      <FILE id="F3e7ZZ" name="ReplaceComponent.h" compile="0" resource="0"
+            file="Source/ReplaceComponent.h"/>
       <FILE id="g1rrrF" name="SetupPanel.cpp" compile="1" resource="0" file="Source/SetupPanel.cpp"/>
       <FILE id="BBKmUd" name="SetupPanel.h" compile="0" resource="0" file="Source/SetupPanel.h"/>
       <FILE id="pSSMLr" name="TopToolBar.cpp" compile="1" resource="0" file="Source/TopToolBar.cpp"/>

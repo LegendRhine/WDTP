@@ -95,39 +95,40 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
             currentContent = editor->getText ();
             editor->addListener (this);
         }
-    }
+    }    
 
-    TopToolBar* toolBar = findParentComponentOfClass<MainContentComponent>()->getToolbar();
-    jassert (toolBar != nullptr);
-
-    if (docOrDirFile.isDirectory())
+    // prevent auto-enter preview mode when created a new document
+    if (currentContent.length() < 2)
     {
-        previewCurrentDoc ();
-        toolBar->enableEditPreviewBt (false, true);
+        switchMode(false);
+        editor->moveCaretToEnd(false);
     }
-    else  // doc
+    else
     {
-        // prevent auto-enter preview mode when created a new document
-        const bool justCreatedThisDoc (currentContent.length() < 3);
-
-        if (toolBar->getStateOfViewButton() && !justCreatedThisDoc)
-        {
-            previewCurrentDoc();
-            toolBar->enableEditPreviewBt (true, true);
-        }
-        else
-        {
-            editCurrentDoc();
-            toolBar->enableEditPreviewBt (true, false);
-
-            if (justCreatedThisDoc)
-                editor->moveCaretToEnd (false);
-        }
+        switchMode(true);
     }
     
     // word count doesn't include ' ' and newLine. 
     setupPanel->updateWordCount (currentContent.removeCharacters (" ")
                                  .removeCharacters (newLine).length ());
+}
+
+//=================================================================================================
+void EditAndPreview::switchMode(const bool switchToPreview)
+{
+    TopToolBar* toolBar = findParentComponentOfClass<MainContentComponent>()->getToolbar();
+    jassert(toolBar != nullptr);
+
+    if (switchToPreview)
+    {
+        previewCurrentDoc();
+        toolBar->enableEditPreviewBt(!docOrDirFile.isDirectory(), true);
+    } 
+    else
+    {
+        editCurrentDoc();
+        toolBar->enableEditPreviewBt(true, false);
+    }
 }
 
 //=================================================================================================

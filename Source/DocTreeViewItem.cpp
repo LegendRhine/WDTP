@@ -302,7 +302,10 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu);
         m.addSeparator ();
 
-        m.addItem (10, TRANS ("Rename..."), !isRoot && onlyOneSelected);
+        m.addItem(9, TRANS("Replace Content..."), exist && onlyOneSelected);
+        m.addSeparator();
+
+        m.addItem(10, TRANS("Rename..."), !isRoot && onlyOneSelected);
         m.addItem (12, TRANS ("Delete..."), !isRoot);
         m.addSeparator ();
 
@@ -320,13 +323,15 @@ void DocTreeViewItem::menuPerform (const int index)
     jassert (sorter != nullptr);
 
     if (index == 1)
-        createNewFolder ();
+        createNewFolder();
     else if (index == 2)
-        createNewDocument ();
+        createNewDocument();
     else if (index == 4)
-        exportAsMdFile ();
+        exportAsMdFile();
     else if (index == 5)
         statistics();
+    else if (index == 9)
+        replaceContent();
     else if (index == 10)
         renameSelectedItem ();
     else if (index == 12)
@@ -673,6 +678,19 @@ void DocTreeViewItem::statistics()
                                     + TRANS("Total Words: ") + String(totalWords) + newLine
                                     + TRANS("Total Images: ") + String(totalImgs));
     }
+}
+
+//=================================================================================================
+void DocTreeViewItem::replaceContent()
+{
+    if (tree.getType().toString() == "doc")
+        treeContainer->getEditAndPreview()->switchMode(false);
+
+    ScopedPointer<ReplaceComponent> replaceComp = new ReplaceComponent(
+        treeContainer->getEditAndPreview()->getEditor(), tree);
+
+    CallOutBox callOut(*replaceComp, treeContainer->getScreenBounds(), nullptr);
+    callOut.runModalLoop();    
 }
 
 //=================================================================================================

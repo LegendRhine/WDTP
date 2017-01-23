@@ -22,6 +22,7 @@
 #include "HtmlProcessor.h"
 #include "FileTreeContainer.h"
 #include "DocTreeViewItem.h"
+#include "ReplaceComponent.h"
 
 
 #endif  // HEADERGUA

@@ -34,6 +34,9 @@ public:
        
     void startWork (ValueTree& newDocTree);
 
+    /** arg false: switch to edit mode. true is preview mode */
+    void switchMode(const bool switchToPreview);
+
     void paint (Graphics&) override {}
     void resized() override;
     

@@ -1,4 +1,4 @@
-﻿/*
+/*
   ==============================================================================
 
     DocTreeViewItem.h
@@ -93,6 +93,7 @@ private:
     void createNewFolder ();
     void deleteSelected ();
     void statistics();
+    void replaceContent();
     static void getWordsAndImgNumsInDoc(const ValueTree& tree, int& words, int& imgNums);
 
     //=========================================================================
@@ -104,7 +105,7 @@ private:
     void treeChildrenChanged (const ValueTree& parentTree);
 
     //=========================================================================
-    ValueTree tree; // must NOT be refernce!!
+    ValueTree tree; // no need and must NOT be refernce!!
     FileTreeContainer* treeContainer;
     ItemSorter* sorter = nullptr;
 

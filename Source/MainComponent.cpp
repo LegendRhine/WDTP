@@ -11,6 +11,7 @@
 #include "WdtpHeader.h"
 
 extern PropertiesFile* systemFile;
+extern ApplicationCommandManager* cmdManager;
 
 //==============================================================================
 MainContentComponent::MainContentComponent() 
@@ -83,6 +84,13 @@ MainWindow::MainWindow (String name) :
 
     centreWithSize (getWidth (), getHeight ());
     setVisible (true);
+
+    // command manager
+    cmdManager->registerAllCommandsForTarget(mainComp->getToolbar());
+    addKeyListener(cmdManager->getKeyMappings());
+    cmdManager->setFirstCommandTarget(mainComp->getToolbar());
+
+    mainComp->grabKeyboardFocus();
 }
 
 //=================================================================================================

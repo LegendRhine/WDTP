@@ -17,6 +17,7 @@ EditAndPreview::EditAndPreview (MainContentComponent* mainComp_) :
     mainComp(mainComp_)
 {
     addAndMakeVisible (webView = new WebBrowserComp(this));
+    webView->setWantsKeyboardFocus(false);
 
     // stretched layout, arg: index, min-width, max-width，default x%
     layoutManager.setItemLayout (0, -0.5, -1.0, -0.72);  // editor，
@@ -757,4 +758,5 @@ bool WebBrowserComp::pageAboutToLoad(const String& newURL)
         return !(parent->selectItemFromHtmlFile(htmlFile));
     }
 }
+
 

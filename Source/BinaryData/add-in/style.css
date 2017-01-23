@@ -86,7 +86,7 @@ p
 }
 .ad
 {
-    text-align:center;
+    text-indent: 0.5em;
 	width:100%;
 }
 .timeStr
@@ -131,7 +131,7 @@ pre
   text-indent: 0;
   font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace;
   font-size: 85%;
-  line-height: 1.2;
+  line-height: 1.5;
 }
 code
 {
@@ -142,7 +142,6 @@ ol, ul {
   margin: 5px 0;
   padding: 0 0 0 40px;
 }
-
 table 
 {
   position: relative;

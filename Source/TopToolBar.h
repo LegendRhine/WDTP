@@ -18,7 +18,8 @@ class FileTreeContainer;
 class TopToolBar    : public Component,
     private TextEditor::Listener,
     private Button::Listener,
-    public ChangeListener
+    public ChangeListener,
+    public ApplicationCommandTarget
 {
 public:
     TopToolBar (FileTreeContainer* container, EditAndPreview* editAndPreview);
@@ -31,6 +32,12 @@ public:
     void enableEditPreviewBt (const bool enableIt, const bool toggleState);
 
     virtual void changeListenerCallback(ChangeBroadcaster* source) override;
+
+    // application command-target
+    virtual ApplicationCommandTarget* getNextCommandTarget() override;
+    virtual void getAllCommands(Array<CommandID>& commands) override;
+    virtual void getCommandInfo(CommandID commandID, ApplicationCommandInfo& result) override;
+    virtual bool perform(const InvocationInfo& info) override;
 
 private:
     //==========================================================================

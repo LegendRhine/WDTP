@@ -13,6 +13,7 @@
 // global object
 /** managed in mainApplication class */
 PropertiesFile* systemFile = nullptr;
+ApplicationCommandManager* cmdManager = nullptr;
 
 //==============================================================================
 class WDTPApplication  : public JUCEApplication
@@ -51,6 +52,9 @@ public:
             systemFile->save();
         }
 
+        // command manager
+        cmdManager = new ApplicationCommandManager();
+
         // initial application's GUI
         LookAndFeel::setDefaultLookAndFeel (lnf = new SwingLookAndFeel());
         mainWindow = new MainWindow (getApplicationName());
@@ -78,6 +82,7 @@ public:
 
         systemFile->saveIfNeeded();
         deleteAndZero (systemFile);
+        deleteAndZero(cmdManager);
     }
 
     //=========================================================================

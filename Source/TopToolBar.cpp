@@ -88,7 +88,13 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                              Image::null, 1.0f, Colours::darkcyan,
                              Image::null, 1.0f, Colours::darkcyan);
 
-    bts[view]->setTooltip (TRANS ("Switch Preview / Edit Mode"));
+    String cmdStr("cmd");
+
+#if JUCE_WINDOWS
+    cmdStr = "Ctrl";
+#endif
+
+    bts[view]->setTooltip (TRANS ("Switch Preview / Edit Mode") + "  (" + cmdStr + " + TAB)");
     bts[view]->setImages (false, true, true,
                           ImageCache::getFromMemory (BinaryData::view_png,
                                                      BinaryData::view_pngSize),
@@ -105,7 +111,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                             Image::null, 1.000f, Colours::darkcyan,
                             Image::null, 1.000f, Colours::darkcyan);
     
-    bts[width]->setTooltip (TRANS ("Switch Simply / Full Mode"));
+    bts[width]->setTooltip (TRANS ("Switch Simply / Full Mode") + "  (" + cmdStr + " + ~)");
     bts[width]->setImages (false, true, true,
                           ImageCache::getFromMemory (BinaryData::width_png,
                                                      BinaryData::width_pngSize),
@@ -578,6 +584,54 @@ void TopToolBar::changeListenerCallback(ChangeBroadcaster* source)
 
         // setup panel
 
+    }
+}
+
+//=================================================================================================
+ApplicationCommandTarget* TopToolBar::getNextCommandTarget()
+{
+    //return findFirstTargetParentComponent();
+    return nullptr;
+}
+
+//=================================================================================================
+void TopToolBar::getAllCommands(Array<CommandID>& commands)
+{
+    commands.add(10); // switch mode (preview / edit)
+    commands.add(11); // switch width 
+}
+
+//=================================================================================================
+void TopToolBar::getCommandInfo(CommandID commandID, ApplicationCommandInfo& result)
+{
+    if (10 == commandID)
+    {
+        result.setInfo("Switch mode", "Switch to preview/edit", String(), 0);
+        result.addDefaultKeypress(KeyPress::tabKey, ModifierKeys::commandModifier);
+    } 
+    else if (11 == commandID)
+    {
+        result.setInfo("Switch width", "Switch width", String(), 0);
+        result.addDefaultKeypress('`', ModifierKeys::commandModifier);
+    }
+}
+
+//=================================================================================================
+bool TopToolBar::perform(const InvocationInfo& info)
+{
+    if (info.commandID == 10)
+    {
+        bts[view]->triggerClick();
+        return true;
+    }
+    else if (info.commandID == 11)
+    {
+        bts[width]->triggerClick();
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }
 

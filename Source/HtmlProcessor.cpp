@@ -83,58 +83,49 @@ const bool HtmlProcessor::hasDirAndAtLeadOneIsMenu(const ValueTree& tree)
 }
 
 //=================================================================================================
-const String HtmlProcessor::getFileList (const ValueTree& dirTree_,
+const String HtmlProcessor::getFileList (const ValueTree& dirTree,
                                          const bool reverse,
+                                         const bool includeDir,
                                          const bool extrctIntro,
-                                         const int /*itemsPerPage*//* = 0*/)
+                                         int& totalPages,
+                                         const int howmanyPerPage)
 {   
-    jassert (dirTree_.getType ().toString () != "doc");
-
+    jassert (dirTree.getType ().toString () != "doc");
     StringArray filesLinkStr;
-    const File thisDir (DocTreeViewItem::getHtmlFileOrDir (dirTree_).getParentDirectory());
+    const File& indexFile (DocTreeViewItem::getHtmlFileOrDir (dirTree));
+    
+    getListHtmlStr(dirTree, indexFile, filesLinkStr, includeDir, extrctIntro);
 
-    ValueTree dirTree (dirTree_.createCopy ());
-    HtmlProcessor sorter;
-    dirTree.sort (sorter, nullptr, false);
+    // here should sort the StringArray...
 
-    for (int i = dirTree.getNumChildren(); --i >= 0; )
+    for (int i = 0; i < filesLinkStr.size(); ++i)
     {
-        const ValueTree& tree (dirTree.getChild (i));
-        const String titleStr (tree.getProperty ("title").toString ());
-        const String fileName (tree.getProperty ("name").toString ());
-
-        if (tree.getType ().toString () == "doc")
-        {
-            File html = thisDir.getChildFile(fileName + ".html");
-            String path(html.getFullPathName().fromFirstOccurrenceOf(thisDir.getFullPathName(), false, false));
-            path = "<a href=\"." + path + "\">" + titleStr + "</a>";
-
-            if (extrctIntro)
-            {
-                path = "<div class=listTitle>" + path + "</div>" +
-                    +"<div class=listDate>" + tree.getProperty("createDate").toString() + "</div>"
-                    + "<div class=listDesc>" + tree.getProperty("description").toString() + "</div><hr>";
-
-            }
+        if (extrctIntro)
+        {               
+            if (0 == i % 3)
+                filesLinkStr.getReference(i) = "<div class=listTitle>" + filesLinkStr.getReference(i) + "</div>";
+            else if (1 == i % 3)
+                filesLinkStr.getReference(i) = "<div class=listDate>" + filesLinkStr.getReference(i) + "</div>";
             else
-            {
-                path = "<div class=listTitle>" + path + "</div>";
-            }
-
-            if (reverse)
-                filesLinkStr.add(path);
-            else
-                filesLinkStr.insert(0, path);
+                filesLinkStr.getReference(i) = "<div class=listDesc>" + filesLinkStr.getReference(i) + "</div><hr>";
         }
+        else
+        {
+            filesLinkStr.getReference(i) = "<div class=listTitle>" + filesLinkStr.getReference(i) + "</div>";
+        }
+    }    
+
+    if (howmanyPerPage > 0)
+    {
+        totalPages = filesLinkStr.size() / (extrctIntro ? 3 : 1) / howmanyPerPage
+            + (0 == filesLinkStr.size() / (extrctIntro ? 3 : 1) % howmanyPerPage) ? 0 : 1;
     }
-
-    filesLinkStr.removeEmptyStrings (false);
-    String resultStr(filesLinkStr.joinIntoString(newLine));
-
-    if (resultStr.getLastCharacters(4) == "<hr>")
-        resultStr = resultStr.dropLastCharacters(4);
-
-    return resultStr + getCopyrightInfo();
+    else
+    {
+        totalPages = 1;
+    }
+    
+    return filesLinkStr.joinIntoString(newLine);
 }
 
 //=================================================================================================
@@ -272,7 +263,24 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
                 .replace("{{keywords}}", indexKeywordsStr)
                 .replace("{{description}}", indexDescStr);
 
-            processTags(dirTree, indexHtml, tplStr);            
+            processTags(dirTree, indexHtml, tplStr);  
+            int needHowManyPages = 1;
+
+            // list
+            if (tplStr.contains("{{fileAndDirList_N_Y_N_0}}"))
+            {
+                tplStr = tplStr.replace("{{fileAndDirList_N_Y_N_0}}", "<div>"
+                                        + getFileList(dirTree, false, true, false, needHowManyPages, 0)
+                                        + "</div>");
+            }
+            if (tplStr.contains("{{fileAndDirList_Y_N_Y_10}}"))
+            {
+                const String& lists(getFileList(dirTree, true, false, true, needHowManyPages, 10));
+
+                tplStr = tplStr.replace("{{fileAndDirList_Y_N_Y_10}}", "<div>"
+                                        + lists
+                                        + "</div>");
+            }
 
             indexHtml.create ();
             indexHtml.appendText (tplStr);
@@ -294,12 +302,20 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
 const int HtmlProcessor::compareElements (const ValueTree& ft, const ValueTree& st)
 {
     if (ft.getType().toString() == "dir" && st.getType().toString() == "doc")
-        return -1;
+    {
+        return sortByReverse ? 1 : -1;
+    }
     else if (ft.getType().toString() == "doc" && st.getType().toString() == "dir")
-        return 1;
+    {
+        return sortByReverse ? -1 : 1;
+    }
     else  // doc vs doc and dir vs dir..
-        return ft.getProperty("createDate").toString().compareIgnoreCase
-        (st.getProperty("createDate").toString());
+    {
+        if (sortByReverse)
+            return ft.getProperty("createDate").toString().compareIgnoreCase(st.getProperty("createDate").toString());
+        else
+            return st.getProperty("createDate").toString().compareIgnoreCase(ft.getProperty("createDate").toString());
+    }
 }
 
 //=================================================================================================
@@ -315,21 +331,7 @@ void HtmlProcessor::processTags(const ValueTree& docOrDirTree,
         tplStr = tplStr.replace("{{titleOfDir}}", "<div align=center><h1>"
                                 + docOrDirTree.getProperty("title").toString() 
                                 + "</h1></div>" + newLine);
-    }
-
-    // articel list
-    if (tplStr.contains("{{fileAndDirList_N_N_0}}"))
-    {
-        tplStr = tplStr.replace("{{fileAndDirList_N_N_0}}", "<div>"
-                                + getFileList(docOrDirTree, false, false, 0)
-                                + "</div>");
-    }
-    if (tplStr.contains("{{fileAndDirList_Y_Y_10}}"))
-    {
-        tplStr = tplStr.replace("{{fileAndDirList_Y_Y_10}}", "<div>"
-                                + getFileList(docOrDirTree, true, true, 10)
-                                + "</div>");
-    }
+    }    
 
     // js
     if (docOrDirTree.getProperty("js").toString().trim().isNotEmpty())
@@ -398,7 +400,6 @@ void HtmlProcessor::processTags(const ValueTree& docOrDirTree,
     {
         tplStr = tplStr.replace("{{bottomCopyright}}", getCopyrightInfo());
     }
-
 }
 
 //=================================================================================================
@@ -677,14 +678,47 @@ void HtmlProcessor::getLinkStrOfAlllDocTrees(const ValueTree& fromThisTree,
 }
 
 //=================================================================================================
-void HtmlProcessor::getListHtmlStr(const ValueTree& dirTree, 
+void HtmlProcessor::getListHtmlStr(const ValueTree& tree, 
                                    const File& baseOnthisFile,
                                    StringArray& linkStr, 
                                    const bool includeDir, 
-                                   const bool includeExtraInfo, 
-                                   const bool isReverse)
+                                   const bool includeExtraInfo)
 {
+    const String text = tree.getProperty("title").toString();
 
+    String path = DocTreeViewItem::getHtmlFileOrDir(tree).getFullPathName();
+    path = path.replace(FileTreeContainer::projectFile.getSiblingFile("site").getFullPathName(), String());
+    path = getRelativePathToRoot(baseOnthisFile) + path.substring(1);
+    path = path.replace("\\", "/");
+
+    const File& treeFile(DocTreeViewItem::getHtmlFileOrDir(tree));
+
+    if (tree.getType().toString() == "doc" && treeFile != baseOnthisFile)
+    {        
+        linkStr.add("<a href=\"" + path + "\">" + text + "</a>");
+
+        if (includeExtraInfo)
+        {
+            linkStr.add(tree.getProperty("createDate").toString());
+            linkStr.add(tree.getProperty("description").toString());
+        }        
+    }
+    else
+    {
+        if (includeDir && treeFile != baseOnthisFile)
+        {
+            linkStr.add("<a href=\"" + path + "\">" + text + "</a>");
+
+            if (includeExtraInfo)
+            {
+                linkStr.add(tree.getProperty("createDate").toString());
+                linkStr.add(tree.getProperty("description").toString());
+            }
+        }
+
+        for (int i = tree.getNumChildren(); --i >= 0; )
+            getListHtmlStr(tree.getChild(i), baseOnthisFile, linkStr, includeDir, includeExtraInfo);
+    }
 }
 
 //=========================================================================

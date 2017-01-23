@@ -13,6 +13,8 @@
 
 struct HtmlProcessor
 {
+    HtmlProcessor(const bool sortByReverse_) : sortByReverse(sortByReverse_) { }
+
 	/* 1 + 2 => 3 */
     static void renderHtmlContent(const ValueTree& docTree,
                                   const File& tplFile,
@@ -37,12 +39,15 @@ private:
     @pagram reverse         true for reverse-date display the items.
     @pagram includeDir      true will display its sub-dir's title
     @pagram extrctIntro     true will display the item's description under its title (like blog)
-    @pagram itemsPrePage    0 for unlimit
+    @pagram totalPages      need how many pages
+    @pagram howmanyPerPage  
     */
     static const String getFileList(const ValueTree& dirTree,
                                     const bool reverse,
+                                    const bool includeDir,
                                     const bool extrctIntro,
-                                    const int itemsPerPage = 0);
+                                    int& totalPages,
+                                    const int howmanyPerPage = 10);
 
 	/** generate site menu. 2 level. */
 	static const String getSiteMenu (const ValueTree& tree);
@@ -80,12 +85,14 @@ private:
                                          StringArray& linkStr);
 
     /** this method is for file-list of index.html*/
-    static void getListHtmlStr(const ValueTree& dirTree,
+    static void getListHtmlStr(const ValueTree& tree,
                                const File& baseOnthisFile,
                                StringArray& linkStr,
                                const bool includeDir,
-                               const bool includeExtraInfo,
-                               const bool isReverse);
+                               const bool includeExtraInfo);
+
+    //=================================================================================================
+    bool sortByReverse = true;
 
 };
 

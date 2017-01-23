@@ -12,8 +12,8 @@
 
 //=================================================================================================
 void HtmlProcessor::renderHtmlContent (const ValueTree& docTree, 
-	const File& tplFile,
-	const File& htmlFile)
+                                       const File& tplFile,
+                                       const File& htmlFile)
 {
 	String tplStr (tplFile.existsAsFile () ? tplFile.loadFileAsString ()
 		: TRANS ("Please specify a template file. "));
@@ -39,63 +39,7 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
 			"  <title>");
 	}
 
-	// process doc's js
-	if (docTree.getProperty ("js").toString().trim ().isNotEmpty ())
-	{
-		tplStr = tplStr.replace ("\n  <title>",
-			"\n  <script type=\"text/javascript\">\n"
-			+ docTree.getProperty ("js").toString().trim () + "\n  </script>\n"
-			"  <title>");
-	}
-
-	/* process tags of TPL-file...
-	- {{siteLogo}} 显示网站LOGO图片，图片位于网站根目录add-in文件夹下，文件名为logo.png
-	- {{siteMenu}} 网站主菜单
-	- {{siteNavi}} 当前页面的导航菜单
-    - {{contentTitle}} 文章或目录的标题
-	- {{previousAndNext}} 上一篇，下一篇
-	- {{random-5}} 随机推荐5篇本站文章
-	*/
-	if (tplStr.contains ("{{siteLogo}}"))
-	{
-		tplStr = tplStr.replace ("{{siteLogo}}",
-			"<div class=\"siteLogo\"><a href = \"" + rootRelativePath + "index.html\"><img src = \"" 
-			+ rootRelativePath + "add-in/logo.png\" /></a></div>");
-	}
-
-	if (tplStr.contains ("{{siteMenu}}"))
-	{
-		tplStr = tplStr.replace ("{{siteMenu}}", getSiteMenu (docTree.getParent()));
-	}
-	if (tplStr.contains ("{{siteNavi}}"))
-	{
-		tplStr = tplStr.replace ("{{siteNavi}}", getSiteNavi (docTree));
-	}
-    if (tplStr.contains("{{contentTitle}}"))
-    {
-        tplStr = tplStr.replace("{{contentTitle}}", getContentTitle(docTree));
-    }
-    if (tplStr.contains("{{createAndModifyTime}}"))
-    {
-        tplStr = tplStr.replace("{{createAndModifyTime}}", getCreateAndModifyTime(docTree));
-    }
-    if (tplStr.contains("{{previousAndNext}}"))
-    {
-        tplStr = tplStr.replace("{{previousAndNext}}", getPrevAndNextArticel(docTree));
-    }
-    if (tplStr.contains("{{ad}}"))
-    {
-        tplStr = tplStr.replace("{{ad}}", getAdStr(FileTreeContainer::projectTree.getProperty("ad").toString(), htmlFile));
-    }
-    if (tplStr.contains("{{random}}"))
-    {
-        const String& links((bool)docTree.getProperty("isPage") ? String() : getRandomArticels(docTree, 5));
-        tplStr = tplStr.replace("{{random}}", links);
-    }
-    if (tplStr.contains("{{bottomCopyright}}"))
-    {
-        tplStr = tplStr.replace("{{bottomCopyright}}", getCopyrightInfo());
-    }
+    processTags(docTree, htmlFile, tplStr);
 
 	// generate the html file
 	htmlFile.appendText (tplStr.replace ("{{keywords}}", docTree.getProperty ("keywords").toString ())
@@ -141,7 +85,6 @@ const bool HtmlProcessor::hasDirAndAtLeadOneIsMenu(const ValueTree& tree)
 //=================================================================================================
 const String HtmlProcessor::getFileList (const ValueTree& dirTree_,
                                          const bool reverse,
-                                         const bool includeDir,
                                          const bool extrctIntro,
                                          const int /*itemsPerPage*//* = 0*/)
 {   
@@ -160,44 +103,38 @@ const String HtmlProcessor::getFileList (const ValueTree& dirTree_,
         const String titleStr (tree.getProperty ("title").toString ());
         const String fileName (tree.getProperty ("name").toString ());
 
-        File html;
-
-        if (tree.getType ().toString () == "dir")
-            html = thisDir.getChildFile (fileName + "/index.html");
-        else  // doc
-            html = thisDir.getChildFile (fileName + ".html");
-
-        String path (html.getFullPathName().fromFirstOccurrenceOf (thisDir.getFullPathName(), false, false));
-
-        if (!includeDir && path == "index.html")
+        if (tree.getType ().toString () == "doc")
         {
-            path = String ();
-        }
-        else
-        {
+            File html = thisDir.getChildFile(fileName + ".html");
+            String path(html.getFullPathName().fromFirstOccurrenceOf(thisDir.getFullPathName(), false, false));
             path = "<a href=\"." + path + "\">" + titleStr + "</a>";
 
             if (extrctIntro)
             {
-                path = "<h2>" + path + "</h2>" +
-                    +"<h4>" + tree.getProperty ("createDate").toString () + "</h4><p>"
-                    + tree.getProperty ("description").toString () + "<hr>";
+                path = "<div class=listTitle>" + path + "</div>" +
+                    +"<div class=listDate>" + tree.getProperty("createDate").toString() + "</div>"
+                    + "<div class=listDesc>" + tree.getProperty("description").toString() + "</div><hr>";
 
             }
             else
             {
-                path = "<h4>" + path + "</h4>";
+                path = "<div class=listTitle>" + path + "</div>";
             }
-        }
 
-        if (reverse)
-            filesLinkStr.add (path);
-        else
-            filesLinkStr.insert (0, path);
+            if (reverse)
+                filesLinkStr.add(path);
+            else
+                filesLinkStr.insert(0, path);
+        }
     }
 
     filesLinkStr.removeEmptyStrings (false);
-    return filesLinkStr.joinIntoString (newLine) + getCopyrightInfo();
+    String resultStr(filesLinkStr.joinIntoString(newLine));
+
+    if (resultStr.getLastCharacters(4) == "<hr>")
+        resultStr = resultStr.dropLastCharacters(4);
+
+    return resultStr + getCopyrightInfo();
 }
 
 //=================================================================================================
@@ -323,42 +260,22 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
                     cssRelativePath << String ("../");
             }
 
-            const String tplStr (tplFile.existsAsFile() ? tplFile.loadFileAsString () : String());
+            String tplStr (tplFile.existsAsFile() ? tplFile.loadFileAsString () : String());
             const String indexTileStr (dirTree.getProperty ("title").toString ());
             const String indexAuthorStr (FileTreeContainer::projectTree.getProperty ("owner").toString ());
             const String indexKeywordsStr (dirTree.getProperty ("keywords").toString ());
             const String indexDescStr (dirTree.getProperty ("description").toString ());
 
-            String indexContent (tplStr.replace ("{{siteRelativeRootPath}}", cssRelativePath)
-                                 .replace ("{{author}}", indexAuthorStr)
-                                 .replace ("{{title}}", indexTileStr)
-                                 .replace ("{{keywords}}", indexKeywordsStr)
-                                 .replace ("{{description}}", indexDescStr));
+            tplStr = tplStr.replace("{{siteRelativeRootPath}}", cssRelativePath)
+                .replace("{{author}}", indexAuthorStr)
+                .replace("{{title}}", indexTileStr)
+                .replace("{{keywords}}", indexKeywordsStr)
+                .replace("{{description}}", indexDescStr);
 
-            // title of this index.html
-            if (tplStr.contains ("{{titleOfDir}}"))
-                indexContent = indexContent.replace ("{{titleOfDir}}", "<div align=center><h1>"
-                                                     + indexTileStr + "</h1></div>" + newLine);
-
-            // process TAGs, it's nothing about the content but the dir or something else
-            if (tplStr.contains ("{{fileAndDirList_N_Y_N_0}}"))
-            {
-                indexContent = indexContent.replace ("{{fileAndDirList_N_Y_N_0}}", "<div>"
-                                                     + getFileList (dirTree, false, true, false)
-                                                     + "</div>");
-            }
-
-            // java script
-            if (dirTree.getProperty("js").toString().trim().isNotEmpty())
-            {
-                indexContent = indexContent.replace (newLine + "  <title>",
-                                                     "\n  <script type=\"text/javascript\">\n"
-                                                     + dirTree.getProperty ("js").toString ().trim ()
-                                                     + "\n  </script>\n  <title>");
-            }
+            processTags(dirTree, indexHtml, tplStr);            
 
             indexHtml.create ();
-            indexHtml.appendText (indexContent);
+            indexHtml.appendText (tplStr);
             dirTree.setProperty ("needCreateHtml", false, nullptr);
 
             if (saveProject)
@@ -383,6 +300,105 @@ const int HtmlProcessor::compareElements (const ValueTree& ft, const ValueTree& 
     else  // doc vs doc and dir vs dir..
         return ft.getProperty("createDate").toString().compareIgnoreCase
         (st.getProperty("createDate").toString());
+}
+
+//=================================================================================================
+void HtmlProcessor::processTags(const ValueTree& docOrDirTree, 
+                                const File& htmlFile,
+                                String& tplStr)
+{    
+    const String& rootRelativePath(getRelativePathToRoot(htmlFile));
+
+    // title of this index.html
+    if (tplStr.contains("{{titleOfDir}}"))
+    {
+        tplStr = tplStr.replace("{{titleOfDir}}", "<div align=center><h1>"
+                                + docOrDirTree.getProperty("title").toString() 
+                                + "</h1></div>" + newLine);
+    }
+
+    // articel list
+    if (tplStr.contains("{{fileAndDirList_N_N_0}}"))
+    {
+        tplStr = tplStr.replace("{{fileAndDirList_N_N_0}}", "<div>"
+                                + getFileList(docOrDirTree, false, false, 0)
+                                + "</div>");
+    }
+    if (tplStr.contains("{{fileAndDirList_Y_Y_10}}"))
+    {
+        tplStr = tplStr.replace("{{fileAndDirList_Y_Y_10}}", "<div>"
+                                + getFileList(docOrDirTree, true, true, 10)
+                                + "</div>");
+    }
+
+    // js
+    if (docOrDirTree.getProperty("js").toString().trim().isNotEmpty())
+    {
+        tplStr = tplStr.replace("\n  <title>",
+                                "\n  <script type=\"text/javascript\">\n"
+                                + docOrDirTree.getProperty("js").toString().trim() + "\n  </script>\n"
+                                "  <title>");
+    }
+
+    // site logo
+    if (tplStr.contains("{{siteLogo}}"))
+    {
+        tplStr = tplStr.replace("{{siteLogo}}",
+                                "<div class=\"siteLogo\"><a href = \"" + rootRelativePath + "index.html\"><img src = \""
+                                + rootRelativePath + "add-in/logo.png\" /></a></div>");
+    }
+
+    // site menu
+    if (tplStr.contains("{{siteMenu}}"))
+    {
+        if (docOrDirTree.getType().toString() == "doc")
+            tplStr = tplStr.replace("{{siteMenu}}", getSiteMenu(docOrDirTree.getParent()));
+        else
+            tplStr = tplStr.replace("{{siteMenu}}", getSiteMenu(docOrDirTree));
+    }
+
+    // site navi
+    if (tplStr.contains("{{siteNavi}}"))
+    {
+        tplStr = tplStr.replace("{{siteNavi}}", getSiteNavi(docOrDirTree));
+    }
+
+    // content tile
+    if (tplStr.contains("{{contentTitle}}"))
+    {
+        tplStr = tplStr.replace("{{contentTitle}}", getContentTitle(docOrDirTree));
+    }
+
+    // create and modified time
+    if (tplStr.contains("{{createAndModifyTime}}"))
+    {
+        tplStr = tplStr.replace("{{createAndModifyTime}}", getCreateAndModifyTime(docOrDirTree));
+    }
+
+    // prev and next
+    if (tplStr.contains("{{previousAndNext}}"))
+    {
+        tplStr = tplStr.replace("{{previousAndNext}}", getPrevAndNextArticel(docOrDirTree));
+    }
+
+    // ad
+    if (tplStr.contains("{{ad}}"))
+    {
+        tplStr = tplStr.replace("{{ad}}", getAdStr(FileTreeContainer::projectTree.getProperty("ad").toString(), htmlFile));    }
+
+    // random 5
+    if (tplStr.contains("{{random}}"))
+    {
+        const String& links((bool)docOrDirTree.getProperty("isPage") ? String() : getRandomArticels(docOrDirTree, 5));
+        tplStr = tplStr.replace("{{random}}", links);
+    }
+
+    // copyright on the bottom
+    if (tplStr.contains("{{bottomCopyright}}"))
+    {
+        tplStr = tplStr.replace("{{bottomCopyright}}", getCopyrightInfo());
+    }
+
 }
 
 //=================================================================================================
@@ -658,6 +674,17 @@ void HtmlProcessor::getLinkStrOfAlllDocTrees(const ValueTree& fromThisTree,
         for (int i = fromThisTree.getNumChildren(); --i >= 0; )
             getLinkStrOfAlllDocTrees(fromThisTree.getChild(i), baseOnThisTree, linkStr);
     }
+}
+
+//=================================================================================================
+void HtmlProcessor::getListHtmlStr(const ValueTree& dirTree, 
+                                   const File& baseOnthisFile,
+                                   StringArray& linkStr, 
+                                   const bool includeDir, 
+                                   const bool includeExtraInfo, 
+                                   const bool isReverse)
+{
+
 }
 
 //=========================================================================

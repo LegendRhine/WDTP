@@ -14,28 +14,12 @@
 struct HtmlProcessor
 {
 	/* 1 + 2 => 3 */
-	static void renderHtmlContent (const ValueTree& docTree,
-		const File& tplFile,
-		const File& htmlFile);
-
-    /** process {{fileAndDirList_xx_xx}}, return its html-code
-    
-        @pagram dirTree         process this dir's html and dir
-        @pagram reverse         true for reverse-date display the items.
-        @pagram includeDir      true will display its sub-dir's title
-        @pagram extrctIntro     true will display the item's description under its title (like blog)
-        @pagram itemsPrePage    0 for unlimit    
-    */
-    static const String getFileList (const ValueTree& dirTree,
-                                     const bool reverse,
-                                     const bool includeDir,
-                                     const bool extrctIntro,
-                                     const int itemsPerPage = 0);
+    static void renderHtmlContent(const ValueTree& docTree,
+                                  const File& tplFile,
+                                  const File& htmlFile);
 
     static const File createArticleHtml (ValueTree& docTree, bool saveProjectAfterCreated);
 	static const File createIndexHtml (ValueTree& dirTree, bool saveProjectAfterCreated);
-
-   
 
     //=========================================================================
     /** Use for file/dir list sort. Base on create-date */
@@ -44,6 +28,22 @@ struct HtmlProcessor
     static void getDocNumbersOfTheDir(const ValueTree& dirTree, int& num);
 
 private:
+    /** Process tpl-file's tags */
+    static void processTags(const ValueTree& docOrDirTree, const File& htmlFile, String& tplStr);
+
+    /** process {{fileAndDirList_xx_xx}}, return its html-code
+
+    @pagram dirTree         process this dir's html and dir
+    @pagram reverse         true for reverse-date display the items.
+    @pagram includeDir      true will display its sub-dir's title
+    @pagram extrctIntro     true will display the item's description under its title (like blog)
+    @pagram itemsPrePage    0 for unlimit
+    */
+    static const String getFileList(const ValueTree& dirTree,
+                                    const bool reverse,
+                                    const bool extrctIntro,
+                                    const int itemsPerPage = 0);
+
 	/** generate site menu. 2 level. */
 	static const String getSiteMenu (const ValueTree& tree);
 	static const String getSiteNavi (const ValueTree& docTree);
@@ -73,10 +73,19 @@ private:
     static const Array<int> getRandomInts (const int howMany);
 
     /** get the arg tree's all child tree's link string. their path base on the arg 2 tree.
-        Note: not include the baseOnThisTree's link */
+        Note: not include the baseOnThisTree's link and not include create-date, desc, etc. 
+        This method is for random articel. */
     static void getLinkStrOfAlllDocTrees(const ValueTree& fromThisTree, 
                                          const ValueTree& baseOnThisTree, 
                                          StringArray& linkStr);
+
+    /** this method is for file-list of index.html*/
+    static void getListHtmlStr(const ValueTree& dirTree,
+                               const File& baseOnthisFile,
+                               StringArray& linkStr,
+                               const bool includeDir,
+                               const bool includeExtraInfo,
+                               const bool isReverse);
 
 };
 

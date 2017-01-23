@@ -164,10 +164,11 @@
 	- {{bottomCopyright}} 每页页底的版权信息
 
 	- {{titleOfDir}} <body>区中所显示的当前目录的标题
-	- {{fileAndDirList_Y_Y_N_0}} <body>区中所显示的文章/目录列表，倒序（新的在上），包括目录，不含描述，不分页（一页内显示全部）
-	- {{fileAndDirList_N_Y_N_0}} <body>区中所显示的文章/目录列表，正序，包括目录，不含描述，不分页（一页内显示全部）
-	- {{fileAndDirList_N_N_Y_0}} <body>区中所显示的文章/目录列表，正序，不含目录，含描述，不分页（一页内显示全部）
-	- {{fileAndDirList_N_N_Y_10}} <body>区中所显示的文章/目录列表，正序，不含目录，含描述，每页显示10条
+	- {{fileAndDirList_Y_N_0}} <body>区中所显示的文章/目录列表，倒序（新的在上），不含描述，不分页（一页内显示全部）
+	- {{fileAndDirList_N_N_0}} <body>区中所显示的文章/目录列表，正序，不含描述，不分页（一页内显示全部）
+	- {{fileAndDirList_N_Y_0}} <body>区中所显示的文章/目录列表，正序，含描述，不分页（一页内显示全部）
+	- {{fileAndDirList_N_Y_10}} <body>区中所显示的文章/目录列表，正序，含描述，每页显示10条
+	- {{fileAndDirList_Y_Y_10}} <body>区中所显示的文章/目录列表，倒序，含描述，每页显示10条
 
 ### 界面设计
 

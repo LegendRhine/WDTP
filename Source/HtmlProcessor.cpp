@@ -94,9 +94,9 @@ const String HtmlProcessor::getFileList (const ValueTree& dirTree,
     StringArray filesLinkStr;
     const File& indexFile (DocTreeViewItem::getHtmlFileOrDir (dirTree));
     
-    getListHtmlStr(dirTree, indexFile, filesLinkStr, includeDir, extrctIntro);
+    getListHtmlStr(dirTree, indexFile, filesLinkStr);
 
-    // here should sort the StringArray...
+    // here should sort the filesLinkStr...
 
     for (int i = 0; i < filesLinkStr.size(); ++i)
     {
@@ -680,45 +680,24 @@ void HtmlProcessor::getLinkStrOfAlllDocTrees(const ValueTree& fromThisTree,
 //=================================================================================================
 void HtmlProcessor::getListHtmlStr(const ValueTree& tree, 
                                    const File& baseOnthisFile,
-                                   StringArray& linkStr, 
-                                   const bool includeDir, 
-                                   const bool includeExtraInfo)
+                                   StringArray& linkStr)
 {
     const String text = tree.getProperty("title").toString();
-
     String path = DocTreeViewItem::getHtmlFileOrDir(tree).getFullPathName();
+
     path = path.replace(FileTreeContainer::projectFile.getSiblingFile("site").getFullPathName(), String());
     path = getRelativePathToRoot(baseOnthisFile) + path.substring(1);
     path = path.replace("\\", "/");
 
-    const File& treeFile(DocTreeViewItem::getHtmlFileOrDir(tree));
-
-    if (tree.getType().toString() == "doc" && treeFile != baseOnthisFile)
+    if (DocTreeViewItem::getHtmlFileOrDir(tree) != baseOnthisFile)
     {        
         linkStr.add("<a href=\"" + path + "\">" + text + "</a>");
-
-        if (includeExtraInfo)
-        {
-            linkStr.add(tree.getProperty("createDate").toString());
-            linkStr.add(tree.getProperty("description").toString());
-        }        
+        linkStr.add(tree.getProperty("createDate").toString());
+        linkStr.add(tree.getProperty("description").toString());
     }
-    else
-    {
-        if (includeDir && treeFile != baseOnthisFile)
-        {
-            linkStr.add("<a href=\"" + path + "\">" + text + "</a>");
-
-            if (includeExtraInfo)
-            {
-                linkStr.add(tree.getProperty("createDate").toString());
-                linkStr.add(tree.getProperty("description").toString());
-            }
-        }
-
-        for (int i = tree.getNumChildren(); --i >= 0; )
-            getListHtmlStr(tree.getChild(i), baseOnthisFile, linkStr, includeDir, includeExtraInfo);
-    }
+    
+    for (int i = tree.getNumChildren(); --i >= 0; )
+        getListHtmlStr(tree.getChild(i), baseOnthisFile, linkStr);
 }
 
 //=========================================================================

@@ -84,12 +84,10 @@ private:
                                          const ValueTree& baseOnThisTree, 
                                          StringArray& linkStr);
 
-    /** this method is for file-list of index.html*/
+    /** this method is for file-list of index.html. it'll include create date and extra info */
     static void getListHtmlStr(const ValueTree& tree,
                                const File& baseOnthisFile,
-                               StringArray& linkStr,
-                               const bool includeDir,
-                               const bool includeExtraInfo);
+                               StringArray& linkStr);
 
     //=================================================================================================
     bool sortByReverse = true;

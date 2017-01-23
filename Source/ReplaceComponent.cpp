@@ -143,7 +143,6 @@ void ReplaceComponent::buttonClicked (Button* buttonThatWasClicked)
     }
     else if (buttonThatWasClicked == caseBt)
     {
-        caseSens = caseBt->getToggleState();
         replaced = false;
     }
 }
@@ -160,7 +159,7 @@ void ReplaceComponent::replaceContent(ValueTree tree_,
         
         if (content.contains(originalText))
         {
-            docFile.replaceWithText(content.replace(originalText, replaceText, caseSens));
+            docFile.replaceWithText(content.replace(originalText, replaceText, caseBt->getToggleState()));
             replaced = true;
         }
         else

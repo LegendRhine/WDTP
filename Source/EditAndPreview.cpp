@@ -119,7 +119,7 @@ void EditAndPreview::switchMode(const bool switchToPreview)
     TopToolBar* toolBar = findParentComponentOfClass<MainContentComponent>()->getToolbar();
     jassert(toolBar != nullptr);
 
-    if (switchToPreview)
+    if ((docOrDirTree.getType().toString() != "doc") || (switchToPreview && toolBar->getStateOfViewButton()))
     {
         previewCurrentDoc();
         toolBar->enableEditPreviewBt(!docOrDirFile.isDirectory(), true);

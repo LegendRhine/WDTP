@@ -33,7 +33,6 @@ private:
 
     ValueTree tree;
     TextEditor* editor;
-    bool caseSens = false;
     bool replaced = false;
 
     ScopedPointer<Label> label;

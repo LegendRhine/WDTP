@@ -233,9 +233,11 @@ void TopToolBar::findInProject (const bool next)
         {
             item->setSelected (true, true);
             searchInDoc->setText (keyword, false);
+            treeView.scrollToKeepItemVisible(item);
+
+            editAndPreview->getEditor()->moveCaretToTop(false);
             findInDoc (true);
 
-            treeView.scrollToKeepItemVisible (item);
             return;
         }
     }
@@ -256,7 +258,6 @@ void TopToolBar::findInDoc (const bool next)
 
     int startIndex = 0;
     int caretIndex = editor->getCaretPosition ();
-    //DBGX (String (caretIndex) << " / " << String (editor->getTotalNumChars ()) << " / " << content.length ());
 
     // find the start index of the keyword
     if (next)
@@ -266,9 +267,17 @@ void TopToolBar::findInDoc (const bool next)
 
     // select the keyword
     if (startIndex != -1)
-        editor->setHighlightedRegion (Range<int> (startIndex, startIndex + keyword.length ()));
+    {
+        Array<Range<int>> rangeArray;
+        rangeArray.add(Range<int>(startIndex, startIndex + keyword.length()));
+
+        editor->setTemporaryUnderlining(rangeArray);
+        editor->setHighlightedRegion(rangeArray[0]);
+    }
     else
-        LookAndFeel::getDefaultLookAndFeel ().playAlertSound ();
+    {
+        LookAndFeel::getDefaultLookAndFeel().playAlertSound();
+    }
 }
 
 //=========================================================================

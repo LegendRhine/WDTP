@@ -371,6 +371,10 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile());
         menu.addSeparator ();
 
+        menu.addItem(34, TRANS("Search Prev Selection..."), getHighlightedText().isNotEmpty());
+        menu.addItem(35, TRANS("Search Next Selection..."), getHighlightedText().isNotEmpty());
+        menu.addSeparator();
+
         TextEditor::addPopupMenuItems (menu, e);
         menu.addSeparator ();
 
@@ -416,16 +420,16 @@ void EditorForMd::performPopupMenuAction (int index)
         content = getHighlightedText ();
         docTree.setProperty ("description", content, nullptr);
     }
-    /*else if (21 == index)  // search by selected
+    else if (34 == index)  // search by selected prev
     {
-        NEED_TO_DO ("search by selected");
+        searchBySelectPrev();
         return;  // don't insert anything in current content
     }
-    else if (22 == index)  // replace selected to something else
+    else if (35 == index)  // search by selected next
     {
-        NEED_TO_DO ("replace selected");
+        searchBySelectNext();
         return;  // don't insert anything in current content
-    }*/
+    }
     else if (1 == index) // image
     {
         FileChooser fc (TRANS ("Select Images..."), File::nonexistent,
@@ -670,6 +674,38 @@ void EditorForMd::changeListenerCallback (ChangeBroadcaster* source)
     else if (source == bgColourSelector)
     {
         parent->getEditor ()->setColour (TextEditor::backgroundColourId, bgColourSelector->getCurrentColour());
+    }
+}
+
+//=================================================================================================
+void EditorForMd::searchBySelectPrev()
+{
+    const String& selected(getHighlightedText());
+
+    if (selected.isNotEmpty())
+    {
+        const int startIndex = getText().substring(0, getCaretPosition() - 1).lastIndexOfIgnoreCase(selected);
+
+        if (startIndex != -1)
+            setHighlightedRegion(Range<int>(startIndex, startIndex + selected.length()));
+        else
+            LookAndFeel::getDefaultLookAndFeel().playAlertSound();
+    }
+}
+
+//=================================================================================================
+void EditorForMd::searchBySelectNext()
+{
+    const String& selected(getHighlightedText());
+
+    if (selected.isNotEmpty())
+    {
+        const int startIndex = getText().indexOfIgnoreCase(getCaretPosition() + selected.length(), selected);
+
+        if (startIndex != -1)
+            setHighlightedRegion(Range<int>(startIndex, startIndex + selected.length()));
+        else
+            LookAndFeel::getDefaultLookAndFeel().playAlertSound();
     }
 }
 

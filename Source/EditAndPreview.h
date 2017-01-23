@@ -100,6 +100,9 @@ public:
     virtual void changeListenerCallback (ChangeBroadcaster* source) override;
 
 private:
+    void searchBySelectPrev();
+    void searchBySelectNext();
+
     EditAndPreview* parent;
     Slider fontSizeSlider;  
     ScopedPointer<ColourSelectorWithPreset> fontColourSelector;

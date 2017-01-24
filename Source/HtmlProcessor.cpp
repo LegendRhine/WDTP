@@ -212,7 +212,7 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
 
             processTags(dirTree, indexHtml, tplStr);  
 
-            // list. 3 bool: reverse or not, include dir, include date and desc
+            // file list. 3 bool: reverse or not, include dir, include date and desc
             if (tplStr.contains("{{fileAndDirList_N_Y_N_0}}"))
             {
                 tplStr = tplStr.replace("{{fileAndDirList_N_Y_N_0}}", "<div>"
@@ -229,22 +229,33 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
                 const int howManyFiles = fileLinks.size() / 3;
                 const int howManyPages = howManyFiles / 10 + (howManyFiles % 10 == 0 ? 0 : 1);
 
-                for (int i = 0; i < howManyPages; ++i)
-                {                    
-                    StringArray pageLinks;
-                    pageLinks.addArray(fileLinks, i * 30, 30);
-                    pageLinks.add(getPageNavi(howManyPages, i + 1));
+                if (howManyFiles < 1)
+                {
+                    indexHtml.deleteFile();
+                    indexHtml.create();
 
-                    const String listHtmlStr = tplStr.replace("{{fileAndDirList_Y_N_Y_10}}", 
-                                            "<div>" + pageLinks.joinIntoString(newLine) + "</div>");
-
-                    const File& indexFile(indexHtml.getSiblingFile("index-" + String(i + 1) + ".html"));
-                    indexFile.deleteFile();
-                    indexFile.create();
-                    indexFile.appendText(listHtmlStr);
+                    const String listHtmlStr = tplStr.replace("{{fileAndDirList_Y_N_Y_10}}", String());
+                    indexHtml.appendText(listHtmlStr);
                 }
+                else
+                {
+                    for (int i = 0; i < howManyPages; ++i)
+                    {
+                        StringArray pageLinks;
+                        pageLinks.addArray(fileLinks, i * 30, 30);
+                        pageLinks.add(getPageNavi(howManyPages, i + 1));
 
-                indexHtml.getSiblingFile("index-1.html").moveFileTo(indexHtml);                
+                        const String listHtmlStr = tplStr.replace("{{fileAndDirList_Y_N_Y_10}}",
+                                                                  "<div>" + pageLinks.joinIntoString(newLine) + "</div>");
+
+                        const File& indexFile(indexHtml.getSiblingFile("index-" + String(i + 1) + ".html"));
+                        indexFile.deleteFile();
+                        indexFile.create();
+                        indexFile.appendText(listHtmlStr);
+                    }
+
+                    indexHtml.getSiblingFile("index-1.html").moveFileTo(indexHtml);
+                }
             }
             
             dirTree.setProperty ("needCreateHtml", false, nullptr);
@@ -731,7 +742,8 @@ void HtmlProcessor::getListHtmlStr(const ValueTree& tree,
             }
 
             // description
-            str += tree.getProperty("description").toString();
+            str += tree.getProperty("description").toString() + "<div class=readMore align=right>" 
+                + "<a href=\"" + path + "\">" + TRANS("Read More") + "</a></div>";
 
             linkStr.add(str);
         }

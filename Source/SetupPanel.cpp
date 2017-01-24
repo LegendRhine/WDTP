@@ -23,7 +23,7 @@ SetupPanel::SetupPanel (EditAndPreview* ed) :
      
     addAndMakeVisible (panel = new PropertyPanel());
     panel->setMessageWhenEmpty(String());
-    panel->getViewport().setScrollBarThickness (10);   
+    panel->getViewport().setScrollBarThickness (10);  
 }
 
 //=========================================================================
@@ -193,9 +193,12 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     values[docTpl]->setValue (currentTree.getProperty ("tplFile"));
     values[docJs]->setValue (currentTree.getProperty ("js"));
     values[docCreateDate]->setValue (currentTree.getProperty ("createDate"));
-	values[docModifyDate]->setValue (currentTree.getProperty ("modifyDate"));
+    values[docModifyDate]->setValue(currentTree.getProperty("modifyDate"));
+    values[thumb]->setValue(currentTree.getProperty("thumb"));
+    values[thumbName]->setValue(currentTree.getProperty("thumbName"));
 
     Array<PropertyComponent*> docProperties;
+
     docProperties.add (new TextPropertyComponent (*values[docName], TRANS ("Name: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[docTitle], TRANS ("Title: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[docKeywords], TRANS ("Keywords: "), 0, false));
@@ -226,13 +229,39 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docProperties.add (new ChoicePropertyComponent (*values[docTpl], TRANS ("Render TPL: "),
                                                     tplFileSa, tplFileVar));
     docProperties.add (new TextPropertyComponent (*values[docModifyDate], TRANS ("Last Modified: "), 0, false));
-	docProperties.add (new TextPropertyComponent (*values[wordCount], TRANS ("Word Count: "), 0, false));
+    docProperties.add(new TextPropertyComponent(*values[wordCount], TRANS("Word Count: "), 0, false));
+    docProperties.add(new BooleanPropertyComponent(*values[thumb], TRANS("Title Image: "), TRANS("Yes")));
 
+    // images in this doc
+    StringArray imgFileSa;
+    Array<var> imgFileVar;
+    const String mdContent(DocTreeViewItem::getMdFileOrDir(currentTree).loadFileAsString());
+    int indexStart = mdContent.indexOfIgnoreCase(0, "![");
+
+    while (indexStart != -1)
+    {
+        // jump alt content and get img path
+        const int altEnd = mdContent.indexOfIgnoreCase(indexStart + 2, "](");
+        if (altEnd == -1)            break;
+        const int imgEnd = mdContent.indexOfIgnoreCase(altEnd + 2, ")");
+        if (imgEnd == -1)            break;
+
+        const String imgPath(mdContent.substring(altEnd + 2, imgEnd));
+        imgFileSa.add(imgPath);
+        imgFileVar.add(imgPath);
+
+        indexStart = mdContent.indexOfIgnoreCase(imgEnd + 1, "![");
+    }
+
+    docProperties.add(new ChoicePropertyComponent(*values[thumbName], TRANS("Image File: "),
+                                                  imgFileSa, imgFileVar));
+
+    // set height
     for (auto p : docProperties)           
         p->setPreferredHeight (28);
 
     docProperties[0]->setEnabled (false);
-    docProperties[9]->setEnabled (false);
+    docProperties[9]->setEnabled(false);
 
     docProperties[3]->setPreferredHeight (28 * 3);
     docProperties[6]->setPreferredHeight (28 * 5);
@@ -273,8 +302,8 @@ void SetupPanel::valuesRemoveListener ()
 void SetupPanel::resized()
 {
     // if the panel's width less than 90, it'll hit a jassert when in Debug mode, so...
-    panel->setVisible (getWidth() > 80);
-    panel->setBounds (getLocalBounds().reduced (2));
+    panel->setVisible(getWidth() > 80);
+    panel->setBounds(getLocalBounds().reduced(2));
 }
 
 //=========================================================================
@@ -335,7 +364,11 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("tplFile", values[docTpl]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[docJs]))
         currentTree.setProperty ("js", values[docJs]->getValue (), nullptr);
-	
+    else if (value.refersToSameSourceAs(*values[thumb]))
+        currentTree.setProperty("thumb", values[thumb]->getValue(), nullptr);
+    else if (value.refersToSameSourceAs(*values[thumbName]))
+        currentTree.setProperty("thumbName", values[thumbName]->getValue(), nullptr);        
+    	
     DocTreeViewItem::needCreateAndUpload (currentTree);
     projectHasChanged = true;
     startTimer (200);

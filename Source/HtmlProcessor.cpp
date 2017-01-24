@@ -615,14 +615,17 @@ void HtmlProcessor::getLinkStrOfAlllDocTrees(const ValueTree& fromThisTree,
 {
     if (fromThisTree.getType().toString() == "doc" && fromThisTree != baseOnThisTree)
     {
-        const String text = fromThisTree.getProperty("title").toString();
+        if (!(bool)fromThisTree.getProperty("isPage"))
+        {
+            const String text = fromThisTree.getProperty("title").toString();
 
-        String path = DocTreeViewItem::getHtmlFileOrDir(fromThisTree).getFullPathName();
-        path = path.replace(FileTreeContainer::projectFile.getSiblingFile("site").getFullPathName(), String());
-        path = getRelativePathToRoot(DocTreeViewItem::getHtmlFileOrDir(baseOnThisTree)) + path.substring(1);
-        path = path.replace("\\", "/");
+            String path = DocTreeViewItem::getHtmlFileOrDir(fromThisTree).getFullPathName();
+            path = path.replace(FileTreeContainer::projectFile.getSiblingFile("site").getFullPathName(), String());
+            path = getRelativePathToRoot(DocTreeViewItem::getHtmlFileOrDir(baseOnThisTree)) + path.substring(1);
+            path = path.replace("\\", "/");
 
-        linkStr.add("<a href=\"" + path + "\">" + text + "</a>");
+            linkStr.add("<a href=\"" + path + "\">" + text + "</a>");
+        }
     } 
     else
     {

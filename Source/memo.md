@@ -143,6 +143,8 @@
 	- isPage: 本文挡是否生成独立页面（不加入列表页，使用page模板。否则使用article模板）
 	- tplFile: 渲染本文档所使用的模板文件，位于项目属性render所设置的目录下
 	- js: 网页所需的js代码
+	- thumb: bool值，目录index页面中是否提取并显示本文档中的第一幅图片（标题图）
+	- thumbName: 标题图的文件名, 带有“media/”前缀（防止不带时无法定位其他目录media下的图像）
 	- needCreateHtml: 本文档是否需要生成网页
 
 - MD文档生成html时，替换模板html中的“标签项”（格式为：{{xxxx}}），要替换的项目如下：

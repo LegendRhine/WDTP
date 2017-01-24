@@ -25,7 +25,6 @@ public:
     ~SetupPanel();
 
     void resized () override;
-
     void projectClosed();
     void showNothing ()    { panel->clear (); }
 
@@ -57,7 +56,7 @@ private:
 
         // doc properties' values
         docName, docTitle, docKeywords, docDesc, isPage, docTpl,
-        docCreateDate, docModifyDate, docJs, wordCount, 
+        docCreateDate, docModifyDate, docJs, wordCount, thumb, thumbName,
 
         totalValues
     };

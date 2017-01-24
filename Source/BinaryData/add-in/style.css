@@ -194,7 +194,7 @@ th
   background-color: #cdcdcd;
   text-indent: 0;
 }
-.page_navi {width:100%; font-size: 85%; height:50px;line-height:30px;text-align:center;overflow:hidden;padding-right:360px;}
+.page_navi {width:100%; font-size: 85%; height:40px;line-height:30px;text-align:center;overflow:hidden;padding-right:0;}
 .page_navi a {padding:3px 8px;margin:2px;text-decoration:none;color:#999;border:1px solid #999;}
 .page_navi a:hover,.page_navi a.current{border:1px solid #434343;color:#434343;}
 

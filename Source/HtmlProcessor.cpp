@@ -685,18 +685,45 @@ void HtmlProcessor::getListHtmlStr(const ValueTree& tree,
             const String& imgName(tree.getProperty("thumbName").toString());            
 
             // "@_^_#_%_@" for sort...
+            // create date
             String str(tree.getType().toString() == "doc" ? "doc" : "dir");
-            str = str + "@_^_#_%_@" + tree.getProperty("createDate").toString();
+            str += "@_^_#_%_@" + tree.getProperty("createDate").toString();
+
+            // 2 level dir and their link
+            ValueTree& parentTree(tree.getParent().getParent());
+
+            if (parentTree.isValid() && parentTree.getType().toString() != "wdtpProject")
+            {
+                const String parentPath(path.upToLastOccurrenceOf("/", false, false)
+                                        .upToLastOccurrenceOf("/", true, false) + "index.html");
+
+                str += " <a href=\"" + parentPath + "\">" +
+                    parentTree.getProperty("title").toString() + "</a>/";
+            }
+            else
+            {
+                str += " ";
+            }
+
+            if (tree.getParent().isValid() && tree.getParent().getType().toString() != "wdtpProject")
+            {
+                const String parentPath(path.upToLastOccurrenceOf("/", true, false) + "index.html");
+                str += "<a href=\"" + parentPath + "\">" +
+                    tree.getParent().getProperty("title").toString() + "</a>";
+            }
+            
+            // title and its link
             str = str + "@_^_#_%_@" + "<a href=\"" + path + "\">" + text + "</a>@_^_#_%_@";
 
             if (imgName.isNotEmpty() && (bool)tree.getProperty("thumb"))
             {
                 const String& imgPath(imgName.substring(0, 4) == "http" ? imgName
                                       : path.upToLastOccurrenceOf("/", true, false) + imgName); // remove 'xxxx.html'
-                str = str + "<div><img src=\"" + imgPath + "\"></div><p>";
+                str += "<div><img src=\"" + imgPath + "\"></div><p>";
             }
 
-            str = str + tree.getProperty("description").toString();
+            // description
+            str += tree.getProperty("description").toString();
 
             linkStr.add(str);
         }

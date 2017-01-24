@@ -99,7 +99,7 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
     }    
 
     // prevent auto-enter preview mode when created a new document
-    if (currentContent.length() < 2)
+    if (currentContent.length() < 3)
     {
         switchMode(false);
         editor->moveCaretToEnd(false);

@@ -565,6 +565,9 @@ const String HtmlProcessor::getAdStr(const String& text, const File& htmlFile)
         links.add("<a href=\"" + link +"\" target=\"_blank\"><img src=\"" + imgName + "\"></a><br>");
     }
 
+    if (links.size() > 0)  // remove the last '<br>'
+        links.getReference(links.size() - 1) = links[links.size() - 1].dropLastCharacters(4);
+
     links.insert(0, "<div class=ad>");
     links.add("</div>");    
 
@@ -639,9 +642,7 @@ void HtmlProcessor::getListHtmlStr(const ValueTree& tree,
                                    const File& baseOnthisFile,
                                    StringArray& linkStr)
 {
-    const String text = tree.getProperty("title").toString();
     String path = DocTreeViewItem::getHtmlFileOrDir(tree).getFullPathName();
-
     path = path.replace(FileTreeContainer::projectFile.getSiblingFile("site").getFullPathName(), String());
     path = getRelativePathToRoot(baseOnthisFile) + path.substring(1);
     path = path.replace("\\", "/");
@@ -650,12 +651,22 @@ void HtmlProcessor::getListHtmlStr(const ValueTree& tree,
     {      
         if (!(bool)tree.getProperty("isPage"))
         {
+            const String& text(tree.getProperty("title").toString());
+            const String& imgName(tree.getProperty("thumbName").toString());            
+
             // "@_^_#_%_@" for sort...
             String str(tree.getType().toString() == "doc" ? "doc" : "dir");
-            str = str + "@_^_#_%_@";
-            str = str + (tree.getProperty("createDate").toString()
-                         + "@_^_#_%_@" + "<a href=\"" + path + "\">" + text + "</a>"
-                         + "@_^_#_%_@" + tree.getProperty("description").toString());
+            str = str + "@_^_#_%_@" + tree.getProperty("createDate").toString();
+            str = str + "@_^_#_%_@" + "<a href=\"" + path + "\">" + text + "</a>@_^_#_%_@";
+
+            if (imgName.isNotEmpty() && (bool)tree.getProperty("thumb"))
+            {
+                const String& imgPath(imgName.substring(0, 4) == "http" ? imgName
+                                      : path.upToLastOccurrenceOf("/", true, false) + imgName); // remove 'xxxx.html'
+                str = str + "<div><img src=\"" + imgPath + "\"></div><p>";
+            }
+
+            str = str + tree.getProperty("description").toString();
 
             linkStr.add(str);
         }
@@ -677,15 +688,13 @@ const String HtmlProcessor::getFileList(const ValueTree& dirTree,
     const File& indexFile(DocTreeViewItem::getHtmlFileOrDir(dirTree));
 
     getListHtmlStr(dirTree, indexFile, filesLinkStr);
-
-    // here should sort the filesLinkStr...
     filesLinkStr.sort(true);
 
     if (!includeDir)  // remove dir link-str
     {
         for (int i = filesLinkStr.size(); --i >= 0; )
         {
-            if (filesLinkStr[i].contains("index.html"))
+            if (filesLinkStr[i].substring(0, 3) == "dir")
                 filesLinkStr.remove(i);        	
         }
     }
@@ -749,7 +758,6 @@ const String HtmlProcessor::getFileList(const ValueTree& dirTree,
     }
 
     //DBGX(linkStr.joinIntoString(newLine));
-
     return linkStr.joinIntoString(newLine);
 }
 

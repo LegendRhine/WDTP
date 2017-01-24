@@ -688,7 +688,7 @@ void HtmlProcessor::getListHtmlStr(const ValueTree& tree,
             // "@_^_#_%_@" for sort...
             // create date
             String str(tree.getType().toString() == "doc" ? "doc" : "dir");
-            str += "@_^_#_%_@" + tree.getProperty("createDate").toString();
+            str += "@_^_#_%_@" + tree.getProperty("createDate").toString().dropLastCharacters(3); // drop seconds
 
             // 2 level dir and their link
             const ValueTree parentTree(tree.getParent().getParent());

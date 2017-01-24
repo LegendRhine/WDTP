@@ -83,52 +83,6 @@ const bool HtmlProcessor::hasDirAndAtLeadOneIsMenu(const ValueTree& tree)
 }
 
 //=================================================================================================
-const String HtmlProcessor::getFileList (const ValueTree& dirTree,
-                                         const bool reverse,
-                                         const bool includeDir,
-                                         const bool extrctIntro,
-                                         int& totalPages,
-                                         const int howmanyPerPage)
-{   
-    jassert (dirTree.getType ().toString () != "doc");
-    StringArray filesLinkStr;
-    const File& indexFile (DocTreeViewItem::getHtmlFileOrDir (dirTree));
-    
-    getListHtmlStr(dirTree, indexFile, filesLinkStr);
-
-    // here should sort the filesLinkStr...
-
-    for (int i = 0; i < filesLinkStr.size(); ++i)
-    {
-        if (extrctIntro)
-        {               
-            if (0 == i % 3)
-                filesLinkStr.getReference(i) = "<div class=listTitle>" + filesLinkStr.getReference(i) + "</div>";
-            else if (1 == i % 3)
-                filesLinkStr.getReference(i) = "<div class=listDate>" + filesLinkStr.getReference(i) + "</div>";
-            else
-                filesLinkStr.getReference(i) = "<div class=listDesc>" + filesLinkStr.getReference(i) + "</div><hr>";
-        }
-        else
-        {
-            filesLinkStr.getReference(i) = "<div class=listTitle>" + filesLinkStr.getReference(i) + "</div>";
-        }
-    }    
-
-    if (howmanyPerPage > 0)
-    {
-        totalPages = filesLinkStr.size() / (extrctIntro ? 3 : 1) / howmanyPerPage
-            + (0 == filesLinkStr.size() / (extrctIntro ? 3 : 1) % howmanyPerPage) ? 0 : 1;
-    }
-    else
-    {
-        totalPages = 1;
-    }
-    
-    return filesLinkStr.joinIntoString(newLine);
-}
-
-//=================================================================================================
 const File HtmlProcessor::createArticleHtml (ValueTree& docTree, bool saveProject)
 {
     jassert (FileTreeContainer::projectTree.isValid ());   
@@ -690,14 +644,110 @@ void HtmlProcessor::getListHtmlStr(const ValueTree& tree,
     path = path.replace("\\", "/");
 
     if (DocTreeViewItem::getHtmlFileOrDir(tree) != baseOnthisFile)
-    {        
-        linkStr.add("<a href=\"" + path + "\">" + text + "</a>");
-        linkStr.add(tree.getProperty("createDate").toString());
-        linkStr.add(tree.getProperty("description").toString());
+    {      
+        if (!(bool)tree.getProperty("isPage"))
+        {
+            // "@_^_#_%_@" for sort...
+            String str(tree.getType().toString() == "doc" ? "doc" : "dir");
+            str = str + "@_^_#_%_@";
+            str = str + (tree.getProperty("createDate").toString()
+                         + "@_^_#_%_@" + "<a href=\"" + path + "\">" + text + "</a>"
+                         + "@_^_#_%_@" + tree.getProperty("description").toString());
+
+            linkStr.add(str);
+        }
     }
     
     for (int i = tree.getNumChildren(); --i >= 0; )
         getListHtmlStr(tree.getChild(i), baseOnthisFile, linkStr);
+}
+//=================================================================================================
+const String HtmlProcessor::getFileList(const ValueTree& dirTree,
+                                        const bool reverse,
+                                        const bool includeDir,
+                                        const bool extrctIntro,
+                                        int& totalPages,
+                                        const int howmanyPerPage)
+{
+    jassert(dirTree.getType().toString() != "doc");
+    StringArray filesLinkStr;
+    const File& indexFile(DocTreeViewItem::getHtmlFileOrDir(dirTree));
+
+    getListHtmlStr(dirTree, indexFile, filesLinkStr);
+
+    // here should sort the filesLinkStr...
+    filesLinkStr.sort(true);
+
+    if (!includeDir)  // remove dir link-str
+    {
+        for (int i = filesLinkStr.size(); --i >= 0; )
+        {
+            if (filesLinkStr[i].contains("index.html"))
+                filesLinkStr.remove(i);        	
+        }
+    }
+
+    StringArray linkStr;
+
+    for (int i = filesLinkStr.size(); --i >= 0; )
+    {
+        filesLinkStr.getReference(i) = filesLinkStr[i].substring(12); // remove "dir/doc @_^_#_%_@"
+        const String dateStr(filesLinkStr[i].upToFirstOccurrenceOf("@_^_#_%_@", false, true));
+        const String descStr(filesLinkStr[i].fromLastOccurrenceOf("@_^_#_%_@", false, true));
+        const String titleStr(filesLinkStr[i].substring(dateStr.length() + 9).dropLastCharacters(descStr.length() + 9));
+
+        if (reverse)
+        {
+            linkStr.add(titleStr);
+
+            if (extrctIntro)
+            {
+                linkStr.add(dateStr);
+                linkStr.add(descStr);
+            }            
+        }
+        else
+        {
+            if (extrctIntro)
+            {
+                linkStr.insert(0, descStr);
+                linkStr.insert(0, dateStr);
+            }
+
+            linkStr.insert(0, titleStr);
+        }
+    }
+    
+    for (int i = 0; i < linkStr.size(); ++i)
+    {
+        if (extrctIntro)
+        {
+            if (0 == i % 3)
+                linkStr.getReference(i) = "<div class=listTitle>" + linkStr[i] + "</div>";
+            else if (1 == i % 3)
+                linkStr.getReference(i) = "<div class=listDate>" + linkStr[i] + "</div>";
+            else
+                linkStr.getReference(i) = "<div class=listDesc>" + linkStr[i] + "</div><hr>";
+        }
+        else
+        {
+            linkStr.getReference(i) = "<div class=listTitle>" + linkStr[i] + "</div>";
+        }
+    }
+
+    if (howmanyPerPage > 0)
+    {
+        totalPages = linkStr.size() / (extrctIntro ? 3 : 1) / howmanyPerPage
+            + (0 == linkStr.size() / (extrctIntro ? 3 : 1) % howmanyPerPage) ? 0 : 1;
+    }
+    else
+    {
+        totalPages = 1;
+    }
+
+    //DBGX(linkStr.joinIntoString(newLine));
+
+    return linkStr.joinIntoString(newLine);
 }
 
 //=========================================================================

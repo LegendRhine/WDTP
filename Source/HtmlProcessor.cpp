@@ -672,9 +672,10 @@ void HtmlProcessor::getListHtmlStr(const ValueTree& tree,
                                    const File& baseOnthisFile,
                                    StringArray& linkStr)
 {
+    const String& rootPath(getRelativePathToRoot(baseOnthisFile));
     String path = DocTreeViewItem::getHtmlFileOrDir(tree).getFullPathName();
     path = path.replace(FileTreeContainer::projectFile.getSiblingFile("site").getFullPathName(), String());
-    path = getRelativePathToRoot(baseOnthisFile) + path.substring(1);
+    path = rootPath + path.substring(1);
     path = path.replace("\\", "/");
 
     if (DocTreeViewItem::getHtmlFileOrDir(tree) != baseOnthisFile)
@@ -690,7 +691,7 @@ void HtmlProcessor::getListHtmlStr(const ValueTree& tree,
             str += "@_^_#_%_@" + tree.getProperty("createDate").toString();
 
             // 2 level dir and their link
-            ValueTree& parentTree(tree.getParent().getParent());
+            const ValueTree parentTree(tree.getParent().getParent());
 
             if (parentTree.isValid() && parentTree.getType().toString() != "wdtpProject")
             {

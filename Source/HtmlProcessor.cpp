@@ -688,29 +688,36 @@ void HtmlProcessor::getListHtmlStr(const ValueTree& tree,
             // "@_^_#_%_@" for sort...
             // create date
             String str(tree.getType().toString() == "doc" ? "doc" : "dir");
-            str += "@_^_#_%_@" + tree.getProperty("createDate").toString().dropLastCharacters(3); // drop seconds
+            str += "@_^_#_%_@<img src=" + rootPath 
+                + "add-in/date.png style=\"vertical-align:middle; display:inline-block\"> " +
+                tree.getProperty("createDate").toString().dropLastCharacters(3); // drop seconds
 
             // 2 level dir and their link
-            const ValueTree parentTree(tree.getParent().getParent());
+            const ValueTree parentTree(tree.getParent());
+            const ValueTree grandTree(parentTree.getParent());
 
-            if (parentTree.isValid() && parentTree.getType().toString() != "wdtpProject")
+            // dir icon
+            if ((grandTree.isValid() && grandTree.getType().toString() != "wdtpProject")
+                || (parentTree.isValid() && parentTree.getType().toString() != "wdtpProject"))
+            {
+                str += " &nbsp;&nbsp;<img src=" + rootPath
+                    + "add-in/dir.png style=\"vertical-align:middle; display:inline-block\"> ";
+            }            
+
+            if (grandTree.isValid() && grandTree.getType().toString() != "wdtpProject")
             {
                 const String parentPath(path.upToLastOccurrenceOf("/", false, false)
                                         .upToLastOccurrenceOf("/", true, false) + "index.html");
 
-                str += " <a href=\"" + parentPath + "\">" +
-                    parentTree.getProperty("title").toString() + "</a>/";
+                str += "<a href=\"" + parentPath + "\">" +
+                    grandTree.getProperty("title").toString() + "</a>/";
             }
-            else
-            {
-                str += " ";
-            }
-
-            if (tree.getParent().isValid() && tree.getParent().getType().toString() != "wdtpProject")
+            
+            if (parentTree.isValid() && parentTree.getType().toString() != "wdtpProject")
             {
                 const String parentPath(path.upToLastOccurrenceOf("/", true, false) + "index.html");
                 str += "<a href=\"" + parentPath + "\">" +
-                    tree.getParent().getProperty("title").toString() + "</a>";
+                    parentTree.getProperty("title").toString() + "</a>";
             }
             
             // title and its link

@@ -39,15 +39,11 @@ private:
     @pagram reverse         true for reverse-date display the items.
     @pagram includeDir      true will display its sub-dir's title
     @pagram extrctIntro     true will display the item's description under its title (like blog)
-    @pagram totalPages      need how many pages
-    @pagram howmanyPerPage  
     */
-    static const String getFileList(const ValueTree& dirTree,
-                                    const bool reverse,
-                                    const bool includeDir,
-                                    const bool extrctIntro,
-                                    int& totalPages,
-                                    const int howmanyPerPage = 10);
+    static const StringArray getFileList(const ValueTree& dirTree,
+                                         const bool reverse,
+                                         const bool includeDir,
+                                         const bool extrctIntro);
 
 	/** generate site menu. 2 level. */
 	static const String getSiteMenu (const ValueTree& tree);
@@ -88,6 +84,9 @@ private:
     static void getListHtmlStr(const ValueTree& tree,
                                const File& baseOnthisFile,
                                StringArray& linkStr);
+
+    /** arg 2: the caller's page number. 1: No.1 (index.html), 2: No.2 (index-2.html)...*/
+    static const String getPageNavi(const int howManyPages, const int thisIsNoX);
 
     //=================================================================================================
     bool sortByReverse = true;

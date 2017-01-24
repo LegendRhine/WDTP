@@ -102,21 +102,26 @@ p
   	font-size: 92%;
 	text-indent: 2em;
 }
-.ad
-{
-    text-indent: 0.5em;
-	width:100%;
-}
 .timeStr
 {
   text-align: right;
 }
 
-img
+img,
+.ad
 {
-  max-width: 700px;
+  max-width: 100%;  
+  text-indent: 0;
+  display: block;
+  margin: 0 auto;
 }
-
+.siteLogo
+{
+  max-width: 30%;  
+  text-indent: 0;
+  display: block;
+  margin: 10px 5px 5px -30px;
+}
 h1, h2, h3, h4, h5, h6
 {
   text-indent: 24pt;
@@ -189,6 +194,9 @@ th
   background-color: #cdcdcd;
   text-indent: 0;
 }
+.page_navi {width:100%; font-size: 85%; height:50px;line-height:30px;text-align:center;overflow:hidden;padding-right:360px;}
+.page_navi a {padding:3px 8px;margin:2px;text-decoration:none;color:#999;border:1px solid #999;}
+.page_navi a:hover,.page_navi a.current{border:1px solid #434343;color:#434343;}
 
 /* Code highlight
 

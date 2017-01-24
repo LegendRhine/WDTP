@@ -172,17 +172,10 @@ void HtmlProcessor::copyDocMediasToSite (const File& mdFile,
 //=================================================================================================
 const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
 {
-    jassert (FileTreeContainer::projectTree.isValid ());
+    const File& indexHtml (DocTreeViewItem::getHtmlFileOrDir (dirTree));
+    jassert(indexHtml.getFileName() == "index.html");
 
-    const File dirFile (DocTreeViewItem::getMdFileOrDir (dirTree));
-    jassert (dirFile.isDirectory ());  // selected a article currently?? 
-
-    const String dirPath (dirFile.getFullPathName ());
-    const File siteDir (dirPath.replace ("docs", "site"));
-    File indexHtml (siteDir.getChildFile ("index.html"));
-
-    if ((bool) dirTree.getProperty ("needCreateHtml")
-        || !indexHtml.existsAsFile ())
+    if ((bool) dirTree.getProperty ("needCreateHtml") || !indexHtml.existsAsFile ())
     {
         if (indexHtml.deleteFile ())
         {
@@ -218,26 +211,42 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
                 .replace("{{description}}", indexDescStr);
 
             processTags(dirTree, indexHtml, tplStr);  
-            int needHowManyPages = 1;
 
-            // list
+            // list. 3 bool: reverse or not, include dir, include date and desc
             if (tplStr.contains("{{fileAndDirList_N_Y_N_0}}"))
             {
                 tplStr = tplStr.replace("{{fileAndDirList_N_Y_N_0}}", "<div>"
-                                        + getFileList(dirTree, false, true, false, needHowManyPages, 0)
+                                        + getFileList(dirTree, false, true, false).joinIntoString(newLine)
                                         + "</div>");
+
+                indexHtml.create();
+                indexHtml.appendText(tplStr);
             }
-            if (tplStr.contains("{{fileAndDirList_Y_N_Y_10}}"))
+
+            if (tplStr.contains("{{fileAndDirList_Y_N_Y_10}}"))  // devide to many pages
             {
-                const String& lists(getFileList(dirTree, true, false, true, needHowManyPages, 10));
+                const StringArray fileLinks(getFileList(dirTree, true, false, true));
+                const int howManyFiles = fileLinks.size() / 3;
+                const int howManyPages = howManyFiles / 10 + (howManyFiles % 10 == 0 ? 0 : 1);
 
-                tplStr = tplStr.replace("{{fileAndDirList_Y_N_Y_10}}", "<div>"
-                                        + lists
-                                        + "</div>");
+                for (int i = 0; i < howManyPages; ++i)
+                {                    
+                    StringArray pageLinks;
+                    pageLinks.addArray(fileLinks, i * 30, 30);
+                    pageLinks.add(getPageNavi(howManyPages, i + 1));
+
+                    const String listHtmlStr = tplStr.replace("{{fileAndDirList_Y_N_Y_10}}", 
+                                            "<div>" + pageLinks.joinIntoString(newLine) + "</div>");
+
+                    const File& indexFile(indexHtml.getSiblingFile("index-" + String(i + 1) + ".html"));
+                    indexFile.deleteFile();
+                    indexFile.create();
+                    indexFile.appendText(listHtmlStr);
+                }
+
+                indexHtml.getSiblingFile("index-1.html").moveFileTo(indexHtml);                
             }
-
-            indexHtml.create ();
-            indexHtml.appendText (tplStr);
+            
             dirTree.setProperty ("needCreateHtml", false, nullptr);
 
             if (saveProject)
@@ -250,6 +259,27 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
     }
 
     return indexHtml;
+}
+
+//=================================================================================================
+const String HtmlProcessor::getPageNavi(const int howManyPages, const int thisIsNoX)
+{
+    if (howManyPages < 2)
+        return String();
+
+    StringArray naviStr;
+
+    for (int i = 0; i < howManyPages; ++i)
+    {
+        const String currentDivClass((thisIsNoX - 1 == i) ? " class=current" : String());
+
+        if (i == 0)
+            naviStr.add("<a href=index.html" + currentDivClass + ">1</a>");
+        else
+            naviStr.add("<a href=index-" + String(i + 1) + ".html" + currentDivClass +">" + String(i + 1) + "</a>");
+    }
+
+    return "<div class=page_navi>" + naviStr.joinIntoString(newLine) + "</div>";
 }
 
 //=================================================================================================
@@ -675,17 +705,16 @@ void HtmlProcessor::getListHtmlStr(const ValueTree& tree,
     for (int i = tree.getNumChildren(); --i >= 0; )
         getListHtmlStr(tree.getChild(i), baseOnthisFile, linkStr);
 }
+
 //=================================================================================================
-const String HtmlProcessor::getFileList(const ValueTree& dirTree,
-                                        const bool reverse,
-                                        const bool includeDir,
-                                        const bool extrctIntro,
-                                        int& totalPages,
-                                        const int howmanyPerPage)
+const StringArray HtmlProcessor::getFileList(const ValueTree& dirTree,
+                                             const bool reverse,
+                                             const bool includeDir,
+                                             const bool extrctIntro)
 {
     jassert(dirTree.getType().toString() != "doc");
-    StringArray filesLinkStr;
     const File& indexFile(DocTreeViewItem::getHtmlFileOrDir(dirTree));
+    StringArray filesLinkStr;
 
     getListHtmlStr(dirTree, indexFile, filesLinkStr);
     filesLinkStr.sort(true);
@@ -746,19 +775,9 @@ const String HtmlProcessor::getFileList(const ValueTree& dirTree,
             linkStr.getReference(i) = "<div class=listTitle>" + linkStr[i] + "</div>";
         }
     }
-
-    if (howmanyPerPage > 0)
-    {
-        totalPages = linkStr.size() / (extrctIntro ? 3 : 1) / howmanyPerPage
-            + (0 == linkStr.size() / (extrctIntro ? 3 : 1) % howmanyPerPage) ? 0 : 1;
-    }
-    else
-    {
-        totalPages = 1;
-    }
-
+    
     //DBGX(linkStr.joinIntoString(newLine));
-    return linkStr.joinIntoString(newLine);
+    return linkStr;
 }
 
 //=========================================================================

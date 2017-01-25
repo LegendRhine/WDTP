@@ -452,11 +452,14 @@ const String Md2Html::cleanUp (const String& mdString)
             break;
 
         const String mdCode (resultStr.substring (indexCodeStart, indexCodeEnd));        
-        const String codeHtml (mdCode.replace ("<p>", "\n").replace ("<br>", ""));
+        const String codeHtml (mdCode.replace ("<p>", newLine).replace ("<br>", String()));
 
         resultStr = resultStr.replaceSection (indexCodeStart, mdCode.length (), codeHtml);
         indexCodeStart = resultStr.indexOfIgnoreCase (indexCodeStart + 16, "<pre><code>");
     }
+
+    // somehow, there's this ugly thing. dont know why.
+    resultStr = resultStr.replace("<pre><code>				", "<pre><code>");
 
     // clean extra <br> and <p> which before <pre><code>
     resultStr = resultStr.replace ("<br>\n<pre>", newLine + "<pre>")

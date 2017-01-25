@@ -16,7 +16,7 @@ p { margin: 10px 0; }
 .listDate { font-size: 85%; line-height: 1.5; text-align: center; color: #666; }
 .listDesc { font-size: 92%; text-indent: 2em; }
 .timeStr { text-align: right; }
-.contact { text-align: center; font-size: 83%; color: #cc0000 }
+.contact { text-align: center; font-size: 83%; color: #336600 }
 img, .ad { max-width: 100%;  text-indent: 0; display: block; margin: 0 auto; }
 .siteLogo { max-width: 30%;  text-indent: 0; display: block; margin: 10px 5px 5px -30px; }
 h1, h2, h3, h4, h5, h6 { text-indent: 24pt; line-height: 0.5; }
@@ -28,6 +28,8 @@ a:visited { color: #333; }
 a:focus { outline: thin dotted; }
 a:active, a:hover { color: #cc0000; outline: 0; }
 a:hover { text-decoration: none; }
+.randomArticels a, .prevAndNext a { color: #000099; } 
+.randomArticels a:hover, .prevAndNext a:hover { color: #cc0000; } 
 blockquote { background-color: #cdcdcd; padding: 10px 15px 10px 15px; margin: 0 0 20px 0; font-family: 'KaiTi', 'Consolas'; }
 pre { text-indent: 0; font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace; font-size: 85%; line-height: 1.5; }
 code { background-color: #cdcdcd; font-family: 'Consolas', 'Lucida Console'; }
@@ -36,13 +38,14 @@ table { position: relative; top: 1px; bottom: 1px; margin: 0 auto 15px; text-ind
 table, td, th { border: 1px solid black; }
 th { background-color: #cdcdcd; text-indent: 0; }
 #copyright { position: relative; top: 0; border: 0px solid black; font-size: 90%; font-weight: bold; }
-.readMore { font-size:90%; }
+.readMore  { font-size:90%; }
+.readMore a:hover { color:#cc000000; }
 .page_navi {width:100%; font-size: 85%; height:40px;line-height:30px;text-align:center;overflow:hidden;padding-right:0;}
 .page_navi a, .readMore a {padding:3px 8px;margin:2px;text-decoration:none;color:#888;border:1px solid #888;}
-.page_navi a:hover,.page_navi a.current, .readMore a:hover {border:1px solid #222;color:#222;}
+.page_navi a:hover,.page_navi a.current, .readMore a:hover {border:1px solid #222; color:#cc0000;}
 
 /* Code highlight  Merge from: https://highlightjs.org (Highlight.js)  Under the BSD License */
-.hljs { display: block; overflow-x: auto; padding: 0.5em; background: #232323; color: #e6e1dc; }
+.hljs { display: block; overflow-x: auto; padding: 0; background: #232323; color: #e6e1dc; }
 .hljs-comment, .hljs-quote { color: #bc9458; font-style: italic; }
 .hljs-keyword, .hljs-selector-tag { color: #c26230; }
 .hljs-string, .hljs-number, .hljs-regexp, .hljs-variable, .hljs-template-variable { color: #a5c261; }

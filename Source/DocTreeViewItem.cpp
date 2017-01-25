@@ -71,10 +71,10 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
     jassert (sorter != nullptr);
     String itemName;
 
-    if (sorter->getShowWhat () == 0)  // file name
+    if (sorter->getShowWhat () == 0 && tree.getType().toString() != "wdtpProject")  // file name
         itemName = tree.getProperty ("name").toString ();
 
-    else if (sorter->getShowWhat () == 1) // title or intro
+    else if (sorter->getShowWhat () == 1 || tree.getType().toString() == "wdtpProject") // title or intro
         itemName = tree.getProperty ("title").toString ();
 
     // mark of doc and dir item
@@ -298,7 +298,9 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
         PopupMenu tooltipAsMenu;
         tooltipAsMenu.addItem (300, TRANS ("File Path"), true, sorter->getTooltipToShow () == 0);
-        tooltipAsMenu.addItem (301, TRANS ("Title"), true, sorter->getTooltipToShow () == 1);
+        tooltipAsMenu.addItem(301, TRANS("Title"), true, sorter->getTooltipToShow() == 1);
+        tooltipAsMenu.addItem(302, TRANS("Keywords"), true, sorter->getTooltipToShow() == 2);
+        tooltipAsMenu.addItem(303, TRANS("Description"), true, sorter->getTooltipToShow() == 3);
 
         m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu);
         m.addSeparator ();
@@ -355,7 +357,7 @@ void DocTreeViewItem::menuPerform (const int index)
         sorter->setWhichFirst ((sorter->getWhichFirst() == 0) ? 1 : 0);
     else if (index >= 200 && index <= 202)
         sorter->setShowWhat (index - 200);
-    else if (index >= 300 && index <= 302)
+    else if (index >= 300 && index <= 303)
         sorter->setTooltipToShow (index - 300);
 
 }
@@ -364,7 +366,6 @@ void DocTreeViewItem::menuPerform (const int index)
 void DocTreeViewItem::renameSelectedItem ()
 {
     const File& docFileOrDir (getMdFileOrDir (tree));
-    jassert (tree.getType ().toString () != "wdtpProject");
 
     AlertWindow dialog (TRANS ("Rename the selected item"), TRANS ("Please input the new name."),
                         AlertWindow::InfoIcon);
@@ -965,30 +966,21 @@ void DocTreeViewItem::paintOpenCloseButton(Graphics& g, const Rectangle<float>& 
 //=================================================================================================
 String DocTreeViewItem::getTooltip ()
 {
-    // full path of file name
+    // full path of file
     if (sorter->getTooltipToShow() == 0)
         return getMdFileOrDir (tree).getFullPathName();
 
-    // title or intro
+    // title
     else if (sorter->getTooltipToShow() == 1) 
         return tree.getProperty ("title").toString();
 
-    // 2 for webpage name
+    // keywords
     else if (sorter->getTooltipToShow() == 2)
-    {
-        if (tree.getType ().toString () == "wdtpProject")
-        {
-            return tree.getProperty ("domain").toString();
-        }
-        else
-        {
-            const String docPath (getMdFileOrDir(tree).getFullPathName());
-            const String& htmlPath (docPath.replace ("docs","site"));
-            //DBGX (htmlPath.replace (".md", ".html"));
+        return tree.getProperty("keywords").toString();
 
-            return htmlPath.replace (".md", ".html");
-        }
-    }
+    // description
+    else if (sorter->getTooltipToShow() == 3)
+        return tree.getProperty("description").toString();
 
     return String ();
 }

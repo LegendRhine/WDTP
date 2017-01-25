@@ -243,8 +243,8 @@ const int ItemSorter::compareElements (TreeViewItem* first, TreeViewItem* second
             if (!(ff.exists () && sf.exists ()))
                 return 0;
 
-            const bool b = (ff.getLastModificationTime () > sf.getLastModificationTime ());
-            const int r = b ? -1 : 1;
+            const int r = ft.getProperty("modifyDate").toString().compareIgnoreCase
+            (st.getProperty("modifyDate").toString());
             return isAscending ? -r : r;
         }
     }

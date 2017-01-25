@@ -317,8 +317,8 @@ void TopToolBar::buttonClicked (Button* bt)
 void TopToolBar::popupSystemMenu ()
 {
     PopupMenu m;
-    m.addItem (1, TRANS ("New Project..."), true);
-    m.addItem (2, TRANS ("Open Project..."), true);
+    m.addItem(1, TRANS("New Project..."), true);
+    m.addItem(2, TRANS("Open Project..."), true);
 
     // recent files
     RecentlyOpenedFilesList recentFiles;
@@ -327,6 +327,8 @@ void TopToolBar::popupSystemMenu ()
     recentFiles.createPopupMenuItems (recentFilesMenu, 100, true, true);
 
     m.addSubMenu (TRANS ("Open Rcent"), recentFilesMenu);
+    m.addSeparator();
+
     m.addItem (3, TRANS ("Close Project"), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
@@ -334,8 +336,8 @@ void TopToolBar::popupSystemMenu ()
     m.addItem(4, TRANS("Regenerate All Changed..."), fileTreeContainer->hasLoadedProject());
     m.addSeparator();
 
-    m.addItem(5, TRANS("Cleanup & Regenerate the Whole Site..."), fileTreeContainer->hasLoadedProject());
-	m.addItem (6, TRANS ("Cleanup Redundant Local Medias..."), fileTreeContainer->hasLoadedProject ());
+    m.addItem(5, TRANS("Regenerate Whole Site..."), fileTreeContainer->hasLoadedProject());
+	m.addItem (6, TRANS ("Cleanup Local Medias..."), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
     PopupMenu lanMenu;

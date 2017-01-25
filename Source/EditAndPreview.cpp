@@ -180,18 +180,20 @@ const bool EditAndPreview::getCureentState() const
 void EditAndPreview::projectClosed ()
 {
     saveCurrentDocIfChanged();
+    webView->setVisible(false);
+    setupPanel->projectClosed();
 
     editor->removeListener (this);
     editor->setText (String (), false);
-    editor->setEnabled (false);    
-
-    setupPanel->projectClosed ();
-    webView->setVisible (false);
+    editor->setVisible(true);
+    editor->setEnabled (false);  
 
     docOrDirFile = File::nonexistent;
     docOrDirTree = ValueTree::invalid;
     docHasChanged = false;    
     currentContent.clear();
+
+    resized();
 }
 
 //=================================================================================================

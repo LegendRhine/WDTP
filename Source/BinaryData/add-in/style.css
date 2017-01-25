@@ -4,7 +4,7 @@ html { background-color: #cdcdcd;	 }
 body, p { max-width: 708px; margin: 0 auto; background-color: #dedede; font-family: 'Microsoft YaHei', 'Consolas', 'Monaco', 'Lucida Console', monospace; text-indent: 2em;  line-height: 1.8; }
 body { border-style: solid; border-width: 1px; border-color: #bcbcbc; padding: 0 45px 0px 45px; }
 p { margin: 10px 0; }
-.siteMenu ul { display: block; width: 65%; font-size:95%;	 position: absolute; top:30px; margin: -10px 0 0 130px; }
+.siteMenu ul { display: block; width: 500px; font-size:95%;	 position: absolute; top:30px; margin: -10px 0 0 130px; }
 .siteMenu ul li { float:left;	list-style-type: none; height: 40px; width: 100px; line-height: 40px; text-align: center; }
 .siteMenu ul li ul { list-style-type: none; display: list-item; margin: 0; position: relative; top: 0px; right: 40px; display: none;  }
 .siteMenu ul li a { text-decoration: none; color: #222; }
@@ -26,7 +26,7 @@ div { padding: 5px 15px 0px 15px; }
 a { color: #222; text-decoration: none; }
 a:visited { color: #333; }
 a:focus { outline: thin dotted; }
-a:active, a:hover { color: #008800; outline: 0; }
+a:active, a:hover { color: #cc0000; outline: 0; }
 a:hover { text-decoration: none; }
 blockquote { background-color: #cdcdcd; padding: 10px 15px 10px 15px; margin: 0 0 20px 0; font-family: 'KaiTi', 'Consolas'; }
 pre { text-indent: 0; font-family: 'Consolas', 'Monaco', 'Lucida Console', monospace; font-size: 85%; line-height: 1.5; }

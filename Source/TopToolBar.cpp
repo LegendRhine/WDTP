@@ -259,6 +259,7 @@ void TopToolBar::findInDoc (const bool next)
     if (keyword.isEmpty ())
         return;
 
+    editAndPreview->switchMode(false);
     TextEditor* editor = editAndPreview->getEditor();
     const String& content = editor->getText();
 

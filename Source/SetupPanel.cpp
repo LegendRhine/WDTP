@@ -51,6 +51,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     values[indexTpl]->setValue (pTree.getProperty ("tplFile"));
     values[projectJs]->setValue(pTree.getProperty("js"));
     values[ad]->setValue(pTree.getProperty("ad"));
+    values[contact]->setValue(pTree.getProperty("contact"));
     
     Array<PropertyComponent*> projectProperties;
 
@@ -103,15 +104,17 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
 
     projectProperties.add(new TextPropertyComponent(*values[projectJs], TRANS("JavaScript: "), 0, true));
     projectProperties.add(new TextPropertyComponent(*values[ad], TRANS("Advertisement: "), 0, true));
+    projectProperties.add(new TextPropertyComponent(*values[contact], TRANS("Contact Info: "), 0, true));
     projectProperties.add(new TextPropertyComponent(*values[copyrightInfo], TRANS("Copyright: "), 0, true));
     projectProperties.add(new TextPropertyComponent(Value(pTree.getProperty("modifyDate")), TRANS("Last Modified: "), 0, false));
 	
     for (auto p : projectProperties)  p->setPreferredHeight (28);
     projectProperties[2]->setPreferredHeight (28 * 3);
-    projectProperties[6]->setPreferredHeight(28 * 4);
-    projectProperties[7]->setPreferredHeight(28 * 4);
-    projectProperties[8]->setPreferredHeight(28 * 4);
-    projectProperties[9]->setEnabled(false);
+    projectProperties[6]->setPreferredHeight(28 * 3);
+    projectProperties[7]->setPreferredHeight(28 * 3);
+    projectProperties[8]->setPreferredHeight(28 * 3);
+    projectProperties[9]->setPreferredHeight(28 * 3);
+    projectProperties[10]->setEnabled(false);
     
     panel->addSection (TRANS ("Project Setup"), projectProperties);
     valuesAddListener ();
@@ -328,7 +331,9 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("js", values[projectJs]->getValue (), nullptr);
     else if (value.refersToSameSourceAs(*values[ad]))
         currentTree.setProperty("ad", values[ad]->getValue(), nullptr);
-    
+    else if (value.refersToSameSourceAs(*values[contact]))
+        currentTree.setProperty("contact", values[contact]->getValue(), nullptr);
+        
     // dir properties
     else if (value.refersToSameSourceAs (*values[dirTitle]))
         currentTree.setProperty ("title", values[dirTitle]->getValue (), nullptr);

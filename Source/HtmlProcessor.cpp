@@ -390,6 +390,12 @@ void HtmlProcessor::processTags(const ValueTree& docOrDirTree,
         tplStr = tplStr.replace("{{random}}", links);
     }
 
+    // contact
+    if (tplStr.contains("{{contact}}"))
+    {
+        tplStr = tplStr.replace("{{contact}}", getContactInfo());
+    }
+
     // copyright on the bottom
     if (tplStr.contains("{{bottomCopyright}}"))
     {
@@ -837,5 +843,11 @@ const String HtmlProcessor::getCopyrightInfo()
         "<a href=\"http://www.underwaySoft.com/wdtp\""
         " target=\"_blank\">WDTP</a> </td></tr></table>";
 }
-    
+
+//=================================================================================================
+const String HtmlProcessor::getContactInfo()
+{
+    const String& contactStr(FileTreeContainer::projectTree.getProperty("contact").toString());
+    return "<div class=contact>" + contactStr + "</div>";
+}
 

@@ -106,6 +106,7 @@
 	- keywords: 关键字
     - description: 简述
 	- owner: 项目所有者（作者）
+	- contact 对应模板文件中的{{contact}}
 	- copyright: 显示在网页页底的版权信息
 	- order: 文件树的排序方式。文件名（0）、标题/简介（1）、网页文件名（2）、文件大小（3）、创建时间（4）、修改时间（5）
 	- dirFirst: 目录排在前面（0），还是文档排在前面（1）
@@ -163,6 +164,7 @@
 	- {{previousAndNext}} 上一篇，下一篇
 	- {{ad}} 广告代码，在项目根目录中设置. 格式：“图像文件名 链接地址”。图像文件应位于site/add-in目录下
 	- {{random}} 随机推荐5篇本站文章
+	- {{contact}} 联系方式
 	- {{bottomCopyright}} 每页页底的版权信息
 
 	- {{titleOfDir}} <body>区中所显示的当前目录的标题

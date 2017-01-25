@@ -55,6 +55,7 @@ private:
 
     /** The return result could be showed on the very bottom of every web-page */
     static const String getCopyrightInfo();
+    static const String getContactInfo();
 
 	static void copyDocMediasToSite (const File& mdFile, const File& htmlFile, const String& htmlStr);
 	static const String getRelativePathToRoot (const File &htmlFile);

@@ -48,7 +48,7 @@ FileTreeContainer::~FileTreeContainer ()
 void FileTreeContainer::resized ()
 {
     fileTree.setVisible (getWidth () > 50);
-    fileTree.setBounds (12, 0, getWidth () - 14, getHeight ());
+    fileTree.setBounds (12, 3, getWidth () - 14, getHeight () - 6);
 }
 
 //=================================================================================================

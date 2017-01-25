@@ -199,6 +199,9 @@ const int DocTreeViewItem::getMdMediaFiles (const File& doc, Array<File>& files)
 //=================================================================================================
 void DocTreeViewItem::needCreateAndUpload (const ValueTree& tree)
 {
+    if (!tree.isValid())
+        return;
+
     ValueTree parentTree = tree;
     const String modifyDate(SwingUtilities::getTimeStringWithSeparator(SwingUtilities::getCurrentTimeString(), true));
 
@@ -897,9 +900,27 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items,
                     targetFile = targetFile.getNonexistentSibling (true);
             }
 
-            if (thisFile.moveFileTo (targetFile))
+            if (thisFile.copyFileTo (targetFile)) // here must copy!
             {
-                v.setProperty ("name", targetFile.getFileNameWithoutExtension (), nullptr);
+                // move its media files first
+                Array<File> medias;
+
+                for (int j = getMdMediaFiles(thisFile, medias); --j >= 0; )
+                {
+                    const File& targetMediaFile(targetFile.getSiblingFile("media")
+                                                .getChildFile(medias[j].getFileName())
+                                                .getNonexistentSibling(true));
+                    targetMediaFile.create();
+                    medias[j].moveFileTo(targetMediaFile);
+
+                    // prevent same file name, so here need rename the media name of the doc
+                    const String& content(thisFile.loadFileAsString()
+                                          .replaceCharacters(medias[j].getFileName(), targetMediaFile.getFileName()));
+                    thisFile.replaceWithText(content);
+                }
+
+                thisFile.deleteRecursively();
+
                 v.getParent ().removeChild (v, nullptr);
                 needCreateAndUpload (v.getParent ());
 

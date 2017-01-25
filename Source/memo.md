@@ -141,7 +141,7 @@
     - description: 简述，用于index的description
 	- createDate: 创建日期
     - modifyDate: 最后一次修改的日期
-	- isPage: 本文挡是否生成独立页面（不加入列表页，使用page模板。否则使用article模板）
+	- isMenu: 本文挡是否为网站菜单（不加入列表页。其模板则可以是articel，也可以是page）。注意：作为网站菜单的文档必须位于根目录下
 	- tplFile: 渲染本文档所使用的模板文件，位于项目属性render所设置的目录下
 	- js: 网页所需的js代码
 	- thumb: bool值，目录index页面中是否提取并显示本文档中的第一幅图片（标题图）

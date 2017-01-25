@@ -132,7 +132,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     values[dirTitle]->setValue (currentTree.getProperty ("title"));
     values[dirKeywords]->setValue (currentTree.getProperty ("keywords"));
     values[dirDesc]->setValue (currentTree.getProperty ("description"));
-    values[isMenu]->setValue (currentTree.getProperty ("isMenu"));
+    values[dirIsMenu]->setValue (currentTree.getProperty ("isMenu"));
     values[dirTpl]->setValue (currentTree.getProperty ("tplFile"));
     values[dirJs]->setValue (currentTree.getProperty ("js"));
     values[dirCreateDate]->setValue (currentTree.getProperty ("createDate"));
@@ -143,7 +143,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     dirProperties.add (new TextPropertyComponent (*values[dirTitle], TRANS ("Title: "), 0, false));
     dirProperties.add (new TextPropertyComponent (*values[dirKeywords], TRANS ("Keywords: "), 0, false));
     dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Description: "), 0, true));
-    dirProperties.add (new BooleanPropertyComponent (*values[isMenu], TRANS ("Web Menu: "), TRANS ("Yes")));
+    dirProperties.add (new BooleanPropertyComponent (*values[dirIsMenu], TRANS ("Site Menu: "), TRANS ("Yes")));
     dirProperties.add (new TextPropertyComponent (*values[dirCreateDate], TRANS ("Create Date: "), 0, false));
     dirProperties.add (new TextPropertyComponent (*values[dirJs], TRANS ("JavaScript: "), 0, true));
 
@@ -172,7 +172,12 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     for (auto p : dirProperties)
         p->setPreferredHeight (28);
 
-    dirProperties[0]->setEnabled (false);
+    dirProperties[0]->setEnabled(false);
+
+    // 2 level menu, otherwise, it cannot be a site menu
+    dirProperties[4]->setEnabled(currentTree.getParent().getType().toString() == "wdtpProject"
+                                 || currentTree.getParent().getParent().getType().toString() == "wdtpProject");
+
     dirProperties[3]->setPreferredHeight (28 * 3);
     dirProperties[6]->setPreferredHeight (28 * 5);
     
@@ -192,7 +197,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     values[docTitle]->setValue (currentTree.getProperty ("title"));
     values[docKeywords]->setValue (currentTree.getProperty ("keywords"));
     values[docDesc]->setValue (currentTree.getProperty ("description"));
-    values[isPage]->setValue (currentTree.getProperty ("isPage"));
+    values[docIsMenu]->setValue (currentTree.getProperty ("isMenu"));
     values[docTpl]->setValue (currentTree.getProperty ("tplFile"));
     values[docJs]->setValue (currentTree.getProperty ("js"));
     values[docCreateDate]->setValue (currentTree.getProperty ("createDate"));
@@ -201,12 +206,11 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     values[thumbName]->setValue(currentTree.getProperty("thumbName"));
 
     Array<PropertyComponent*> docProperties;
-
     docProperties.add (new TextPropertyComponent (*values[docName], TRANS ("Name: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[docTitle], TRANS ("Title: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[docKeywords], TRANS ("Keywords: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[docDesc], TRANS ("Description: "), 0, true));
-    docProperties.add (new BooleanPropertyComponent (*values[isPage], TRANS ("Single Page: "), TRANS ("Yes")));
+    docProperties.add (new BooleanPropertyComponent (*values[docIsMenu], TRANS ("Site Menu: "), TRANS ("Yes")));
     docProperties.add (new TextPropertyComponent (*values[docCreateDate], TRANS ("Create Date: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[docJs], TRANS ("JavaScript: "), 0, true));
 
@@ -265,6 +269,9 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
 
     docProperties[0]->setEnabled (false);
     docProperties[9]->setEnabled(false);
+
+    // 2 level menu, otherwise, it cannot be a site menu
+    docProperties[4]->setEnabled(currentTree.getParent().getType().toString() == "wdtpProject");
 
     docProperties[3]->setPreferredHeight (28 * 3);
     docProperties[6]->setPreferredHeight (28 * 5);
@@ -341,8 +348,8 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("keywords", values[dirKeywords]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[dirDesc]))
         currentTree.setProperty ("description", values[dirDesc]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[isMenu]))
-        currentTree.setProperty ("isMenu", values[isMenu]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[dirIsMenu]))
+        currentTree.setProperty ("isMenu", values[dirIsMenu]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[dirCreateDate]))
         currentTree.setProperty ("createDate", values[dirCreateDate]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[dirModifyDate]))
@@ -359,8 +366,8 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("keywords", values[docKeywords]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[docDesc]))
         currentTree.setProperty ("description", values[docDesc]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs (*values[isPage]))
-        currentTree.setProperty ("isPage", values[isPage]->getValue (), nullptr);
+    else if (value.refersToSameSourceAs (*values[docIsMenu]))
+        currentTree.setProperty ("isMenu", values[docIsMenu]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[docCreateDate]))
         currentTree.setProperty ("createDate", values[docCreateDate]->getValue (), nullptr);
     else if (value.refersToSameSourceAs (*values[docModifyDate]))

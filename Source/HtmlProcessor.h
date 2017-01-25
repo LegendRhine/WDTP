@@ -45,8 +45,10 @@ private:
                                          const bool includeDir,
                                          const bool extrctIntro);
 
-	/** generate site menu. 2 level. */
+	/** generate site menu. 2 level dir and 1 level doc.
+        that is: if a doc tend for a site menu, it must under the root dir. */
 	static const String getSiteMenu (const ValueTree& tree);
+
 	static const String getSiteNavi (const ValueTree& docTree);
     static const String getContentTitle(const ValueTree& tree);
     static const String getCreateAndModifyTime(const ValueTree& tree);
@@ -60,7 +62,7 @@ private:
 	static void copyDocMediasToSite (const File& mdFile, const File& htmlFile, const String& htmlStr);
 	static const String getRelativePathToRoot (const File &htmlFile);
 
-	static const bool hasDirAndAtLeadOneIsMenu(const ValueTree& tree);
+	static const bool atLeastHasOneIsMenu(const ValueTree& tree);
     
     //=================================================================================================
     /** get a tree that create time previous/next the arg tree */

@@ -226,7 +226,7 @@ void EditAndPreview::textEditorTextChanged (TextEditor&)
     {
         currentContent = editor->getText ();
         docHasChanged = true;
-        DocTreeViewItem::needCreateAndUpload (docOrDirTree);
+        DocTreeViewItem::needCreate (docOrDirTree);
 
         startTimer (3000);
     }    
@@ -634,7 +634,7 @@ void EditorForMd::performPopupMenuAction (int index)
         moveCaretToEndOfLine (false);
     }
 
-    DocTreeViewItem::needCreateAndUpload (docTree);
+    DocTreeViewItem::needCreate (docTree);
 
     // save the project then update the setup panel
     FileTreeContainer::saveProject ();

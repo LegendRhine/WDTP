@@ -381,7 +381,7 @@ void SetupPanel::valueChanged (Value& value)
     else if (value.refersToSameSourceAs(*values[thumbName]))
         currentTree.setProperty("thumbName", values[thumbName]->getValue(), nullptr);        
     	
-    DocTreeViewItem::needCreateAndUpload (currentTree);
+    DocTreeViewItem::needCreate (currentTree);
     projectHasChanged = true;
     startTimer (200);
 }

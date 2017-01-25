@@ -129,7 +129,7 @@ void ReplaceComponent::buttonClicked (Button* buttonThatWasClicked)
         replaceContent(tree, originalText, replaceText);
 
         if (replaced)
-            DocTreeViewItem::needCreateAndUpload(tree);
+            DocTreeViewItem::needCreate(tree);
 
         if (replaced && tree.getType().toString() == "doc")
             editor->setText(DocTreeViewItem::getMdFileOrDir(tree).loadFileAsString());

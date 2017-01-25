@@ -330,8 +330,12 @@ void TopToolBar::popupSystemMenu ()
     m.addItem (3, TRANS ("Close Project"), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
-	m.addItem (5, TRANS ("Regenerate All..."), fileTreeContainer->hasLoadedProject ());
-	m.addItem (6, TRANS ("Clean Local Medias..."), fileTreeContainer->hasLoadedProject ());
+    m.addItem(7, TRANS("Regenerate Current Page"), bts[view]->getToggleState());
+    m.addItem(4, TRANS("Regenerate All Changed..."), fileTreeContainer->hasLoadedProject());
+    m.addSeparator();
+
+    m.addItem(5, TRANS("Cleanup & Regenerate the Whole Site..."), fileTreeContainer->hasLoadedProject());
+	m.addItem (6, TRANS ("Cleanup Redundant Local Medias..."), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
     PopupMenu lanMenu;
@@ -380,8 +384,10 @@ void TopToolBar::menuPerform (const int index)
     else if (index == 3)    fileTreeContainer->closeProject ();
 
     // clean up and re-generate the whole site
-	else if (index == 5)    cleanAndGenerateAll ();
-	else if (index == 6)    cleanLocalMedias ();
+    else if (index == 4)    generateHtmlsIfNeeded();
+    else if (index == 5)    cleanAndGenerateAll();
+    else if (index == 6)    cleanLocalMedias();
+    else if (index == 7)    editAndPreview->switchMode(true);
 
     else if (index == 15)  setUiColour();
     else if (index == 16)  resetUiColour();
@@ -525,23 +531,27 @@ void TopToolBar::generateHtmlFiles (ValueTree tree)
 }
 
 //=================================================================================================
+void TopToolBar::generateHtmlsIfNeeded()
+{
+    generateHtmlFilesIfNeeded(fileTreeContainer->projectTree);
+    FileTreeContainer::saveProject();
+
+    SHOW_MESSAGE(TRANS("All chaned items regenerate successful!"));
+}
+
+//=================================================================================================
 void TopToolBar::generateHtmlFilesIfNeeded (ValueTree tree)
 {
-	if (tree.getType ().toString () == "doc")
-	{
-		if ((bool)tree.getProperty ("needCreateHtml"))
-			HtmlProcessor::createArticleHtml (tree, false);
-	}
-	else
-	{
-		if ((bool)tree.getProperty ("needCreateHtml"))
-		{
-			HtmlProcessor::createIndexHtml (tree, false);
+    if ((bool)tree.getProperty("needCreateHtml"))
+    {
+        if (tree.getType().toString() == "doc")
+            HtmlProcessor::createArticleHtml(tree, false);
+        else
+            HtmlProcessor::createIndexHtml(tree, false);
+    }
 
-			for (int i = tree.getNumChildren (); --i >= 0; )
-				generateHtmlFilesIfNeeded (tree.getChild (i));
-		}
-	}
+    for (int i = tree.getNumChildren(); --i >= 0; )
+        generateHtmlFilesIfNeeded(tree.getChild(i));
 }
 
 //=================================================================================================

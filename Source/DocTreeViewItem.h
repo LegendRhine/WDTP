@@ -41,7 +41,8 @@ public:
 	static const int getMdMediaFiles (const File& doc, Array<File>& files);
 
     /** set the arg tree and all its parents to needCreateHtml. */
-    static void needCreateAndUpload (const ValueTree& tree);
+    static void needCreate (ValueTree tree);
+    static void allChildrenNeedCreate(ValueTree tree);
 
     // static public methods for drag-drop moving items..
     static void moveItems (const OwnedArray<ValueTree>& items, 

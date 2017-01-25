@@ -49,8 +49,8 @@ private:
 
     virtual void buttonClicked (Button*) override;
     void popupSystemMenu();
-    void menuPerform (const int menuIndex);
-    
+    void menuPerform (const int menuIndex);    
+
     void createNewProject ();
     void openProject();
     void cleanAndGenerateAll ();
@@ -58,8 +58,9 @@ private:
 
     /** generate the tree and all its children's html file */
 	static void generateHtmlFiles (ValueTree tree);
+    void generateHtmlsIfNeeded();
 	static void generateHtmlFilesIfNeeded (ValueTree tree);
-
+    
     void setUiColour();
     void resetUiColour();
 

@@ -363,12 +363,18 @@ void TopToolBar::popupSystemMenu ()
 
     if (index >= 100 && index < 200)   // recently opened files..
     {
-        //fileTreeContainer->openProject(recentFiles.getFile(index - 100));
         const File& project(recentFiles.getFile(index - 100));
 
-        if (project != FileTreeContainer::projectFile)
-            Process::openDocument(File::getSpecialLocation(File::currentApplicationFile).getFullPathName(),
-                                  project.getFullPathName());
+        if (fileTreeContainer->projectTree.isValid())
+        {
+            if (project != FileTreeContainer::projectFile)
+                Process::openDocument(File::getSpecialLocation(File::currentApplicationFile).getFullPathName(),
+                                      project.getFullPathName());
+        }
+        else
+        {
+            fileTreeContainer->openProject(project);
+        }        
     }
     else
     {

@@ -1,7 +1,7 @@
 ﻿/* Default style of WDTP */
 
 html { background-color: #cdcdcd;	 }
-body, p { max-width: 708px; margin: 0 auto; background-color: #dedede; font-family: 'Microsoft YaHei', 'Consolas', 'Monaco', 'Lucida Console', monospace; text-indent: 2em;  line-height: 1.8; }
+body, p { max-width: 708px; margin: 0 auto; background-color: #dedede; font-family: 'Microsoft YaHei', 'Consolas', 'Monaco', 'Lucida Console', monospace; text-indent: 2em;  line-height: 2.0; }
 body { border-style: solid; border-width: 1px; border-color: #bcbcbc; padding: 0 45px 0px 45px; }
 p { margin: 10px 0; }
 .siteMenu ul { display: block; width: 550px; font-size:95%;	 position: absolute; top:30px; margin: -10px 0 0 130px; }

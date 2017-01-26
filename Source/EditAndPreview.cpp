@@ -389,7 +389,7 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         editorSetup.addSeparator ();
         editorSetup.addItem (43, TRANS ("Reset to Default"));
 
-        menu.addSubMenu (TRANS ("Editor Setup"), editorSetup);
+        menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docFile.existsAsFile());
     }
 }
 

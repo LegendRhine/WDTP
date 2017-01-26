@@ -60,6 +60,7 @@ private:
 	static void generateHtmlFiles (ValueTree tree);
     void generateHtmlsIfNeeded();
 	static void generateHtmlFilesIfNeeded (ValueTree tree);
+    void generateCuurentPage();
     
     void setUiColour();
     void resetUiColour();

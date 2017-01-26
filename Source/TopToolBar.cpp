@@ -11,6 +11,7 @@
 #include "WdtpHeader.h"
 
 extern PropertiesFile* systemFile;
+extern ApplicationCommandManager* cmdManager;
 
 const float imageTrans = 1.f;
 
@@ -332,8 +333,10 @@ void TopToolBar::popupSystemMenu ()
     m.addItem (3, TRANS ("Close Project"), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
-    m.addItem(7, TRANS("Regenerate Current Page"), bts[view]->getToggleState());
-    m.addItem(4, TRANS("Regenerate All Changed..."), fileTreeContainer->hasLoadedProject());
+    //m.addItem(7, TRANS("Regenerate Current Page"), bts[view]->getToggleState());
+    //m.addItem(4, TRANS("Regenerate All Changed..."), fileTreeContainer->hasLoadedProject());
+    m.addCommandItem(cmdManager, 12);
+    m.addCommandItem(cmdManager, 13);
     m.addSeparator();
 
     m.addItem(5, TRANS("Regenerate Whole Site..."), fileTreeContainer->hasLoadedProject());
@@ -389,7 +392,7 @@ void TopToolBar::menuPerform (const int index)
     else if (index == 4)    generateHtmlsIfNeeded();
     else if (index == 5)    cleanAndGenerateAll();
     else if (index == 6)    cleanLocalMedias();
-    else if (index == 7)    editAndPreview->switchMode(true);
+    else if (index == 7)    generateCuurentPage();
 
     else if (index == 15)  setUiColour();
     else if (index == 16)  resetUiColour();
@@ -557,6 +560,13 @@ void TopToolBar::generateHtmlFilesIfNeeded (ValueTree tree)
 }
 
 //=================================================================================================
+void TopToolBar::generateCuurentPage()
+{
+    editAndPreview->getCurrentTree().setProperty("needCreateHtml", true, nullptr);
+    editAndPreview->switchMode(true);
+}
+
+//=================================================================================================
 void TopToolBar::setUiColour()
 {
     bgColourSelector = new ColourSelectorWithPreset();
@@ -612,6 +622,8 @@ void TopToolBar::getAllCommands(Array<CommandID>& commands)
 {
     commands.add(10); // switch mode (preview / edit)
     commands.add(11); // switch width 
+    commands.add(12); // regenerate current page
+    commands.add(13); // generate all needed
 }
 
 //=================================================================================================
@@ -627,6 +639,18 @@ void TopToolBar::getCommandInfo(CommandID commandID, ApplicationCommandInfo& res
         result.setInfo("Switch width", "Switch width", String(), 0);
         result.addDefaultKeypress('`', ModifierKeys::commandModifier);
     }
+    else if (12 == commandID)
+    {
+        result.setInfo("Regenerate Current Page", "Regenerate Current Page", String(), 0);
+        result.addDefaultKeypress(KeyPress::F5Key, ModifierKeys::noModifiers);
+        result.setActive(bts[view]->getToggleState());
+    }
+    else if (13 == commandID)
+    {
+        result.setInfo("Regenerate All Changed", "Regenerate All Changed", String(), 0);
+        result.addDefaultKeypress(KeyPress::F6Key, ModifierKeys::noModifiers);
+        result.setActive(fileTreeContainer->hasLoadedProject());
+    }
 }
 
 //=================================================================================================
@@ -640,6 +664,16 @@ bool TopToolBar::perform(const InvocationInfo& info)
     else if (info.commandID == 11)
     {
         bts[width]->triggerClick();
+        return true;
+    }
+    else if (info.commandID == 12)
+    {
+        generateCuurentPage();
+        return true;
+    }
+    else if (info.commandID == 13)
+    {
+        generateHtmlsIfNeeded();
         return true;
     }
     else

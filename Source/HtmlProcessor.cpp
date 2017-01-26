@@ -306,7 +306,7 @@ const String HtmlProcessor::getPageNavi(const int howManyPages, const int thisIs
 //=================================================================================================
 const String HtmlProcessor::getToTop()
 {
-    const String& text(TRANS("Back to top"));
+    const String& text(TRANS("Back To Top"));
     return "<div class=page_navi><a href=\"#top\">" + text + "</a>";
 }
 

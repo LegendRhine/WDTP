@@ -144,7 +144,6 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     dirProperties.add (new TextPropertyComponent (*values[dirKeywords], TRANS ("Keywords: "), 0, false));
     dirProperties.add (new TextPropertyComponent (*values[dirDesc], TRANS ("Description: "), 0, true));
     dirProperties.add (new BooleanPropertyComponent (*values[dirIsMenu], TRANS ("Site Menu: "), TRANS ("Yes")));
-    dirProperties.add (new TextPropertyComponent (*values[dirCreateDate], TRANS ("Create Date: "), 0, false));
     dirProperties.add (new TextPropertyComponent (*values[dirJs], TRANS ("JavaScript: "), 0, true));
 
     // render tpl-file
@@ -167,7 +166,8 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     }
 
     dirProperties.add (new ChoicePropertyComponent (*values[dirTpl], TRANS ("Render TPL: "), tplFileSa, tplFileVar));
-    dirProperties.add (new TextPropertyComponent (*values[dirModifyDate], TRANS ("Last Modified: "), 0, false));
+    dirProperties.add(new TextPropertyComponent(*values[dirCreateDate], TRANS("Create Date: "), 0, false));
+    dirProperties.add(new TextPropertyComponent(*values[dirModifyDate], TRANS("Last Modified: "), 0, false));
 
     for (auto p : dirProperties)
         p->setPreferredHeight (28);
@@ -179,7 +179,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
                                  || currentTree.getParent().getParent().getType().toString() == "wdtpProject");
 
     dirProperties[3]->setPreferredHeight (28 * 3);
-    dirProperties[6]->setPreferredHeight (28 * 5);
+    dirProperties[5]->setPreferredHeight (28 * 5);
     
     panel->addSection (TRANS ("Folder Setup"), dirProperties);
     valuesAddListener ();
@@ -211,7 +211,6 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docProperties.add (new TextPropertyComponent (*values[docKeywords], TRANS ("Keywords: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[docDesc], TRANS ("Description: "), 0, true));
     docProperties.add (new BooleanPropertyComponent (*values[docIsMenu], TRANS ("Site Menu: "), TRANS ("Yes")));
-    docProperties.add (new TextPropertyComponent (*values[docCreateDate], TRANS ("Create Date: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[docJs], TRANS ("JavaScript: "), 0, true));
 
     // render tpl-file
@@ -235,7 +234,8 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
 
     docProperties.add (new ChoicePropertyComponent (*values[docTpl], TRANS ("Render TPL: "),
                                                     tplFileSa, tplFileVar));
-    docProperties.add (new TextPropertyComponent (*values[docModifyDate], TRANS ("Last Modified: "), 0, false));
+    docProperties.add(new TextPropertyComponent(*values[docCreateDate], TRANS("Create Date: "), 0, false));
+    docProperties.add(new TextPropertyComponent(*values[docModifyDate], TRANS("Last Modified: "), 0, false));
     docProperties.add(new TextPropertyComponent(*values[wordCount], TRANS("Word Count: "), 0, false));
     docProperties.add(new BooleanPropertyComponent(*values[thumb], TRANS("Title Image: "), TRANS("Yes")));
 
@@ -274,7 +274,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docProperties[4]->setEnabled(currentTree.getParent().getType().toString() == "wdtpProject");
 
     docProperties[3]->setPreferredHeight (28 * 5);
-    docProperties[6]->setPreferredHeight (28 * 5);
+    docProperties[5]->setPreferredHeight (28 * 5);
 
     panel->addSection (TRANS ("Document Setup"), docProperties);
     valuesAddListener ();

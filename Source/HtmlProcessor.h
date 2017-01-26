@@ -90,6 +90,7 @@ private:
 
     /** arg 2: the caller's page number. 1: No.1 (index.html), 2: No.2 (index-2.html)...*/
     static const String getPageNavi(const int howManyPages, const int thisIsNoX);
+    static const String getToTop();
 
     //=================================================================================================
     bool sortByReverse = true;

@@ -746,6 +746,7 @@ void WebBrowserComp::newWindowAttemptingToLoad(const String& newURL)
 bool WebBrowserComp::pageAboutToLoad(const String& newURL)
 {
     if (newURL.substring(0, 3) == "res" ||
+        newURL.getLastCharacters(4) == "#top" ||
         newURL.substring(0, 4) == "http" ||
         newURL.substring(0, 3) == "ftp" ||
         newURL.substring(0, 5) == "email" ||

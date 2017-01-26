@@ -223,6 +223,16 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
                 indexHtml.appendText(tplStr);
             }
 
+            if (tplStr.contains("{{fileAndDirList_N_N_Y_0}}"))
+            {
+                tplStr = tplStr.replace("{{fileAndDirList_N_N_Y_0}}", "<div>"
+                                        + getFileList(dirTree, false, false, true).joinIntoString(newLine)
+                                        + "</div>");
+
+                indexHtml.create();
+                indexHtml.appendText(tplStr);
+            }
+
             if (tplStr.contains("{{fileAndDirList_Y_N_Y_10}}"))  // devide to many pages
             {
                 const StringArray fileLinks(getFileList(dirTree, true, false, true));
@@ -291,6 +301,13 @@ const String HtmlProcessor::getPageNavi(const int howManyPages, const int thisIs
     }
 
     return "<div class=page_navi>" + naviStr.joinIntoString(newLine) + "</div>";
+}
+
+//=================================================================================================
+const String HtmlProcessor::getToTop()
+{
+    const String& text(TRANS("Back to top"));
+    return "<div class=page_navi><a href=\"#top\">" + text + "</a>";
 }
 
 //=================================================================================================
@@ -393,6 +410,12 @@ void HtmlProcessor::processTags(const ValueTree& docOrDirTree,
     if (tplStr.contains("{{contact}}"))
     {
         tplStr = tplStr.replace("{{contact}}", getContactInfo());
+    }
+
+    // click to top
+    if (tplStr.contains("{{toTop}}"))
+    {
+        tplStr = tplStr.replace("{{toTop}}", getToTop());
     }
 
     // copyright on the bottom

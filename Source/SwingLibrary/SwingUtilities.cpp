@@ -18,15 +18,16 @@ void SwingUtilities::showAbout (const String& shortDescription,
     SwingDialog* window = new SwingDialog (shortDescription);
 
     window->addTextBlock (TRANS ("Author: ") + "SwingCoder" + newLine + 
-		"underwaySoft@126.com" + newLine +
-		"QQ: 843775" + newLine + newLine +
-		String (CharPointer_UTF8 ("\xc2\xa9")) + copyrightYear + " UnderwaySoft. " +
-		TRANS ("All Right Reserved.") + newLine + 
-		"=================================\n" +
-		TRANS ("Acknowledgements:") + newLine +
-		"  - Framework: JUCE (https://juce.com)\n" +
-		//"  - Library: cURL (https://curl.haxx.se)\n" +
-		"  - Highlight.js (https://highlightjs.org)");
+                          "underwaySoft@126.com" + newLine +
+                          "QQ: 843775" + newLine + newLine +
+                          String(CharPointer_UTF8("\xc2\xa9")) + copyrightYear + " UnderwaySoft. " +
+                          TRANS("All Right Reserved.") + newLine +
+                          "=================================\n" +
+                          TRANS("Acknowledgements:") + newLine +
+                          "  - Framework: JUCE (https://juce.com)\n" +
+                          //"  - Library: cURL (https://curl.haxx.se)\n" +
+                          "  - Mr. Chen Ping: (http://cpww601.blog.163.com)\n" +
+                          "  - Highlight.js (https://highlightjs.org)");
 
     Component* linkButton = new HyperlinkButton ("UnderwaySoft", URL ("http://underwaySoft.com"));
     linkButton->setSize (150, 25);

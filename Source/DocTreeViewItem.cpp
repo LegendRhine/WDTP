@@ -270,7 +270,8 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
     if (e.mods.isPopupMenu ())
     {
         PopupMenu m;
-        m.addItem (1, TRANS ("New Folder..."), exist && !isDoc && onlyOneSelected);
+        m.addItem (1, TRANS ("New Folder..."), exist && !isDoc && onlyOneSelected 
+                   && !tree.getParent().getParent().getParent().isValid());  // at most 3 level dir
         m.addItem (2, TRANS ("New Document..."), exist && !isDoc && onlyOneSelected);
         m.addSeparator ();
 

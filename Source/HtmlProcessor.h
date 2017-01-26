@@ -33,17 +33,8 @@ private:
     /** Process tpl-file's tags */
     static void processTags(const ValueTree& docOrDirTree, const File& htmlFile, String& tplStr);
 
-    /** process {{fileAndDirList_xx_xx}}, return its html-code
-
-    @pagram dirTree         process this dir's html and dir
-    @pagram reverse         true for reverse-date display the items.
-    @pagram includeDir      true will display its sub-dir's title
-    @pagram extrctIntro     true will display the item's description under its title (like blog)
-    */
-    static const StringArray getFileList(const ValueTree& dirTree,
-                                         const bool reverse,
-                                         const bool includeDir,
-                                         const bool extrctIntro);
+    static const StringArray getBlogList(const ValueTree& dirTree);
+    static const String getBookList(const ValueTree& dirTree);
 
 	/** generate site menu. 2 level dir and 1 level doc.
         that is: if a doc tend for a site menu, it must under the root dir. */
@@ -84,12 +75,17 @@ private:
                                          StringArray& linkStr);
 
     /** this method is for file-list of index.html. it'll include create date and extra info */
-    static void getListHtmlStr(const ValueTree& tree,
+    static void getBlogListHtmlStr(const ValueTree& tree,
                                const File& baseOnthisFile,
+                               StringArray& linkStr);
+
+    static void getBookListLinks(const ValueTree& tree, 
+                                 const bool isRootTree,
                                StringArray& linkStr);
 
     /** arg 2: the caller's page number. 1: No.1 (index.html), 2: No.2 (index-2.html)...*/
     static const String getPageNavi(const int howManyPages, const int thisIsNoX);
+    static const String getBackPrevLevel();
     static const String getToTop();
 
     //=================================================================================================

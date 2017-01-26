@@ -166,16 +166,12 @@
 	- {{random}} 随机推荐5篇本站文章
 	- {{contact}} 联系方式
 	- {{toTop}} 点击后回到页面顶端
+	- {{backPrevious}} 专供book模板的index页所用，返回上一级
 	- {{bottomCopyright}} 每页页底的版权信息
 
 	- {{titleOfDir}} <body>区中所显示的当前目录的标题
-	- {{fileAndDirList_Y_N-Y_10}} <body>区中所显示的文章/目录列表，倒序（新的在上），不含目录，含描述，每页显示10条
-	- {{fileAndDirList_N_Y_N_0}} <body>区中所显示的文章/目录列表，正序，含目录，不含描述，不分页（一页内显示全部）
-	- {{fileAndDirList_N_N_Y_0}} <body>区中所显示的文章/目录列表，正序，不含目录，含描述，不分页（一页内显示全部）
-
-	// 以下尚未实现
-	- {{fileAndDirList_Y_Y_N_0}} <body>区中所显示的文章/目录列表，倒序，含目录，不含描述，不分页（一页内显示全部）
-	- {{fileAndDirList_N_N_Y_10}} <body>区中所显示的文章/目录列表，正序，不含目录，含描述，每页显示10条
+	- {{blogList}} 专供blog模板的index网页。文章列表，倒序（新的在上），不含目录，含描述，每页显示10条
+	- {{bookList}} 专供book模板的index网页。目录与文章列表，按文件名排序，含目录，不含描述，一页显示全部
 
 ### 界面设计
 

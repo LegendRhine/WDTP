@@ -212,30 +212,18 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
 
             processTags(dirTree, indexHtml, tplStr);  
 
-            // file list. 3 bool: reverse or not, include dir, include date and desc
-            if (tplStr.contains("{{fileAndDirList_N_Y_N_0}}"))
+            // list for book
+            if (tplStr.contains("{{bookList}}"))
             {
-                tplStr = tplStr.replace("{{fileAndDirList_N_Y_N_0}}", "<div>"
-                                        + getFileList(dirTree, false, true, false).joinIntoString(newLine)
-                                        + "</div>");
-
+                tplStr = tplStr.replace("{{bookList}}", getBookList(dirTree));
                 indexHtml.create();
                 indexHtml.appendText(tplStr);
             }
-
-            if (tplStr.contains("{{fileAndDirList_N_N_Y_0}}"))
+            
+            // list for blog
+            if (tplStr.contains("{{blogList}}"))  
             {
-                tplStr = tplStr.replace("{{fileAndDirList_N_N_Y_0}}", "<div>"
-                                        + getFileList(dirTree, false, false, true).joinIntoString(newLine)
-                                        + "</div>");
-
-                indexHtml.create();
-                indexHtml.appendText(tplStr);
-            }
-
-            if (tplStr.contains("{{fileAndDirList_Y_N_Y_10}}"))  // devide to many pages
-            {
-                const StringArray fileLinks(getFileList(dirTree, true, false, true));
+                const StringArray fileLinks(getBlogList(dirTree));
                 const int howManyFiles = fileLinks.size() / 3;
                 const int howManyPages = howManyFiles / 10 + (howManyFiles % 10 == 0 ? 0 : 1);
 
@@ -244,10 +232,10 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
                     indexHtml.deleteFile();
                     indexHtml.create();
 
-                    const String listHtmlStr = tplStr.replace("{{fileAndDirList_Y_N_Y_10}}", String());
+                    const String listHtmlStr = tplStr.replace("{{blogList}}", String());
                     indexHtml.appendText(listHtmlStr);
                 }
-                else
+                else  // devide to many pages
                 {
                     for (int i = 0; i < howManyPages; ++i)
                     {
@@ -255,7 +243,7 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
                         pageLinks.addArray(fileLinks, i * 30, 30);
                         pageLinks.add(getPageNavi(howManyPages, i + 1));
 
-                        const String listHtmlStr = tplStr.replace("{{fileAndDirList_Y_N_Y_10}}",
+                        const String listHtmlStr = tplStr.replace("{{blogList}}",
                                                                   "<div>" + pageLinks.joinIntoString(newLine) + "</div>");
 
                         const File& indexFile(indexHtml.getSiblingFile("index-" + String(i + 1) + ".html"));
@@ -307,7 +295,13 @@ const String HtmlProcessor::getPageNavi(const int howManyPages, const int thisIs
 const String HtmlProcessor::getToTop()
 {
     const String& text(TRANS("Back To Top"));
-    return "<div class=page_navi><a href=\"#top\">" + text + "</a>";
+    return "<div class=page_navi><a href=\"#top\">" + text + "</a></div>";
+}
+
+//=================================================================================================
+const String HtmlProcessor::getBackPrevLevel()
+{    
+    return "<div class=siteNavi><a href=\"../index.html\">" + TRANS("Upper Level") + "</a></div>";
 }
 
 //=================================================================================================
@@ -375,6 +369,12 @@ void HtmlProcessor::processTags(const ValueTree& docOrDirTree,
     if (tplStr.contains("{{siteNavi}}"))
     {
         tplStr = tplStr.replace("{{siteNavi}}", getSiteNavi(docOrDirTree));
+    }
+
+    // back to previous level
+    if (tplStr.contains("{{backPrevious}}"))
+    {
+        tplStr = tplStr.replace("{{backPrevious}}", getBackPrevLevel());
     }
 
     // content tile
@@ -722,9 +722,40 @@ void HtmlProcessor::getLinkStrOfAlllDocTrees(const ValueTree& fromThisTree,
 }
 
 //=================================================================================================
-void HtmlProcessor::getListHtmlStr(const ValueTree& tree, 
-                                   const File& baseOnthisFile,
-                                   StringArray& linkStr)
+void HtmlProcessor::getBookListLinks(const ValueTree& tree,
+                                     const bool isRootTree,
+                                     StringArray& linkStr)
+{
+    const String filePath(DocTreeViewItem::getHtmlFileOrDir(tree).getFullPathName());
+    const String rootPath(FileTreeContainer::projectFile.getSiblingFile("site").getFullPathName());
+    String path(filePath.fromFirstOccurrenceOf(rootPath, false, true).substring(1));
+    path = path.replace("\\", "/");
+
+    if (!isRootTree)
+        path = "../" + path;
+
+    //DBGX(path);
+
+    String text(tree.getProperty("title").toString());
+
+    if (tree.getType().toString() != "doc")
+        text = "<b>" + text + "</b> ";
+
+    // title and its link
+    String str = "<li><a href=\"" + path + "\">" + text + "</a></li>";
+    linkStr.add(str);
+    linkStr.add("<ul>");
+
+    for (int i = tree.getNumChildren(); --i >= 0; )
+        getBookListLinks(tree.getChild(i), isRootTree, linkStr);
+    
+    linkStr.add("</ul>");
+}
+
+//=================================================================================================
+void HtmlProcessor::getBlogListHtmlStr(const ValueTree& tree, 
+                                       const File& baseOnthisFile,
+                                       StringArray& linkStr)
 {
     const String& rootPath(getRelativePathToRoot(baseOnthisFile));
     String path = DocTreeViewItem::getHtmlFileOrDir(tree).getFullPathName();
@@ -793,29 +824,23 @@ void HtmlProcessor::getListHtmlStr(const ValueTree& tree,
     }
     
     for (int i = tree.getNumChildren(); --i >= 0; )
-        getListHtmlStr(tree.getChild(i), baseOnthisFile, linkStr);
+        getBlogListHtmlStr(tree.getChild(i), baseOnthisFile, linkStr);
 }
 
 //=================================================================================================
-const StringArray HtmlProcessor::getFileList(const ValueTree& dirTree,
-                                             const bool reverse,
-                                             const bool includeDir,
-                                             const bool extrctIntro)
+const StringArray HtmlProcessor::getBlogList(const ValueTree& dirTree)
 {
     jassert(dirTree.getType().toString() != "doc");
     const File& indexFile(DocTreeViewItem::getHtmlFileOrDir(dirTree));
     StringArray filesLinkStr;
 
-    getListHtmlStr(dirTree, indexFile, filesLinkStr);
+    getBlogListHtmlStr(dirTree, indexFile, filesLinkStr);
     filesLinkStr.sort(true);
 
-    if (!includeDir)  // remove dir link-str
+    for (int i = filesLinkStr.size(); --i >= 0; )
     {
-        for (int i = filesLinkStr.size(); --i >= 0; )
-        {
-            if (filesLinkStr[i].substring(0, 3) == "dir")
-                filesLinkStr.remove(i);        	
-        }
+        if (filesLinkStr[i].substring(0, 3) == "dir")
+            filesLinkStr.remove(i);
     }
 
     StringArray linkStr;
@@ -827,47 +852,50 @@ const StringArray HtmlProcessor::getFileList(const ValueTree& dirTree,
         const String descStr(filesLinkStr[i].fromLastOccurrenceOf("@_^_#_%_@", false, true));
         const String titleStr(filesLinkStr[i].substring(dateStr.length() + 9).dropLastCharacters(descStr.length() + 9));
 
-        if (reverse)
-        {
-            linkStr.add(titleStr);
-
-            if (extrctIntro)
-            {
-                linkStr.add(dateStr);
-                linkStr.add(descStr);
-            }            
-        }
-        else
-        {
-            if (extrctIntro)
-            {
-                linkStr.insert(0, descStr);
-                linkStr.insert(0, dateStr);
-            }
-
-            linkStr.insert(0, titleStr);
-        }
+        linkStr.add(titleStr);
+        linkStr.add(dateStr);
+        linkStr.add(descStr);
     }
     
     for (int i = 0; i < linkStr.size(); ++i)
     {
-        if (extrctIntro)
-        {
-            if (0 == i % 3)
-                linkStr.getReference(i) = "<div class=listTitle>" + linkStr[i] + "</div>";
-            else if (1 == i % 3)
-                linkStr.getReference(i) = "<div class=listDate>" + linkStr[i] + "</div>";
-            else
-                linkStr.getReference(i) = "<div class=listDesc>" + linkStr[i] + "</div><hr>";
-        }
-        else
-        {
+        if (0 == i % 3)
             linkStr.getReference(i) = "<div class=listTitle>" + linkStr[i] + "</div>";
-        }
+        else if (1 == i % 3)
+            linkStr.getReference(i) = "<div class=listDate>" + linkStr[i] + "</div>";
+        else
+            linkStr.getReference(i) = "<div class=listDesc>" + linkStr[i] + "</div><hr>";
     }
     
     //DBGX(linkStr.joinIntoString(newLine));
     return linkStr;
+}
+
+//=================================================================================================
+const String HtmlProcessor::getBookList(const ValueTree& dirTree)
+{
+    struct Sorter  // by create date, but doc before dir
+    {
+        const int compareElements(const ValueTree ft, const ValueTree st) const
+        {
+            if (ft.getType().toString() == "dir" && st.getType().toString() == "doc")
+                return -1;
+            else if (ft.getType().toString() == "doc" && st.getType().toString() == "dir")
+                return 1;
+            else  // doc vs doc and dir vs dir..
+                return st.getProperty("createDate").toString().compareIgnoreCase(ft.getProperty("createDate").toString());
+        }
+    };
+
+    ValueTree tree(dirTree.createCopy());
+    Sorter s;
+    tree.sort(s, nullptr, false);
+    StringArray links;
+
+    getBookListLinks(tree, tree.getType().toString() == "wdtpProject", links);
+    links.remove(0);  // itself
+
+    return "<div class=catalogue>" + links.joinIntoString(newLine) + "</div>";
 }
 
 //=========================================================================

@@ -396,7 +396,7 @@ void DocTreeViewItem::renameSelectedItem ()
         {
             // save the project file
             tree.setProperty ("name", newDocFile.getFileNameWithoutExtension (), nullptr);            
-            needCreate (tree);
+            needCreate (tree.getType().toString() == "doc" ? tree : FileTreeContainer::projectTree);
 
             // rename the site dir or html-file
             File siteOldFile;
@@ -578,7 +578,7 @@ void DocTreeViewItem::createNewFolder ()
         // must update this tree before show this new item
         tree.removeListener (this);
         tree.addChild (dirTree, 0, nullptr);
-        needCreate (dirTree);
+        needCreate (FileTreeContainer::projectTree);
         tree.addListener (this);
 
         // this item add the new dir, then select the index item 
@@ -619,7 +619,7 @@ void DocTreeViewItem::deleteSelected ()
         for (int i = selectedTrees.size (); --i >= 0; )
         {
             ValueTree& v = *selectedTrees.getUnchecked (i);
-            needCreate (v);
+            needCreate (v.getType().toString() == "doc" ? v : FileTreeContainer::projectTree);
 
             if (v.getParent ().isValid ())
             {

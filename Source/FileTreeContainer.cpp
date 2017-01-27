@@ -287,7 +287,9 @@ void FileTreeContainer::selectIdentityItem ()
     TreeViewItem* item = fileTree.findItemFromIdentifierString (lastItem);
 
     if (item != nullptr)
-        item->setSelected (true, true);
+        item->setSelected(true, true);
+    else
+        fileTree.getRootItem()->setSelected(true, true);
 }
 
 //=================================================================================================

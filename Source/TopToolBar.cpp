@@ -1,4 +1,4 @@
-/*
+﻿/*
   ==============================================================================
 
     TopToolBar.cpp
@@ -456,28 +456,42 @@ void TopToolBar::createNewProject ()
 
     projectFile.create ();
 
-    ValueTree p ("wdtpProject");
-    p.setProperty ("name", "site", nullptr);
-    p.setProperty ("title", projectFile.getFileNameWithoutExtension (), nullptr);
-    p.setProperty ("description", TRANS ("Description of this project..."), nullptr);
-    p.setProperty ("owner", SystemStats::getLogonName() , nullptr);
-    //p.setProperty ("skin", "Elegence", nullptr);
-    p.setProperty ("order", 0, nullptr);
-    p.setProperty ("ascending", 0, nullptr);
-    p.setProperty ("dirFirst", 0, nullptr);
-    p.setProperty ("showWhat", 0, nullptr);
-    p.setProperty ("tooltip", 0, nullptr);
-    p.setProperty ("render", "blog", nullptr);
-    p.setProperty ("tplFile", "index.html", nullptr);
+    ValueTree p("wdtpProject");
+    p.setProperty("name", "site", nullptr);
+    p.setProperty("title", projectFile.getFileNameWithoutExtension(), nullptr);
+    p.setProperty("description", TRANS("Description of this project..."), nullptr);
+    p.setProperty("owner", SystemStats::getLogonName(), nullptr);
+    p.setProperty("order", 0, nullptr);
+    p.setProperty("ascending", 0, nullptr);
+    p.setProperty("dirFirst", 0, nullptr);
+    p.setProperty("showWhat", 0, nullptr);
+    p.setProperty("tooltip", 0, nullptr);
+    p.setProperty("render", "blog", nullptr);
+    p.setProperty("tplFile", "index.html", nullptr);
+    p.setProperty("ad", "ad-1.jpg http://underwaySoft.com", nullptr);
+    p.setProperty("contact", "Email: yourEmail-1@xxx.com, yourEmail-2@xxx.com<br>QQ: 123456789 (QQ Name) WeChat: yourWeiChat", nullptr);
+    p.setProperty("copyright", "&copy; 2017 " + SystemStats::getLogonName() + " All Right Reserved", nullptr);
     p.setProperty("needCreateHtml", true, nullptr);
 
     // create dirs and default template files
     projectFile.getSiblingFile ("docs").createDirectory();
-    projectFile.getSiblingFile ("site").createDirectory();
-    projectFile.getSiblingFile ("site").getChildFile("add-in").createDirectory();
-    projectFile.getSiblingFile ("themes").createDirectory();
+    
+    // release templates in 'themes/..' and css/js, image files in 'site/add-in'
+    const File projectRoot(projectFile.getParentDirectory());
+    MemoryInputStream inputSteam(BinaryData::SiteData_zip, BinaryData::SiteData_zipSize, false);
+    ZipFile zip(inputSteam);
+    zip.uncompressTo(projectRoot);
+    
+    // release logo image to "site/add-in"
+    const File imgFile(projectFile.getSiblingFile("site/add-in").getChildFile("logo.png"));
+    Image logoImg(ImageCache::getFromMemory(BinaryData::logo_png, BinaryData::logo_pngSize));
 
-    // TODO: create template in 'themes/..' and css/js files in 'site/add-in'
+    PNGImageFormat pngFormat;
+    ScopedPointer<FileOutputStream> imgOutStram(imgFile.createOutputStream());
+
+    pngFormat.writeImageToStream(logoImg, *imgOutStram);
+    imgOutStram->flush();
+    imgOutStram = nullptr;
 
     // save the project file
     if (SwingUtilities::writeValueTreeToFile (p, projectFile))

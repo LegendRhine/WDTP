@@ -99,7 +99,7 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
     }    
 
     // prevent auto-enter preview mode when created a new document
-    if (currentContent.length() < 3)
+    if (docOrDirFile.exists() && currentContent.length() < 3)
     {
         switchMode(false);
         editor->moveCaretToEnd(false);
@@ -120,10 +120,15 @@ void EditAndPreview::switchMode(const bool switchToPreview)
     TopToolBar* toolBar = findParentComponentOfClass<MainContentComponent>()->getToolbar();
     jassert(toolBar != nullptr);
 
-    if ((docOrDirTree.getType().toString() != "doc") || (switchToPreview && toolBar->getStateOfViewButton()))
+    if (!docOrDirFile.existsAsFile())
     {
         previewCurrentDoc();
-        toolBar->enableEditPreviewBt(!docOrDirFile.isDirectory(), true);
+        toolBar->enableEditPreviewBt(false, true);
+    }
+    else if ((docOrDirTree.getType().toString() != "doc") || (switchToPreview && toolBar->getStateOfViewButton()))
+    {
+        previewCurrentDoc();
+        toolBar->enableEditPreviewBt((!docOrDirFile.isDirectory()), true);
     } 
     else
     {
@@ -148,7 +153,7 @@ void EditAndPreview::previewCurrentDoc ()
     editor->setEnabled (false);
     webView->setVisible (true);
     webView->stop ();
-    
+ 
     if (docOrDirFile.existsAsFile ())
     {
         String fileUrl (HtmlProcessor::createArticleHtml (docOrDirTree, true).getFullPathName());
@@ -162,11 +167,22 @@ void EditAndPreview::previewCurrentDoc ()
         //DBGX (fileUrl);        
         webView->goToURL(fileUrl);
     }
-    else
+    else if (docOrDirFile.isDirectory())
     {
         webView->goToURL (HtmlProcessor::createIndexHtml (docOrDirTree, true).getFullPathName());
     }
-    
+    else  // file doesn't exist
+    {
+        File urlFile(File::getSpecialLocation(File::tempDirectory).getSiblingFile("404.html"));
+
+        if (docOrDirTree.getType().toString() == "doc")
+            urlFile.replaceWithText(TRANS("The file doesn't exist!"));
+        else
+            urlFile.replaceWithText(TRANS("The folder doesn't exist!"));
+
+        webView->goToURL(urlFile.getFullPathName());
+    }
+
     resized ();
 }
 
@@ -747,6 +763,7 @@ bool WebBrowserComp::pageAboutToLoad(const String& newURL)
 {
     if (newURL.substring(0, 3) == "res" ||
         newURL.getLastCharacters(4) == "#top" ||
+        newURL.getLastCharacters(8) == "404.html" ||
         newURL.substring(0, 4) == "http" ||
         newURL.substring(0, 3) == "ftp" ||
         newURL.substring(0, 5) == "email" ||

@@ -81,7 +81,9 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
     String markStr;
     const bool needGenerate = (bool)tree.getProperty("needCreateHtml");
 
-    if (tree.getType().toString() == "doc")
+    if (!getMdFileOrDir(tree).exists())
+        markStr = "   ";
+    else if (tree.getType().toString() == "doc")
         markStr = CharPointer_UTF8(needGenerate ? "* " : "\xe2\x97\x8f ");
 	else
 		markStr = CharPointer_UTF8 (needGenerate ? "* " : "\xe2\x96\xa0 ");

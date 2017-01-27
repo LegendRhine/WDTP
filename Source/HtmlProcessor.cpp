@@ -20,8 +20,11 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
 		
 	// md to html
 	const File mdDoc (DocTreeViewItem::getMdFileOrDir (docTree));
-	jassert (mdDoc.existsAsFile ());  // selected a dir currently?? 
-	const String htmlContentStr (Md2Html::mdStringToHtml (mdDoc.loadFileAsString ()));
+
+    if (!mdDoc.existsAsFile())
+        return;
+	
+    const String htmlContentStr (Md2Html::mdStringToHtml (mdDoc.loadFileAsString ()));
 
 	if (htmlContentStr.isEmpty ())
 		return;
@@ -450,7 +453,7 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
 	{
 		const ValueTree& fd(pTree.getChild(i));
 
-		if ((bool)fd.getProperty("isMenu"))
+		if ((bool)fd.getProperty("isMenu") && DocTreeViewItem::getMdFileOrDir(fd).exists())
 		{
 			const File& dirIndex(DocTreeViewItem::getHtmlFileOrDir(fd));
 			const String& menuName(fd.getProperty("title").toString());
@@ -479,7 +482,9 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
 					const ValueTree& sd(fd.getChild(j));
 
                     // only extrct dir, non-include doc
-					if (sd.getType().toString() == "dir" && (bool)sd.getProperty("isMenu"))
+					if (DocTreeViewItem::getMdFileOrDir(sd).exists() 
+                        && sd.getType().toString() == "dir" 
+                        && (bool)sd.getProperty("isMenu"))
 					{
 						const File& sDirIndex(DocTreeViewItem::getHtmlFileOrDir(sd));
 						const String& sMenuName(sd.getProperty("title").toString());

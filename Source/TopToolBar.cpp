@@ -529,6 +529,9 @@ void TopToolBar::cleanAndGenerateAll ()
 //=================================================================================================
 void TopToolBar::generateHtmlFiles (ValueTree tree)
 {
+    if (!DocTreeViewItem::getMdFileOrDir(tree).exists())
+        return;
+
     tree.setProperty("needCreateHtml", true, nullptr);
 
 	if (tree.getType ().toString () == "doc")
@@ -652,7 +655,7 @@ void TopToolBar::getCommandInfo(CommandID commandID, ApplicationCommandInfo& res
     {
         result.setInfo("Regenerate Current Page", "Regenerate Current Page", String(), 0);
         result.addDefaultKeypress(KeyPress::F5Key, ModifierKeys::noModifiers);
-        result.setActive(bts[view]->getToggleState());
+        result.setActive(bts[view]->getToggleState() && editAndPreview->getCurrentDocFile().exists());
     }
     else if (13 == commandID)
     {

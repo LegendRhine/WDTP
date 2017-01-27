@@ -768,6 +768,27 @@ void TopToolBar::exportCurrentTpls()
 //=================================================================================================
 void TopToolBar::importExternalTpls()
 {
+    FileChooser fc(TRANS("Open Template File..."), File::nonexistent, "*.wtpl", false);
+
+    if (fc.browseForFileToOpen())
+    {
+        ZipFile zip(fc.getResult());
+        const bool notZip = zip.getNumEntries() < 1;
+
+        String message(zip.uncompressTo(FileTreeContainer::projectFile.getParentDirectory()).getErrorMessage());
+
+        if (notZip)
+            message = TRANS("Invalid templates file.");
+
+        if (message.isNotEmpty() || notZip)
+            SHOW_MESSAGE(TRANS("Import failed:") + newLine + message);
+        else
+            SHOW_MESSAGE(TRANS("Import successful!\nPlease regenerate the whole site if you want to use it."));
+    }
+
+    // here should update the project-setup panel
+    fileTreeContainer->getTreeView().getRootItem()->setSelected(true, true);
+    editAndPreview->setProjectProperties(FileTreeContainer::projectTree);
 }
 
 //=================================================================================================

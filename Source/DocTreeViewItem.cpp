@@ -608,7 +608,7 @@ void DocTreeViewItem::deleteSelected ()
         selectedTrees.add (new ValueTree (item->tree));
     }
 
-    if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Message"),
+    if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),
                                        TRANS ("Do you really want to delete ") +
                                        String (selectedTrees.size ()) +
                                       TRANS (" selected item(s)? ") + newLine +

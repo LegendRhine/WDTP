@@ -199,6 +199,16 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
             }
 
             String tplStr (tplFile.existsAsFile() ? tplFile.loadFileAsString () : String());
+
+            // when missing render dir (no tpl)
+            if (tplStr.isEmpty())
+            {
+                indexHtml.create();
+                indexHtml.appendText(TRANS("Please specify a template file. "));
+
+                return indexHtml;
+            }
+
             const String indexTileStr (dirTree.getProperty ("title").toString ());
             const String indexAuthorStr (FileTreeContainer::projectTree.getProperty ("owner").toString ());
             const String indexKeywordsStr (dirTree.getProperty ("keywords").toString ());
@@ -210,7 +220,7 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
                 .replace("{{keywords}}", indexKeywordsStr)
                 .replace("{{description}}", indexDescStr);
 
-            processTags(dirTree, indexHtml, tplStr);  
+            processTags(dirTree, indexHtml, tplStr);              
 
             // list for book
             if (tplStr.contains("{{bookList}}"))

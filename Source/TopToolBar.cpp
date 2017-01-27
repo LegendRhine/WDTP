@@ -319,7 +319,10 @@ void TopToolBar::popupSystemMenu ()
 {
     PopupMenu m;
     m.addItem(1, TRANS("New Project..."), true);
-    m.addItem(2, TRANS("Open Project..."), true);
+    m.addItem(2, TRANS("Close Project"), fileTreeContainer->hasLoadedProject());
+    m.addSeparator();
+
+    m.addItem(3, TRANS("Open Project..."), true);
 
     // recent files
     RecentlyOpenedFilesList recentFiles;
@@ -328,13 +331,8 @@ void TopToolBar::popupSystemMenu ()
     recentFiles.createPopupMenuItems (recentFilesMenu, 100, true, true);
 
     m.addSubMenu (TRANS ("Open Rcent"), recentFilesMenu);
-    m.addSeparator();
+    m.addSeparator();    
 
-    m.addItem (3, TRANS ("Close Project"), fileTreeContainer->hasLoadedProject ());
-    m.addSeparator ();
-
-    //m.addItem(7, TRANS("Regenerate Current Page"), bts[view]->getToggleState());
-    //m.addItem(4, TRANS("Regenerate All Changed..."), fileTreeContainer->hasLoadedProject());
     m.addCommandItem(cmdManager, 12);
     m.addCommandItem(cmdManager, 13);
     m.addSeparator();
@@ -342,6 +340,10 @@ void TopToolBar::popupSystemMenu ()
     m.addItem(5, TRANS("Regenerate Whole Site..."), fileTreeContainer->hasLoadedProject());
 	m.addItem (6, TRANS ("Cleanup Local Medias..."), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
+
+    m.addItem(7, TRANS("Export Current Templates"), fileTreeContainer->hasLoadedProject());
+    m.addItem(8, TRANS("Import External Templates..."), fileTreeContainer->hasLoadedProject());
+    m.addSeparator();
 
     PopupMenu lanMenu;
     lanMenu.addItem (30, "English", true, systemFile->getValue ("language") == "English");
@@ -385,31 +387,18 @@ void TopToolBar::popupSystemMenu ()
 //=================================================================================================
 void TopToolBar::menuPerform (const int index)
 {
-    // create a new project
     if (index == 1)         createNewProject ();
-
-    // open an existed project
-    else if (index == 2)    openProject ();
-
-    // close current project
-    else if (index == 3)    fileTreeContainer->closeProject ();
-
-    // clean up and re-generate the whole site
+    else if (index == 2)    fileTreeContainer->closeProject();
+    else if (index == 3)    openProject ();
     else if (index == 4)    generateHtmlsIfNeeded();
     else if (index == 5)    cleanAndGenerateAll();
     else if (index == 6)    cleanLocalMedias();
-    else if (index == 7)    generateCuurentPage();
-
-    else if (index == 15)  setUiColour();
-    else if (index == 16)  resetUiColour();
-
-    // help
+    else if (index == 7)    exportCurrentTpls();
+    else if (index == 8)    importExternalTpls();
+    else if (index == 15)   setUiColour();
+    else if (index == 16)   resetUiColour();
     else if (index == 18)   NEED_TO_DO ("Getting started...");
-
-    // check new version
-    else if (index == 19)   URL ("http://underwaySoft.com").launchInDefaultBrowser ();
-	   
-    // about
+    else if (index == 19)   URL ("http://underwaySoft.com").launchInDefaultBrowser (); // check new version
     else if (index == 20)   SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2017");
 
     // language
@@ -580,7 +569,7 @@ void TopToolBar::generateHtmlFilesIfNeeded (ValueTree tree)
 }
 
 //=================================================================================================
-void TopToolBar::generateCuurentPage()
+void TopToolBar::generateCurrentPage()
 {
     editAndPreview->getCurrentTree().setProperty("needCreateHtml", true, nullptr);
     editAndPreview->switchMode(true);
@@ -688,7 +677,7 @@ bool TopToolBar::perform(const InvocationInfo& info)
     }
     else if (info.commandID == 12)
     {
-        generateCuurentPage();
+        generateCurrentPage();
         return true;
     }
     else if (info.commandID == 13)
@@ -722,6 +711,63 @@ void TopToolBar::resetUiColour()
 
         systemFile->saveIfNeeded();
     }
+}
+
+//=================================================================================================
+void TopToolBar::exportCurrentTpls()
+{
+    const File& pFile(FileTreeContainer::projectFile);
+    ZipFile::Builder builder;
+
+    // theme
+    const String themeStr("themes" + File::separatorString + FileTreeContainer::projectTree.getProperty("render").toString());
+    const File& themeDir(pFile.getSiblingFile(themeStr));
+
+    Array<File> themeFiles;
+    themeDir.findChildFiles(themeFiles, File::findFiles, false, "*");
+
+    for (int i = themeFiles.size(); --i >= 0; )
+    {
+        // NEED_TO_DO: here need check if include some OS system-file
+        builder.addFile(themeFiles[i], 9, themeStr + File::separatorString + themeFiles[i].getFileName());
+    }
+
+    // add-in
+    const String addStr("site" + File::separatorString + "add-in");
+    const File& addDir(pFile.getSiblingFile(addStr));
+
+    Array<File> addFiles;
+    addDir.findChildFiles(addFiles, File::findFiles, false, "*");
+
+    for (int i = addFiles.size(); --i >= 0; )
+    {
+        // NEED_TO_DO: here need check if include some OS system-file
+        if (addFiles[i].getFileName() != "desktop.ini")
+            builder.addFile(addFiles[i], 9, addStr + File::separatorString + addFiles[i].getFileName());
+    }
+    
+    // write to zip file
+    const File tplZip(pFile.getSiblingFile(pFile.getFileNameWithoutExtension() + ".wtpl"));
+    tplZip.deleteFile();
+    tplZip.create();
+
+    ScopedPointer<FileOutputStream> out = tplZip.createOutputStream();
+    
+    if (builder.writeToStream(*out, nullptr))
+    {
+        out->flush();
+        out = nullptr;
+        SHOW_MESSAGE(TRANS("Export successful!"));
+
+        tplZip.revealToUser();
+    }
+    else
+        SHOW_MESSAGE(TRANS("Somehow the export failed."));
+}
+
+//=================================================================================================
+void TopToolBar::importExternalTpls()
+{
 }
 
 //=================================================================================================

@@ -60,10 +60,13 @@ private:
 	static void generateHtmlFiles (ValueTree tree);
     void generateHtmlsIfNeeded();
 	static void generateHtmlFilesIfNeeded (ValueTree tree);
-    void generateCuurentPage();
+    void generateCurrentPage();
     
     void setUiColour();
     void resetUiColour();
+
+    void exportCurrentTpls();
+    void importExternalTpls();
 
     //==========================================================================
     enum { prevAll, nextAll, prevPjt, nextPjt, 
@@ -99,6 +102,7 @@ private:
     ScopedPointer<ColourSelectorWithPreset> bgColourSelector;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TopToolBar)        
+        
 };
 
 

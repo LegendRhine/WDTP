@@ -271,7 +271,8 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docProperties[9]->setEnabled(false);
 
     // 2 level menu, otherwise, it cannot be a site menu
-    docProperties[4]->setEnabled(currentTree.getParent().getType().toString() == "wdtpProject");
+    docProperties[4]->setEnabled(currentTree.getParent().getType().toString() == "wdtpProject" ||
+                                 currentTree.getParent().getParent().getType().toString() == "wdtpProject");
 
     docProperties[3]->setPreferredHeight (28 * 5);
     docProperties[5]->setPreferredHeight (28 * 5);

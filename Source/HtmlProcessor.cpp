@@ -483,19 +483,27 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
 
                     // only extrct dir, non-include doc
 					if (DocTreeViewItem::getMdFileOrDir(sd).exists() 
-                        && sd.getType().toString() == "dir" 
                         && (bool)sd.getProperty("isMenu"))
 					{
 						const File& sDirIndex(DocTreeViewItem::getHtmlFileOrDir(sd));
-						const String& sMenuName(sd.getProperty("title").toString());
+                        const String& sMenuName(sd.getProperty("title").toString());
                         String sPath;
 
+                        if (sd.getType().toString() == "doc")
+                        {
+                            sPath = getRelativePathToRoot(DocTreeViewItem::getHtmlFileOrDir(tree))
+                                + dirIndex.getParentDirectory().getFileName() + "/"
+                                + sd.getProperty("name").toString() + ".html";
+                        }
+                        else
+                        {
                             sPath = getRelativePathToRoot(DocTreeViewItem::getHtmlFileOrDir(tree))
                                 + dirIndex.getParentDirectory().getFileName() + "/"
                                 + sDirIndex.getParentDirectory().getFileName() + "/index.html";
+                        }                        
 
-						const String& sLinkStr("<li><a href=\"" + sPath + "\">" + sMenuName + "</a></li>");
-                        menuHtmlStr.add(sLinkStr); 
+                        const String& sLinkStr("<li><a href=\"" + sPath + "\">" + sMenuName + "</a></li>");
+                        menuHtmlStr.add(sLinkStr);
 					}
 				}
 

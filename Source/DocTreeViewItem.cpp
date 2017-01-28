@@ -82,12 +82,12 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
     const bool needGenerate = (bool)tree.getProperty("needCreateHtml");
 
     if (!getMdFileOrDir(tree).exists())
-        markStr = "   ";
-    else if (tree.getType().toString() == "doc")
-        markStr = CharPointer_UTF8(needGenerate ? "* " : "\xe2\x97\x8f ");
-	else
-		markStr = CharPointer_UTF8 (needGenerate ? "* " : "\xe2\x96\xa0 ");
-
+        markStr = CharPointer_UTF8(tree.getType().toString() == "doc" 
+                                   ? "\xe2\x97\x8f " : "\xe2\x96\xa0 ");
+    else
+        markStr = CharPointer_UTF8(needGenerate ? "* " :
+                  (tree.getType().toString() == "doc") ? "\xe2\x97\x8f " : "\xe2\x96\xa0 ");
+    
     g.drawText (markStr + itemName, leftGap, 0, width - 4, height, Justification::centredLeft, true);
 }
 

@@ -100,6 +100,8 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
 
     // prevent auto-enter preview mode when created a new document
     switchMode(!(docOrDirFile.exists() && currentContent.length() < 3));
+    editor->moveCaretToEnd(false);
+    editor->scrollDown();
     
     // word count doesn't include ' ' and newLine. 
     setupPanel->updateWordCount (currentContent.removeCharacters (" ")

@@ -53,6 +53,7 @@ private:
 
     void createNewProject ();
     void openProject();
+    void closeProject();
     void cleanAndGenerateAll ();
 	void cleanLocalMedias ();
 

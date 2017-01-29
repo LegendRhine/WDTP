@@ -99,15 +99,7 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
     }    
 
     // prevent auto-enter preview mode when created a new document
-    if (docOrDirFile.exists() && currentContent.length() < 3)
-    {
-        switchMode(false);
-        editor->moveCaretToEnd(false);
-    }
-    else
-    {
-        switchMode(true);
-    }
+    switchMode(!(docOrDirFile.exists() && currentContent.length() < 3));
     
     // word count doesn't include ' ' and newLine. 
     setupPanel->updateWordCount (currentContent.removeCharacters (" ")
@@ -128,7 +120,7 @@ void EditAndPreview::switchMode(const bool switchToPreview)
     else if ((docOrDirTree.getType().toString() != "doc") || (switchToPreview && toolBar->getStateOfViewButton()))
     {
         previewCurrentDoc();
-        toolBar->enableEditPreviewBt((!docOrDirFile.isDirectory()), true);
+        toolBar->enableEditPreviewBt(!docOrDirFile.isDirectory(), true);
     } 
     else
     {

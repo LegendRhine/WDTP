@@ -319,7 +319,6 @@ void TopToolBar::popupSystemMenu ()
 {
     PopupMenu m;
     m.addItem(1, TRANS("New Project..."), true);
-    m.addItem(2, TRANS("Close Project"), fileTreeContainer->hasLoadedProject());
     m.addSeparator();
 
     m.addItem(3, TRANS("Open Project..."), true);
@@ -332,6 +331,9 @@ void TopToolBar::popupSystemMenu ()
 
     m.addSubMenu (TRANS ("Open Rcent"), recentFilesMenu);
     m.addSeparator();    
+
+    m.addItem(2, TRANS("Close Project"), fileTreeContainer->hasLoadedProject());
+    m.addSeparator();
 
     m.addCommandItem(cmdManager, 12);
     m.addCommandItem(cmdManager, 13);
@@ -388,7 +390,7 @@ void TopToolBar::popupSystemMenu ()
 void TopToolBar::menuPerform (const int index)
 {
     if (index == 1)         createNewProject ();
-    else if (index == 2)    fileTreeContainer->closeProject();
+    else if (index == 2)    closeProject();
     else if (index == 3)    openProject ();
     else if (index == 4)    generateHtmlsIfNeeded();
     else if (index == 5)    cleanAndGenerateAll();
@@ -398,7 +400,7 @@ void TopToolBar::menuPerform (const int index)
     else if (index == 15)   setUiColour();
     else if (index == 16)   resetUiColour();
     else if (index == 18)   NEED_TO_DO ("Getting started...");
-    else if (index == 19)   URL ("http://underwaySoft.com").launchInDefaultBrowser (); // check new version
+    else if (index == 19)   URL ("http://underwaySoft.com/works/wdtp").launchInDefaultBrowser (); // check new version
     else if (index == 20)   SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2017");
 
     // language
@@ -496,6 +498,13 @@ void TopToolBar::openProject ()
 
     if (fc.browseForFileToOpen ())
         fileTreeContainer->openProject (fc.getResult ());
+}
+
+//=================================================================================================
+void TopToolBar::closeProject()
+{
+    fileTreeContainer->closeProject();
+    bts[view]->setVisible(false);
 }
 
 //=================================================================================================

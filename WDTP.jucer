@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="iAHZG1" name="WDTP" projectType="guiapp" version="1.0.170208"
+<JUCERPROJECT id="iAHZG1" name="WDTP" projectType="guiapp" version="0.9.170131"
               bundleIdentifier="com.yourcompany.WDTP" includeBinaryInAppConfig="1"
-              jucerVersion="4.3.1" userNotes="Start: 2016.09.03" companyName="UnderwaySoft"
-              companyWebsite="http://www.underwaySoft.com" companyEmail="underwaySoft@126.com">
+              jucerVersion="4.3.1" userNotes="Start:        2016.09.03&#10;0.9 Alpha: 2017.01.31"
+              companyName="UnderwaySoft" companyWebsite="http://www.underwaySoft.com"
+              companyEmail="underwaySoft@126.com">
   <MAINGROUP id="dEY4lK" name="WDTP">
     <GROUP id="{24163B05-55E9-9D57-4AF2-ACA9BBF8DA1F}" name="Source">
       <GROUP id="{5C5311BB-5266-DB1B-DE96-35AA97A1E8E3}" name="BinaryData">

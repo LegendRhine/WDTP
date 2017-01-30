@@ -460,7 +460,7 @@ void TopToolBar::createNewProject ()
     p.setProperty("render", "blog", nullptr);
     p.setProperty("tplFile", "index.html", nullptr);
     p.setProperty("ad", "ad-1.jpg http://underwaySoft.com", nullptr);
-    p.setProperty("contact", "Email: yourEmail-1@xxx.com, yourEmail-2@xxx.com<br>QQ: 123456789 (QQ Name) WeChat: yourWeiChat", nullptr);
+    p.setProperty("contact", "Email: yourEmail-1@xxx.com, yourEmail-2@xxx.com<br>QQ: 123456789 (QQ Name) WeChat: yourWeChat", nullptr);
     p.setProperty("copyright", "&copy; 2017 " + SystemStats::getLogonName() + " All Right Reserved", nullptr);
     p.setProperty("needCreateHtml", true, nullptr);
 

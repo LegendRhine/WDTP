@@ -741,8 +741,9 @@ void TopToolBar::exportCurrentTpls()
 
     for (int i = themeFiles.size(); --i >= 0; )
     {
-        // NEED_TO_DO: here need check if include some OS system-file
-        builder.addFile(themeFiles[i], 9, themeStr + File::separatorString + themeFiles[i].getFileName());
+        // here need check if include some OS system-file
+        if (themeFiles[i].getFileName() != "desktop.ini" && themeFiles[i].getFileName() != ".DS_Store")
+            builder.addFile(themeFiles[i], 9, themeStr + File::separatorString + themeFiles[i].getFileName());
     }
 
     // add-in
@@ -754,8 +755,8 @@ void TopToolBar::exportCurrentTpls()
 
     for (int i = addFiles.size(); --i >= 0; )
     {
-        // NEED_TO_DO: here need check if include some OS system-file
-        if (addFiles[i].getFileName() != "desktop.ini")
+        // here need check if include some OS system-file
+        if (addFiles[i].getFileName() != "desktop.ini" && themeFiles[i].getFileName() != ".DS_Store")
             builder.addFile(addFiles[i], 9, addStr + File::separatorString + addFiles[i].getFileName());
     }
     

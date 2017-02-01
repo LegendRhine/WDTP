@@ -152,19 +152,13 @@ void EditAndPreview::previewCurrentDoc ()
     if (docOrDirFile.existsAsFile ())
     {
         String fileUrl (HtmlProcessor::createArticleHtml (docOrDirTree, true).getFullPathName());
-        
-        // escape Chinese characters on OSX..
-    #if JUCE_OSX
-        fileUrl = CppTokeniserFunctions::addEscapeChars(fileUrl).replace("\\x", "%");
-    #endif
-
-        //DBGX (URL::addEscapeChars (fileUrl, true));
-        //DBGX (fileUrl);        
         webView->goToURL(fileUrl);
     }
     else if (docOrDirFile.isDirectory())
     {
-        webView->goToURL (HtmlProcessor::createIndexHtml (docOrDirTree, true).getFullPathName());
+        const String indexUrl (HtmlProcessor::createIndexHtml (docOrDirTree, true).getFullPathName());
+        //DBGX (indexUrl);
+        webView->goToURL (indexUrl);
     }
     else  // file doesn't exist
     {
@@ -756,20 +750,34 @@ void WebBrowserComp::newWindowAttemptingToLoad(const String& newURL)
 //=================================================================================================
 bool WebBrowserComp::pageAboutToLoad(const String& newURL)
 {
-    if (newURL.substring(0, 3) == "res" ||
-        newURL.getLastCharacters(4) == "#top" ||
-        newURL.getLastCharacters(8) == "404.html" ||
-        newURL.substring(0, 4) == "http" ||
-        newURL.substring(0, 3) == "ftp" ||
-        newURL.substring(0, 5) == "email" ||
-        newURL == "about:blank" ||
-        newURL == DocTreeViewItem::getHtmlFileOrDir(parent->getCurrentTree()).getFullPathName())
+    String urlStr (newURL);
+    
+    if (urlStr.substring(0, 7) == "file://")
+        urlStr = urlStr.substring(7);
+    
+    String currentTreeUrl (DocTreeViewItem::getHtmlFileOrDir(parent->getCurrentTree()).getFullPathName());
+    
+#if JUCE_MAC
+    urlStr = URL::removeEscapeChars(urlStr);
+#endif
+    
+    //DBGX (urlStr);
+    //DBGX(currentTreeUrl);
+    
+    if (urlStr.substring(0, 3) == "res" ||
+        urlStr.getLastCharacters(4) == "#top" ||
+        urlStr.getLastCharacters(8) == "404.html" ||
+        urlStr.substring(0, 4) == "http" ||
+        urlStr.substring(0, 3) == "ftp" ||
+        urlStr.substring(0, 5) == "email" ||
+        urlStr == "about:blank" ||
+        urlStr == currentTreeUrl)
     {
         return true;
     }
     else
     {
-        const File& htmlFile(newURL);
+        const File& htmlFile(urlStr);
         return !(parent->selectItemFromHtmlFile(htmlFile));
     }
 }

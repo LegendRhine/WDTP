@@ -60,7 +60,7 @@ public:
         mainWindow = new MainWindow (getApplicationName());
 
         // open the previous project or double click to open a project
-		if (commandLine.isNotEmpty ())
+		if (commandLine.isNotEmpty () && commandLine.contains(".wdtp"))
 		{
 			mainWindow->openProject (File (commandLine.unquoted()));
 		}

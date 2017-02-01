@@ -13,8 +13,8 @@ Author:  SwingCoder
 //==============================================================================
 ReplaceComponent::ReplaceComponent (TextEditor* editor_, 
                                     ValueTree& tree_)
-    : editor (editor_),
-    tree (tree_)
+    : tree (tree_),
+    editor (editor_)
 {
     jassert(editor != nullptr);
     jassert(tree.isValid());

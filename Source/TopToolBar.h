@@ -69,6 +69,10 @@ private:
     void exportCurrentTpls();
     void importExternalTpls();
 
+    enum LanguageID { English = 0, Chinese = 1 };
+    void setUiLanguage(const LanguageID& id);
+    void setEmptyTextOfSearchBox();
+
     //==========================================================================
     enum { prevAll, nextAll, prevPjt, nextPjt, 
            view, system, width, totalBts };
@@ -101,6 +105,7 @@ private:
     EditAndPreview* editAndPreview;
 
     ScopedPointer<ColourSelectorWithPreset> bgColourSelector;
+    String languageStr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TopToolBar)        
         

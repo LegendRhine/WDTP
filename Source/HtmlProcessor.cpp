@@ -928,7 +928,7 @@ const String HtmlProcessor::getCopyrightInfo()
         "<table id=\"copyright\"><tr><td id=\"copyright\">" +
         FileTreeContainer::projectTree.getProperty ("copyright").toString () +
         "</td><td id=\"copyright\" align=\"right\">Powered by "
-        "<a href=\"http://www.underwaySoft.com/wdtp\""
+        "<a href=\"http://www.underwaySoft.com/works/wdtp/index.html\""
         " target=\"_blank\">WDTP</a> </td></tr></table>";
 }
 

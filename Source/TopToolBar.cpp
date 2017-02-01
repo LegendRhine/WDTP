@@ -21,7 +21,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
     editAndPreview (e)
 {
     jassert (fileTreeContainer != nullptr);
-    jassert (editAndPreview != nullptr);
+    jassert (editAndPreview != nullptr);    
 
     // 2 search textEditors..
     addAndMakeVisible (searchInProject = new TextEditor ());
@@ -32,7 +32,6 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
     searchInProject->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha(0.6f));
     searchInProject->setScrollBarThickness (10);
     searchInProject->setFont (SwingUtilities::getFontSize () - 2.f);
-    searchInProject->setTextToShowWhenEmpty (TRANS ("Seach in this project..."), Colour (0xff303030).withAlpha(0.6f));
     //searchEditor->setTabKeyUsedAsCharacter(true);
 
     addAndMakeVisible (searchInDoc = new TextEditor ());
@@ -43,8 +42,10 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
     searchInDoc->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha(0.6f));
     searchInDoc->setScrollBarThickness (10);
     searchInDoc->setFont (SwingUtilities::getFontSize () - 2.f);
-    searchInDoc->setTextToShowWhenEmpty (TRANS ("Seach in current document..."), Colour (0xff303030).withAlpha(0.6f));
     //searchEditor->setTabKeyUsedAsCharacter(true);
+
+    // ui language
+    setUiLanguage((LanguageID)systemFile->getIntValue("language"));
 
     // image buttons...
     for (int i = totalBts; --i >= 0; )
@@ -119,7 +120,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                           imageTrans, Colour (0x00),
                           Image::null, 1.0f, Colour (0x00),
                           Image::null, 1.0f, Colours::darkcyan);
-    bts[width]->setToggleState (true, dontSendNotification);
+    bts[width]->setToggleState (true, dontSendNotification);    
 }
 
 //=======================================================================
@@ -348,8 +349,8 @@ void TopToolBar::popupSystemMenu ()
     m.addSeparator();
 
     PopupMenu lanMenu;
-    lanMenu.addItem (30, "English", true, systemFile->getValue ("language") == "English");
-    lanMenu.addItem (31, CharPointer_UTF8 ("\xe4\xb8\xad\xe6\x96\x87"), true, systemFile->getValue ("language") == "Chinese");
+    lanMenu.addItem (30, "English", true, systemFile->getIntValue ("language") == 0);
+    lanMenu.addItem (31, CharPointer_UTF8 ("\xe4\xb8\xad\xe6\x96\x87"), true, systemFile->getIntValue ("language") == 1);
     m.addSubMenu (TRANS ("UI Language"), lanMenu);
 
     PopupMenu uiMenu;
@@ -399,19 +400,19 @@ void TopToolBar::menuPerform (const int index)
     else if (index == 8)    importExternalTpls();
     else if (index == 15)   setUiColour();
     else if (index == 16)   resetUiColour();
-    else if (index == 18)   NEED_TO_DO ("Getting started...");
-    else if (index == 19)   URL ("http://underwaySoft.com/works/wdtp").launchInDefaultBrowser (); // check new version
+    else if (index == 18)   URL("http://underwaysoft.com/works/wdtp/gettingStarted.html").launchInDefaultBrowser(); // getting started
+    else if (index == 19)   URL ("http://underwaySoft.com/works/wdtp/download.html").launchInDefaultBrowser (); // check new version
     else if (index == 20)   SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2017");
-
-    // language
+    
     else if (index == 30)
     {
-        systemFile->setValue ("language", "English");
+        systemFile->setValue("language", 0);
+        setUiLanguage(English);
     }
-
     else if (index == 31)
     {
-        systemFile->setValue ("language", "Chinese");
+        systemFile->setValue("language", 1);
+        setUiLanguage(Chinese);
     }
 }
 
@@ -562,7 +563,7 @@ void TopToolBar::generateHtmlsIfNeeded()
     generateHtmlFilesIfNeeded(fileTreeContainer->projectTree);
     FileTreeContainer::saveProject();
 
-    SHOW_MESSAGE(TRANS("All chaned items regenerate successful!"));
+    SHOW_MESSAGE(TRANS("All changed items regenerate successful!"));
 }
 
 //=================================================================================================
@@ -662,13 +663,13 @@ void TopToolBar::getCommandInfo(CommandID commandID, ApplicationCommandInfo& res
     }
     else if (12 == commandID)
     {
-        result.setInfo("Regenerate Current Page", "Regenerate Current Page", String(), 0);
+        result.setInfo(TRANS ("Regenerate Current Page"), "Regenerate Current Page", String(), 0);
         result.addDefaultKeypress(KeyPress::F5Key, ModifierKeys::noModifiers);
         result.setActive(bts[view]->getToggleState() && editAndPreview->getCurrentDocFile().exists());
     }
     else if (13 == commandID)
     {
-        result.setInfo("Regenerate All Changed", "Regenerate All Changed", String(), 0);
+        result.setInfo(TRANS("Regenerate All Changed"), "Regenerate All Changed", String(), 0);
         result.addDefaultKeypress(KeyPress::F6Key, ModifierKeys::noModifiers);
         result.setActive(fileTreeContainer->hasLoadedProject());
     }
@@ -801,6 +802,38 @@ void TopToolBar::importExternalTpls()
     // here should update the project-setup panel
     fileTreeContainer->getTreeView().getRootItem()->setSelected(true, true);
     editAndPreview->setProjectProperties(FileTreeContainer::projectTree);
+}
+
+//=================================================================================================
+void TopToolBar::setUiLanguage(const LanguageID& id)
+{
+    languageStr = String();
+    LocalisedStrings::setCurrentMappings(nullptr);
+
+    if (id == Chinese)
+    {
+        languageStr = MemoryBlock(BinaryData::transcn_h, BinaryData::transcn_hSize).toString();
+        LocalisedStrings::setCurrentMappings(new LocalisedStrings(languageStr, true));
+    }
+
+    fileTreeContainer->getTreeView().moveSelectedRow(1);
+    fileTreeContainer->getTreeView().moveSelectedRow(-1);
+
+    setEmptyTextOfSearchBox();
+}
+
+//=================================================================================================
+void TopToolBar::setEmptyTextOfSearchBox()
+{
+    searchInProject->setTextToShowWhenEmpty(TRANS("Search in this project..."), Colour(0xff303030).withAlpha(0.6f));
+    searchInDoc->setTextToShowWhenEmpty(TRANS("Search in current document..."), Colour(0xff303030).withAlpha(0.6f));
+
+    // these 4 ugly staments for switch ui language without restart this app
+    searchInProject->setText(" ");
+    searchInDoc->setText(" ");
+
+    searchInProject->setText(String());
+    searchInDoc->setText(String());
 }
 
 //=================================================================================================

@@ -42,7 +42,7 @@ public:
         // first run this application
         if (!f.existsAsFile())
         {
-            systemFile->setValue("language", "English");
+            systemFile->setValue("language", 0);  // 0 for English
             systemFile->setValue("uiBackground", Colour(0xffdcdbdb).toString());
             systemFile->setValue("uiTextColour", Colour(0xff303030).toString());                       
             systemFile->setValue("editorFontColour", Colour(0xff303030).toString());

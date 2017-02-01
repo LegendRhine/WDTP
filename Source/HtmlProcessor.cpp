@@ -3,7 +3,7 @@
 
     HtmlProcessor.cpp
     Created: 4 Jan 2017 3:34:15pm
-    Author:  miti2000
+    Author:  SwingCoder
 
   ==============================================================================
 */

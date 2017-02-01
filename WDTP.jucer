@@ -84,9 +84,9 @@
     <XCODE_MAC targetFolder="Builds/MacOSX" smallIcon="S5pEoV" bigIcon="S5pEoV"
                extraLinkerFlags="-lcurl">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/debug"/>
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/Debug"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="wdtp"
-                       binaryPath="Application/release"/>
+                       binaryPath="Application/Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../JUCE/modules"/>

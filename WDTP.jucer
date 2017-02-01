@@ -84,9 +84,8 @@
     <XCODE_MAC targetFolder="Builds/MacOSX" smallIcon="S5pEoV" bigIcon="S5pEoV"
                extraLinkerFlags="-lcurl">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="wdtp-osx"
-                       binaryPath="Application/debug"/>
-        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="wdtp-osx"
+        <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/debug"/>
+        <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="wdtp"
                        binaryPath="Application/release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

@@ -1,10 +1,11 @@
 # Common dirs
 
 Application/Debug
-Application/Release/*.exe
-Application/Release/*.iobj
-Application/Release/*.ipdb
-Application/Release/*.app
+# Application/Release/*.exe
+# Application/Release/*.iobj
+# Application/Release/*.ipdb
+# Application/Release/*.app
+Application/Release
 
 Builds/
 JuceLibraryCode/

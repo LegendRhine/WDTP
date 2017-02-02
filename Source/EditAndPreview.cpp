@@ -339,14 +339,11 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 
     if (e->mods.isPopupMenu())
     {
+        menu.addItem (21, TRANS ("Pickup as Title"), getHighlightedText ().isNotEmpty ());
         menu.addItem (20, TRANS ("Add to Keywords"), getHighlightedText ().isNotEmpty ());
-        menu.addItem (23, TRANS ("Pickup Description"), getHighlightedText ().isNotEmpty ());
+        menu.addItem (23, TRANS ("Pickup as Description"), getHighlightedText ().isNotEmpty ());
         menu.addSeparator ();
-
-        /*menu.addItem (21, TRANS ("Search Selected"), getHighlightedText ().isNotEmpty ());
-        menu.addItem (22, TRANS ("Replace Selected"), getHighlightedText ().isNotEmpty ());
-        menu.addSeparator ();*/
-
+        
         PopupMenu insertMenu;
         insertMenu.addItem (1, TRANS ("Iamge(s)..."));
         insertMenu.addItem (2, TRANS ("Hyperlink..."));
@@ -424,7 +421,12 @@ void EditorForMd::performPopupMenuAction (int index)
 
         docTree.setProperty ("keywords", keyWords, nullptr);
     }
-    else if (23 == index)  // add the selected to this doc's description
+    else if (21 == index)  // pickup as title
+    {
+        content = getHighlightedText ();
+        docTree.setProperty ("title", content, nullptr);
+    }
+    else if (23 == index)  // pickup as description
     {
         content = getHighlightedText ();
         docTree.setProperty ("description", content, nullptr);

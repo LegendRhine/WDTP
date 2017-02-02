@@ -90,7 +90,13 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                              Image::null, 1.0f, Colours::darkcyan,
                              Image::null, 1.0f, Colours::darkcyan);
 
-    bts[view]->setTooltip (TRANS ("Switch Preview / Edit Mode") + "  (Ctrl + TAB)");
+    String ctrlStr ("Ctrl");
+    
+#if JUCE_MAC
+    ctrlStr = "Cmd";
+#endif
+    
+    bts[view]->setTooltip (TRANS ("Switch Preview / Edit Mode") + "  (" + ctrlStr + " + S)");
     bts[view]->setImages (false, true, true,
                           ImageCache::getFromMemory (BinaryData::view_png,
                                                      BinaryData::view_pngSize),
@@ -107,7 +113,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                             Image::null, 1.000f, Colours::darkcyan,
                             Image::null, 1.000f, Colours::darkcyan);
     
-    bts[width]->setTooltip (TRANS ("Switch Simply / Full Mode") + "  (Ctrl + ~)");
+    bts[width]->setTooltip (TRANS ("Switch Simply / Full Mode") + "  (" + ctrlStr + " + D)");
     bts[width]->setImages (false, true, true,
                           ImageCache::getFromMemory (BinaryData::width_png,
                                                      BinaryData::width_pngSize),
@@ -648,12 +654,12 @@ void TopToolBar::getCommandInfo(CommandID commandID, ApplicationCommandInfo& res
     if (10 == commandID)
     {
         result.setInfo("Switch mode", "Switch to preview/edit", String(), 0);
-        result.addDefaultKeypress(KeyPress::tabKey, ModifierKeys::ctrlModifier);
+        result.addDefaultKeypress('s', ModifierKeys::commandModifier);
     } 
     else if (11 == commandID)
     {
         result.setInfo("Switch width", "Switch width", String(), 0);
-        result.addDefaultKeypress('`', ModifierKeys::ctrlModifier);
+        result.addDefaultKeypress('d', ModifierKeys::commandModifier);
     }
     else if (12 == commandID)
     {

@@ -68,6 +68,7 @@ private:
 
     void exportCurrentTpls();
     void importExternalTpls();
+    static void releaseSystemTpls (const File& projectFile, const bool showMessage); 
 
     enum LanguageID { English = 0, Chinese = 1 };
     void setUiLanguage(const LanguageID& id);

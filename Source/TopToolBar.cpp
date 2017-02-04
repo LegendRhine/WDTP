@@ -344,8 +344,9 @@ void TopToolBar::popupSystemMenu ()
 	m.addItem (6, TRANS ("Cleanup Local Medias..."), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
-    m.addItem(7, TRANS("Export Current Templates"), fileTreeContainer->hasLoadedProject());
-    m.addItem(8, TRANS("Import External Templates..."), fileTreeContainer->hasLoadedProject());
+    m.addItem (7, TRANS("Export Current Templates"), fileTreeContainer->hasLoadedProject());
+    m.addItem (8, TRANS ("Import External Templates..."), fileTreeContainer->hasLoadedProject ());
+    m.addItem (9, TRANS ("Reset/Repair Default Templates"), fileTreeContainer->hasLoadedProject ());
     m.addSeparator();
 
     PopupMenu lanMenu;
@@ -397,7 +398,8 @@ void TopToolBar::menuPerform (const int index)
     else if (index == 5)    cleanAndGenerateAll();
     else if (index == 6)    cleanLocalMedias();
     else if (index == 7)    exportCurrentTpls();
-    else if (index == 8)    importExternalTpls();
+    else if (index == 8)    importExternalTpls ();
+    else if (index == 9)    releaseSystemTpls (FileTreeContainer::projectFile, true);
     else if (index == 15)   setUiColour();
     else if (index == 16)   resetUiColour();
     else if (index == 18)   URL("http://underwaysoft.com/works/wdtp/gettingStarted.html").launchInDefaultBrowser(); // getting started
@@ -465,29 +467,15 @@ void TopToolBar::createNewProject ()
     p.setProperty("copyright", "&copy; 2017 " + SystemStats::getLogonName() + " All Right Reserved", nullptr);
     p.setProperty("needCreateHtml", true, nullptr);
 
-    // create dirs and default template files
+    // create 'docs' dir 
     projectFile.getSiblingFile ("docs").createDirectory();
-    
-    // release templates in 'themes/..' and css/js, image files in 'site/add-in'
-    const File projectRoot(projectFile.getParentDirectory());
-    MemoryInputStream inputSteam(BinaryData::SiteData_zip, BinaryData::SiteData_zipSize, false);
-    ZipFile zip(inputSteam);
-    zip.uncompressTo(projectRoot);
-    
-    // release logo image to "site/add-in"
-    const File imgFile(projectFile.getSiblingFile("site/add-in").getChildFile("logo.png"));
-    Image logoImg(ImageCache::getFromMemory(BinaryData::logo_png, BinaryData::logo_pngSize));
 
-    PNGImageFormat pngFormat;
-    ScopedPointer<FileOutputStream> imgOutStram(imgFile.createOutputStream());
+    // release system tpls and add-in files (this also create 'themes' and 'site' dir)
+    releaseSystemTpls (projectFile, false);
 
-    pngFormat.writeImageToStream(logoImg, *imgOutStram);
-    imgOutStram->flush();
-    imgOutStram = nullptr;
-
-    // save the project file
+    // save the new project file and load it
     if (SwingUtilities::writeValueTreeToFile (p, projectFile))
-        fileTreeContainer->openProject (projectFile); // load the new project file
+        fileTreeContainer->openProject (projectFile);
     else
         SHOW_MESSAGE (TRANS ("Something wrong during create this project file."));
 }
@@ -803,6 +791,40 @@ void TopToolBar::importExternalTpls()
     // here should update the project-setup panel
     fileTreeContainer->getTreeView().getRootItem()->setSelected(true, true);
     editAndPreview->setProjectProperties(FileTreeContainer::projectTree);
+}
+
+//=================================================================================================
+void TopToolBar::releaseSystemTpls (const File& projectFile, const bool showMessage)
+{
+    // release templates in 'themes/..' and css/js, image files in 'site/add-in'
+    const File projectRoot (projectFile.getParentDirectory ());
+    MemoryInputStream inputSteam (BinaryData::SiteData_zip, BinaryData::SiteData_zipSize, false);
+    ZipFile zip (inputSteam);
+    Result unzip = zip.uncompressTo (projectRoot);
+
+    // release logo image to "site/add-in"
+    const File imgFile (projectFile.getSiblingFile ("site/add-in").getChildFile ("logo.png"));
+    Image logoImg (ImageCache::getFromMemory (BinaryData::logo_png, BinaryData::logo_pngSize));
+
+    PNGImageFormat pngFormat;
+    ScopedPointer<FileOutputStream> imgOutStram (imgFile.createOutputStream ());
+
+    bool releaseLogo = false;
+
+    if (pngFormat.writeImageToStream (logoImg, *imgOutStram))
+    {
+        imgOutStram->flush ();
+        imgOutStram = nullptr;
+        releaseLogo = true;
+    }
+
+    if (showMessage)
+    {
+        if (Result::ok () == unzip && releaseLogo)
+            SHOW_MESSAGE (TRANS ("System TPLs reset/repair successful!"));
+        else
+            SHOW_MESSAGE (TRANS ("System TPLs reset/repair failed!"));
+    }
 }
 
 //=================================================================================================

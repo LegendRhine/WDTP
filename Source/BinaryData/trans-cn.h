@@ -277,3 +277,6 @@ countries: cn
 "Table: " = "上表："
 "Image: " = "上图："
 "Image/Table Caption" = "图注/表注"
+"Reset/Repair Default Templates" = "重置/修复系统模板"
+"System TPLs reset/repair successful!" = "系统模板重置/修复成功！"
+"System TPLs reset/repair failed!" = "系统模板重置/修复失败！"

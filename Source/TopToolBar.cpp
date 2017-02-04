@@ -21,7 +21,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
     editAndPreview (e)
 {
     jassert (fileTreeContainer != nullptr);
-    jassert (editAndPreview != nullptr);    
+    jassert (editAndPreview != nullptr);
 
     // 2 search textEditors..
     addAndMakeVisible (searchInProject = new TextEditor ());
@@ -29,7 +29,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
 
     searchInProject->setColour (TextEditor::textColourId, Colour (0xff303030));
     searchInProject->setColour (TextEditor::focusedOutlineColourId, Colours::lightskyblue);
-    searchInProject->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha(0.6f));
+    searchInProject->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha (0.6f));
     searchInProject->setScrollBarThickness (10);
     searchInProject->setFont (SwingUtilities::getFontSize () - 2.f);
     //searchEditor->setTabKeyUsedAsCharacter(true);
@@ -39,13 +39,13 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
 
     searchInDoc->setColour (TextEditor::textColourId, Colour (0xff303030));
     searchInDoc->setColour (TextEditor::focusedOutlineColourId, Colours::lightskyblue);
-    searchInDoc->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha(0.6f));
+    searchInDoc->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha (0.6f));
     searchInDoc->setScrollBarThickness (10);
     searchInDoc->setFont (SwingUtilities::getFontSize () - 2.f);
     //searchEditor->setTabKeyUsedAsCharacter(true);
 
     // ui language
-    setUiLanguage((LanguageID)systemFile->getIntValue("language"));
+    setUiLanguage ((LanguageID)systemFile->getIntValue ("language"));
 
     // image buttons...
     for (int i = totalBts; --i >= 0; )
@@ -91,11 +91,11 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                              Image::null, 1.0f, Colours::darkcyan);
 
     String ctrlStr ("Ctrl");
-    
+
 #if JUCE_MAC
     ctrlStr = "Cmd";
 #endif
-    
+
     bts[view]->setTooltip (TRANS ("Switch Preview / Edit Mode") + "  (" + ctrlStr + " + S)");
     bts[view]->setImages (false, true, true,
                           ImageCache::getFromMemory (BinaryData::view_png,
@@ -112,15 +112,15 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                             imageTrans, Colour (0x00),
                             Image::null, 1.000f, Colours::darkcyan,
                             Image::null, 1.000f, Colours::darkcyan);
-    
+
     bts[width]->setTooltip (TRANS ("Switch Simply / Full Mode") + "  (" + ctrlStr + " + D)");
     bts[width]->setImages (false, true, true,
-                          ImageCache::getFromMemory (BinaryData::width_png,
-                                                     BinaryData::width_pngSize),
-                          imageTrans, Colour (0x00),
-                          Image::null, 1.0f, Colour (0x00),
-                          Image::null, 1.0f, Colours::darkcyan);
-    bts[width]->setToggleState (true, dontSendNotification);    
+                           ImageCache::getFromMemory (BinaryData::width_png,
+                                                      BinaryData::width_pngSize),
+                           imageTrans, Colour (0x00),
+                           Image::null, 1.0f, Colour (0x00),
+                           Image::null, 1.0f, Colours::darkcyan);
+    bts[width]->setToggleState (true, dontSendNotification);
 }
 
 //=======================================================================
@@ -131,7 +131,7 @@ TopToolBar::~TopToolBar ()
 //=======================================================================
 void TopToolBar::paint (Graphics& g)
 {
-    g.setColour (Colour::fromString (systemFile->getValue("uiTextColour")).withAlpha (0.6f));
+    g.setColour (Colour::fromString (systemFile->getValue ("uiTextColour")).withAlpha (0.6f));
     g.drawLine (1.0f, getHeight () - 0.5f, getWidth () - 2.0f, getHeight () - 0.5f, 0.6f);
     //g.drawVerticalLine (getWidth () / 2, 0.5f, getHeight () - 1.0f);
 }
@@ -140,37 +140,37 @@ void TopToolBar::paint (Graphics& g)
 void TopToolBar::resized ()
 {
     // search textEditors and find buttons
-    if (getWidth() >= 800)
+    if (getWidth () >= 800)
     {
-        bts[prevAll]->setVisible(true);
-        searchInProject->setVisible(true);
-        bts[nextAll]->setVisible(true);
-        bts[nextPjt]->setVisible(true);
-        searchInDoc->setVisible(true);
-        bts[prevPjt]->setVisible(true);
-        
+        bts[prevAll]->setVisible (true);
+        searchInProject->setVisible (true);
+        bts[nextAll]->setVisible (true);
+        bts[nextPjt]->setVisible (true);
+        searchInDoc->setVisible (true);
+        bts[prevPjt]->setVisible (true);
+
         bts[prevAll]->setBounds (12, 14, 16, 16);
         searchInProject->setBounds (bts[prevAll]->getRight () + 10, 10, 200, 25);
         bts[nextAll]->setBounds (searchInProject->getRight () + 10, 14, 16, 16);
-        
+
         bts[nextPjt]->setBounds (getWidth () - 24, 14, 16, 16);
         searchInDoc->setBounds (bts[nextPjt]->getX () - 230, 10, 220, 25);
         bts[prevPjt]->setBounds (searchInDoc->getX () - 25, 14, 16, 16);
     }
     else
     {
-        bts[prevAll]->setVisible(false);
-        searchInProject->setVisible(false);
-        bts[nextAll]->setVisible(false);
-        bts[nextPjt]->setVisible(false);
-        searchInDoc->setVisible(false);
-        bts[prevPjt]->setVisible(false);
+        bts[prevAll]->setVisible (false);
+        searchInProject->setVisible (false);
+        bts[nextAll]->setVisible (false);
+        bts[nextPjt]->setVisible (false);
+        searchInDoc->setVisible (false);
+        bts[prevPjt]->setVisible (false);
     }
 
     // image buttons
-    bts[system]->setTopLeftPosition(getWidth() / 2 - 9, 12);
-    bts[view]->setTopRightPosition (bts[system]->getX() - 40, 12);
-    bts[width]->setTopLeftPosition (bts[system]->getRight() + 40, 12);
+    bts[system]->setTopLeftPosition (getWidth () / 2 - 9, 12);
+    bts[view]->setTopRightPosition (bts[system]->getX () - 40, 12);
+    bts[width]->setTopLeftPosition (bts[system]->getRight () + 40, 12);
 }
 
 //=================================================================================================
@@ -195,16 +195,16 @@ void TopToolBar::textEditorReturnKeyPressed (TextEditor& te)
 void TopToolBar::textEditorEscapeKeyPressed (TextEditor& te)
 {
     if (&te == searchInProject)
-        searchInProject->setText(String(), false);
+        searchInProject->setText (String (), false);
 
     else if (&te == searchInDoc)
-        searchInDoc->setText (String(), false);
+        searchInDoc->setText (String (), false);
 }
 
 //=================================================================================================
 void TopToolBar::findInProject (const bool next)
 {
-    const String& keyword (searchInProject->getText());
+    const String& keyword (searchInProject->getText ());
 
     if (keyword.isEmpty ())
         return;
@@ -225,8 +225,8 @@ void TopToolBar::findInProject (const bool next)
     }
 
     // find and select
-    for (int i = next ? startIndex + 1 : startIndex - 1; 
-         next ? (i < treeView.getNumRowsInTree ()) : (i >= 0); 
+    for (int i = next ? startIndex + 1 : startIndex - 1;
+         next ? (i < treeView.getNumRowsInTree ()) : (i >= 0);
          next ? ++i : --i)
     {
         DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (treeView.getItemOnRow (i));
@@ -234,16 +234,16 @@ void TopToolBar::findInProject (const bool next)
         if (item == nullptr)
             continue;
 
-        const File& docFile (DocTreeViewItem::getMdFileOrDir (item->getTree()));
-        const String& docContent (docFile.loadFileAsString());
+        const File& docFile (DocTreeViewItem::getMdFileOrDir (item->getTree ()));
+        const String& docContent (docFile.loadFileAsString ());
 
         if (docContent.containsIgnoreCase (keyword))
         {
             item->setSelected (true, true);
             searchInDoc->setText (keyword, false);
-            treeView.scrollToKeepItemVisible(item);
+            treeView.scrollToKeepItemVisible (item);
 
-            editAndPreview->getEditor()->moveCaretToTop(false);
+            editAndPreview->getEditor ()->moveCaretToTop (false);
             findInDoc (true);
 
             return;
@@ -256,14 +256,14 @@ void TopToolBar::findInProject (const bool next)
 //=================================================================================================
 void TopToolBar::findInDoc (const bool next)
 {
-    const String& keyword (searchInDoc->getText());
+    const String& keyword (searchInDoc->getText ());
 
     if (keyword.isEmpty ())
         return;
 
-    editAndPreview->switchMode(false);
-    TextEditor* editor = editAndPreview->getEditor();
-    const String& content = editor->getText();
+    editAndPreview->switchMode (false);
+    TextEditor* editor = editAndPreview->getEditor ();
+    const String& content = editor->getText ();
 
     int startIndex = 0;
     int caretIndex = editor->getCaretPosition ();
@@ -278,51 +278,51 @@ void TopToolBar::findInDoc (const bool next)
     if (startIndex != -1)
     {
         Array<Range<int>> rangeArray;
-        rangeArray.add(Range<int>(startIndex, startIndex + keyword.length()));
+        rangeArray.add (Range<int> (startIndex, startIndex + keyword.length ()));
 
-        editor->setTemporaryUnderlining(rangeArray);
-        editor->setHighlightedRegion(rangeArray[0]);
+        editor->setTemporaryUnderlining (rangeArray);
+        editor->setHighlightedRegion (rangeArray[0]);
     }
     else
     {
-        LookAndFeel::getDefaultLookAndFeel().playAlertSound();
+        LookAndFeel::getDefaultLookAndFeel ().playAlertSound ();
     }
 }
 
 //=========================================================================
 void TopToolBar::buttonClicked (Button* bt)
 {
-	if (bt == bts[view])
-	{
-		bts[view]->setToggleState (!bts[view]->getToggleState (), dontSendNotification);
-		editAndPreview->startWork (editAndPreview->getCurrentTree ());
-	}
-	else if (bt == bts[width])
-	{
-		bts[width]->setToggleState (!bts[width]->getToggleState (), dontSendNotification);
-		getParentComponent ()->setSize ((bts[width]->getToggleState () ? 1200 : 660), 780);
-		getTopLevelComponent ()->setCentreRelative (0.5f, 0.53f);
-	}
-	else if (bt == bts[system])
-		popupSystemMenu ();
-	else if (bt == bts[prevAll])
-		findInProject (false);
-	else if (bt == bts[nextAll])
-		findInProject (true);
-	else if (bt == bts[prevPjt])
-		findInDoc (false);
-	else if (bt == bts[nextPjt])
-		findInDoc (true);
+    if (bt == bts[view])
+    {
+        bts[view]->setToggleState (!bts[view]->getToggleState (), dontSendNotification);
+        editAndPreview->startWork (editAndPreview->getCurrentTree ());
+    }
+    else if (bt == bts[width])
+    {
+        bts[width]->setToggleState (!bts[width]->getToggleState (), dontSendNotification);
+        getParentComponent ()->setSize ((bts[width]->getToggleState () ? 1200 : 660), 780);
+        getTopLevelComponent ()->setCentreRelative (0.5f, 0.53f);
+    }
+    else if (bt == bts[system])
+        popupSystemMenu ();
+    else if (bt == bts[prevAll])
+        findInProject (false);
+    else if (bt == bts[nextAll])
+        findInProject (true);
+    else if (bt == bts[prevPjt])
+        findInDoc (false);
+    else if (bt == bts[nextPjt])
+        findInDoc (true);
 }
 
 //=================================================================================================
 void TopToolBar::popupSystemMenu ()
 {
     PopupMenu m;
-    m.addItem(1, TRANS("New Project..."), true);
-    m.addSeparator();
+    m.addItem (newPjt, TRANS ("New Project..."), true);
+    m.addSeparator ();
 
-    m.addItem(3, TRANS("Open Project..."), true);
+    m.addItem (openPjt, TRANS ("Open Project..."), true);
 
     // recent files
     RecentlyOpenedFilesList recentFiles;
@@ -331,90 +331,89 @@ void TopToolBar::popupSystemMenu ()
     recentFiles.createPopupMenuItems (recentFilesMenu, 100, true, true);
 
     m.addSubMenu (TRANS ("Open Rcent"), recentFilesMenu);
-    m.addSeparator();    
-
-    m.addItem(2, TRANS("Close Project"), fileTreeContainer->hasLoadedProject());
-    m.addSeparator();
-
-    m.addCommandItem(cmdManager, 12);
-    m.addCommandItem(cmdManager, 13);
-    m.addSeparator();
-
-    m.addItem(5, TRANS("Regenerate Whole Site..."), fileTreeContainer->hasLoadedProject());
-	m.addItem (6, TRANS ("Cleanup Local Medias..."), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
-    m.addItem (7, TRANS("Export Current Templates"), fileTreeContainer->hasLoadedProject());
-    m.addItem (8, TRANS ("Import External Templates..."), fileTreeContainer->hasLoadedProject ());
-    m.addItem (9, TRANS ("Reset/Repair Default Templates"), fileTreeContainer->hasLoadedProject ());
-    m.addSeparator();
+    m.addItem (closePjt, TRANS ("Close Project"), fileTreeContainer->hasLoadedProject ());
+    m.addSeparator ();
+
+    m.addCommandItem (cmdManager, generateCurrent);
+    m.addCommandItem (cmdManager, generateNeeded);
+    m.addSeparator ();
+
+    m.addItem (generateWhole, TRANS ("Regenerate Whole Site..."), fileTreeContainer->hasLoadedProject ());
+    m.addItem (cleanUpLocal, TRANS ("Cleanup Local Medias..."), fileTreeContainer->hasLoadedProject ());
+    m.addSeparator ();
+
+    m.addItem (exportTpl, TRANS ("Export Current Templates"), fileTreeContainer->hasLoadedProject ());
+    m.addItem (importTpl, TRANS ("Import External Templates..."), fileTreeContainer->hasLoadedProject ());
+    m.addItem (releaseSystemTpl, TRANS ("Reset/Repair Default Templates"), fileTreeContainer->hasLoadedProject ());
+    m.addSeparator ();
 
     PopupMenu lanMenu;
-    lanMenu.addItem (30, "English", true, systemFile->getIntValue ("language") == 0);
-    lanMenu.addItem (31, CharPointer_UTF8 ("\xe4\xb8\xad\xe6\x96\x87"), true, systemFile->getIntValue ("language") == 1);
+    lanMenu.addItem (uiEnglish, "English", true, systemFile->getIntValue ("language") == 0);
+    lanMenu.addItem (uiChinese, CharPointer_UTF8 ("\xe4\xb8\xad\xe6\x96\x87"), true, systemFile->getIntValue ("language") == 1);
     m.addSubMenu (TRANS ("UI Language"), lanMenu);
 
     PopupMenu uiMenu;
-    uiMenu.addItem(15, TRANS("Set UI Color..."));
-    uiMenu.addItem(16, TRANS("Reset to Default"));
-    m.addSubMenu(TRANS("UI Color"), uiMenu);
-    m.addSeparator();
+    uiMenu.addItem (setUiColor, TRANS ("Set UI Color..."));
+    uiMenu.addItem (resetUiColor, TRANS ("Reset to Default"));
+    m.addSubMenu (TRANS ("UI Color"), uiMenu);
+    m.addSeparator ();
 
-    m.addItem (18, TRANS ("Getting Started..."), true);
-    m.addItem (19, TRANS ("Check New Version..."), true);
-    m.addItem (20, TRANS ("About..."), true);
+    m.addItem (gettingStarted, TRANS ("Getting Started..."), true);
+    m.addItem (checkNewVersion, TRANS ("Check New Version..."), true);
+    m.addItem (showAbout, TRANS ("About..."), true);
 
     // display the menu
     const int index = m.show ();
 
     if (index >= 100 && index < 200)   // recently opened files..
     {
-        const File& project(recentFiles.getFile(index - 100));
+        const File& project (recentFiles.getFile (index - 100));
 
-        if (fileTreeContainer->projectTree.isValid())
+        if (fileTreeContainer->projectTree.isValid ())
         {
             if (project != FileTreeContainer::projectFile)
-                Process::openDocument(File::getSpecialLocation(File::currentApplicationFile).getFullPathName(),
-                                      project.getFullPathName());
+                Process::openDocument (File::getSpecialLocation (File::currentApplicationFile).getFullPathName (),
+                                       project.getFullPathName ());
         }
         else
         {
-            fileTreeContainer->openProject(project);
-        }        
+            fileTreeContainer->openProject (project);
+        }
     }
     else
     {
-        menuPerform(index);
+        menuPerform (index);
     }
 }
 
 //=================================================================================================
 void TopToolBar::menuPerform (const int index)
 {
-    if (index == 1)         createNewProject ();
-    else if (index == 2)    closeProject();
-    else if (index == 3)    openProject ();
-    else if (index == 4)    generateHtmlsIfNeeded();
-    else if (index == 5)    cleanAndGenerateAll();
-    else if (index == 6)    cleanLocalMedias();
-    else if (index == 7)    exportCurrentTpls();
-    else if (index == 8)    importExternalTpls ();
-    else if (index == 9)    releaseSystemTpls (FileTreeContainer::projectFile, true);
-    else if (index == 15)   setUiColour();
-    else if (index == 16)   resetUiColour();
-    else if (index == 18)   URL("http://underwaysoft.com/works/wdtp/gettingStarted.html").launchInDefaultBrowser(); // getting started
-    else if (index == 19)   URL ("http://underwaySoft.com/works/wdtp/download.html").launchInDefaultBrowser (); // check new version
-    else if (index == 20)   SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2017");
-    
-    else if (index == 30)
+    if (index == newPjt)                createNewProject ();
+    else if (index == closePjt)         closeProject ();
+    else if (index == openPjt)          openProject ();
+    else if (index == generateWhole)    cleanAndGenerateAll ();
+    else if (index == cleanUpLocal)     cleanLocalMedias ();
+    else if (index == exportTpl)        exportCurrentTpls ();
+    else if (index == importTpl)        importExternalTpls ();
+    else if (index == releaseSystemTpl) releaseSystemTpls (FileTreeContainer::projectFile, true);
+    else if (index == setUiColor)       setUiColour ();
+    else if (index == resetUiColor)     resetUiColour ();
+    else if (index == gettingStarted)   URL ("http://underwaysoft.com/works/wdtp/gettingStarted.html").launchInDefaultBrowser ();
+    else if (index == checkNewVersion)  URL ("http://underwaySoft.com/works/wdtp/download.html").launchInDefaultBrowser ();
+    else if (index == showAbout)        SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2017");
+
+    else if (index == uiEnglish)
     {
-        systemFile->setValue("language", 0);
-        setUiLanguage(English);
+        systemFile->setValue ("language", 0);
+        setUiLanguage (English);
     }
-    else if (index == 31)
+    else if (index == uiChinese)
     {
-        systemFile->setValue("language", 1);
-        setUiLanguage(Chinese);
+        systemFile->setValue ("language", 1);
+        setUiLanguage (Chinese);
     }
 }
 
@@ -433,9 +432,9 @@ void TopToolBar::createNewProject ()
         projectFile = projectFile.withFileExtension ("wdtp");
 
     // overwrite or not if it has been there
-    if (projectFile.existsAsFile () && 
+    if (projectFile.existsAsFile () &&
         !AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon,
-                                       TRANS ("Message"), 
+                                       TRANS ("Message"),
                                        TRANS ("This project already exists, want to overwrite it?")))
     {
         return;
@@ -450,25 +449,25 @@ void TopToolBar::createNewProject ()
 
     projectFile.create ();
 
-    ValueTree p("wdtpProject");
-    p.setProperty("name", "site", nullptr);
-    p.setProperty("title", projectFile.getFileNameWithoutExtension(), nullptr);
-    p.setProperty("description", TRANS("Description of this project..."), nullptr);
-    p.setProperty("owner", SystemStats::getLogonName(), nullptr);
-    p.setProperty("order", 0, nullptr);
-    p.setProperty("ascending", 0, nullptr);
-    p.setProperty("dirFirst", 0, nullptr);
-    p.setProperty("showWhat", 0, nullptr);
-    p.setProperty("tooltip", 0, nullptr);
-    p.setProperty("render", "blog", nullptr);
-    p.setProperty("tplFile", "index.html", nullptr);
-    p.setProperty("ad", "ad-1.jpg http://underwaySoft.com", nullptr);
-    p.setProperty("contact", "Email: yourEmail-1@xxx.com, yourEmail-2@xxx.com<br>QQ: 123456789 (QQ Name) WeChat: yourWeChat", nullptr);
-    p.setProperty("copyright", "&copy; 2017 " + SystemStats::getLogonName() + " All Right Reserved", nullptr);
-    p.setProperty("needCreateHtml", true, nullptr);
+    ValueTree p ("wdtpProject");
+    p.setProperty ("name", "site", nullptr);
+    p.setProperty ("title", projectFile.getFileNameWithoutExtension (), nullptr);
+    p.setProperty ("description", TRANS ("Description of this project..."), nullptr);
+    p.setProperty ("owner", SystemStats::getLogonName (), nullptr);
+    p.setProperty ("order", 0, nullptr);
+    p.setProperty ("ascending", 0, nullptr);
+    p.setProperty ("dirFirst", 0, nullptr);
+    p.setProperty ("showWhat", 0, nullptr);
+    p.setProperty ("tooltip", 0, nullptr);
+    p.setProperty ("render", "blog", nullptr);
+    p.setProperty ("tplFile", "index.html", nullptr);
+    p.setProperty ("ad", "ad-1.jpg http://underwaySoft.com", nullptr);
+    p.setProperty ("contact", "Email: yourEmail-1@xxx.com, yourEmail-2@xxx.com<br>QQ: 123456789 (QQ Name) WeChat: yourWeChat", nullptr);
+    p.setProperty ("copyright", "&copy; 2017 " + SystemStats::getLogonName () + " All Right Reserved", nullptr);
+    p.setProperty ("needCreateHtml", true, nullptr);
 
     // create 'docs' dir 
-    projectFile.getSiblingFile ("docs").createDirectory();
+    projectFile.getSiblingFile ("docs").createDirectory ();
 
     // release system tpls and add-in files (this also create 'themes' and 'site' dir)
     releaseSystemTpls (projectFile, false);
@@ -490,130 +489,130 @@ void TopToolBar::openProject ()
 }
 
 //=================================================================================================
-void TopToolBar::closeProject()
+void TopToolBar::closeProject ()
 {
-    fileTreeContainer->closeProject();
-    bts[view]->setVisible(false);
+    fileTreeContainer->closeProject ();
+    bts[view]->setVisible (false);
 }
 
 //=================================================================================================
 void TopToolBar::cleanAndGenerateAll ()
 {
-    if (AlertWindow::showOkCancelBox(AlertWindow::QuestionIcon, 
-                                       TRANS ("Confirm"),
-                                       TRANS ("Do you really want to cleanup the whole site\n"
-                                              "and then auto-regenerate them all?")))
+    if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon,
+                                      TRANS ("Confirm"),
+                                      TRANS ("Do you really want to cleanup the whole site\n"
+                                             "and then auto-regenerate them all?")))
     {
         // move the add-in dir which inlcude style.css, code-highlight.js
         // prevent it will be deleted
-        const File addinDir (FileTreeContainer::projectFile.getSiblingFile ("site").getChildFile("add-in"));
+        const File addinDir (FileTreeContainer::projectFile.getSiblingFile ("site").getChildFile ("add-in"));
         const File tempDirForAddin (FileTreeContainer::projectFile.getSiblingFile ("add-in"));
         addinDir.copyDirectoryTo (tempDirForAddin);
 
         // cleanup
-        FileTreeContainer::projectFile.getSiblingFile("site").deleteRecursively();
-        
-        generateHtmlFiles(FileTreeContainer::projectTree);
-        FileTreeContainer::saveProject();
+        FileTreeContainer::projectFile.getSiblingFile ("site").deleteRecursively ();
+
+        generateHtmlFiles (FileTreeContainer::projectTree);
+        FileTreeContainer::saveProject ();
 
         // restore the add-in dir
-        tempDirForAddin.moveFileTo(addinDir);
-        SHOW_MESSAGE(TRANS("Site clean and regenerate successful!"));
+        tempDirForAddin.moveFileTo (addinDir);
+        SHOW_MESSAGE (TRANS ("Site clean and regenerate successful!"));
 
-        tempDirForAddin.deleteRecursively();
+        tempDirForAddin.deleteRecursively ();
     }
 }
 
 //=================================================================================================
 void TopToolBar::generateHtmlFiles (ValueTree tree)
 {
-    if (!DocTreeViewItem::getMdFileOrDir(tree).exists())
+    if (!DocTreeViewItem::getMdFileOrDir (tree).exists ())
         return;
 
-    tree.setProperty("needCreateHtml", true, nullptr);
+    tree.setProperty ("needCreateHtml", true, nullptr);
 
-	if (tree.getType ().toString () == "doc")
-	{
-		HtmlProcessor::createArticleHtml (tree, false);
-	}
-	else
-	{
-		HtmlProcessor::createIndexHtml (tree, false);
+    if (tree.getType ().toString () == "doc")
+    {
+        HtmlProcessor::createArticleHtml (tree, false);
+    }
+    else
+    {
+        HtmlProcessor::createIndexHtml (tree, false);
 
-		for (int i = tree.getNumChildren (); --i >= 0; )
-			generateHtmlFiles (tree.getChild (i));
-	}
+        for (int i = tree.getNumChildren (); --i >= 0; )
+            generateHtmlFiles (tree.getChild (i));
+    }
 }
 
 //=================================================================================================
-void TopToolBar::generateHtmlsIfNeeded()
+void TopToolBar::generateHtmlsIfNeeded ()
 {
-    generateHtmlFilesIfNeeded(fileTreeContainer->projectTree);
-    FileTreeContainer::saveProject();
+    generateHtmlFilesIfNeeded (fileTreeContainer->projectTree);
+    FileTreeContainer::saveProject ();
 
-    SHOW_MESSAGE(TRANS("All changed items regenerate successful!"));
+    SHOW_MESSAGE (TRANS ("All changed items regenerate successful!"));
 }
 
 //=================================================================================================
 void TopToolBar::generateHtmlFilesIfNeeded (ValueTree tree)
 {
-    if ((bool)tree.getProperty("needCreateHtml"))
+    if ((bool)tree.getProperty ("needCreateHtml"))
     {
-        if (tree.getType().toString() == "doc")
-            HtmlProcessor::createArticleHtml(tree, false);
+        if (tree.getType ().toString () == "doc")
+            HtmlProcessor::createArticleHtml (tree, false);
         else
-            HtmlProcessor::createIndexHtml(tree, false);
+            HtmlProcessor::createIndexHtml (tree, false);
     }
 
-    for (int i = tree.getNumChildren(); --i >= 0; )
-        generateHtmlFilesIfNeeded(tree.getChild(i));
+    for (int i = tree.getNumChildren (); --i >= 0; )
+        generateHtmlFilesIfNeeded (tree.getChild (i));
 }
 
 //=================================================================================================
-void TopToolBar::generateCurrentPage()
+void TopToolBar::generateCurrentPage ()
 {
-    editAndPreview->getCurrentTree().setProperty("needCreateHtml", true, nullptr);
-    editAndPreview->switchMode(true);
+    editAndPreview->getCurrentTree ().setProperty ("needCreateHtml", true, nullptr);
+    editAndPreview->switchMode (true);
 }
 
 //=================================================================================================
-void TopToolBar::setUiColour()
+void TopToolBar::setUiColour ()
 {
-    bgColourSelector = new ColourSelectorWithPreset();
+    bgColourSelector = new ColourSelectorWithPreset ();
 
     //bgColourSelector->setColour(ColourSelector::backgroundColourId, Colour(0xffededed));
-    bgColourSelector->setSize(450, 480);
-    bgColourSelector->setCurrentColour(Colour::fromString(systemFile->getValue("uiBackground")));
-    bgColourSelector->addChangeListener(this);
+    bgColourSelector->setSize (450, 480);
+    bgColourSelector->setCurrentColour (Colour::fromString (systemFile->getValue ("uiBackground")));
+    bgColourSelector->addChangeListener (this);
 
-    CallOutBox callOut(*bgColourSelector, getScreenBounds(), nullptr);
-    callOut.runModalLoop();
+    CallOutBox callOut (*bgColourSelector, getScreenBounds (), nullptr);
+    callOut.runModalLoop ();
 
-    systemFile->saveIfNeeded();
+    systemFile->saveIfNeeded ();
 }
 
 //=================================================================================================
-void TopToolBar::changeListenerCallback(ChangeBroadcaster* source)
+void TopToolBar::changeListenerCallback (ChangeBroadcaster* source)
 {
     if (source == bgColourSelector)
     {
         // itself
-        repaint();
+        repaint ();
 
         // update ui's background colour
-        systemFile->setValue("uiBackground", bgColourSelector->getCurrentColour().toString());
-        getParentComponent()->repaint();
+        systemFile->setValue ("uiBackground", bgColourSelector->getCurrentColour ().toString ());
+        getParentComponent ()->repaint ();
 
         // treeView
-        if (bgColourSelector->getCurrentColour().getBrightness() >= 0.70f)
-            systemFile->setValue("uiTextColour", Colour(0xff303030).toString());
+        if (bgColourSelector->getCurrentColour ().getBrightness () >= 0.70f)
+            systemFile->setValue ("uiTextColour", Colour (0xff303030).toString ());
         else
-            systemFile->setValue("uiTextColour", Colour(0xffe9e9e9).toString());
+            systemFile->setValue ("uiTextColour", Colour (0xffe9e9e9).toString ());
 
-        TreeViewItem* projectTreeItem = fileTreeContainer->getTreeView().getRootItem();
-        
+        TreeViewItem* projectTreeItem = fileTreeContainer->getTreeView ().getRootItem ();
+
         if (projectTreeItem != nullptr)
-            projectTreeItem->repaintItem();
+            projectTreeItem->repaintItem ();
 
         // setup panel
 
@@ -621,69 +620,69 @@ void TopToolBar::changeListenerCallback(ChangeBroadcaster* source)
 }
 
 //=================================================================================================
-ApplicationCommandTarget* TopToolBar::getNextCommandTarget()
+ApplicationCommandTarget* TopToolBar::getNextCommandTarget ()
 {
     //return findFirstTargetParentComponent();
     return nullptr;
 }
 
 //=================================================================================================
-void TopToolBar::getAllCommands(Array<CommandID>& commands)
+void TopToolBar::getAllCommands (Array<CommandID>& commands)
 {
-    commands.add(10); // switch mode (preview / edit)
-    commands.add(11); // switch width 
-    commands.add(12); // regenerate current page
-    commands.add(13); // generate all needed
+    commands.add (switchEdit);       // switch mode (preview / edit)
+    commands.add (switchWidth);      // switch width 
+    commands.add (generateCurrent);  // regenerate current page
+    commands.add (generateNeeded);   // generate all needed
 }
 
 //=================================================================================================
-void TopToolBar::getCommandInfo(CommandID commandID, ApplicationCommandInfo& result)
+void TopToolBar::getCommandInfo (CommandID commandID, ApplicationCommandInfo& result)
 {
-    if (10 == commandID)
+    if (switchEdit == commandID)
     {
-        result.setInfo("Switch mode", "Switch to preview/edit", String(), 0);
-        result.addDefaultKeypress('s', ModifierKeys::commandModifier);
-    } 
-    else if (11 == commandID)
-    {
-        result.setInfo("Switch width", "Switch width", String(), 0);
-        result.addDefaultKeypress('d', ModifierKeys::commandModifier);
+        result.setInfo ("Switch mode", "Switch to preview/edit", String (), 0);
+        result.addDefaultKeypress ('s', ModifierKeys::commandModifier);
     }
-    else if (12 == commandID)
+    else if (switchWidth == commandID)
     {
-        result.setInfo(TRANS ("Regenerate Current Page"), "Regenerate Current Page", String(), 0);
-        result.addDefaultKeypress(KeyPress::F5Key, ModifierKeys::noModifiers);
-        result.setActive(bts[view]->getToggleState() && editAndPreview->getCurrentDocFile().exists());
+        result.setInfo ("Switch width", "Switch width", String (), 0);
+        result.addDefaultKeypress ('d', ModifierKeys::commandModifier);
     }
-    else if (13 == commandID)
+    else if (generateCurrent == commandID)
     {
-        result.setInfo(TRANS("Regenerate All Changed"), "Regenerate All Changed", String(), 0);
-        result.addDefaultKeypress(KeyPress::F6Key, ModifierKeys::noModifiers);
-        result.setActive(fileTreeContainer->hasLoadedProject());
+        result.setInfo (TRANS ("Regenerate Current Page"), "Regenerate Current Page", String (), 0);
+        result.addDefaultKeypress (KeyPress::F5Key, ModifierKeys::noModifiers);
+        result.setActive (bts[view]->getToggleState () && editAndPreview->getCurrentDocFile ().exists ());
+    }
+    else if (generateNeeded == commandID)
+    {
+        result.setInfo (TRANS ("Regenerate All Changed"), "Regenerate All Changed", String (), 0);
+        result.addDefaultKeypress (KeyPress::F6Key, ModifierKeys::noModifiers);
+        result.setActive (fileTreeContainer->hasLoadedProject ());
     }
 }
 
 //=================================================================================================
-bool TopToolBar::perform(const InvocationInfo& info)
+bool TopToolBar::perform (const InvocationInfo& info)
 {
-    if (info.commandID == 10)
+    if (info.commandID == switchEdit)
     {
-        bts[view]->triggerClick();
+        bts[view]->triggerClick ();
         return true;
     }
-    else if (info.commandID == 11)
+    else if (info.commandID == switchWidth)
     {
-        bts[width]->triggerClick();
+        bts[width]->triggerClick ();
         return true;
     }
-    else if (info.commandID == 12)
+    else if (info.commandID == generateCurrent)
     {
-        generateCurrentPage();
+        generateCurrentPage ();
         return true;
     }
-    else if (info.commandID == 13)
+    else if (info.commandID == generateNeeded)
     {
-        generateHtmlsIfNeeded();
+        generateHtmlsIfNeeded ();
         return true;
     }
     else
@@ -693,109 +692,117 @@ bool TopToolBar::perform(const InvocationInfo& info)
 }
 
 //=================================================================================================
-void TopToolBar::resetUiColour()
+void TopToolBar::resetUiColour ()
 {
-    if (AlertWindow::showOkCancelBox(AlertWindow::QuestionIcon, TRANS("Confirm"),
-                                     TRANS("Do you want to reset the UI's color?")))
+    if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),
+                                      TRANS ("Do you want to reset the UI's color?")))
     {
         // background colour
-        systemFile->setValue("uiBackground", Colour(0xffdcdbdb).toString());
-        getParentComponent()->repaint();
+        systemFile->setValue ("uiBackground", Colour (0xffdcdbdb).toString ());
+        getParentComponent ()->repaint ();
 
-        systemFile->setValue("uiTextColour", Colour(0xff303030).toString());
+        systemFile->setValue ("uiTextColour", Colour (0xff303030).toString ());
 
         // treeView
-        TreeViewItem* projectTreeItem = fileTreeContainer->getTreeView().getRootItem();
+        TreeViewItem* projectTreeItem = fileTreeContainer->getTreeView ().getRootItem ();
 
         if (projectTreeItem != nullptr)
-            projectTreeItem->repaintItem();
+            projectTreeItem->repaintItem ();
 
-        systemFile->saveIfNeeded();
+        systemFile->saveIfNeeded ();
     }
 }
 
 //=================================================================================================
-void TopToolBar::exportCurrentTpls()
+void TopToolBar::exportCurrentTpls ()
 {
-    const File& pFile(FileTreeContainer::projectFile);
+    const File& pFile (FileTreeContainer::projectFile);
     ZipFile::Builder builder;
 
     // theme
-    const String themeStr("themes" + File::separatorString + FileTreeContainer::projectTree.getProperty("render").toString());
-    const File& themeDir(pFile.getSiblingFile(themeStr));
+    const String themeStr ("themes" + File::separatorString + FileTreeContainer::projectTree.getProperty ("render").toString ());
+    const File& themeDir (pFile.getSiblingFile (themeStr));
 
     Array<File> themeFiles;
-    themeDir.findChildFiles(themeFiles, File::findFiles, false, "*");
+    themeDir.findChildFiles (themeFiles, File::findFiles, false, "*");
 
-    for (int i = themeFiles.size(); --i >= 0; )
+    for (int i = themeFiles.size (); --i >= 0; )
     {
         // here need check if include some OS system-file
-        if (themeFiles[i].getFileName() != "desktop.ini" && themeFiles[i].getFileName() != ".DS_Store")
-            builder.addFile(themeFiles[i], 9, themeStr + File::separatorString + themeFiles[i].getFileName());
+        if (themeFiles[i].getFileName () != "desktop.ini" && themeFiles[i].getFileName () != ".DS_Store")
+            builder.addFile (themeFiles[i], 9, themeStr + File::separatorString + themeFiles[i].getFileName ());
     }
 
     // add-in
-    const String addStr("site" + File::separatorString + "add-in");
-    const File& addDir(pFile.getSiblingFile(addStr));
+    const String addStr ("site" + File::separatorString + "add-in");
+    const File& addDir (pFile.getSiblingFile (addStr));
 
     Array<File> addFiles;
-    addDir.findChildFiles(addFiles, File::findFiles, false, "*");
+    addDir.findChildFiles (addFiles, File::findFiles, false, "*");
 
-    for (int i = addFiles.size(); --i >= 0; )
+    for (int i = addFiles.size (); --i >= 0; )
     {
         // here need check if include some OS system-file
-        if (addFiles[i].getFileName() != "desktop.ini" && themeFiles[i].getFileName() != ".DS_Store")
-            builder.addFile(addFiles[i], 9, addStr + File::separatorString + addFiles[i].getFileName());
+        if (addFiles[i].getFileName () != "desktop.ini" && themeFiles[i].getFileName () != ".DS_Store")
+            builder.addFile (addFiles[i], 9, addStr + File::separatorString + addFiles[i].getFileName ());
     }
-    
+
     // write to zip file
-    const File tplZip(pFile.getSiblingFile(pFile.getFileNameWithoutExtension() + ".wtpl"));
-    tplZip.deleteFile();
-    tplZip.create();
+    const File tplZip (pFile.getSiblingFile (pFile.getFileNameWithoutExtension () + ".wtpl"));
+    tplZip.deleteFile ();
+    tplZip.create ();
 
-    ScopedPointer<FileOutputStream> out = tplZip.createOutputStream();
-    
-    if (builder.writeToStream(*out, nullptr))
+    ScopedPointer<FileOutputStream> out = tplZip.createOutputStream ();
+
+    if (builder.writeToStream (*out, nullptr))
     {
-        out->flush();
+        out->flush ();
         out = nullptr;
-        SHOW_MESSAGE(TRANS("Export successful!"));
+        SHOW_MESSAGE (TRANS ("Export successful!"));
 
-        tplZip.revealToUser();
+        tplZip.revealToUser ();
     }
     else
-        SHOW_MESSAGE(TRANS("Somehow the export failed."));
+        SHOW_MESSAGE (TRANS ("Somehow the export failed."));
 }
 
 //=================================================================================================
-void TopToolBar::importExternalTpls()
+void TopToolBar::importExternalTpls ()
 {
-    FileChooser fc(TRANS("Open Template File..."), File::nonexistent, "*.wtpl", false);
+    FileChooser fc (TRANS ("Open Template File..."), File::nonexistent, "*.wtpl", false);
 
-    if (fc.browseForFileToOpen())
+    if (fc.browseForFileToOpen ())
     {
-        ZipFile zip(fc.getResult());
-        const bool notZip = zip.getNumEntries() < 1;
+        ZipFile zip (fc.getResult ());
+        const bool notZip = zip.getNumEntries () < 1;
 
-        String message(zip.uncompressTo(FileTreeContainer::projectFile.getParentDirectory()).getErrorMessage());
+        String message (zip.uncompressTo (FileTreeContainer::projectFile.getParentDirectory ()).getErrorMessage ());
 
         if (notZip)
-            message = TRANS("Invalid templates file.");
+            message = TRANS ("Invalid templates file.");
 
-        if (message.isNotEmpty() || notZip)
-            SHOW_MESSAGE(TRANS("Import failed:") + newLine + message);
+        if (message.isNotEmpty () || notZip)
+            SHOW_MESSAGE (TRANS ("Import failed:") + newLine + message);
         else
-            SHOW_MESSAGE(TRANS("Import successful!\nPlease regenerate the whole site if you want to use it."));
+            SHOW_MESSAGE (TRANS ("Import successful!\nPlease regenerate the whole site if you want to use it."));
     }
 
     // here should update the project-setup panel
-    fileTreeContainer->getTreeView().getRootItem()->setSelected(true, true);
-    editAndPreview->setProjectProperties(FileTreeContainer::projectTree);
+    fileTreeContainer->getTreeView ().getRootItem ()->setSelected (true, true);
+    editAndPreview->setProjectProperties (FileTreeContainer::projectTree);
 }
 
 //=================================================================================================
-void TopToolBar::releaseSystemTpls (const File& projectFile, const bool showMessage)
+void TopToolBar::releaseSystemTpls (const File& projectFile, const bool askAndShowMessage)
 {
+    if (askAndShowMessage)
+    {
+        if (!AlertWindow::showOkCancelBox (AlertWindow::WarningIcon, TRANS ("Confirm"),
+                                           TRANS ("This operate will overwrite your current templates!\n"
+                                                  "Do you really want to do it?")))
+            return;
+    }
+
     // release templates in 'themes/..' and css/js, image files in 'site/add-in'
     const File projectRoot (projectFile.getParentDirectory ());
     MemoryInputStream inputSteam (BinaryData::SiteData_zip, BinaryData::SiteData_zipSize, false);
@@ -818,7 +825,7 @@ void TopToolBar::releaseSystemTpls (const File& projectFile, const bool showMess
         releaseLogo = true;
     }
 
-    if (showMessage)
+    if (askAndShowMessage)
     {
         if (Result::ok () == unzip && releaseLogo)
             SHOW_MESSAGE (TRANS ("System TPLs reset/repair successful!"));
@@ -828,85 +835,85 @@ void TopToolBar::releaseSystemTpls (const File& projectFile, const bool showMess
 }
 
 //=================================================================================================
-void TopToolBar::setUiLanguage(const LanguageID& id)
+void TopToolBar::setUiLanguage (const LanguageID& id)
 {
-    languageStr = String();
-    LocalisedStrings::setCurrentMappings(nullptr);
+    languageStr = String ();
+    LocalisedStrings::setCurrentMappings (nullptr);
 
     if (id == Chinese)
     {
-        languageStr = MemoryBlock(BinaryData::transcn_h, BinaryData::transcn_hSize).toString();
-        LocalisedStrings::setCurrentMappings(new LocalisedStrings(languageStr, true));
+        languageStr = MemoryBlock (BinaryData::transcn_h, BinaryData::transcn_hSize).toString ();
+        LocalisedStrings::setCurrentMappings (new LocalisedStrings (languageStr, true));
     }
 
-    fileTreeContainer->getTreeView().moveSelectedRow(1);
-    fileTreeContainer->getTreeView().moveSelectedRow(-1);
+    fileTreeContainer->getTreeView ().moveSelectedRow (1);
+    fileTreeContainer->getTreeView ().moveSelectedRow (-1);
 
-    setEmptyTextOfSearchBox();
+    setEmptyTextOfSearchBox ();
 }
 
 //=================================================================================================
-void TopToolBar::setEmptyTextOfSearchBox()
+void TopToolBar::setEmptyTextOfSearchBox ()
 {
-    searchInProject->setTextToShowWhenEmpty(TRANS("Search in this project..."), Colour(0xff303030).withAlpha(0.6f));
-    searchInDoc->setTextToShowWhenEmpty(TRANS("Search in current document..."), Colour(0xff303030).withAlpha(0.6f));
+    searchInProject->setTextToShowWhenEmpty (TRANS ("Search in this project..."), Colour (0xff303030).withAlpha (0.6f));
+    searchInDoc->setTextToShowWhenEmpty (TRANS ("Search in current document..."), Colour (0xff303030).withAlpha (0.6f));
 
     // these 4 ugly staments for switch ui language without restart this app
-    searchInProject->setText(" ");
-    searchInDoc->setText(" ");
+    searchInProject->setText (" ");
+    searchInDoc->setText (" ");
 
-    searchInProject->setText(String());
-    searchInDoc->setText(String());
+    searchInProject->setText (String ());
+    searchInDoc->setText (String ());
 }
 
 //=================================================================================================
 void TopToolBar::cleanLocalMedias ()
 {
-	// exist medias
-	Array<File> allDirs;
-	Array<File> allMediasOnLocal;
-	FileTreeContainer::projectFile.getSiblingFile ("docs").findChildFiles (allDirs, File::findDirectories, true);
+    // exist medias
+    Array<File> allDirs;
+    Array<File> allMediasOnLocal;
+    FileTreeContainer::projectFile.getSiblingFile ("docs").findChildFiles (allDirs, File::findDirectories, true);
 
-	for (int i = allDirs.size () ; --i >= 0; )
-	{
-		if (allDirs[i].getFileName () != "media")
-			allDirs.remove (i);
-		else
-			allDirs[i].findChildFiles (allMediasOnLocal, File::findFiles, false);
-	}
+    for (int i = allDirs.size (); --i >= 0; )
+    {
+        if (allDirs[i].getFileName () != "media")
+            allDirs.remove (i);
+        else
+            allDirs[i].findChildFiles (allMediasOnLocal, File::findFiles, false);
+    }
 
-	// all medias in docs
-	Array<File> allDocs;
-	Array<File> allMediasInDocs;
-	FileTreeContainer::projectFile.getSiblingFile ("docs").findChildFiles (allDocs, File::findFiles, true);
-	
-	for (int i = allDocs.size(); --i >= 0; )
-		DocTreeViewItem::getMdMediaFiles (allDocs[i], allMediasInDocs);
+    // all medias in docs
+    Array<File> allDocs;
+    Array<File> allMediasInDocs;
+    FileTreeContainer::projectFile.getSiblingFile ("docs").findChildFiles (allDocs, File::findFiles, true);
 
-	allMediasOnLocal.removeValuesIn (allMediasInDocs);
+    for (int i = allDocs.size (); --i >= 0; )
+        DocTreeViewItem::getMdMediaFiles (allDocs[i], allMediasInDocs);
 
-	if (allMediasOnLocal.size () < 1)
-	{
-		SHOW_MESSAGE (TRANS ("Your project is very neat. \nNo need to clean it up."));
-	}
-	else
-	{
-		String extraFilesName;
+    allMediasOnLocal.removeValuesIn (allMediasInDocs);
 
-		for (int i = allMediasOnLocal.size (); --i >= 0; )
-			extraFilesName += "  - " + allMediasOnLocal[i].getFullPathName () + newLine;
+    if (allMediasOnLocal.size () < 1)
+    {
+        SHOW_MESSAGE (TRANS ("Your project is very neat. \nNo need to clean it up."));
+    }
+    else
+    {
+        String extraFilesName;
 
-		if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),
-			TRANS ("Find ") + String (allMediasOnLocal.size ()) + " " 
-			+TRANS ("redundant media-file(s):") + newLine
-			+ extraFilesName + newLine
-			+ TRANS ("Do you want to clean them up?")))
-		{
-			for (int i = allMediasOnLocal.size (); --i >= 0; )
-				allMediasOnLocal[i].moveToTrash ();
+        for (int i = allMediasOnLocal.size (); --i >= 0; )
+            extraFilesName += "  - " + allMediasOnLocal[i].getFullPathName () + newLine;
 
-			SHOW_MESSAGE (TRANS ("Local medias cleanup successful!"));
-		}
-	}
+        if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),
+                                          TRANS ("Find ") + String (allMediasOnLocal.size ()) + " "
+                                          + TRANS ("redundant media-file(s):") + newLine
+                                          + extraFilesName + newLine
+                                          + TRANS ("Do you want to clean them up?")))
+        {
+            for (int i = allMediasOnLocal.size (); --i >= 0; )
+                allMediasOnLocal[i].moveToTrash ();
+
+            SHOW_MESSAGE (TRANS ("Local medias cleanup successful!"));
+        }
+    }
 }
 

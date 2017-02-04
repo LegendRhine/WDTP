@@ -68,15 +68,25 @@ private:
 
     void exportCurrentTpls();
     void importExternalTpls();
-    static void releaseSystemTpls (const File& projectFile, const bool showMessage); 
+    static void releaseSystemTpls (const File& projectFile, const bool askAndShowMessage); 
 
     enum LanguageID { English = 0, Chinese = 1 };
     void setUiLanguage(const LanguageID& id);
     void setEmptyTextOfSearchBox();
 
     //==========================================================================
-    enum { prevAll, nextAll, prevPjt, nextPjt, 
-           view, system, width, totalBts };
+    enum BtIndex {
+        prevAll = 0, nextAll, prevPjt, nextPjt,
+        view, system, width, totalBts
+    };
+
+    enum MenuAndCmdIndex {
+        newPjt = 1, openPjt, closePjt, 
+        generateCurrent, generateNeeded, generateWhole, cleanUpLocal, 
+        exportTpl, importTpl, releaseSystemTpl, uiEnglish, uiChinese,
+        setUiColor, resetUiColor, gettingStarted, checkNewVersion, showAbout,
+        switchEdit, switchWidth
+    };
 
     /** When mouse enter the button, the cursor will change to a finger */
     class MyImageButton : public ImageButton

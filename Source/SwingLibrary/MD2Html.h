@@ -51,7 +51,13 @@ private:
 
         <blockquote>: "> " 
         <h1>: "# " will auto place in center. 
-        My custom define: center: ">|< ", right: ">>> " */
+
+        defined by WDTP: 
+         - center: ">|< "
+         - right: ">>> "
+         - diagram description: "^^ " (center at the line and font style is <h5>)
+           it could be placed under image or table, also could use it freely
+        */
     static const String processByLine (const String& mdString);
 
     /** http://xxx.com  open in new tab/window, must start with: " http" and end with " "   */
@@ -65,7 +71,7 @@ private:
 
     // only support two-level nested lists. + for ordered (true), - for unordered (false)
     static const String orderedListParse (const String& mdString, const bool isOrdered); 
-    
+
     static const String cleanUp (const String& mdString);
 
 };

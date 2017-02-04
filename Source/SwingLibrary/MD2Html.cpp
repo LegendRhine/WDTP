@@ -18,7 +18,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     if (mdString.isEmpty ())
         return String();
 
-    // parse markdown
+    // parse markdown, must followed by these order
     String htmlContent (mdString);
     htmlContent = tableParse (htmlContent);
     htmlContent = codeBlockParse (htmlContent);
@@ -257,6 +257,10 @@ const String Md2Html::processByLine (const String& mdString)
 
         else if (currentLine.trimStart ().substring (0, 4) == ">>> ")
             currentLine = "<div align=right>" + currentLine.substring (4) + "</div>";
+
+        // diagram description
+        else if (currentLine.trimStart ().substring (0, 3) == "^^ ")
+            currentLine = "<h5 align=center>" + currentLine.substring (3) + "</h5></div>";
     }
 
     return contentByLine.joinIntoString (newLine);
@@ -469,8 +473,8 @@ const String Md2Html::cleanUp (const String& mdString)
     // otherwise the vertical-gap will too wide
     resultStr = resultStr.replace (String ("<pre><code>") + newLine, "<pre><code>");
 
-    // give it a <p> after table, '<hr>' and '</code></pre>'
-    resultStr = resultStr.replace (String ("</table>") + newLine, "</table><p>");
+    // give it a <p> after '<hr>' and '</code></pre>'
+    //resultStr = resultStr.replace (String ("</table>") + newLine, "</table><p>");
     resultStr = resultStr.replace (String ("<hr>") + newLine, "<hr>\n<p>");
     resultStr = resultStr.replace (String ("</code></pre>") + newLine, "</code></pre>\n<p>");
 

@@ -364,6 +364,7 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (11, TRANS ("Tertiary Heading"));
         insertMenu.addSeparator ();
 
+        insertMenu.addItem (12, TRANS ("Image/Table Caption"));
         insertMenu.addItem (14, TRANS ("Separator"));
         insertMenu.addItem (15, TRANS ("Author and Date"));
         menu.addSubMenu (TRANS ("Insert"), insertMenu, docFile.existsAsFile());
@@ -533,6 +534,10 @@ void EditorForMd::performPopupMenuAction (int index)
     else if (11 == index) // third heading
     {
         content << newLine << "### ";
+    }
+    else if (12 == index) // image/table caption
+    {
+        content << newLine << "^^ ";
     }
     else if (14 == index) // separator
     {

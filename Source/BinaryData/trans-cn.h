@@ -276,3 +276,4 @@ countries: cn
 "Select the file you want to upload..." = "请选择要加载的文件..."
 "Table: " = "上表："
 "Image: " = "上图："
+"Image/Table Caption" = "图注/表注"

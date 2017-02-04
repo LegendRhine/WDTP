@@ -66,7 +66,8 @@ private:
     void setUiColour();
     void resetUiColour();
 
-    void exportCurrentTpls();
+    static void packProject ();  // the pack file's extension is ".wpck"
+    static void exportCurrentTpls();
     void importExternalTpls();
     static void releaseSystemTpls (const File& projectFile, const bool askAndShowMessage); 
 
@@ -81,7 +82,7 @@ private:
     };
 
     enum MenuAndCmdIndex {
-        newPjt = 1, openPjt, closePjt, 
+        newPjt = 1, openPjt, closePjt, packPjt, unpackPjt,
         generateCurrent, generateNeeded, generateWhole, cleanUpLocal, 
         exportTpl, importTpl, releaseSystemTpl, uiEnglish, uiChinese,
         setUiColor, resetUiColor, gettingStarted, checkNewVersion, showAbout,

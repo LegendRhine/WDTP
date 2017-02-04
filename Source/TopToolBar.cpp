@@ -320,6 +320,7 @@ void TopToolBar::popupSystemMenu ()
 {
     PopupMenu m;
     m.addItem (newPjt, TRANS ("New Project..."), true);
+    m.addItem (packPjt, TRANS ("Pack Project"), fileTreeContainer->hasLoadedProject ());
     m.addSeparator ();
 
     m.addItem (openPjt, TRANS ("Open Project..."), true);
@@ -392,6 +393,7 @@ void TopToolBar::popupSystemMenu ()
 void TopToolBar::menuPerform (const int index)
 {
     if (index == newPjt)                createNewProject ();
+    else if (index == packPjt)          packProject ();
     else if (index == closePjt)         closeProject ();
     else if (index == openPjt)          openProject ();
     else if (index == generateWhole)    cleanAndGenerateAll ();
@@ -714,6 +716,74 @@ void TopToolBar::resetUiColour ()
 }
 
 //=================================================================================================
+void TopToolBar::packProject ()
+{
+    const File& projectFile (FileTreeContainer::projectFile);
+    const String rootPath (projectFile.getParentDirectory ().getFullPathName () + File::separatorString);
+    ZipFile::Builder builder;
+
+    // add project file
+    builder.addFile (projectFile, 9, projectFile.getFileName ());
+
+    // add all doc files (include all doc-dirs)
+    const File& docsDir (projectFile.getSiblingFile ("docs"));
+    Array<File> docFiles;
+    docsDir.findChildFiles (docFiles, File::findFiles, true, "*"); 
+    
+    for (int i = docFiles.size (); --i >= 0; )
+    {
+        if (docFiles[i].getFileName () != "desktop.ini" && docFiles[i].getFileName () != ".DS_Store")
+            builder.addFile (docFiles[i], 9, docFiles[i].getFullPathName ().fromFirstOccurrenceOf (rootPath, false, false));
+    }
+    
+    // add current themes
+    const String themeStr ("themes" + File::separatorString + FileTreeContainer::projectTree.getProperty ("render").toString ());
+    const File& themeDir (projectFile.getSiblingFile (themeStr));
+
+    Array<File> themeFiles;
+    themeDir.findChildFiles (themeFiles, File::findFiles, false, "*");
+
+    for (int j = themeFiles.size (); --j >= 0; )
+    {
+        if (themeFiles[j].getFileName () != "desktop.ini" && themeFiles[j].getFileName () != ".DS_Store")
+            builder.addFile (themeFiles[j], 9, themeStr + File::separatorString + themeFiles[j].getFileName ());
+    }
+
+    // add add-in dir and all its files
+    const String addStr ("site" + File::separatorString + "add-in");
+    const File& addDir (projectFile.getSiblingFile (addStr));
+
+    Array<File> addFiles;
+    addDir.findChildFiles (addFiles, File::findFiles, false, "*");
+
+    for (int m = addFiles.size (); --m >= 0; )
+    {
+        if (addFiles[m].getFileName () != "desktop.ini" && themeFiles[m].getFileName () != ".DS_Store")
+            builder.addFile (addFiles[m], 9, addStr + File::separatorString + addFiles[m].getFileName ());
+    }
+
+    // write to zip file
+    const File packZipFile (projectFile.getSiblingFile (projectFile.getFileNameWithoutExtension () + ".wpck"));
+    packZipFile.deleteFile ();
+    packZipFile.create ();
+
+    ScopedPointer<FileOutputStream> out = packZipFile.createOutputStream ();
+
+    if (builder.writeToStream (*out, nullptr))
+    {
+        out->flush ();
+        out = nullptr;
+        SHOW_MESSAGE (TRANS ("The project's data pack successful!"));
+
+        packZipFile.revealToUser ();
+    }
+    else
+    {
+        SHOW_MESSAGE (TRANS ("Somehow the project's data pack failed."));
+    }
+}
+
+//=================================================================================================
 void TopToolBar::exportCurrentTpls ()
 {
     const File& pFile (FileTreeContainer::projectFile);
@@ -763,7 +833,9 @@ void TopToolBar::exportCurrentTpls ()
         tplZip.revealToUser ();
     }
     else
+    {
         SHOW_MESSAGE (TRANS ("Somehow the export failed."));
+    }
 }
 
 //=================================================================================================

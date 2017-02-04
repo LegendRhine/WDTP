@@ -281,3 +281,6 @@ countries: cn
 "System TPLs reset/repair successful!" = "系统模板重置/修复成功！"
 "System TPLs reset/repair failed!" = "系统模板重置/修复失败！"
 "This operate will overwrite your current templates!\nDo you really want to do it?" = "此操作将覆盖您当前的模板！\n是否继续？"
+"The project's data pack successful!" = "项目数据打包成功！"
+"Somehow the project's data pack failed." = "不知为何，项目数据打包失败了……"
+"Pack Project" = "项目打包"

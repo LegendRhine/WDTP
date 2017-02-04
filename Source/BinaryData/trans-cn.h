@@ -284,3 +284,5 @@ countries: cn
 "The project's data pack successful!" = "项目数据打包成功！"
 "Somehow the project's data pack failed." = "不知为何，项目数据打包失败了……"
 "Pack Project" = "项目打包"
+"Invalid packed project." = "无效的打包项目."
+"Unpack failed:" = "打包项目解包失败："

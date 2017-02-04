@@ -61,7 +61,7 @@ void FileTreeContainer::paint (Graphics& g)
 //=================================================================================================
 void FileTreeContainer::openProject (const File& project)
 {
-    // check if the file exists and could write
+    // check if the file exists and could write into
     if (!(project.existsAsFile () && project.hasWriteAccess ()))
     {
         AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS ("Message"),

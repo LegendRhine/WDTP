@@ -484,10 +484,50 @@ void TopToolBar::createNewProject ()
 //=================================================================================================
 void TopToolBar::openProject ()
 {
-    FileChooser fc (TRANS ("Open Project..."), File::nonexistent, "*.wdtp", false);
+    FileChooser fc (TRANS ("Open Project..."), File::nonexistent, "*.wdtp;*.wpck", false);
 
     if (fc.browseForFileToOpen ())
-        fileTreeContainer->openProject (fc.getResult ());
+    {
+        const File& projectFile (fc.getResult ());
+
+        // normal project
+        if (projectFile.getFileExtension () == ".wdtp")
+        {
+            fileTreeContainer->openProject (projectFile);
+        }
+
+        // packed project
+        else if (projectFile.getFileExtension () == ".wpck")  
+        {
+            ZipFile zip (projectFile);
+            const bool notZip = zip.getNumEntries () < 1;
+            const File unpackDir (projectFile.getSiblingFile (projectFile.getFileNameWithoutExtension ()));
+            String message (zip.uncompressTo (unpackDir).getErrorMessage ());
+
+            if (notZip)
+                message = TRANS ("Invalid packed project.");
+
+            if (message.isNotEmpty () || notZip)
+            {
+                SHOW_MESSAGE (TRANS ("Unpack failed:") + newLine + message);
+            }
+            else
+            {
+                // the project file after unpacked
+                const File pjtFile (unpackDir.getChildFile (projectFile.getFileNameWithoutExtension () + ".wdtp"));
+
+                if (fileTreeContainer->projectTree.isValid ())
+                {
+                    Process::openDocument (File::getSpecialLocation (File::currentApplicationFile).getFullPathName (),
+                                           pjtFile.getFullPathName ());
+                }
+                else
+                {
+                    fileTreeContainer->openProject (pjtFile);
+                }
+            }
+        }
+    }
 }
 
 //=================================================================================================

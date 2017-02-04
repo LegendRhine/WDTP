@@ -16,8 +16,9 @@ extern ApplicationCommandManager* cmdManager;
 const float imageTrans = 1.f;
 
 //==============================================================================
-TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
-    fileTreeContainer (f),
+TopToolBar::TopToolBar (FileTreeContainer* f, 
+                        EditAndPreview* e) 
+    : fileTreeContainer (f),
     editAndPreview (e)
 {
     jassert (fileTreeContainer != nullptr);
@@ -32,7 +33,6 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
     searchInProject->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha (0.6f));
     searchInProject->setScrollBarThickness (10);
     searchInProject->setFont (SwingUtilities::getFontSize () - 2.f);
-    //searchEditor->setTabKeyUsedAsCharacter(true);
 
     addAndMakeVisible (searchInDoc = new TextEditor ());
     searchInDoc->addListener (this);
@@ -42,7 +42,6 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
     searchInDoc->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha (0.6f));
     searchInDoc->setScrollBarThickness (10);
     searchInDoc->setFont (SwingUtilities::getFontSize () - 2.f);
-    //searchEditor->setTabKeyUsedAsCharacter(true);
 
     // ui language
     setUiLanguage ((LanguageID)systemFile->getIntValue ("language"));
@@ -103,6 +102,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                           imageTrans, Colour (0x00),
                           Image::null, 1.0f, Colour (0x00),
                           Image::null, 1.0f, Colours::darkcyan);
+
     bts[view]->setToggleState (true, dontSendNotification);
 
     bts[system]->setTooltip (TRANS ("Popup System Menu"));
@@ -120,12 +120,8 @@ TopToolBar::TopToolBar (FileTreeContainer* f, EditAndPreview* e) :
                            imageTrans, Colour (0x00),
                            Image::null, 1.0f, Colour (0x00),
                            Image::null, 1.0f, Colours::darkcyan);
-    bts[width]->setToggleState (true, dontSendNotification);
-}
 
-//=======================================================================
-TopToolBar::~TopToolBar ()
-{
+    bts[width]->setToggleState (true, dontSendNotification);
 }
 
 //=======================================================================
@@ -352,7 +348,8 @@ void TopToolBar::popupSystemMenu ()
 
     PopupMenu lanMenu;
     lanMenu.addItem (uiEnglish, "English", true, systemFile->getIntValue ("language") == 0);
-    lanMenu.addItem (uiChinese, CharPointer_UTF8 ("\xe4\xb8\xad\xe6\x96\x87"), true, systemFile->getIntValue ("language") == 1);
+    lanMenu.addItem (uiChinese, CharPointer_UTF8 ("\xe4\xb8\xad\xe6\x96\x87"), true, 
+                     systemFile->getIntValue ("language") == 1);
     m.addSubMenu (TRANS ("UI Language"), lanMenu);
 
     PopupMenu uiMenu;
@@ -367,8 +364,9 @@ void TopToolBar::popupSystemMenu ()
 
     // display the menu
     const int index = m.show ();
-
-    if (index >= 100 && index < 200)   // recently opened files..
+    
+    // recently opened files..
+    if (index >= 100 && index < 200)   
         fileTreeContainer->openProject (recentFiles.getFile (index - 100));
     else
         menuPerform (index);
@@ -491,8 +489,7 @@ void TopToolBar::cleanAndGenerateAll ()
                                       TRANS ("Do you really want to cleanup the whole site\n"
                                              "and then auto-regenerate them all?")))
     {
-        // move the add-in dir which inlcude style.css, code-highlight.js
-        // prevent it will be deleted
+        // move the add-in dir prevent it will be deleted
         const File addinDir (FileTreeContainer::projectFile.getSiblingFile ("site").getChildFile ("add-in"));
         const File tempDirForAddin (FileTreeContainer::projectFile.getSiblingFile ("add-in"));
         addinDir.copyDirectoryTo (tempDirForAddin);
@@ -567,8 +564,6 @@ void TopToolBar::generateCurrentPage ()
 void TopToolBar::setUiColour ()
 {
     bgColourSelector = new ColourSelectorWithPreset ();
-
-    //bgColourSelector->setColour(ColourSelector::backgroundColourId, Colour(0xffededed));
     bgColourSelector->setSize (450, 480);
     bgColourSelector->setCurrentColour (Colour::fromString (systemFile->getValue ("uiBackground")));
     bgColourSelector->addChangeListener (this);
@@ -602,7 +597,8 @@ void TopToolBar::changeListenerCallback (ChangeBroadcaster* source)
         if (projectTreeItem != nullptr)
             projectTreeItem->repaintItem ();
 
-        // setup panel
+        // change the setup panel's background color, but it seems extremely hard to do it
+        // so here need to be done in the future...
 
     }
 }
@@ -653,30 +649,17 @@ void TopToolBar::getCommandInfo (CommandID commandID, ApplicationCommandInfo& re
 //=================================================================================================
 bool TopToolBar::perform (const InvocationInfo& info)
 {
-    if (info.commandID == switchEdit)
+    switch (info.commandID)
     {
-        bts[view]->triggerClick ();
-        return true;
+    case switchEdit:        bts[view]->triggerClick ();     break;
+    case switchWidth:       bts[width]->triggerClick ();    break;
+    case generateCurrent:   generateCurrentPage ();         break;
+    case generateNeeded:    generateHtmlsIfNeeded ();       break;
+
+    default:                return false; 
     }
-    else if (info.commandID == switchWidth)
-    {
-        bts[width]->triggerClick ();
-        return true;
-    }
-    else if (info.commandID == generateCurrent)
-    {
-        generateCurrentPage ();
-        return true;
-    }
-    else if (info.commandID == generateNeeded)
-    {
-        generateHtmlsIfNeeded ();
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+
+    return true;
 }
 
 //=================================================================================================
@@ -719,11 +702,13 @@ void TopToolBar::packProject ()
     for (int i = docFiles.size (); --i >= 0; )
     {
         if (docFiles[i].getFileName () != "desktop.ini" && docFiles[i].getFileName () != ".DS_Store")
-            builder.addFile (docFiles[i], 9, docFiles[i].getFullPathName ().fromFirstOccurrenceOf (rootPath, false, false));
+            builder.addFile (docFiles[i], 9, 
+                             docFiles[i].getFullPathName ().fromFirstOccurrenceOf (rootPath, false, false));
     }
     
     // add current themes
-    const String themeStr ("themes" + File::separatorString + FileTreeContainer::projectTree.getProperty ("render").toString ());
+    const String themeStr ("themes" + 
+                           File::separatorString + FileTreeContainer::projectTree.getProperty ("render").toString ());
     const File& themeDir (projectFile.getSiblingFile (themeStr));
 
     Array<File> themeFiles;
@@ -776,7 +761,8 @@ void TopToolBar::exportCurrentTpls ()
     ZipFile::Builder builder;
 
     // theme
-    const String themeStr ("themes" + File::separatorString + FileTreeContainer::projectTree.getProperty ("render").toString ());
+    const String themeStr ("themes" + File::separatorString 
+                           + FileTreeContainer::projectTree.getProperty ("render").toString ());
     const File& themeDir (pFile.getSiblingFile (themeStr));
 
     Array<File> themeFiles;
@@ -913,13 +899,14 @@ void TopToolBar::setUiLanguage (const LanguageID& id)
 //=================================================================================================
 void TopToolBar::setEmptyTextOfSearchBox ()
 {
-    searchInProject->setTextToShowWhenEmpty (TRANS ("Search in this project..."), Colour (0xff303030).withAlpha (0.6f));
-    searchInDoc->setTextToShowWhenEmpty (TRANS ("Search in current document..."), Colour (0xff303030).withAlpha (0.6f));
+    searchInProject->setTextToShowWhenEmpty (TRANS ("Search in this project..."), 
+                                             Colour (0xff303030).withAlpha (0.6f));
+    searchInDoc->setTextToShowWhenEmpty (TRANS ("Search in current document..."), 
+                                         Colour (0xff303030).withAlpha (0.6f));
 
     // these 4 ugly staments for switch ui language without restart this app
     searchInProject->setText (" ");
     searchInDoc->setText (" ");
-
     searchInProject->setText (String ());
     searchInDoc->setText (String ());
 }

@@ -369,24 +369,9 @@ void TopToolBar::popupSystemMenu ()
     const int index = m.show ();
 
     if (index >= 100 && index < 200)   // recently opened files..
-    {
-        const File& project (recentFiles.getFile (index - 100));
-
-        if (fileTreeContainer->projectTree.isValid ())
-        {
-            if (project != FileTreeContainer::projectFile)
-                Process::openDocument (File::getSpecialLocation (File::currentApplicationFile).getFullPathName (),
-                                       project.getFullPathName ());
-        }
-        else
-        {
-            fileTreeContainer->openProject (project);
-        }
-    }
+        fileTreeContainer->openProject (recentFiles.getFile (index - 100));
     else
-    {
         menuPerform (index);
-    }
 }
 
 //=================================================================================================
@@ -407,6 +392,7 @@ void TopToolBar::menuPerform (const int index)
     else if (index == checkNewVersion)  URL ("http://underwaySoft.com/works/wdtp/download.html").launchInDefaultBrowser ();
     else if (index == showAbout)        SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2017");
 
+    // switch ui-language in realtime
     else if (index == uiEnglish)
     {
         systemFile->setValue ("language", 0);
@@ -487,47 +473,7 @@ void TopToolBar::openProject ()
     FileChooser fc (TRANS ("Open Project..."), File::nonexistent, "*.wdtp;*.wpck", false);
 
     if (fc.browseForFileToOpen ())
-    {
-        const File& projectFile (fc.getResult ());
-
-        // normal project
-        if (projectFile.getFileExtension () == ".wdtp")
-        {
-            fileTreeContainer->openProject (projectFile);
-        }
-
-        // packed project
-        else if (projectFile.getFileExtension () == ".wpck")  
-        {
-            ZipFile zip (projectFile);
-            const bool notZip = zip.getNumEntries () < 1;
-            const File unpackDir (projectFile.getSiblingFile (projectFile.getFileNameWithoutExtension ()));
-            String message (zip.uncompressTo (unpackDir).getErrorMessage ());
-
-            if (notZip)
-                message = TRANS ("Invalid packed project.");
-
-            if (message.isNotEmpty () || notZip)
-            {
-                SHOW_MESSAGE (TRANS ("Unpack failed:") + newLine + message);
-            }
-            else
-            {
-                // the project file after unpacked
-                const File pjtFile (unpackDir.getChildFile (projectFile.getFileNameWithoutExtension () + ".wdtp"));
-
-                if (fileTreeContainer->projectTree.isValid ())
-                {
-                    Process::openDocument (File::getSpecialLocation (File::currentApplicationFile).getFullPathName (),
-                                           pjtFile.getFullPathName ());
-                }
-                else
-                {
-                    fileTreeContainer->openProject (pjtFile);
-                }
-            }
-        }
-    }
+        fileTreeContainer->openProject (fc.getResult ());
 }
 
 //=================================================================================================

@@ -70,16 +70,35 @@ void FileTreeContainer::openProject (const File& project)
         return;
     }
 
-    // check if this project alreay opened, if not, initial the projectTree
-    if (project == projectFile)
+    File realProject = project;
+
+    // check if this is a normal project or a packed project
+    if (project.getFileExtension () == ".wpck")
     {
+
+        ZipFile zip (project);
+        const bool notZip = zip.getNumEntries () < 1;
+        const File unpackDir (project.getSiblingFile (project.getFileNameWithoutExtension ()));
+        String message (zip.uncompressTo (unpackDir).getErrorMessage ());
+
+        if (notZip)
+            message = TRANS ("Invalid packed project.");
+
+        if (message.isNotEmpty () || notZip)
+            SHOW_MESSAGE (TRANS ("Unpack failed:") + newLine + message);
+        else   // the project file after unpacked
+            realProject = unpackDir.getChildFile (project.getFileNameWithoutExtension () + ".wdtp");            
+    }
+
+    if (projectTree.isValid ())
+    {
+        Process::openDocument (File::getSpecialLocation (File::currentApplicationFile).getFullPathName (),
+                               realProject.getFullPathName ());
+
         return;
     }
-    else
-    {
-        closeProject ();
-        projectTree = SwingUtilities::readValueTreeFromFile (project);
-    }
+
+    projectTree = SwingUtilities::readValueTreeFromFile (realProject);
 
     // check if this is an vaild project file
     if (projectTree.getType ().toString () != "wdtpProject")
@@ -90,7 +109,7 @@ void FileTreeContainer::openProject (const File& project)
     }
 
     // load the project
-    projectFile = project;
+    projectFile = realProject;
     sorter = new ItemSorter (projectTree);
     docTreeItem = new DocTreeViewItem (projectTree, this, sorter);
     sorter->setTreeViewItem (docTreeItem);
@@ -103,14 +122,14 @@ void FileTreeContainer::openProject (const File& project)
     MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent ());
     jassert (mainWindow != nullptr);
     mainWindow->setName (JUCEApplication::getInstance ()->getApplicationName () + " - " +
-                         project.getFileNameWithoutExtension ());
+                         realProject.getFileNameWithoutExtension ());
 
     // add the project to recent opened file list
     RecentlyOpenedFilesList  recentFiles;
     recentFiles.setMaxNumberOfItems (10);
     recentFiles.removeNonExistentFiles ();
     recentFiles.restoreFromString (systemFile->getValue ("recentFiles"));
-    recentFiles.addFile (project);
+    recentFiles.addFile (realProject);
 
     systemFile->setValue ("recentFiles", recentFiles.toString ());
 }

@@ -459,7 +459,8 @@ void EditorForMd::performPopupMenuAction (int index)
             targetFile.create();
 
             if (f.copyFileTo (targetFile))
-                content << newLine << "![ ](media/" << targetFile.getFileName() << ")" << newLine;
+                content << newLine << "![ ](media/" << targetFile.getFileName() << ")" << newLine
+                << "^^ " << TRANS("Image: ");
             else
                 SHOW_MESSAGE (TRANS ("Can't insert this image: ") + newLine + f.getFullPathName());
         }
@@ -491,7 +492,8 @@ void EditorForMd::performPopupMenuAction (int index)
             << " 11 | 12 | 13 " << newLine
             << " 21 | 22 | 23 " << newLine
             << " 31 | 32 | 33 " << newLine
-            << " 41 | 42 | 43 " << newLine
+            << " 41 | 42 | 43 " << newLine << newLine
+            << "^^ " << TRANS ("Table: ")
             << newLine;
     }
     else if (4 == index) // Quotation

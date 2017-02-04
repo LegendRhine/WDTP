@@ -274,3 +274,5 @@ countries: cn
 "Do you want to save the changes to \"DCNM\"?" = "将已改变的数据保存到 \"DCNM\" 吗?"
 "Discard changes" = "放弃"
 "Select the file you want to upload..." = "请选择要加载的文件..."
+"Table: " = "上表："
+"Image: " = "上图："

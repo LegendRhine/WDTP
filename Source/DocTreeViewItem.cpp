@@ -174,7 +174,7 @@ const int DocTreeViewItem::getMdMediaFiles (const File& doc, Array<File>& files)
 
     const String htmlStr = Md2Html::imageParse (doc.loadFileAsString ());
 
-    if (htmlStr.trim () == String ())
+    if (htmlStr.trim ().isEmpty ())
         return 0;
 
     int indexStart = htmlStr.indexOfIgnoreCase (0, "src=\"");
@@ -463,11 +463,67 @@ void DocTreeViewItem::exportAsHtml ()
     }
 
     htmlFile.create ();
-        
-    if (exportDirDocsAsHtml (this, htmlFile))
+    
+    // create a md-text file temporarily, and gather all medias of this dir
+    File mdFile (File::getSpecialLocation (File::tempDirectory).getSiblingFile ("wdtpExport.md"));
+    mdFile.deleteFile ();
+    mdFile.create ();
+    Array<File> allMedias;
+            
+    if (getDirDocsAndAllMedias (this, mdFile, allMedias))
+    {
+        // generate the html file
+        const String titleStr (tree.getProperty ("title").toString ());
+        const String contentStr (Md2Html::mdStringToHtml (mdFile.loadFileAsString ()));
+
+        htmlFile.appendText ("<!doctype html>\n"
+                             "<html lang = \"en\">\n"
+                             "<head>\n"
+                             "<meta charset = \"UTF-8\">\n"
+                             "  <link rel = \"stylesheet\" type = \"text/css\" href = \"media/style.css\"/>\n"
+                             "  <script src = \"media/hl.js\"></script>\n"
+                             "  <script>hljs.initHighlightingOnLoad(); </script>\n"
+                             "<title>" + titleStr + "</title>\n"
+                             "</head>\n"
+                             "<body>\n\n" + contentStr + "\n\n"
+                             "</body>\n"
+                             "</html>");
+
+        // create its media folder and copy all medias into it
+        const File mediaDir (htmlFile.getSiblingFile ("media"));
+        mediaDir.createDirectory ();
+
+        for (int i = allMedias.size (); --i >= 0; )
+        {
+            const File targetFile (mediaDir.getChildFile (allMedias[i].getFileName ()));
+            targetFile.create ();
+            allMedias[i].copyFileTo (targetFile);
+        }
+
+        // copy stylesheet into the media folder
+        const File& styleCss (FileTreeContainer::projectFile.getSiblingFile ("site")
+                               .getChildFile ("add-in").getChildFile ("style.css"));
+
+        const File& hlJs (FileTreeContainer::projectFile.getSiblingFile ("site")
+                          .getChildFile ("add-in").getChildFile ("hl.js"));
+
+        const File targetCss (mediaDir.getChildFile (styleCss.getFileName ()));
+        const File targetJs (mediaDir.getChildFile (hlJs.getFileName ()));
+        targetCss.create ();
+        targetJs.create ();
+
+        styleCss.copyFileTo (targetCss);
+        hlJs.copyFileTo (targetJs);
+
+        // when all above has done, browse it in an external browser..
         htmlFile.startAsProcess ();
+    }
     else
+    {
         SHOW_MESSAGE (TRANS ("Export Failed."));
+    }
+
+    mdFile.deleteFile ();
 }
 
 //=================================================================================================
@@ -761,8 +817,9 @@ void DocTreeViewItem::getWordsAndImgNumsInDoc (const ValueTree& tree, int& words
 }
 
 //=================================================================================================
-const bool DocTreeViewItem::exportDirDocsAsHtml (DocTreeViewItem* item,
-                                            const File& fileAppendTo)
+const bool DocTreeViewItem::getDirDocsAndAllMedias (DocTreeViewItem* item,
+                                                    const File& mdFile,
+                                                    Array<File>& medias)
 {
     item->setOpen (true);
 
@@ -774,7 +831,7 @@ const bool DocTreeViewItem::exportDirDocsAsHtml (DocTreeViewItem* item,
             jassert (currentItem != nullptr);
 
             // recursive traversal
-            if (!exportDirDocsAsHtml (currentItem, fileAppendTo))
+            if (!getDirDocsAndAllMedias (currentItem, mdFile, medias))
                 return false;
         }
     }
@@ -783,7 +840,10 @@ const bool DocTreeViewItem::exportDirDocsAsHtml (DocTreeViewItem* item,
         const File& currentFile (getMdFileOrDir (item->getTree ()));
 
         if (currentFile.existsAsFile () && currentFile.getSize () > 0)
-            return fileAppendTo.appendText (currentFile.loadFileAsString ().trimEnd () + newLine + newLine);
+        {
+            getMdMediaFiles (currentFile, medias);
+            return mdFile.appendText (currentFile.loadFileAsString ().trimEnd () + newLine + newLine);
+        }
 
     }
 

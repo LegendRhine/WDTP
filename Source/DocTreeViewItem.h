@@ -78,15 +78,10 @@ public:
 
 private:
     //=========================================================================
-    /** export the selected item (include all its children docs) as a single html file. 
-        it'll auto-create the big html's media folder which sibling with the html file. 
-        
-        the result file doesn't apply any template but stylesheet. this means that the method
-        especially for export the result for other editor, eg. word, pages etc.  
-        
-        Note: the arg item must be a dir. */
-    static const bool exportDirDocsAsHtml (DocTreeViewItem* item,
-                                      const File& fileAppendTo);
+    /** for exportAsHtml. Note: the arg item must be a dir. */
+    static const bool getDirDocsAndAllMedias (DocTreeViewItem* item,
+                                              const File& mdFile,
+                                              Array<File>& medias);
 
     static DocTreeViewItem* getRootItem (DocTreeViewItem* subItem);
 
@@ -98,7 +93,7 @@ private:
     //=========================================================================
     void menuPerform (const int menuIndex);
     
-    void exportAsHtml ();  // internal call the static method exportDocsAsHtml()
+    void exportAsHtml (); 
     void renameSelectedItem ();
     void createNewDocument ();
     void createNewFolder ();

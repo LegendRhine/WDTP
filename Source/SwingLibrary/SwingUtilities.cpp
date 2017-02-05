@@ -12,18 +12,18 @@
 #include "SwingUtilities.h"
 
 //=================================================================================================
-void SwingUtilities::showAbout (const String& shortDescription, 
+void SwingUtilities::showAbout (const String& shortDescription,
                                 const String& copyrightYear)
 {
     SwingDialog* window = new SwingDialog (shortDescription);
 
-    window->addTextBlock (TRANS ("Author: ") + "SwingCoder" + newLine + 
+    window->addTextBlock (TRANS ("Author: ") + "SwingCoder" + newLine +
                           "underwaySoft@126.com" + newLine +
                           "QQ: 843775" + newLine + newLine +
-                          String(CharPointer_UTF8("\xc2\xa9")) + copyrightYear + " UnderwaySoft. " +
-                          TRANS("All Right Reserved.") + newLine +
+                          String (CharPointer_UTF8 ("\xc2\xa9")) + copyrightYear + " UnderwaySoft. " +
+                          TRANS ("All Right Reserved.") + newLine +
                           "=================================\n" +
-                          TRANS("Acknowledgements:") + newLine +
+                          TRANS ("Acknowledgements:") + newLine +
                           "  - Framework: JUCE (https://juce.com)\n" +
                           //"  - Library: cURL (https://curl.haxx.se)\n" +
                           "  - Mr. Chen Ping: (http://cpww601.blog.163.com)\n" +
@@ -34,8 +34,8 @@ void SwingUtilities::showAbout (const String& shortDescription,
     window->addCustomComponent (linkButton);
 
     window->setSize (400, 150);
-    window->showDialog (TRANS ("About ") + ProjectInfo::projectName + " " 
-		+ String (ProjectInfo::versionString));
+    window->showDialog (TRANS ("About ") + ProjectInfo::projectName + " "
+                        + String (ProjectInfo::versionString));
 }
 
 //=================================================================================================
@@ -43,7 +43,8 @@ void SwingUtilities::fixWindowsRegistry ()
 {
 #ifdef JUCE_WINDOWS
     // add a key which indicates our app's WebBroswerComponent will using IE-11 web-core
-    String keypath = "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\FeatureControl\\FEATURE_BROWSER_EMULATION\\";
+    String keypath = "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\"
+                     "FeatureControl\\FEATURE_BROWSER_EMULATION\\";
 
     // build the full path to the key
     String key = keypath + JUCEApplication::getInstance ()->getApplicationName () + ".exe";
@@ -60,7 +61,7 @@ void SwingUtilities::fixWindowsRegistry ()
         unsigned int sz = WindowsRegistry::getBinaryValue (key, data);
         if (sz == 4)             // DWORD
         {
-            uint32 val = *(unsigned int*) data.getData ();
+            uint32 val = *(unsigned int*)data.getData ();
             if (val == correctValue)
                 ok = true;
         }
@@ -74,7 +75,7 @@ void SwingUtilities::fixWindowsRegistry ()
 }
 
 //=================================================================================================
-const bool SwingUtilities::writeValueTreeToFile (const ValueTree& treeToWrite, 
+const bool SwingUtilities::writeValueTreeToFile (const ValueTree& treeToWrite,
                                                  const File& fileToWriteTo,
                                                  const bool usingGZipCompresData/* = false*/)
 {
@@ -90,7 +91,7 @@ const bool SwingUtilities::writeValueTreeToFile (const ValueTree& treeToWrite,
             out = new GZIPCompressorOutputStream (outputStream, 9, true);
         else
             out = outputStream;
-        
+
         if (out != nullptr)
         {
             treeToWrite.writeToStream (*out);
@@ -113,7 +114,7 @@ const ValueTree SwingUtilities::readValueTreeFromFile (const File& fileToReadFro
     if (fileInputStream != nullptr)
     {
         ScopedPointer<InputStream> input = nullptr;
-        
+
         if (usingGZipCompresData)
             input = new GZIPDecompressorInputStream (fileInputStream, true);
         else
@@ -158,11 +159,11 @@ const String SwingUtilities::getTimeStringWithSeparator (const String& dateAndTi
 
     return dateAndTimeString.substring (0, 4) + "." +
         dateAndTimeString.substring (4, 6) + "." +
-        dateAndTimeString.substring (6, 8) + 
+        dateAndTimeString.substring (6, 8) +
         (includeTime ? " " +
-         dateAndTimeString.substring (8, 10) + ":" + 
-         dateAndTimeString.substring (10, 12) + ":" + 
-         dateAndTimeString.substring (12, 14) : String());
+         dateAndTimeString.substring (8, 10) + ":" +
+         dateAndTimeString.substring (10, 12) + ":" +
+         dateAndTimeString.substring (12, 14) : String ());
 }
 
 //=================================================================================================
@@ -206,11 +207,11 @@ const Time SwingUtilities::getTimeFromString (const String& dateAndTimeString)
     if (dateAndTimeString.isEmpty ())
         return Time::getCurrentTime ();
 
-    const int year  = dateAndTimeString.substring (0, 4).getIntValue ();
+    const int year = dateAndTimeString.substring (0, 4).getIntValue ();
     const int month = dateAndTimeString.substring (4, 6).getIntValue ();
-    const int day   = dateAndTimeString.substring (6, 8).getIntValue ();
-    const int hour  = dateAndTimeString.substring (8, 10).getIntValue ();
-    const int mins  = dateAndTimeString.substring (10, 12).getIntValue ();
+    const int day = dateAndTimeString.substring (6, 8).getIntValue ();
+    const int hour = dateAndTimeString.substring (8, 10).getIntValue ();
+    const int mins = dateAndTimeString.substring (10, 12).getIntValue ();
 
     return Time (year, month - 1, day, hour, mins);
 }
@@ -236,7 +237,7 @@ const bool SwingUtilities::isTimeStringValid (const String& dateAndTimeString)
 //=================================================================================================
 const String SwingUtilities::getValidFileName (const String& originalStr)
 {
-    return originalStr.trim()
+    return originalStr.trim ()
         .replaceCharacter ('.', '-').replaceCharacter ('?', '-')
         .replaceCharacter ('*', '-').replaceCharacter ('/', '-')
         .replaceCharacter ('~', '-').replaceCharacter (':', '-')
@@ -248,11 +249,11 @@ const String SwingUtilities::getValidFileName (const String& originalStr)
 //==============================================================================
 SwingDialog::SwingDialog (const String& description) :
     logo (ImageCache::getFromMemory (BinaryData::logo_png, BinaryData::logo_pngSize))
-{    
+{
     addAndMakeVisible (titleLb = new Label (String::empty, description));
     titleLb->setColour (Label::textColourId, Colour (0xffb85c1a));
     titleLb->setJustificationType (Justification::centred);
-    titleLb->setFont (Font (SwingUtilities::getFontSize()));
+    titleLb->setFont (Font (SwingUtilities::getFontSize ()));
 }
 //=========================================================================
 SwingDialog::~SwingDialog ()
@@ -291,7 +292,8 @@ void SwingDialog::resized ()
             inputLbs[i]->setBounds (15, h, getWidth () - 30, 23);
             inputs[i]->setBounds (15, h + 23, getWidth () - 30, 25);
             h += 53;
-        } else
+        }
+        else
         {
             inputs[i]->setBounds (15, h, getWidth () - 30, 25);
             h += 30;
@@ -347,15 +349,15 @@ TextButton* SwingDialog::getButton (const String& btName)
 
 //=================================================================================================
 void SwingDialog::addTextEditor (const String& teName,
-                                       const String& content,
-                                       const String& tip,
-                                       const bool isPw,
-                                       const bool readOnly)
+                                 const String& content,
+                                 const String& tip,
+                                 const bool isPw,
+                                 const bool readOnly)
 {
     for (int i = inputs.size (); --i >= 0; )
         jassert (teName != inputs[i]->getName ());  // mustn't use the same name!
 
-                                                    // label tip
+    // label 
     Label* lb = new Label (String::empty, tip);
     inputLbs.add (lb);
     addAndMakeVisible (lb);
@@ -426,8 +428,8 @@ void SwingDialog::addTextBlock (const String& content)
     TextEditor* te = new TextEditor ();
     te->setFont (Font (SwingUtilities::getFontSize () - 3.0f));
     te->setReadOnly (true);
-    te->setColour (TextEditor::textColourId, Colour(0xff303030));
-    te->setColour (TextEditor::backgroundColourId, Colours::white.withAlpha(0.15f));
+    te->setColour (TextEditor::textColourId, Colour (0xff303030));
+    te->setColour (TextEditor::backgroundColourId, Colours::white.withAlpha (0.15f));
     te->setColour (TextEditor::highlightColourId, Colours::lightskyblue);
     //te->setColour (TextEditor::highlightedTextColourId, Colours::black);
     te->setScrollbarsShown (true);
@@ -520,5 +522,4 @@ void ColourSelectorWithPreset::setPresetDefaultColour ()
     colours.add (Colours::purple);
     colours.add (Colours::slategrey);
 }
-
 

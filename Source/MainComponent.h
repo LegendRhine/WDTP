@@ -16,21 +16,22 @@ class FileTreeContainer;
 class EditAndPreview;
 
 //==============================================================================
-class MainContentComponent   : public Component
+class MainContentComponent : public Component
 {
 public:
     //==============================================================================
-    MainContentComponent();
-    ~MainContentComponent();
+    MainContentComponent ();
+    ~MainContentComponent ();
 
     void paint (Graphics&) override;
-    void resized() override;    
+    void resized () override;
 
-    FileTreeContainer* getFileTree () const      { return fileTree; }
-    TopToolBar* getToolbar() const               { return toolBar; }
-    EditAndPreview* getEditAndPreview() const    { return editAndPreview; }
+    FileTreeContainer* getFileTree () const         { return fileTree; }
+    TopToolBar* getToolbar () const                 { return toolBar; }
+    EditAndPreview* getEditAndPreview () const      { return editAndPreview; }
 
-    const bool selectItemFromHtmlFile(const File& htmlFile);
+    /** transfer method */
+    const bool selectItemFromHtmlFile (const File& htmlFile);
 
 private:
     //=========================================================================
@@ -45,12 +46,13 @@ private:
 };
 
 //==============================================================================
+
 /** Main window on desktop */
 class MainWindow : public DocumentWindow
 {
 public:
-    MainWindow (String name);
-    ~MainWindow() { }
+    MainWindow (const String& name);
+    ~MainWindow ()  { }
 
     void closeButtonPressed () override;
     void openProject (const File& projectFile);

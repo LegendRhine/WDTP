@@ -16,7 +16,7 @@
 const String Md2Html::mdStringToHtml (const String& mdString)
 {
     if (mdString.isEmpty ())
-        return String();
+        return String ();
 
     // parse markdown, must followed by these order
     String htmlContent (mdString);
@@ -54,7 +54,7 @@ const String Md2Html::tableParse (const String& mdString)
         String& prevLine = contentByLine.getReference (i - 1);
         String& currentLine (contentByLine.getReference (i));
         String& nextLine = contentByLine.getReference (i + 1);
-        
+
         if (currentLine.substring (0, 6) == "------"
             && prevLine.contains (" | ")
             && nextLine.contains (" | "))
@@ -67,7 +67,7 @@ const String Md2Html::tableParse (const String& mdString)
 
             int rowNums = i + 1;
 
-            while (++rowNums < contentByLine.size())
+            while (++rowNums < contentByLine.size ())
             {
                 String& thisLine = contentByLine.getReference (rowNums);
 
@@ -80,7 +80,7 @@ const String Md2Html::tableParse (const String& mdString)
                     contentByLine.insert (rowNums, "</table>");
                     break;
                 }
-            }             
+            }
 
             i = rowNums;
         }
@@ -104,9 +104,9 @@ const String Md2Html::codeBlockParse (const String& mdString)
             break;
 
         const String mdCode (resultStr.substring (indexStart, indexEnd + 3));
-        const String htmlStr ("<pre><code>" 
-                              + mdCode.replace ("```", String())
-                              .replace ("*", "_%5x|z%!##!_") // for bold and italic parse
+        const String htmlStr ("<pre><code>"
+                              + mdCode.replace ("```", String ())
+                              .replace ("*", "_%5x|z%!##!_") // see cleanup(), prevent bold and italic parse it
                               + "</code></pre>");
 
         //DBG (htmlStr);
@@ -133,16 +133,11 @@ const String Md2Html::inlineCodeParse (const String& mdString)
         const String mdCode (resultStr.substring (indexStart, indexEnd + 1));
         const String htmlStr ("<code>" + mdCode.replace ("`", String ())
                               .replace ("*", "_%5x|z%!##!_") // for bold and italic parse
-                              /*.replace ("\"", "&quot;")
-                              .replace ("&", "&amp;")
-                              .replace ("<", "&lt;")
-                              .replace (">", "&gt;")
-                              .replace (" ", "&nbsp;")*/
-                              + "</code>");
+                              +"</code>");
 
         //DBG (htmlStr);
         if (!htmlStr.contains (newLine)) // must place in the same line            
-            resultStr = resultStr.replaceSection (indexStart, mdCode.length (), htmlStr);        
+            resultStr = resultStr.replaceSection (indexStart, mdCode.length (), htmlStr);
 
         indexStart = resultStr.indexOfIgnoreCase (indexStart + htmlStr.length (), "`");
     }
@@ -225,7 +220,7 @@ const String Md2Html::processByLine (const String& mdString)
         String& currentLine (contentByLine.getReference (i));
 
         // <hr>
-        if (currentLine.trimStart().substring (0, 3) == "---")
+        if (currentLine.trimStart ().substring (0, 3) == "---")
             currentLine = "<hr>";
 
         // <blockquote>
@@ -283,10 +278,10 @@ const String Md2Html::spaceLinkParse (const String& mdString)
         const String linkStr (" <a href=\"" + linkAddress + "\" target=\"_blank\">" + linkAddress + "</a>");
 
         //DBG (linkAddress);
-        if (!linkAddress.contains (newLine) && linkAddress.containsNonWhitespaceChars())
+        if (!linkAddress.contains (newLine) && linkAddress.containsNonWhitespaceChars ())
             resultStr = resultStr.replaceSection (indexStart, linkAddress.length () + 1, linkStr);
-        
-        indexStart = resultStr.indexOfIgnoreCase (indexStart + linkAddress.length(), " http");
+
+        indexStart = resultStr.indexOfIgnoreCase (indexStart + linkAddress.length (), " http");
     }
 
     return resultStr;
@@ -303,7 +298,7 @@ const String Md2Html::imageParse (const String& mdString)
     {
         // get alt content
         const int altEnd = resultStr.indexOfIgnoreCase (indexStart + 2, "](");
-        if (altEnd == -1)            break;        
+        if (altEnd == -1)            break;
         const String altContent (resultStr.substring (indexStart + 2, altEnd));
 
         // get img path
@@ -311,7 +306,7 @@ const String Md2Html::imageParse (const String& mdString)
         if (imgEnd == -1)            break;
         const String imgPath (resultStr.substring (altEnd + 2, imgEnd));
 
-        const String imgStr ("<div align=center><img src=\"" + imgPath + "\" alt=\"" 
+        const String imgStr ("<div align=center><img src=\"" + imgPath + "\" alt=\""
                              + altContent + "\" />" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, imgEnd + 1 - indexStart, imgStr);
@@ -362,10 +357,10 @@ const String Md2Html::orderedListParse (const String& mdString, const bool isOrd
     contentByLine.insert (0, "%%__ordered@List@Parse__%%");
     contentByLine.add ("%%__ordered@List@Parse__%%");
 
-    for (int i = 1; i < contentByLine.size() - 1; ++i)
+    for (int i = 1; i < contentByLine.size () - 1; ++i)
     {
         const String& prevLine = contentByLine.getReference (i - 1);
-        const String& nextLine = contentByLine.getReference (i + 1);        
+        const String& nextLine = contentByLine.getReference (i + 1);
         String& currentLine (contentByLine.getReference (i));
         String prefix, postfix;
 
@@ -390,8 +385,8 @@ const String Md2Html::orderedListParse (const String& mdString, const bool isOrd
         else if (currentLine.substring (0, 2) == listTag)
         {
             if (prevLine.substring (0, 2) != listTag
-                && prevLine.trimStart().substring (0, 4) != "<li>"
-                && prevLine.trimStart().substring (0, 4) != listStart)
+                && prevLine.trimStart ().substring (0, 4) != "<li>"
+                && prevLine.trimStart ().substring (0, 4) != listStart)
                 prefix = listStart;
             if (nextLine.substring (0, 2) != listTag
                 && nextLine.substring (0, 6) != nestTag)
@@ -399,10 +394,10 @@ const String Md2Html::orderedListParse (const String& mdString, const bool isOrd
 
             currentLine = prefix + "<li>" + currentLine.fromFirstOccurrenceOf (listTag, false, true) + "</li>" + postfix;
         }
-        
-        if ((currentLine.substring (0, 8) == "    <li>" 
+
+        if ((currentLine.substring (0, 8) == "    <li>"
              || currentLine.substring (0, 8) == nestedStart)
-            && currentLine.getLastCharacters(5) == listEnd
+            && currentLine.getLastCharacters (5) == listEnd
             && nextLine.substring (0, 2) != listTag)
         {
             currentLine += listEnd;
@@ -419,9 +414,9 @@ const String Md2Html::cleanUp (const String& mdString)
     // transform newLine to <p> and <br>
     String resultStr (mdString.replace ("_%5x|z%!##!_", "*") // for code parse
                       .replace (newLine + newLine, "<p>\n")
-                      .replace (newLine, "<br>\n")                            
+                      .replace (newLine, "<br>\n")
     );
-    
+
     // clean extra <br> when it's after any html-tag
     int indexBr = resultStr.indexOfIgnoreCase (0, "<br>");
 
@@ -433,37 +428,25 @@ const String Md2Html::cleanUp (const String& mdString)
         indexBr = resultStr.indexOfIgnoreCase (indexBr + 4, "<br>");
     }
 
-    // clean extra <p> when it's after any html-tag
-    /*int indexP = resultStr.indexOfIgnoreCase (0, "<p>");
-
-    while (indexP != -1)
-    {
-        if (resultStr.substring (indexP - 2, indexP).contains (">")
-            && !resultStr.substring (indexP - 8, indexP).contains ("</div>"))
-            resultStr = resultStr.replaceSection (indexP, 4, newLine);
-
-        indexP = resultStr.indexOfIgnoreCase (indexP + 3, "<p>");
-    }*/
-
     // clean extra <p> and <br> which is in code-block(s)
     int indexCodeStart = resultStr.indexOfIgnoreCase (0, "<pre><code>");
 
-    while (indexCodeStart != -1 && indexCodeStart + 16 <= resultStr.length())
+    while (indexCodeStart != -1 && indexCodeStart + 16 <= resultStr.length ())
     {
         const int indexCodeEnd = resultStr.indexOfIgnoreCase (indexCodeStart + 16, "</code></pre>");
 
         if (indexCodeEnd == -1)
             break;
 
-        const String mdCode (resultStr.substring (indexCodeStart, indexCodeEnd));        
-        const String codeHtml (mdCode.replace ("<p>", newLine).replace ("<br>", String()));
+        const String mdCode (resultStr.substring (indexCodeStart, indexCodeEnd));
+        const String codeHtml (mdCode.replace ("<p>", newLine).replace ("<br>", String ()));
 
         resultStr = resultStr.replaceSection (indexCodeStart, mdCode.length (), codeHtml);
         indexCodeStart = resultStr.indexOfIgnoreCase (indexCodeStart + 16, "<pre><code>");
     }
 
     // somehow, there's this ugly thing. dont know why.
-    resultStr = resultStr.replace("<pre><code>				", "<pre><code>");
+    resultStr = resultStr.replace ("<pre><code>				", "<pre><code>");
 
     // clean extra <br> and <p> which before <pre><code>
     resultStr = resultStr.replace ("<br>\n<pre>", newLine + "<pre>")
@@ -481,5 +464,4 @@ const String Md2Html::cleanUp (const String& mdString)
     //DBG (resultStr);
     return resultStr;
 }
-
 

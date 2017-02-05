@@ -16,15 +16,15 @@ struct Md2Html
 public:
     /** Base on the argu Markdown string, parse and return its html string. */
     static const String mdStringToHtml (const String& mdString);
-	    
+
 private:
     // call these methods must according to the below order
 
-    /** process table. doesn't support align MD-tag. 
-        It must at least 2 rows and 2 columns. 
-        
-        Markdown form:    
-                                     
+    /** process table. doesn't support align MD-tag.
+        It must at least 2 rows and 2 columns.
+
+        Markdown form:
+
     headOne | headTwo | headThree    -> at least one ' | ', how many ' | ' then the columns + 1
     ------------------------------   -> begin with and at least 6 '-' in the second line
     row-1-1 | row-1-2 |  row-1-3     -> divide cells by ' | '. if '|'s more than the head line's, the extra will be cut off
@@ -49,10 +49,10 @@ private:
         <hr>: "---", must at least 3 "-" and place in a single line.
         otherwise, all of the characters after it will be replaced to "<hr>".
 
-        <blockquote>: "> " 
-        <h1>: "# " will auto place in center. 
+        <blockquote>: "> "
+        <h1>: "# " will auto place in center.
 
-        defined by WDTP: 
+        defined by WDTP:
          - center: ">|< "
          - right: ">>> "
          - diagram description: "^^ " (center at the line and font style is <h5>)
@@ -60,22 +60,21 @@ private:
         */
     static const String processByLine (const String& mdString);
 
-    /** http://xxx.com  open in new tab/window, must start with: " http" and end with " "   */
+    /** http://xxx.com open in new tab/window, must start with: " http" and end with " "   */
     static const String spaceLinkParse (const String& mdString);
 
 public:
     static const String imageParse (const String& mdString);  /**< ![](media/xxx.jpg) */
 
 private:
-    static const String mdLinkParse (const String& mdString); /**< [](http://xxx.com) */    
+    static const String mdLinkParse (const String& mdString); /**< [](http://xxx.com) */
 
     // only support two-level nested lists. + for ordered (true), - for unordered (false)
-    static const String orderedListParse (const String& mdString, const bool isOrdered); 
+    static const String orderedListParse (const String& mdString, const bool isOrdered);
 
     static const String cleanUp (const String& mdString);
 
 };
-
 
 
 #endif  // MD2HTML_H_INCLUDED

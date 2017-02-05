@@ -44,16 +44,16 @@ bool DocTreeViewItem::mightContainSubItems ()
 //=================================================================================================
 String DocTreeViewItem::getUniqueName () const
 {
-    return tree.getProperty("name").toString();
+    return tree.getProperty ("name").toString ();
 }
 
 //=================================================================================================
 void DocTreeViewItem::itemOpennessChanged (bool isNowOpen)
 {
-    if (isNowOpen && getNumSubItems() == 0)
-        refreshDisplay();
+    if (isNowOpen && getNumSubItems () == 0)
+        refreshDisplay ();
     else
-        clearSubItems();
+        clearSubItems ();
 }
 
 //=================================================================================================
@@ -61,7 +61,7 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
 {
     g.setFont (SwingUtilities::getFontSize () - 2.f);
     int leftGap = 4;
-    Colour c (Colour::fromString(systemFile->getValue("uiTextColour")));
+    Colour c (Colour::fromString (systemFile->getValue ("uiTextColour")));
 
     if (!getMdFileOrDir (tree).exists ())
         c = Colours::red;
@@ -71,32 +71,32 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
     jassert (sorter != nullptr);
     String itemName;
 
-    if (sorter->getShowWhat () == 0 && tree.getType().toString() != "wdtpProject")  // file name
+    if (sorter->getShowWhat () == 0 && tree.getType ().toString () != "wdtpProject")  // file name
         itemName = tree.getProperty ("name").toString ();
 
-    else if (sorter->getShowWhat () == 1 || tree.getType().toString() == "wdtpProject") // title or intro
+    else if (sorter->getShowWhat () == 1 || tree.getType ().toString () == "wdtpProject") // title or intro
         itemName = tree.getProperty ("title").toString ();
 
     // mark of doc and dir item
     String markStr;
-    const bool needGenerate = (bool)tree.getProperty("needCreateHtml");
+    const bool needGenerate = (bool)tree.getProperty ("needCreateHtml");
 
-    if (!getMdFileOrDir(tree).exists())
-        markStr = CharPointer_UTF8(tree.getType().toString() == "doc" 
-                                   ? "\xe2\x97\x8f " : "\xe2\x96\xa0 ");
+    if (!getMdFileOrDir (tree).exists ())
+        markStr = CharPointer_UTF8 (tree.getType ().toString () == "doc"
+                                    ? "\xe2\x97\x8f " : "\xe2\x96\xa0 ");
     else
-        markStr = CharPointer_UTF8(needGenerate ? "* " :
-                  (tree.getType().toString() == "doc") ? "\xe2\x97\x8f " : "\xe2\x96\xa0 ");
-    
+        markStr = CharPointer_UTF8 (needGenerate ? "* " :
+        (tree.getType ().toString () == "doc") ? "\xe2\x97\x8f " : "\xe2\x96\xa0 ");
+
     g.drawText (markStr + itemName, leftGap, 0, width - 4, height, Justification::centredLeft, true);
 }
 
 //=================================================================================================
 const File DocTreeViewItem::getMdFileOrDir (const ValueTree& tree)
 {
-    if (!tree.isValid())
+    if (!tree.isValid ())
         return File::nonexistent;
-    
+
     const File& root (FileTreeContainer::projectFile.getSiblingFile ("docs"));
 
     if (tree.getType ().toString () == "wdtpProject")
@@ -108,7 +108,7 @@ const File DocTreeViewItem::getMdFileOrDir (const ValueTree& tree)
         String path = tree.getProperty ("name").toString ();
         ValueTree t (tree);
 
-        while (t.getParent().isValid() && t.getParent().getType().toString() != "wdtpProject")
+        while (t.getParent ().isValid () && t.getParent ().getType ().toString () != "wdtpProject")
         {
             t = t.getParent ();
             path = t.getProperty ("name").toString () + File::separator + path;
@@ -125,7 +125,7 @@ const File DocTreeViewItem::getMdFileOrDir (const ValueTree& tree)
 const File DocTreeViewItem::getHtmlFileOrDir (const File& mdFileOrDir)
 {
     if (mdFileOrDir.isDirectory ())
-        return File (mdFileOrDir.getFullPathName ().replace ("docs", "site")).getChildFile("index.html");
+        return File (mdFileOrDir.getFullPathName ().replace ("docs", "site")).getChildFile ("index.html");
     else
         return File (mdFileOrDir.getFullPathName ().replace ("docs", "site")).withFileExtension ("html");
 }
@@ -139,28 +139,28 @@ const File DocTreeViewItem::getHtmlFileOrDir (const ValueTree& tree)
 //=================================================================================================
 const int DocTreeViewItem::getHtmlMediaFiles (const File& htmlFile, Array<File>& files)
 {
-    jassert (htmlFile.existsAsFile());
-    const String htmlStr (htmlFile.loadFileAsString());
+    jassert (htmlFile.existsAsFile ());
+    const String htmlStr (htmlFile.loadFileAsString ());
 
-    if (htmlStr.trim() == String())
+    if (htmlStr.trim () == String ())
         return 0;
 
-    int indexStart = htmlStr.indexOfIgnoreCase(0, "src=\"");
-    int indexEnd = htmlStr.indexOfIgnoreCase(indexStart + 5, "\"");
+    int indexStart = htmlStr.indexOfIgnoreCase (0, "src=\"");
+    int indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
 
     while (indexStart != -1 && indexEnd != -1)
     {
-		const File& f (htmlFile.getSiblingFile ("media")
-			.getChildFile (htmlStr.substring (indexStart + 11, indexEnd) // 11: src="media/
-				.trimCharactersAtStart ("/")));
-		
-		if (f.existsAsFile () && f.getSize () > 0)
-			files.add (f);
+        const File& f (htmlFile.getSiblingFile ("media")
+                       .getChildFile (htmlStr.substring (indexStart + 11, indexEnd) // 11: src="media/
+                                      .trimCharactersAtStart ("/")));
 
-        indexStart = htmlStr.indexOfIgnoreCase(indexEnd + 2, "src=\"");
+        if (f.existsAsFile () && f.getSize () > 0)
+            files.add (f);
+
+        indexStart = htmlStr.indexOfIgnoreCase (indexEnd + 2, "src=\"");
 
         if (indexStart != -1)
-            indexEnd = htmlStr.indexOfIgnoreCase(indexStart + 5, "\"");
+            indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
     }
 
     return files.size ();
@@ -169,66 +169,66 @@ const int DocTreeViewItem::getHtmlMediaFiles (const File& htmlFile, Array<File>&
 //=================================================================================================
 const int DocTreeViewItem::getMdMediaFiles (const File& doc, Array<File>& files)
 {
-	if (doc.isDirectory () || ! doc.getSiblingFile("media").exists ())
-		return 0;
+    if (doc.isDirectory () || !doc.getSiblingFile ("media").exists ())
+        return 0;
 
-	const String htmlStr = Md2Html::imageParse (doc.loadFileAsString ());
+    const String htmlStr = Md2Html::imageParse (doc.loadFileAsString ());
 
-	if (htmlStr.trim () == String ())
-		return 0;
+    if (htmlStr.trim () == String ())
+        return 0;
 
-	int indexStart = htmlStr.indexOfIgnoreCase (0, "src=\"");
-	int indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
+    int indexStart = htmlStr.indexOfIgnoreCase (0, "src=\"");
+    int indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
 
-	while (indexStart != -1 && indexEnd != -1)
-	{
-		const File& f (doc.getSiblingFile ("media")
-			.getChildFile (htmlStr.substring (indexStart + 11, indexEnd) // 11: src="media/
-				.trimCharactersAtStart ("/")));
+    while (indexStart != -1 && indexEnd != -1)
+    {
+        const File& f (doc.getSiblingFile ("media")
+                       .getChildFile (htmlStr.substring (indexStart + 11, indexEnd) // 11: src="media/
+                                      .trimCharactersAtStart ("/")));
 
-		if (f.existsAsFile () && f.getSize () > 0)
-			files.add (f);
+        if (f.existsAsFile () && f.getSize () > 0)
+            files.add (f);
 
-		indexStart = htmlStr.indexOfIgnoreCase (indexEnd + 2, "src=\"");
+        indexStart = htmlStr.indexOfIgnoreCase (indexEnd + 2, "src=\"");
 
-		if (indexStart != -1)
-			indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
-	}
+        if (indexStart != -1)
+            indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
+    }
 
-	return files.size ();
+    return files.size ();
 }
 
 //=================================================================================================
 void DocTreeViewItem::needCreate (ValueTree tree)
 {
-    if (!tree.isValid())
+    if (!tree.isValid ())
         return;
 
     ValueTree parentTree = tree;
-    const String modifyDate(SwingUtilities::getTimeStringWithSeparator(SwingUtilities::getCurrentTimeString(), true));
+    const String modifyDate (SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), true));
 
-    parentTree.setProperty("needCreateHtml", true, nullptr);
-    parentTree.setProperty("modifyDate", modifyDate, nullptr);
+    parentTree.setProperty ("needCreateHtml", true, nullptr);
+    parentTree.setProperty ("modifyDate", modifyDate, nullptr);
 
-    while (parentTree.getParent().isValid ())
+    while (parentTree.getParent ().isValid ())
     {
         parentTree = parentTree.getParent ();
-        parentTree.setProperty("needCreateHtml", true, nullptr);
-        parentTree.setProperty("modifyDate", modifyDate, nullptr);
-	}
+        parentTree.setProperty ("needCreateHtml", true, nullptr);
+        parentTree.setProperty ("modifyDate", modifyDate, nullptr);
+    }
 
-    allChildrenNeedCreate(tree);    
+    allChildrenNeedCreate (tree);
 }
 
 //=================================================================================================
-void DocTreeViewItem::allChildrenNeedCreate(ValueTree tree)
+void DocTreeViewItem::allChildrenNeedCreate (ValueTree tree)
 {
-    tree.setProperty("needCreateHtml", true, nullptr);
+    tree.setProperty ("needCreateHtml", true, nullptr);
 
-    for (int i = tree.getNumChildren(); --i >= 0; )
+    for (int i = tree.getNumChildren (); --i >= 0; )
     {
-        tree.getChild(i).setProperty("needCreateHtml", true, nullptr);
-        allChildrenNeedCreate(tree.getChild(i));
+        tree.getChild (i).setProperty ("needCreateHtml", true, nullptr);
+        allChildrenNeedCreate (tree.getChild (i));
     }
 }
 
@@ -243,18 +243,18 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
         // set properties on the right side
         if (tree.getType ().toString () == "doc")
             editArea->setDocProperties (tree);
-        
+
         else if (tree.getType ().toString () == "dir")
             editArea->setDirProperties (tree);
-        
+
         else // root
-            editArea->setProjectProperties (tree);        
+            editArea->setProjectProperties (tree);
 
         // this must after setXxxProperties(), 
         // because startWork() will update the word count of this doc to setup-panel
-        editArea->startWork (tree); 
+        editArea->startWork (tree);
         treeContainer->setIdentityOfLastSelectedItem (getItemIdentifierString ());
-    }    
+    }
 }
 
 //=================================================================================================
@@ -272,13 +272,13 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
     if (e.mods.isPopupMenu ())
     {
         PopupMenu m;
-        m.addItem (1, TRANS ("New Folder..."), exist && !isDoc && onlyOneSelected 
-                   && !tree.getParent().getParent().getParent().isValid());  // at most 3 level dir
+        m.addItem (1, TRANS ("New Folder..."), exist && !isDoc && onlyOneSelected
+                   && !tree.getParent ().getParent ().getParent ().isValid ());  // at most 3 level dir
         m.addItem (2, TRANS ("New Document..."), exist && !isDoc && onlyOneSelected);
         m.addSeparator ();
 
-        m.addItem(4, TRANS("Export..."), exist && onlyOneSelected);
-        m.addItem(5, TRANS("Statistics..."), exist && onlyOneSelected);
+        m.addItem (4, TRANS ("Export..."), exist && onlyOneSelected);
+        m.addItem (5, TRANS ("Statistics..."), exist && onlyOneSelected);
         m.addSeparator ();
 
         PopupMenu sortMenu;
@@ -301,17 +301,17 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
         PopupMenu tooltipAsMenu;
         tooltipAsMenu.addItem (300, TRANS ("File Path"), true, sorter->getTooltipToShow () == 0);
-        tooltipAsMenu.addItem(301, TRANS("Title"), true, sorter->getTooltipToShow() == 1);
-        tooltipAsMenu.addItem(302, TRANS("Keywords"), true, sorter->getTooltipToShow() == 2);
-        tooltipAsMenu.addItem(303, TRANS("Description"), true, sorter->getTooltipToShow() == 3);
+        tooltipAsMenu.addItem (301, TRANS ("Title"), true, sorter->getTooltipToShow () == 1);
+        tooltipAsMenu.addItem (302, TRANS ("Keywords"), true, sorter->getTooltipToShow () == 2);
+        tooltipAsMenu.addItem (303, TRANS ("Description"), true, sorter->getTooltipToShow () == 3);
 
         m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu);
         m.addSeparator ();
 
-        m.addItem(9, TRANS("Replace Content..."), exist && onlyOneSelected);
-        m.addSeparator();
+        m.addItem (9, TRANS ("Replace Content..."), exist && onlyOneSelected);
+        m.addSeparator ();
 
-        m.addItem(10, TRANS("Rename..."), !isRoot && onlyOneSelected);
+        m.addItem (10, TRANS ("Rename..."), !isRoot && onlyOneSelected);
         m.addItem (12, TRANS ("Delete..."), !isRoot);
         m.addSeparator ();
 
@@ -329,15 +329,15 @@ void DocTreeViewItem::menuPerform (const int index)
     jassert (sorter != nullptr);
 
     if (index == 1)
-        createNewFolder();
+        createNewFolder ();
     else if (index == 2)
-        createNewDocument();
+        createNewDocument ();
     else if (index == 4)
-        exportAsMdFile();
+        exportAsMdFile ();
     else if (index == 5)
-        statistics();
+        statistics ();
     else if (index == 9)
-        replaceContent();
+        replaceContent ();
     else if (index == 10)
         renameSelectedItem ();
     else if (index == 12)
@@ -355,9 +355,9 @@ void DocTreeViewItem::menuPerform (const int index)
     else if (index >= 100 && index <= 105)
         sorter->setOrder (index - 100);
     else if (index == 106)
-        sorter->setAscending ((sorter->getAscending() == 0) ? 1 : 0);
+        sorter->setAscending ((sorter->getAscending () == 0) ? 1 : 0);
     else if (index == 107)
-        sorter->setWhichFirst ((sorter->getWhichFirst() == 0) ? 1 : 0);
+        sorter->setWhichFirst ((sorter->getWhichFirst () == 0) ? 1 : 0);
     else if (index >= 200 && index <= 202)
         sorter->setShowWhat (index - 200);
     else if (index >= 300 && index <= 303)
@@ -387,18 +387,18 @@ void DocTreeViewItem::renameSelectedItem ()
 
         if (newName.isEmpty ())
             newName = TRANS ("Untitled");
-        else if (newName == "index" || newName == "media" 
-			|| newName == "add-in" || newName == "docs" || newName == "site")
+        else if (newName == "index" || newName == "media"
+                 || newName == "add-in" || newName == "docs" || newName == "site")
             newName += "(2)";
 
-        File newDocFile (docFileOrDir.getSiblingFile (newName + (docFileOrDir.isDirectory() ? String() : ".md")));
+        File newDocFile (docFileOrDir.getSiblingFile (newName + (docFileOrDir.isDirectory () ? String () : ".md")));
         newDocFile = newDocFile.getNonexistentSibling (true);
 
         if (docFileOrDir.moveFileTo (newDocFile))
         {
             // save the project file
-            tree.setProperty ("name", newDocFile.getFileNameWithoutExtension (), nullptr);            
-            needCreate (tree.getType().toString() == "doc" ? tree : FileTreeContainer::projectTree);
+            tree.setProperty ("name", newDocFile.getFileNameWithoutExtension (), nullptr);
+            needCreate (tree.getType ().toString () == "doc" ? tree : FileTreeContainer::projectTree);
 
             // rename the site dir or html-file
             File siteOldFile;
@@ -415,13 +415,13 @@ void DocTreeViewItem::renameSelectedItem ()
                 siteNewFile = File (siteOldFile.getSiblingFile (newName + ".html")).getNonexistentSibling (true);
             }
 
-            if (siteOldFile.exists())
+            if (siteOldFile.exists ())
                 siteOldFile.moveFileTo (siteNewFile);
 
             // here must re-select this item
             setSelected (false, false, dontSendNotification);
             setSelected (true, true);
-            
+
             FileTreeContainer::saveProject ();
         }
         else
@@ -488,43 +488,43 @@ void DocTreeViewItem::createNewDocument ()
     AlertWindow dialog (TRANS ("Create a new document"), TRANS ("Please input the new doc's name."),
                         AlertWindow::InfoIcon);
 
-    dialog.addTextEditor ("name", String());
+    dialog.addTextEditor ("name", String ());
     dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
     dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
 
     if (0 == dialog.runModalLoop ())
     {
-        String docName (SwingUtilities::getValidFileName (dialog.getTextEditor ("name")->getText()));
+        String docName (SwingUtilities::getValidFileName (dialog.getTextEditor ("name")->getText ()));
 
         if (docName.isEmpty ())
             docName = TRANS ("Untitled");
         else if (docName == "index")
             docName = "index(2)";
-		else if (docName == "site")
-			docName = "site-doc";
-		else if (docName == "docs")
-			docName = "docs-1";
-		else if (docName == "media")
-			docName = "media-doc";
+        else if (docName == "site")
+            docName = "site-doc";
+        else if (docName == "docs")
+            docName = "docs-1";
+        else if (docName == "media")
+            docName = "media-doc";
 
         // create this doc on disk
         const File& thisDoc (getMdFileOrDir (tree).getChildFile (docName + ".md")
                              .getNonexistentSibling (true));
-        thisDoc.create();
+        thisDoc.create ();
         thisDoc.appendText ("# ");
 
         // valueTree of this doc
         ValueTree docTree ("doc");
-        docTree.setProperty ("name", thisDoc.getFileNameWithoutExtension(), nullptr);
-        docTree.setProperty ("title", String(), nullptr);
-        docTree.setProperty ("keywords", String(), nullptr);
+        docTree.setProperty ("name", thisDoc.getFileNameWithoutExtension (), nullptr);
+        docTree.setProperty ("title", String (), nullptr);
+        docTree.setProperty ("keywords", String (), nullptr);
         docTree.setProperty ("isMenu", false, nullptr);
         docTree.setProperty ("thumb", true, nullptr);
         docTree.setProperty ("tplFile", "article.html", nullptr);
-        docTree.setProperty ("createDate", 
-                             SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), true), 
+        docTree.setProperty ("createDate",
+                             SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), true),
                              nullptr);
-        
+
         // must update this tree before show this new item
         tree.removeListener (this);
         tree.addChild (docTree, 0, nullptr);
@@ -550,7 +550,7 @@ void DocTreeViewItem::createNewFolder ()
     AlertWindow dialog (TRANS ("Create a new folder"), TRANS ("Please input the new folder's name."),
                         AlertWindow::InfoIcon);
 
-    dialog.addTextEditor ("name", String());
+    dialog.addTextEditor ("name", String ());
     dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
     dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
 
@@ -565,11 +565,11 @@ void DocTreeViewItem::createNewFolder ()
 
         // create this dir on disk
         File thisDir (getMdFileOrDir (tree).getChildFile (dirName).getNonexistentSibling (true));
-        thisDir.createDirectory();
+        thisDir.createDirectory ();
 
         // dir tree
         ValueTree dirTree ("dir");
-        dirTree.setProperty ("name", thisDir.getFileNameWithoutExtension(), nullptr);
+        dirTree.setProperty ("name", thisDir.getFileNameWithoutExtension (), nullptr);
         dirTree.setProperty ("title", thisDir.getFileNameWithoutExtension (), nullptr);
         dirTree.setProperty ("isMenu", true, nullptr);
         dirTree.setProperty ("tplFile", "category.html", nullptr);
@@ -609,8 +609,8 @@ void DocTreeViewItem::deleteSelected ()
     }
 
     if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),
-                                       TRANS ("Do you really want to delete ") +
-                                       String (selectedTrees.size ()) +
+                                      TRANS ("Do you really want to delete ") +
+                                      String (selectedTrees.size ()) +
                                       TRANS (" selected item(s)? ") + newLine +
                                       TRANS ("This operation CANNOT be undone! ") + newLine + newLine +
                                       TRANS ("Tips: The deleted items could be found in OS's Recycle Bin. ")))
@@ -621,7 +621,7 @@ void DocTreeViewItem::deleteSelected ()
         for (int i = selectedTrees.size (); --i >= 0; )
         {
             ValueTree& v = *selectedTrees.getUnchecked (i);
-            needCreate (v.getType().toString() == "doc" ? v : FileTreeContainer::projectTree);
+            needCreate (v.getType ().toString () == "doc" ? v : FileTreeContainer::projectTree);
 
             if (v.getParent ().isValid ())
             {
@@ -633,12 +633,12 @@ void DocTreeViewItem::deleteSelected ()
 
                 for (int j = getHtmlMediaFiles (siteFile, htmlMedias); --j >= 0; )
                 {
-					const String mediaFileName (htmlMedias[j].getFullPathName ());
-					htmlMedias[j].moveToTrash ();
-					File (mediaFileName.replace ("site", "docs")).moveToTrash ();
+                    const String mediaFileName (htmlMedias[j].getFullPathName ());
+                    htmlMedias[j].moveToTrash ();
+                    File (mediaFileName.replace ("site", "docs")).moveToTrash ();
                 }
 
-				// delete the two-files
+                // delete the two-files
                 mdFile.moveToTrash ();
                 siteFile.deleteRecursively ();
                 v.getParent ().removeChild (v, nullptr);
@@ -650,61 +650,61 @@ void DocTreeViewItem::deleteSelected ()
 }
 
 //=================================================================================================
-void DocTreeViewItem::statistics()
+void DocTreeViewItem::statistics ()
 {
-    if (tree.getType().toString() == "doc")
+    if (tree.getType ().toString () == "doc")
     {
         int words = 0;
         int imgNums = 0;
-        getWordsAndImgNumsInDoc(tree, words, imgNums);
+        getWordsAndImgNumsInDoc (tree, words, imgNums);
 
-        AlertWindow::showMessageBox(AlertWindow::InfoIcon, TRANS("Statistics Info"),
-                                    TRANS("File:") + tree.getProperty("name").toString() + newLine
-                                    + TRANS("Title: ") + tree.getProperty("title").toString() + newLine + newLine
-                                    + TRANS("Words: ") + String(words) + newLine
-                                    + TRANS("Images: ") + String(imgNums));
-    } 
+        AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS ("Statistics Info"),
+                                     TRANS ("File:") + tree.getProperty ("name").toString () + newLine
+                                     + TRANS ("Title: ") + tree.getProperty ("title").toString () + newLine + newLine
+                                     + TRANS ("Words: ") + String (words) + newLine
+                                     + TRANS ("Images: ") + String (imgNums));
+    }
     else
     {
         int docNums = 0;
-        HtmlProcessor::getDocNumbersOfTheDir(tree, docNums);
+        HtmlProcessor::getDocNumbersOfTheDir (tree, docNums);
 
         int dirNums = -1;  // non-include itself
         int totalWords = 0;
         int totalImgs = 0;
 
-        statis(tree, dirNums, totalWords, totalImgs);
-        const String& name(tree.getType().toString() == "dir" ? TRANS("Dir Name: ") : TRANS("Project: "));
+        statis (tree, dirNums, totalWords, totalImgs);
+        const String& name (tree.getType ().toString () == "dir" ? TRANS ("Dir Name: ") : TRANS ("Project: "));
 
-        AlertWindow::showMessageBox(AlertWindow::InfoIcon, TRANS("Statistics Info"),
-                                    name + tree.getProperty("name").toString() + newLine
-                                    + TRANS("Title: ") + tree.getProperty("title").toString() + newLine + newLine
-                                    + TRANS("Sub-dirs: ") + String(dirNums) + newLine
-                                    + TRANS("Docs: ") + String(docNums) + newLine
-                                    + TRANS("Total Words: ") + String(totalWords) + newLine
-                                    + TRANS("Total Images: ") + String(totalImgs));
+        AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS ("Statistics Info"),
+                                     name + tree.getProperty ("name").toString () + newLine
+                                     + TRANS ("Title: ") + tree.getProperty ("title").toString () + newLine + newLine
+                                     + TRANS ("Sub-dirs: ") + String (dirNums) + newLine
+                                     + TRANS ("Docs: ") + String (docNums) + newLine
+                                     + TRANS ("Total Words: ") + String (totalWords) + newLine
+                                     + TRANS ("Total Images: ") + String (totalImgs));
     }
 }
 
 //=================================================================================================
-void DocTreeViewItem::replaceContent()
+void DocTreeViewItem::replaceContent ()
 {
-    if (tree.getType().toString() == "doc")
-        treeContainer->getEditAndPreview()->switchMode(false);
+    if (tree.getType ().toString () == "doc")
+        treeContainer->getEditAndPreview ()->switchMode (false);
 
-    ScopedPointer<ReplaceComponent> replaceComp = new ReplaceComponent(
-        treeContainer->getEditAndPreview()->getEditor(), tree);
+    ScopedPointer<ReplaceComponent> replaceComp = new ReplaceComponent (
+        treeContainer->getEditAndPreview ()->getEditor (), tree);
 
-    CallOutBox callOut(*replaceComp, treeContainer->getScreenBounds(), nullptr);
-    callOut.runModalLoop();    
+    CallOutBox callOut (*replaceComp, treeContainer->getScreenBounds (), nullptr);
+    callOut.runModalLoop ();
 }
 
 //=================================================================================================
 void DocTreeViewItem::refreshDisplay ()
 {
-    clearSubItems();
+    clearSubItems ();
 
-    for (int i = 0; i < tree.getNumChildren(); ++i)
+    for (int i = 0; i < tree.getNumChildren (); ++i)
     {
         DocTreeViewItem* itm = new DocTreeViewItem (tree.getChild (i), treeContainer, sorter);
         addSubItemSorted (*sorter, itm);
@@ -747,25 +747,25 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
 }
 
 //=================================================================================================
-void DocTreeViewItem::getWordsAndImgNumsInDoc(const ValueTree& tree, int& words, int& imgNums)
+void DocTreeViewItem::getWordsAndImgNumsInDoc (const ValueTree& tree, int& words, int& imgNums)
 {
-    const String& content(getMdFileOrDir(tree).loadFileAsString());
-    words = content.removeCharacters(" ").removeCharacters(newLine).length() + words;
-       
-    int index = content.indexOf(0, "![");
+    const String& content (getMdFileOrDir (tree).loadFileAsString ());
+    words = content.removeCharacters (" ").removeCharacters (newLine).length () + words;
+
+    int index = content.indexOf (0, "![");
 
     while (index != -1)
     {
         ++imgNums;
-        index = content.indexOf(index + 1, "![");
+        index = content.indexOf (index + 1, "![");
     }
 
-    index = content.indexOf(0, "<img src=");
+    index = content.indexOf (0, "<img src=");
 
     while (index != -1)
     {
         ++imgNums;
-        index = content.indexOf(index + 8, "<img src=");
+        index = content.indexOf (index + 8, "<img src=");
     }
 }
 
@@ -776,7 +776,7 @@ const bool DocTreeViewItem::exportDocsAsMd (DocTreeViewItem* item,
     item->setOpen (true);
 
     if (item->getNumSubItems () > 0)
-    {       
+    {
         for (int i = 0; i < item->getNumSubItems (); ++i)
         {
             DocTreeViewItem* currentItem = dynamic_cast<DocTreeViewItem*> (item->getSubItem (i));
@@ -789,7 +789,7 @@ const bool DocTreeViewItem::exportDocsAsMd (DocTreeViewItem* item,
     }
     else
     {
-        const File& currentFile (getMdFileOrDir (item->getTree()));
+        const File& currentFile (getMdFileOrDir (item->getTree ()));
 
         if (currentFile.existsAsFile () && currentFile.getSize () > 0)
             return fileAppendTo.appendText (currentFile.loadFileAsString ().trimEnd () + newLine + newLine);
@@ -811,18 +811,18 @@ DocTreeViewItem* DocTreeViewItem::getRootItem (DocTreeViewItem* subItem)
 }
 
 //=================================================================================================
-void DocTreeViewItem::statis(const ValueTree& tree, int& dirNums, int& totalWords, int& totalImgs)
+void DocTreeViewItem::statis (const ValueTree& tree, int& dirNums, int& totalWords, int& totalImgs)
 {
-    if (tree.getType().toString() == "doc")
+    if (tree.getType ().toString () == "doc")
     {
-        getWordsAndImgNumsInDoc(tree, totalWords, totalImgs);
+        getWordsAndImgNumsInDoc (tree, totalWords, totalImgs);
     }
     else
     {
         ++dirNums;
 
-        for (int i = tree.getNumChildren(); --i >= 0; )
-            statis(tree.getChild(i), dirNums, totalWords, totalImgs);
+        for (int i = tree.getNumChildren (); --i >= 0; )
+            statis (tree.getChild (i), dirNums, totalWords, totalImgs);
     }
 }
 
@@ -851,12 +851,12 @@ void DocTreeViewItem::itemDropped (const DragAndDropTarget::SourceDetails& detai
     if (details.description != "dragFileOrDir")
         return;
 
-    jassert (getMdFileOrDir (tree).isDirectory());
+    jassert (getMdFileOrDir (tree).isDirectory ());
 
     OwnedArray<ValueTree> selectedTrees;
-    TreeView* treeView = getOwnerView();
+    TreeView* treeView = getOwnerView ();
 
-    for (int i = 0; i < treeView->getNumSelectedItems(); ++i)
+    for (int i = 0; i < treeView->getNumSelectedItems (); ++i)
     {
         const DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (treeView->getSelectedItem (i));
         jassert (item != nullptr);
@@ -868,7 +868,7 @@ void DocTreeViewItem::itemDropped (const DragAndDropTarget::SourceDetails& detai
 }
 
 //=================================================================================================
-void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items, 
+void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items,
                                  ValueTree thisTree)
 {
     if (items.size () < 1)
@@ -907,21 +907,21 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items,
                 // move its media files first
                 Array<File> medias;
 
-                for (int j = getMdMediaFiles(thisFile, medias); --j >= 0; )
+                for (int j = getMdMediaFiles (thisFile, medias); --j >= 0; )
                 {
-                    const File& targetMediaFile(targetFile.getSiblingFile("media")
-                                                .getChildFile(medias[j].getFileName())
-                                                .getNonexistentSibling(true));
-                    targetMediaFile.create();
-                    medias[j].moveFileTo(targetMediaFile);
+                    const File& targetMediaFile (targetFile.getSiblingFile ("media")
+                                                 .getChildFile (medias[j].getFileName ())
+                                                 .getNonexistentSibling (true));
+                    targetMediaFile.create ();
+                    medias[j].moveFileTo (targetMediaFile);
 
                     // prevent same file name, so here need rename the media name of the doc
-                    const String& content(thisFile.loadFileAsString()
-                                          .replaceCharacters(medias[j].getFileName(), targetMediaFile.getFileName()));
-                    thisFile.replaceWithText(content);
+                    const String& content (thisFile.loadFileAsString ()
+                                           .replaceCharacters (medias[j].getFileName (), targetMediaFile.getFileName ()));
+                    thisFile.replaceWithText (content);
                 }
 
-                thisFile.deleteRecursively();
+                thisFile.deleteRecursively ();
 
                 v.getParent ().removeChild (v, nullptr);
                 needCreate (v.getParent ());
@@ -938,52 +938,52 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items,
     }
 
 #undef CHOICE_BOX
-    
+
     FileTreeContainer::saveProject ();
 }
 
 //=================================================================================================
 void DocTreeViewItem::paintHorizontalConnectingLine (Graphics& g, const Line<float>& line)
 {
-    g.setColour (Colour::fromString(systemFile->getValue("uiTextColour")).withAlpha(0.6f));
+    g.setColour (Colour::fromString (systemFile->getValue ("uiTextColour")).withAlpha (0.6f));
     g.drawLine (line);
 }
 
 //=================================================================================================
 void DocTreeViewItem::paintVerticalConnectingLine (Graphics& g, const Line<float>& line)
 {
-    g.setColour (Colour::fromString(systemFile->getValue("uiTextColour")).withAlpha(0.6f));
+    g.setColour (Colour::fromString (systemFile->getValue ("uiTextColour")).withAlpha (0.6f));
     g.drawLine (line);
 }
 
 //=================================================================================================
-void DocTreeViewItem::paintOpenCloseButton(Graphics& g, const Rectangle<float>& area, Colour, bool)
+void DocTreeViewItem::paintOpenCloseButton (Graphics& g, const Rectangle<float>& area, Colour, bool)
 {
     Path p;
-    p.addTriangle(0.0f, 0.0f, 1.0f, isOpen() ? 0.0f : 0.5f, isOpen() ? 0.5f : 0.0f, 1.0f);
+    p.addTriangle (0.0f, 0.0f, 1.0f, isOpen () ? 0.0f : 0.5f, isOpen () ? 0.5f : 0.0f, 1.0f);
 
-    g.setColour(Colour::fromString (systemFile->getValue("uiTextColour")).withAlpha(0.6f));
-    g.fillPath(p, p.getTransformToScaleToFit(area.reduced(2, area.getHeight() / 4), true));
+    g.setColour (Colour::fromString (systemFile->getValue ("uiTextColour")).withAlpha (0.6f));
+    g.fillPath (p, p.getTransformToScaleToFit (area.reduced (2, area.getHeight () / 4), true));
 }
 
 //=================================================================================================
 String DocTreeViewItem::getTooltip ()
 {
     // full path of file
-    if (sorter->getTooltipToShow() == 0)
-        return getMdFileOrDir (tree).getFullPathName();
+    if (sorter->getTooltipToShow () == 0)
+        return getMdFileOrDir (tree).getFullPathName ();
 
     // title
-    else if (sorter->getTooltipToShow() == 1) 
-        return tree.getProperty ("title").toString();
+    else if (sorter->getTooltipToShow () == 1)
+        return tree.getProperty ("title").toString ();
 
     // keywords
-    else if (sorter->getTooltipToShow() == 2)
-        return tree.getProperty("keywords").toString();
+    else if (sorter->getTooltipToShow () == 2)
+        return tree.getProperty ("keywords").toString ();
 
     // description
-    else if (sorter->getTooltipToShow() == 3)
-        return tree.getProperty("description").toString();
+    else if (sorter->getTooltipToShow () == 3)
+        return tree.getProperty ("description").toString ();
 
     return String ();
 }

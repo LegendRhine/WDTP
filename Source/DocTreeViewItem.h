@@ -13,7 +13,7 @@
 
 /** Repsent a doc, a dir or the project which showed in treeView. */
 class DocTreeViewItem : public TreeViewItem,
-                        private ValueTree::Listener
+    private ValueTree::Listener
 {
 public:
     DocTreeViewItem (const ValueTree& tree,
@@ -34,22 +34,22 @@ public:
 
     /** get a html-file's all local media files. the result will store in arg-2.
         return: media-files' number of this html-file. */
-	static const int getHtmlMediaFiles (const File& htmlFile, Array<File>& files);
+    static const int getHtmlMediaFiles (const File& htmlFile, Array<File>& files);
 
-	/** get a doc-file's all local media files. the result will store in arg-2.
-		return: media-files' number of this doc-file.	*/
-	static const int getMdMediaFiles (const File& doc, Array<File>& files);
+    /** get a doc-file's all local media files. the result will store in arg-2.
+        return: media-files' number of this doc-file.	*/
+    static const int getMdMediaFiles (const File& doc, Array<File>& files);
 
     /** set the arg tree and all its parents to needCreateHtml. */
     static void needCreate (ValueTree tree);
-    static void allChildrenNeedCreate(ValueTree tree);
+    static void allChildrenNeedCreate (ValueTree tree);
 
     // static public methods for drag-drop moving items..
-    static void moveItems (const OwnedArray<ValueTree>& items, 
+    static void moveItems (const OwnedArray<ValueTree>& items,
                            ValueTree newParent);
 
     void refreshDisplay ();
-    const ValueTree& getTree () const    { return tree; }
+    const ValueTree& getTree () const { return tree; }
 
     // override...
     virtual bool mightContainSubItems () override;
@@ -70,7 +70,7 @@ public:
     // draw line..
     virtual void paintHorizontalConnectingLine (Graphics&, const Line<float>& line) override;
     virtual void paintVerticalConnectingLine (Graphics&, const Line<float>& line) override;
-    virtual void paintOpenCloseButton(Graphics&, const Rectangle<float>&, Colour, bool) override;
+    virtual void paintOpenCloseButton (Graphics&, const Rectangle<float>&, Colour, bool) override;
 private:
     //=========================================================================
     /** export the selected item (all project-docs, a dir-docs or a doc) as a single md file. */
@@ -79,10 +79,10 @@ private:
 
     static DocTreeViewItem* getRootItem (DocTreeViewItem* subItem);
 
-    static void statis(const ValueTree& tree, 
-                       int& dirNums, 
-                       int& totalWords, 
-                       int& totalImgs);
+    static void statis (const ValueTree& tree,
+                        int& dirNums,
+                        int& totalWords,
+                        int& totalImgs);
 
     //=========================================================================
     void menuPerform (const int menuIndex);
@@ -93,16 +93,16 @@ private:
     void createNewDocument ();
     void createNewFolder ();
     void deleteSelected ();
-    void statistics();
-    void replaceContent();
-    static void getWordsAndImgNumsInDoc(const ValueTree& tree, int& words, int& imgNums);
+    void statistics ();
+    void replaceContent ();
+    static void getWordsAndImgNumsInDoc (const ValueTree& tree, int& words, int& imgNums);
 
     //=========================================================================
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
     void valueTreeChildAdded (ValueTree& parentTree, ValueTree&) override;
     void valueTreeChildRemoved (ValueTree& parentTree, ValueTree&, int) override;
     void valueTreeChildOrderChanged (ValueTree& parentTree, int, int) override;
-    void valueTreeParentChanged (ValueTree&) override    { }
+    void valueTreeParentChanged (ValueTree&) override { }
     void treeChildrenChanged (const ValueTree& parentTree);
 
     //=========================================================================
@@ -112,7 +112,7 @@ private:
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DocTreeViewItem)
 
-        
+
 };
 
 

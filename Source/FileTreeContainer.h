@@ -15,32 +15,34 @@ class FileTreeContainer;
 class DocTreeViewItem;
 
 //=========================================================================
-/** For sort items of class DocTreeViewItem. 
+/** For sort items of class DocTreeViewItem.
     Usage: create object, then call setTreeViewItem().
 */
 class ItemSorter : public Value::Listener
 {
 public:
     ItemSorter (ValueTree& tree);
-    ~ItemSorter();
+    ~ItemSorter ();
 
     void setTreeViewItem (DocTreeViewItem* item) { rootItem = item; }
 
     const int compareElements (TreeViewItem* first,
                                TreeViewItem* second) const;
 
-    const int getOrder() const              { return var (order);     }
-    const int getShowWhat() const           { return var (showWhat);  }
-    const int getTooltipToShow() const      { return var (tooltip);   }
-    const int getAscending()  const         { return var (ascending); }
-    const int getWhichFirst()  const        { return var (dirFirst);  }
+    //============================================================================
+    const int getOrder () const             { return var (order); }
+    const int getShowWhat () const          { return var (showWhat); }
+    const int getTooltipToShow () const     { return var (tooltip); }
+    const int getAscending ()  const        { return var (ascending); }
+    const int getWhichFirst ()  const       { return var (dirFirst); }
 
-    void setOrder (const int value)         { order.setValue (value);     }
-    void setShowWhat(const int value)       { showWhat.setValue (value);  }
-    void setTooltipToShow (const int value) { tooltip.setValue (value);   }
+    void setOrder (const int value)         { order.setValue (value); }
+    void setShowWhat (const int value)      { showWhat.setValue (value); }
+    void setTooltipToShow (const int value) { tooltip.setValue (value); }
     void setAscending (const int value)     { ascending.setValue (value); }
-    void setWhichFirst (const int value)    { dirFirst.setValue (value);  }
+    void setWhichFirst (const int value)    { dirFirst.setValue (value); }
 
+    /** update the file-tree ui and save the project */
     virtual void valueChanged (Value& value) override;
 
 private:
@@ -48,11 +50,7 @@ private:
     ValueTree& projectTree;
     DocTreeViewItem* rootItem = nullptr;
 
-    Value order;
-    Value showWhat;
-    Value tooltip;
-    Value ascending;
-    Value dirFirst;
+    Value order, showWhat, tooltip, ascending, dirFirst;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ItemSorter)
 };
@@ -60,30 +58,31 @@ private:
 //==============================================================================
 /** Showed in main interface's left.
 */
-class FileTreeContainer    : public Component,
-                             public DragAndDropContainer
+class FileTreeContainer : public Component,
+                          public DragAndDropContainer
 {
 public:
     FileTreeContainer (EditAndPreview* editAndPreview);
-    ~FileTreeContainer();
+    ~FileTreeContainer ();
 
     void resized () override;
     void paint (Graphics& g) override;
 
     void openProject (const File& projectFile);
-    void closeProject();
+    void closeProject ();
     const bool saveDocAndProject ();
+    const bool hasLoadedProject () const                    { return projectTree.isValid (); }
 
-    const bool hasLoadedProject () const                      { return projectTree.isValid(); }
-    TreeView& getTreeView()                                   { return fileTree; }
+    TreeView& getTreeView ()                                { return fileTree; }
+    EditAndPreview* getEditAndPreview () const              { return editAndPreview; }
 
-    EditAndPreview* getEditAndPreview () const                { return editAndPreview; }
-    void setIdentityOfLastSelectedItem (const String& str)    { lastItem = str; }
-    void selectIdentityItem();
+    void setIdentityOfLastSelectedItem (const String& str)  { lastItem = str; }
+    void selectIdentityItem ();
 
     static bool saveProject ();
-    const bool selectItemFromHtmlFile(const File& html);
+    const bool selectItemFromHtmlFile (const File& html);
 
+    // 2 core static objects. this's a BAD design I totally know that but it's handy :)
     static File projectFile;
     static ValueTree projectTree;
 

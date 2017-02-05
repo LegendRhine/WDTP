@@ -12,24 +12,25 @@ Author:  SwingCoder
 #define __JUCE_HEADER_F48CB1E948F7606E__
 
 //==============================================================================
-/** Replace component */
-class ReplaceComponent  : public Component,
-                          public ButtonListener
+/** This component used for replace all the matched-content in an item (valueTree) */
+class ReplaceComponent : public Component,
+                         public ButtonListener
 {
 public:
     //==============================================================================
     ReplaceComponent (TextEditor* editor, ValueTree& tree);
-    ~ReplaceComponent();    
+    ~ReplaceComponent () { }
 
     void paint (Graphics& g) override;
-    void resized() override;
-    void buttonClicked (Button* buttonThatWasClicked) override;    
+    void resized () override;
+    void buttonClicked (Button* buttonThatWasClicked) override;
 
 private:
     //=================================================================================================
-    void replaceContent(ValueTree tree_, 
-                        const String& originalText, 
-                        const String& replaceText);
+    /** recursive method */
+    void replaceContent (ValueTree tree_,
+                         const String& originalText,
+                         const String& replaceText);
 
     ValueTree tree;
     TextEditor* editor;

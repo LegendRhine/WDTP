@@ -13,25 +13,25 @@
 extern PropertiesFile* systemFile;
 
 //==============================================================================
-SetupPanel::SetupPanel (EditAndPreview* ed) :
-    editor (ed)
+SetupPanel::SetupPanel (EditAndPreview* ed) 
+    : editor (ed)
 {
     jassert (systemFile != nullptr);
-    
-    for (int i = totalValues; --i >= 0; )   
-        values.add (new Value());
-     
-    addAndMakeVisible (panel = new PropertyPanel());
-    panel->setMessageWhenEmpty(String());
-    panel->getViewport().setScrollBarThickness (10);  
+
+    for (int i = totalValues; --i >= 0; )
+        values.add (new Value ());
+
+    addAndMakeVisible (panel = new PropertyPanel ());
+    panel->setMessageWhenEmpty (String ());
+    panel->getViewport ().setScrollBarThickness (10);
 }
 
 //=========================================================================
-SetupPanel::~SetupPanel()
+SetupPanel::~SetupPanel ()
 {
-    valuesRemoveListener();
-    stopTimer();
-    savePropertiesIfNeeded();
+    valuesRemoveListener ();
+    stopTimer ();
+    savePropertiesIfNeeded ();
 }
 
 //=================================================================================================
@@ -49,10 +49,10 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     values[copyrightInfo]->setValue (pTree.getProperty ("copyright"));
     values[projectRenderDir]->setValue (pTree.getProperty ("render"));
     values[indexTpl]->setValue (pTree.getProperty ("tplFile"));
-    values[projectJs]->setValue(pTree.getProperty("js"));
-    values[ad]->setValue(pTree.getProperty("ad"));
-    values[contact]->setValue(pTree.getProperty("contact"));
-    
+    values[projectJs]->setValue (pTree.getProperty ("js"));
+    values[ad]->setValue (pTree.getProperty ("ad"));
+    values[contact]->setValue (pTree.getProperty ("contact"));
+
     Array<PropertyComponent*> projectProperties;
 
     projectProperties.add (new TextPropertyComponent (*values[projectTitle], TRANS ("Title: "), 0, false));
@@ -88,7 +88,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     {
         const File renderDir (FileTreeContainer::projectFile
                               .getSiblingFile ("themes")
-                              .getChildFile(pTree.getProperty("render").toString()));
+                              .getChildFile (pTree.getProperty ("render").toString ()));
         Array<File> tplFiles;
         renderDir.findChildFiles (tplFiles, File::findFiles, false, "*.html");
 
@@ -102,20 +102,21 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     projectProperties.add (new ChoicePropertyComponent (*values[indexTpl], TRANS ("Render TPL: "),
                                                         tplFileSa, tplFileVar));
 
-    projectProperties.add(new TextPropertyComponent(*values[projectJs], "JavaScript: ", 0, true));
-    projectProperties.add(new TextPropertyComponent(*values[ad], TRANS("Advertisement: "), 0, true));
-    projectProperties.add(new TextPropertyComponent(*values[contact], TRANS("Contact Info: "), 0, true));
-    projectProperties.add(new TextPropertyComponent(*values[copyrightInfo], TRANS("Copyright: "), 0, true));
-    projectProperties.add(new TextPropertyComponent(Value(pTree.getProperty("modifyDate")), TRANS("Last Modified: "), 0, false));
-	
+    projectProperties.add (new TextPropertyComponent (*values[projectJs], "JavaScript: ", 0, true));
+    projectProperties.add (new TextPropertyComponent (*values[ad], TRANS ("Advertisement: "), 0, true));
+    projectProperties.add (new TextPropertyComponent (*values[contact], TRANS ("Contact Info: "), 0, true));
+    projectProperties.add (new TextPropertyComponent (*values[copyrightInfo], TRANS ("Copyright: "), 0, true));
+    projectProperties.add (new TextPropertyComponent (Value (pTree.getProperty ("modifyDate")), 
+                                                      TRANS ("Last Modified: "), 0, false));
+
     for (auto p : projectProperties)  p->setPreferredHeight (28);
     projectProperties[2]->setPreferredHeight (28 * 3);
-    projectProperties[6]->setPreferredHeight(28 * 3);
-    projectProperties[7]->setPreferredHeight(28 * 3);
-    projectProperties[8]->setPreferredHeight(28 * 3);
-    projectProperties[9]->setPreferredHeight(28 * 3);
-    projectProperties[10]->setEnabled(false);
-    
+    projectProperties[6]->setPreferredHeight (28 * 3);
+    projectProperties[7]->setPreferredHeight (28 * 3);
+    projectProperties[8]->setPreferredHeight (28 * 3);
+    projectProperties[9]->setPreferredHeight (28 * 3);
+    projectProperties[10]->setEnabled (false);
+
     panel->addSection (TRANS ("Project Setup"), projectProperties);
     valuesAddListener ();
 }
@@ -136,8 +137,8 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     values[dirTpl]->setValue (currentTree.getProperty ("tplFile"));
     values[dirJs]->setValue (currentTree.getProperty ("js"));
     values[dirCreateDate]->setValue (currentTree.getProperty ("createDate"));
-	values[dirModifyDate]->setValue (currentTree.getProperty ("modifyDate"));
-    
+    values[dirModifyDate]->setValue (currentTree.getProperty ("modifyDate"));
+
     Array<PropertyComponent*> dirProperties;
     dirProperties.add (new TextPropertyComponent (*values[dirName], TRANS ("Name: "), 0, false));
     dirProperties.add (new TextPropertyComponent (*values[dirTitle], TRANS ("Title: "), 0, false));
@@ -166,21 +167,21 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     }
 
     dirProperties.add (new ChoicePropertyComponent (*values[dirTpl], TRANS ("Render TPL: "), tplFileSa, tplFileVar));
-    dirProperties.add(new TextPropertyComponent(*values[dirCreateDate], TRANS("Create Date: "), 0, false));
-    dirProperties.add(new TextPropertyComponent(*values[dirModifyDate], TRANS("Last Modified: "), 0, false));
+    dirProperties.add (new TextPropertyComponent (*values[dirCreateDate], TRANS ("Create Date: "), 0, false));
+    dirProperties.add (new TextPropertyComponent (*values[dirModifyDate], TRANS ("Last Modified: "), 0, false));
 
     for (auto p : dirProperties)
         p->setPreferredHeight (28);
 
-    dirProperties[0]->setEnabled(false);
+    dirProperties[0]->setEnabled (false);
 
     // 2 level menu, otherwise, it cannot be a site menu
-    dirProperties[4]->setEnabled(currentTree.getParent().getType().toString() == "wdtpProject"
-                                 || currentTree.getParent().getParent().getType().toString() == "wdtpProject");
+    dirProperties[4]->setEnabled (currentTree.getParent ().getType ().toString () == "wdtpProject"
+                                  || currentTree.getParent ().getParent ().getType ().toString () == "wdtpProject");
 
     dirProperties[3]->setPreferredHeight (28 * 3);
     dirProperties[5]->setPreferredHeight (28 * 5);
-    
+
     panel->addSection (TRANS ("Folder Setup"), dirProperties);
     valuesAddListener ();
 }
@@ -201,9 +202,9 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     values[docTpl]->setValue (currentTree.getProperty ("tplFile"));
     values[docJs]->setValue (currentTree.getProperty ("js"));
     values[docCreateDate]->setValue (currentTree.getProperty ("createDate"));
-    values[docModifyDate]->setValue(currentTree.getProperty("modifyDate"));
-    values[thumb]->setValue(currentTree.getProperty("thumb"));
-    values[thumbName]->setValue(currentTree.getProperty("thumbName"));
+    values[docModifyDate]->setValue (currentTree.getProperty ("modifyDate"));
+    values[thumb]->setValue (currentTree.getProperty ("thumb"));
+    values[thumbName]->setValue (currentTree.getProperty ("thumbName"));
 
     Array<PropertyComponent*> docProperties;
     docProperties.add (new TextPropertyComponent (*values[docName], TRANS ("Name: "), 0, false));
@@ -234,45 +235,46 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
 
     docProperties.add (new ChoicePropertyComponent (*values[docTpl], TRANS ("Render TPL: "),
                                                     tplFileSa, tplFileVar));
-    docProperties.add(new TextPropertyComponent(*values[docCreateDate], TRANS("Create Date: "), 0, false));
-    docProperties.add(new TextPropertyComponent(*values[docModifyDate], TRANS("Last Modified: "), 0, false));
-    docProperties.add(new TextPropertyComponent(*values[wordCount], TRANS("Word Count: "), 0, false));
-    docProperties.add(new BooleanPropertyComponent(*values[thumb], TRANS("Title Image: "), TRANS("Yes")));
+    docProperties.add (new TextPropertyComponent (*values[docCreateDate], TRANS ("Create Date: "), 0, false));
+    docProperties.add (new TextPropertyComponent (*values[docModifyDate], TRANS ("Last Modified: "), 0, false));
+    docProperties.add (new TextPropertyComponent (*values[wordCount], TRANS ("Word Count: "), 0, false));
+    docProperties.add (new BooleanPropertyComponent (*values[thumb], TRANS ("Title Image: "), TRANS ("Yes")));
 
     // images in this doc
     StringArray imgFileSa;
     Array<var> imgFileVar;
-    const String mdContent(DocTreeViewItem::getMdFileOrDir(currentTree).loadFileAsString());
-    int indexStart = mdContent.indexOfIgnoreCase(0, "![");
+    const String mdContent (DocTreeViewItem::getMdFileOrDir (currentTree).loadFileAsString ());
+    int indexStart = mdContent.indexOfIgnoreCase (0, "![");
 
     while (indexStart != -1)
     {
         // jump alt content and get img path
-        const int altEnd = mdContent.indexOfIgnoreCase(indexStart + 2, "](");
+        const int altEnd = mdContent.indexOfIgnoreCase (indexStart + 2, "](");
         if (altEnd == -1)            break;
-        const int imgEnd = mdContent.indexOfIgnoreCase(altEnd + 2, ")");
+
+        const int imgEnd = mdContent.indexOfIgnoreCase (altEnd + 2, ")");
         if (imgEnd == -1)            break;
 
-        const String imgPath(mdContent.substring(altEnd + 2, imgEnd));
-        imgFileSa.add(imgPath);
-        imgFileVar.add(imgPath);
+        const String imgPath (mdContent.substring (altEnd + 2, imgEnd));
+        imgFileSa.add (imgPath);
+        imgFileVar.add (imgPath);
 
-        indexStart = mdContent.indexOfIgnoreCase(imgEnd + 1, "![");
+        indexStart = mdContent.indexOfIgnoreCase (imgEnd + 1, "![");
     }
 
-    docProperties.add(new ChoicePropertyComponent(*values[thumbName], TRANS("Image File: "),
-                                                  imgFileSa, imgFileVar));
+    docProperties.add (new ChoicePropertyComponent (*values[thumbName], TRANS ("Image File: "),
+                                                    imgFileSa, imgFileVar));
 
     // set height
-    for (auto p : docProperties)           
+    for (auto p : docProperties)
         p->setPreferredHeight (28);
 
     docProperties[0]->setEnabled (false);
-    docProperties[9]->setEnabled(false);
+    docProperties[9]->setEnabled (false);
 
     // 2 level menu, otherwise, it cannot be a site menu
-    docProperties[4]->setEnabled(currentTree.getParent().getType().toString() == "wdtpProject" ||
-                                 currentTree.getParent().getParent().getType().toString() == "wdtpProject");
+    docProperties[4]->setEnabled (currentTree.getParent ().getType ().toString () == "wdtpProject" ||
+                                  currentTree.getParent ().getParent ().getType ().toString () == "wdtpProject");
 
     docProperties[3]->setPreferredHeight (28 * 5);
     docProperties[5]->setPreferredHeight (28 * 5);
@@ -282,15 +284,15 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
 }
 
 //=================================================================================================
-void SetupPanel::projectClosed()
+void SetupPanel::projectClosed ()
 {
-    stopTimer();
-    savePropertiesIfNeeded();
+    stopTimer ();
+    savePropertiesIfNeeded ();
     valuesRemoveListener ();
 
     currentTree = ValueTree::invalid;
     projectHasChanged = false;
-    panel->clear();
+    panel->clear ();
 }
 
 //=================================================================================================
@@ -299,7 +301,7 @@ void SetupPanel::valuesAddListener ()
     for (auto v : values)
         v->addListener (this);
 
-    values[wordCount]->removeListener(this);
+    values[wordCount]->removeListener (this);
 }
 
 //=================================================================================================
@@ -310,78 +312,103 @@ void SetupPanel::valuesRemoveListener ()
 }
 
 //=========================================================================
-void SetupPanel::resized()
+void SetupPanel::resized ()
 {
     // if the panel's width less than 90, it'll hit a jassert when in Debug mode, so...
-    panel->setVisible(getWidth() > 80);
-    panel->setBounds(getLocalBounds().reduced(2));
+    panel->setVisible (getWidth () > 80);
+    panel->setBounds (getLocalBounds ().reduced (2));
 }
 
 //=========================================================================
 void SetupPanel::valueChanged (Value& value)
-{    
+{
     // project properties
     if (value.refersToSameSourceAs (*values[projectTitle]))
         currentTree.setProperty ("title", values[projectTitle]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[projectKeywords]))
         currentTree.setProperty ("keywords", values[projectKeywords]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[projectDesc]))
         currentTree.setProperty ("description", values[projectDesc]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[owner]))
         currentTree.setProperty ("owner", values[owner]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[copyrightInfo]))
         currentTree.setProperty ("copyright", values[copyrightInfo]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[projectRenderDir]))
         currentTree.setProperty ("render", values[projectRenderDir]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[indexTpl]))
         currentTree.setProperty ("tplFile", values[indexTpl]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[projectJs]))
         currentTree.setProperty ("js", values[projectJs]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs(*values[ad]))
-        currentTree.setProperty("ad", values[ad]->getValue(), nullptr);
-    else if (value.refersToSameSourceAs(*values[contact]))
-        currentTree.setProperty("contact", values[contact]->getValue(), nullptr);
-        
+
+    else if (value.refersToSameSourceAs (*values[ad]))
+        currentTree.setProperty ("ad", values[ad]->getValue (), nullptr);
+
+    else if (value.refersToSameSourceAs (*values[contact]))
+        currentTree.setProperty ("contact", values[contact]->getValue (), nullptr);
+
     // dir properties
     else if (value.refersToSameSourceAs (*values[dirTitle]))
         currentTree.setProperty ("title", values[dirTitle]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[dirKeywords]))
         currentTree.setProperty ("keywords", values[dirKeywords]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[dirDesc]))
         currentTree.setProperty ("description", values[dirDesc]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[dirIsMenu]))
         currentTree.setProperty ("isMenu", values[dirIsMenu]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[dirCreateDate]))
         currentTree.setProperty ("createDate", values[dirCreateDate]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[dirModifyDate]))
         currentTree.setProperty ("modifyDate", values[dirModifyDate]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[dirTpl]))
         currentTree.setProperty ("tplFile", values[dirTpl]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[dirJs]))
         currentTree.setProperty ("js", values[dirJs]->getValue (), nullptr);
-	
+
     // doc properties
     else if (value.refersToSameSourceAs (*values[docTitle]))
         currentTree.setProperty ("title", values[docTitle]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[docKeywords]))
         currentTree.setProperty ("keywords", values[docKeywords]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[docDesc]))
         currentTree.setProperty ("description", values[docDesc]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[docIsMenu]))
         currentTree.setProperty ("isMenu", values[docIsMenu]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[docCreateDate]))
         currentTree.setProperty ("createDate", values[docCreateDate]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[docModifyDate]))
         currentTree.setProperty ("modifyDate", values[docModifyDate]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[docTpl]))
         currentTree.setProperty ("tplFile", values[docTpl]->getValue (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[docJs]))
         currentTree.setProperty ("js", values[docJs]->getValue (), nullptr);
-    else if (value.refersToSameSourceAs(*values[thumb]))
-        currentTree.setProperty("thumb", values[thumb]->getValue(), nullptr);
-    else if (value.refersToSameSourceAs(*values[thumbName]))
-        currentTree.setProperty("thumbName", values[thumbName]->getValue(), nullptr);        
-    	
+
+    else if (value.refersToSameSourceAs (*values[thumb]))
+        currentTree.setProperty ("thumb", values[thumb]->getValue (), nullptr);
+
+    else if (value.refersToSameSourceAs (*values[thumbName]))
+        currentTree.setProperty ("thumbName", values[thumbName]->getValue (), nullptr);
+
     DocTreeViewItem::needCreate (currentTree);
     projectHasChanged = true;
     startTimer (200);
@@ -390,7 +417,7 @@ void SetupPanel::valueChanged (Value& value)
 //=================================================================================================
 void SetupPanel::timerCallback ()
 {
-    savePropertiesIfNeeded();
+    savePropertiesIfNeeded ();
 }
 
 //=================================================================================================
@@ -399,8 +426,8 @@ void SetupPanel::savePropertiesIfNeeded ()
     if (systemFile != nullptr)
         systemFile->saveIfNeeded ();
 
-    if (projectHasChanged && currentTree.isValid() &&
-        FileTreeContainer::projectFile.existsAsFile())
+    if (projectHasChanged && currentTree.isValid () &&
+        FileTreeContainer::projectFile.existsAsFile ())
     {
         FileTreeContainer::saveProject ();
     }

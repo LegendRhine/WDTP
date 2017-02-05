@@ -14,45 +14,46 @@
 class EditAndPreview;
 
 //==============================================================================
-/** On the right of main interface. 
-*/
+/** This component uses for setup the selected item's properties. */
 class SetupPanel : public Component,
-    private Value::Listener,
-    private Timer
+                   private Value::Listener,
+                   private Timer
 {
 public:
     SetupPanel (EditAndPreview* editor);
-    ~SetupPanel();
+    ~SetupPanel ();
 
     void resized () override;
-    void projectClosed();
-    void showNothing ()    { panel->clear (); }
+    void projectClosed ();
+
+    void showNothing ()                         { panel->clear (); }
+    void updateWordCount (const int wordsNum)   { values[wordCount]->setValue (wordsNum); }
 
     void showProjectProperties (ValueTree& projectTree);
     void showDirProperties (ValueTree& dirTree);
-    void showDocProperties (ValueTree& docTree);   
-    
-    void updateWordCount (const int wordsNum)   { values[wordCount]->setValue (wordsNum); }
-    
+    void showDocProperties (ValueTree& docTree);
+
 private:
     //=========================================================================    
     void valuesAddListener ();
     void valuesRemoveListener ();
 
     virtual void valueChanged (Value & value) override;
-    virtual void timerCallback () override;
+
+    // for save the systemFile and project
+    virtual void timerCallback () override;  
     void savePropertiesIfNeeded ();
-    
+
     //=========================================================================
-    enum  
-    { 
+    enum
+    {
         // project properties' values
-        projectTitle = 0, projectKeywords, projectDesc, owner,  
+        projectTitle = 0, projectKeywords, projectDesc, owner,
         copyrightInfo, projectRenderDir, indexTpl, projectJs, contact, ad,
-		
+
         // dir properties' values
         dirName, dirTitle, dirKeywords, dirDesc, dirIsMenu, dirTpl, dirJs,
-        dirCreateDate, dirModifyDate, 
+        dirCreateDate, dirModifyDate,
 
         // doc properties' values
         docName, docTitle, docKeywords, docDesc, docIsMenu, docTpl,
@@ -69,7 +70,7 @@ private:
     bool projectHasChanged = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SetupPanel)
-        
+
 };
 
 

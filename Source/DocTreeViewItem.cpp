@@ -277,7 +277,8 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addItem (2, TRANS ("New Document..."), exist && !isDoc && onlyOneSelected);
         m.addSeparator ();
 
-        m.addItem (4, TRANS ("Export..."), exist && onlyOneSelected && !isDoc);
+        m.addItem (3, TRANS ("Pack Site Data..."), exist && onlyOneSelected && !isDoc);
+        m.addItem (4, TRANS ("Export Docs..."), exist && onlyOneSelected && !isDoc);
         m.addItem (5, TRANS ("Statistics..."), exist && onlyOneSelected);
         m.addSeparator ();
 
@@ -332,6 +333,8 @@ void DocTreeViewItem::menuPerform (const int index)
         createNewFolder ();
     else if (index == 2)
         createNewDocument ();
+    else if (index == 3)
+        packSiteData ();
     else if (index == 4)
         exportAsHtml ();
     else if (index == 5)
@@ -362,7 +365,52 @@ void DocTreeViewItem::menuPerform (const int index)
         sorter->setShowWhat (index - 200);
     else if (index >= 300 && index <= 303)
         sorter->setTooltipToShow (index - 300);
+}
 
+//=================================================================================================
+void DocTreeViewItem::packSiteData ()
+{
+    TopToolBar::generateHtmlFilesIfNeeded (tree);
+
+    const File thisDir (getHtmlFileOrDir (tree).getParentDirectory ());
+    ZipFile::Builder builder;
+    Array<File> htmlFiles;
+    thisDir.findChildFiles (htmlFiles, File::findFiles, true, "*");
+
+    for (int i = htmlFiles.size (); --i >= 0; )
+    {
+        if (htmlFiles[i].getFileName () != "desktop.ini"
+            && htmlFiles[i].getFileName () != ".DS_Store"
+            && htmlFiles[i].getFileExtension () != ".zip")
+        {
+            String pathStr (htmlFiles[i].getFullPathName ()
+                            .fromFirstOccurrenceOf (thisDir.getFullPathName ()
+                                                    + File::separatorString, false, false));
+
+            pathStr = pathStr.replace (File::separatorString, "/");
+            builder.addFile (htmlFiles[i], 9, pathStr);
+        }
+    }
+
+    // write to zip file
+    const File packZipFile (thisDir.getChildFile (tree.getProperty ("name").toString () + ".zip"));
+    packZipFile.deleteFile ();
+    packZipFile.create ();
+
+    ScopedPointer<FileOutputStream> out = packZipFile.createOutputStream ();
+
+    if (builder.writeToStream (*out, nullptr))
+    {
+        out->flush ();
+        out = nullptr;
+        SHOW_MESSAGE (TRANS ("Site data of this folder packed successful!"));
+
+        packZipFile.revealToUser ();
+    }
+    else
+    {
+        SHOW_MESSAGE (TRANS ("Somehow site data of this folder packed failed."));
+    }
 }
 
 //=================================================================================================

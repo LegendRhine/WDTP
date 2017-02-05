@@ -729,12 +729,14 @@ void TopToolBar::packProject ()
 
     for (int m = addFiles.size (); --m >= 0; )
     {
-        if (addFiles[m].getFileName () != "desktop.ini" && themeFiles[m].getFileName () != ".DS_Store")
-            builder.addFile (addFiles[m], 9, addStr + File::separatorString + addFiles[m].getFileName ());
+        if (addFiles[m].getFileName () != "desktop.ini" 
+            && themeFiles[m].getFileName () != ".DS_Store")
+            builder.addFile (addFiles[m], 9, addStr + File::separatorString 
+                             + addFiles[m].getFileName ());
     }
 
     // write to zip file
-    const File packZipFile (projectFile.getSiblingFile (projectFile.getFileNameWithoutExtension () + ".wpck"));
+    const File packZipFile (projectFile.getSiblingFile (projectFile.getFileNameWithoutExtension() + ".wpck"));
     packZipFile.deleteFile ();
     packZipFile.create ();
 
@@ -744,13 +746,13 @@ void TopToolBar::packProject ()
     {
         out->flush ();
         out = nullptr;
-        SHOW_MESSAGE (TRANS ("The project's data pack successful!"));
+        SHOW_MESSAGE (TRANS ("Pack the project's data successful!"));
 
         packZipFile.revealToUser ();
     }
     else
     {
-        SHOW_MESSAGE (TRANS ("Somehow the project's data pack failed."));
+        SHOW_MESSAGE (TRANS ("Somehow the project's data packed failed."));
     }
 }
 

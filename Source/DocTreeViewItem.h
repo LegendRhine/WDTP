@@ -93,6 +93,7 @@ private:
     //=========================================================================
     void menuPerform (const int menuIndex);
     
+    void packSiteData ();
     void exportAsHtml (); 
     void renameSelectedItem ();
     void createNewDocument ();

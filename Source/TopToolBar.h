@@ -42,6 +42,8 @@ public:
     virtual void getCommandInfo (CommandID commandID, ApplicationCommandInfo& result) override;
     virtual bool perform (const InvocationInfo& info) override;
 
+    static void generateHtmlFilesIfNeeded (ValueTree tree);
+
 private:
     //==========================================================================
     virtual void textEditorReturnKeyPressed (TextEditor&) override;
@@ -63,7 +65,6 @@ private:
     /** generate the tree and all its children's html file */
     static void generateHtmlFiles (ValueTree tree);
     void generateHtmlsIfNeeded ();
-    static void generateHtmlFilesIfNeeded (ValueTree tree);
     void generateCurrentPage ();
 
     void setUiColour ();

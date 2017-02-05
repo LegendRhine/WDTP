@@ -250,8 +250,8 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
         else // root
             editArea->setProjectProperties (tree);
 
-        // this must after setXxxProperties(), 
-        // because startWork() will update the word count of this doc to setup-panel
+        // this must after setXxxProperties() since
+        // startWork() will update the word count of this doc to setup-panel
         editArea->startWork (tree);
         treeContainer->setIdentityOfLastSelectedItem (getItemIdentifierString ());
     }
@@ -277,7 +277,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addItem (2, TRANS ("New Document..."), exist && !isDoc && onlyOneSelected);
         m.addSeparator ();
 
-        m.addItem (4, TRANS ("Export..."), exist && onlyOneSelected);
+        m.addItem (4, TRANS ("Export..."), exist && onlyOneSelected && !isDoc);
         m.addItem (5, TRANS ("Statistics..."), exist && onlyOneSelected);
         m.addSeparator ();
 
@@ -316,7 +316,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addSeparator ();
 
         m.addItem (14, TRANS ("View in Explorer/Finder..."), exist && onlyOneSelected);
-        m.addItem (15, TRANS ("Open in External Editor..."), exist && isDoc && onlyOneSelected);
+        m.addItem (15, TRANS ("Open in External Editor..."), exist && onlyOneSelected);
         m.addItem (16, TRANS ("Browse in External Browser..."), exist && onlyOneSelected);
 
         menuPerform (m.show ());
@@ -333,7 +333,7 @@ void DocTreeViewItem::menuPerform (const int index)
     else if (index == 2)
         createNewDocument ();
     else if (index == 4)
-        exportAsMdFile ();
+        exportAsHtml ();
     else if (index == 5)
         statistics ();
     else if (index == 9)
@@ -432,51 +432,42 @@ void DocTreeViewItem::renameSelectedItem ()
 }
 
 //=================================================================================================
-void DocTreeViewItem::exportAsMdFile ()
+void DocTreeViewItem::exportAsHtml ()
 {
-    FileChooser fc (TRANS ("Export document(s)..."), File::getSpecialLocation (
-        File::userDocumentsDirectory).getChildFile (tree.getProperty ("name").toString () + ".md"),
-        "*.md", false);
+    FileChooser fc (TRANS ("Export document(s) as a single html file..."), 
+                    File::getSpecialLocation (File::userDocumentsDirectory)
+                    .getChildFile (tree.getProperty ("name").toString () + ".html"),
+        "*.html", false);
 
     if (!fc.browseForFileToSave (false))
         return;
 
-    File mdFile (fc.getResult ());
-    mdFile = mdFile.getSiblingFile (SwingUtilities::getValidFileName (mdFile.getFileNameWithoutExtension ()));
+    File htmlFile (fc.getResult ());
+    htmlFile = htmlFile.getSiblingFile (SwingUtilities::getValidFileName (htmlFile.getFileNameWithoutExtension ()));
 
-    if (!mdFile.hasFileExtension ("md"))
-        mdFile = mdFile.withFileExtension ("md");
+    if (!htmlFile.hasFileExtension ("html"))
+        htmlFile = htmlFile.withFileExtension ("html");
 
-    // overwrite or not if it has been there
-    if (mdFile.existsAsFile () &&
+    // overwrite or not whether it has been there
+    if (htmlFile.existsAsFile () &&
         !AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Message"),
                                        TRANS ("This file already exists, want to overwrite it?")))
     {
         return;
     }
 
-    if (!mdFile.deleteFile ())
+    if (!htmlFile.deleteFile ())
     {
         SHOW_MESSAGE (TRANS ("Can't write to this file! "));
         return;
     }
 
-    mdFile.create ();
-
-    // single doc or dir-docs
-    if ((tree.getType ().toString () == "doc") ? getMdFileOrDir (tree).copyFileTo (mdFile)
-        : exportDocsAsMd (this, mdFile))
-    {
-        if (AlertWindow::showOkCancelBox (AlertWindow::InfoIcon, TRANS ("Message"),
-                                          TRANS ("File: \"") + mdFile.getFullPathName () + "\""
-                                          + newLine + TRANS ("Exported Successful! "),
-                                          TRANS ("Open")))
-            mdFile.startAsProcess ();
-    }
+    htmlFile.create ();
+        
+    if (exportDirDocsAsHtml (this, htmlFile))
+        htmlFile.startAsProcess ();
     else
-    {
         SHOW_MESSAGE (TRANS ("Export Failed."));
-    }
 }
 
 //=================================================================================================
@@ -770,7 +761,7 @@ void DocTreeViewItem::getWordsAndImgNumsInDoc (const ValueTree& tree, int& words
 }
 
 //=================================================================================================
-const bool DocTreeViewItem::exportDocsAsMd (DocTreeViewItem* item,
+const bool DocTreeViewItem::exportDirDocsAsHtml (DocTreeViewItem* item,
                                             const File& fileAppendTo)
 {
     item->setOpen (true);
@@ -783,7 +774,7 @@ const bool DocTreeViewItem::exportDocsAsMd (DocTreeViewItem* item,
             jassert (currentItem != nullptr);
 
             // recursive traversal
-            if (!exportDocsAsMd (currentItem, fileAppendTo))
+            if (!exportDirDocsAsHtml (currentItem, fileAppendTo))
                 return false;
         }
     }

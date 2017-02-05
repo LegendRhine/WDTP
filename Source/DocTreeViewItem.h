@@ -11,9 +11,9 @@
 #ifndef DOCTREEVIEWITEM_H_INCLUDED
 #define DOCTREEVIEWITEM_H_INCLUDED
 
-/** Repsent a doc, a dir or the project which showed in treeView. */
+/** Repsent a doc, a dir or the project-root which showed in treeView. */
 class DocTreeViewItem : public TreeViewItem,
-    private ValueTree::Listener
+                        private ValueTree::Listener
 {
 public:
     DocTreeViewItem (const ValueTree& tree,
@@ -22,8 +22,7 @@ public:
     ~DocTreeViewItem ();
 
     /** Note 1: when this item is the root (project item of the top),
-    this method will return this project's 'docs' dir,
-    instead of the project file!
+    this method will return this project's 'docs' dir instead of the project file!
 
     Note 2: this method will return a nonexists file when the arg is invalid. */
     static const File getMdFileOrDir (const ValueTree& tree);
@@ -32,70 +31,80 @@ public:
     static const File getHtmlFileOrDir (const File& mdFileOrDir);
     static const File getHtmlFileOrDir (const ValueTree& tree);
 
-    /** get a html-file's all local media files. the result will store in arg-2.
-        return: media-files' number of this html-file. */
+    /** get a html-file's all local media files. the result would be stored in arg-2.
+        return: media-files' number of this html-file included. */
     static const int getHtmlMediaFiles (const File& htmlFile, Array<File>& files);
 
-    /** get a doc-file's all local media files. the result will store in arg-2.
-        return: media-files' number of this doc-file.	*/
+    /** get a doc-file's all local media files. the result would be stored in arg-2.
+        return: media-files' number of this doc-file included.	*/
     static const int getMdMediaFiles (const File& doc, Array<File>& files);
 
-    /** set the arg tree and all its parents to needCreateHtml. */
+    /** let the arg tree and all its parents set to needCreateHtml. */
     static void needCreate (ValueTree tree);
     static void allChildrenNeedCreate (ValueTree tree);
 
-    // static public methods for drag-drop moving items..
+    /** for drag-drop/moving items */
     static void moveItems (const OwnedArray<ValueTree>& items,
                            ValueTree newParent);
 
+    /** callback method whnever the project-tree has some changed */
     void refreshDisplay ();
-    const ValueTree& getTree () const { return tree; }
+    const ValueTree& getTree () const       { return tree; }
 
-    // override...
+    /** override the parent class... */
     virtual bool mightContainSubItems () override;
     virtual String getUniqueName () const override;
     virtual void itemOpennessChanged (bool isNowOpen) override;
 
     virtual String getTooltip () override;
     virtual void paintItem (Graphics& g, int width, int height) override;
+
+    /** core method, it'll call the edit/preview area's startWork()*/
     virtual void itemSelectionChanged (bool isNowSelected) override;
+
+    /** right-click menu is here */
     virtual void itemClicked (const MouseEvent& e) override;
 
-    // for move items..
+    /** for move items.. */
     virtual var getDragSourceDescription () override;
     virtual bool isInterestedInDragSource (const DragAndDropTarget::SourceDetails& details) override;
     virtual void itemDropped (const DragAndDropTarget::SourceDetails& details,
                               int insertIndex) override;
 
-    // draw line..
+    /** draw lines from within the file-tree panel.. */
     virtual void paintHorizontalConnectingLine (Graphics&, const Line<float>& line) override;
     virtual void paintVerticalConnectingLine (Graphics&, const Line<float>& line) override;
     virtual void paintOpenCloseButton (Graphics&, const Rectangle<float>&, Colour, bool) override;
+
 private:
     //=========================================================================
-    /** export the selected item (all project-docs, a dir-docs or a doc) as a single md file. */
-    static const bool exportDocsAsMd (DocTreeViewItem* item,
+    /** export the selected item (include all its children docs) as a single html file. 
+        it'll auto-create the big html's media folder which sibling with the html file. 
+        
+        the result file doesn't apply any template but stylesheet. this means that the method
+        especially for export the result for other editor, eg. word, pages etc.  
+        
+        Note: the arg item must be a dir. */
+    static const bool exportDirDocsAsHtml (DocTreeViewItem* item,
                                       const File& fileAppendTo);
 
     static DocTreeViewItem* getRootItem (DocTreeViewItem* subItem);
 
-    static void statis (const ValueTree& tree,
-                        int& dirNums,
-                        int& totalWords,
-                        int& totalImgs);
+    static void statis (const ValueTree& tree, int& dirNums,
+                        int& totalWords, int& totalImgs);
+
+    static void getWordsAndImgNumsInDoc (const ValueTree& tree, int& words, int& imgNums);
 
     //=========================================================================
     void menuPerform (const int menuIndex);
-
-    // internal call the static method exportDocsAsMd()
-    void exportAsMdFile ();
+    
+    void exportAsHtml ();  // internal call the static method exportDocsAsHtml()
     void renameSelectedItem ();
     void createNewDocument ();
     void createNewFolder ();
     void deleteSelected ();
     void statistics ();
     void replaceContent ();
-    static void getWordsAndImgNumsInDoc (const ValueTree& tree, int& words, int& imgNums);
 
     //=========================================================================
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
@@ -111,8 +120,6 @@ private:
     ItemSorter* sorter = nullptr;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DocTreeViewItem)
-
-
 };
 
 

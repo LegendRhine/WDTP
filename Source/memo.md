@@ -86,7 +86,7 @@
 	- {{description}}: meta in < head >
 	- {{title}}: meta in < head >
 
-### Tempalte Tags (for web/tpl designer. These tages should place in < body > area)
+### Tempalte Tags (for web/tpl designer. These tages should be placed in < body > area)
 	- {{contentTitle}}: Title of the doc/dir.
 	- {{content}}: Content of the doc.
 
@@ -113,6 +113,6 @@
 - Solve the confusing of line-break-up in Editor when it blends Chinese charactors and English words:
     - L227 in TextEditor, the 'if' statement need comment `text.isWhitespace() && `
 - Increase line-spacing:
-    - Same class above, L481 change the original to `lineHeight = section->font.getHeight() + 8;`
-	- L540 change the original to `atomX, (float) roundToInt (lineY + lineHeight - maxDescent - 4));`
-	- L573 change the original to `atomX, (float) roundToInt (lineY + lineHeight - maxDescent - 4));`
+    - Same class above, L481 change the original to `lineHeight = section->font.getHeight() + 4;`
+	- L540 change the original to `atomX, (float) roundToInt (lineY + lineHeight - maxDescent - 2));`
+	- L573 change the original to `atomX, (float) roundToInt (lineY + lineHeight - maxDescent - 2));`

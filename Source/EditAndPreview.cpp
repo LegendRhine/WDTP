@@ -735,8 +735,8 @@ bool EditorForMd::keyPressed (const KeyPress& key)
     {
         if (getHighlightedText ().isEmpty ())
         {
+            //DBGX (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 1)));
             moveCaretToStartOfLine (false);
-            // DBGX (String ("\r\n").length()); // 2
 
             while (getCaretPosition () - 1 >= 0
                    && getTextInRange (Range<int> (getCaretPosition () - 1, getCaretPosition ())) != "\n")
@@ -744,19 +744,22 @@ bool EditorForMd::keyPressed (const KeyPress& key)
                 moveCaretUp (false);
             }
 
-            int startAt = getCaretPosition ();            
+            int startAt = getCaretPosition ();  
+            int endAt = getText().indexOfAnyOf (newLine, startAt, true);
 
-            while (getCaretPosition () + 1 < getTotalNumChars()
-                   && getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 1)) != "\n")
-            {
-                moveCaretDown (false);
-                moveCaretToEndOfLine (false);
-            }
+            // last line and no '\n' at the end
+            if (-1 == endAt)
+                endAt = getTotalNumChars ();
 
+            // select from the previous line, by this way, there're no extra empty line after cut
             if (startAt - 1 >= 0)
                 --startAt;
 
-            setHighlightedRegion (Range<int> (startAt, getCaretPosition ()));
+            // select to the next line, by this way, there're no extra empty line after cut
+            if (endAt + 1 < getTotalNumChars ())
+                ++endAt;
+
+            setHighlightedRegion (Range<int> (startAt, endAt));
         } 
      
         return TextEditor::keyPressed (key);

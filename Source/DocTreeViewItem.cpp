@@ -324,6 +324,20 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 }
 
 //=================================================================================================
+void DocTreeViewItem::itemDoubleClicked (const MouseEvent& e)
+{
+    if (e.mods.isLeftButtonDown ())
+    {
+        if (tree.getType ().toString () == "doc")
+            renameSelectedItem ();
+        else if (tree.getType ().toString () == "dir")
+            createNewDocument ();
+        else
+            createNewFolder ();
+    }
+}
+
+//=================================================================================================
 void DocTreeViewItem::menuPerform (const int index)
 {
     jassert (sorter != nullptr);

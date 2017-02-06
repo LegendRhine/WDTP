@@ -65,6 +65,9 @@ public:
     /** right-click menu is here */
     virtual void itemClicked (const MouseEvent& e) override;
 
+    /** double click for rename it */
+    virtual void itemDoubleClicked (const MouseEvent& e) override;
+
     /** for move items.. */
     virtual var getDragSourceDescription () override;
     virtual bool isInterestedInDragSource (const DragAndDropTarget::SourceDetails& details) override;

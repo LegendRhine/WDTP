@@ -703,12 +703,28 @@ bool EditorForMd::keyPressed (const KeyPress& key)
         searchBySelectNext ();
         return true;
     }
-    // F3 for search the next of current selection
+    // Shift + F3 for search the previous of current selection
     else if (key == KeyPress (KeyPress::F3Key, ModifierKeys::shiftModifier, 0))
     {
         searchBySelectPrev ();
         return true;
     }
+    // insert new paragraph above the current paragraph
+    else if (key == KeyPress (KeyPress::returnKey, ModifierKeys::commandModifier, 0))
+    {
+        moveCaretToStartOfLine (false);
+
+        while (getTextInRange (Range<int>(getCaretPosition() - 1, getCaretPosition())).trim().isNotEmpty())
+        {
+            moveCaretUp (false);
+        }
+
+        TextEditor::keyPressed (KeyPress (KeyPress::returnKey));
+        TextEditor::keyPressed (KeyPress (KeyPress::returnKey));
+        
+        return moveCaretUp (false) && moveCaretUp (false);
+    }
+    
 
     return TextEditor::keyPressed (key);
 }

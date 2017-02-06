@@ -736,6 +736,7 @@ bool EditorForMd::keyPressed (const KeyPress& key)
         if (getHighlightedText ().isEmpty ())
         {
             moveCaretToStartOfLine (false);
+            // DBGX (String ("\r\n").length()); // 2
 
             while (getCaretPosition () - 1 >= 0
                    && getTextInRange (Range<int> (getCaretPosition () - 1, getCaretPosition ())) != "\n")
@@ -743,28 +744,19 @@ bool EditorForMd::keyPressed (const KeyPress& key)
                 moveCaretUp (false);
             }
 
-            int startAt = getCaretPosition ();
-            moveCaretDown (false);
-            moveCaretToEndOfLine (false);
-            bool needSelectNextLine = false;
+            int startAt = getCaretPosition ();            
 
             while (getCaretPosition () + 1 < getTotalNumChars()
                    && getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 1)) != "\n")
             {
                 moveCaretDown (false);
                 moveCaretToEndOfLine (false);
-                needSelectNextLine = true;
             }
-
-            int endAt = getCaretPosition ();
 
             if (startAt - 1 >= 0)
                 --startAt;
 
-            if (endAt + 1 < getTotalNumChars () && needSelectNextLine)
-                ++endAt;
-
-            setHighlightedRegion (Range<int> (startAt, endAt));
+            setHighlightedRegion (Range<int> (startAt, getCaretPosition ()));
         } 
      
         return TextEditor::keyPressed (key);

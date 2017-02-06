@@ -64,7 +64,7 @@ private:
     File docOrDirFile = File::nonexistent;
     ValueTree docOrDirTree;
     bool docHasChanged = false;
-    String currentContent;
+    String currentContent, currentUrl;
 
     MainContentComponent* mainComp;
 

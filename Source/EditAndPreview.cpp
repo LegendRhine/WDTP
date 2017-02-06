@@ -150,16 +150,27 @@ void EditAndPreview::previewCurrentDoc ()
     webView->setVisible (true);
     webView->stop ();
 
-    if (docOrDirFile.existsAsFile ())
+    if (docOrDirFile.exists ())
     {
-        String fileUrl (HtmlProcessor::createArticleHtml (docOrDirTree, true).getFullPathName ());
-        webView->goToURL (fileUrl);
-    }
-    else if (docOrDirFile.isDirectory ())
-    {
-        const String indexUrl (HtmlProcessor::createIndexHtml (docOrDirTree, true).getFullPathName ());
-        //DBGX (indexUrl);
-        webView->goToURL (indexUrl);
+        const bool itNeedsCreate = (bool)docOrDirTree.getProperty ("needCreateHtml");
+
+        const String urlStr ((docOrDirFile.existsAsFile ()) ?
+                             HtmlProcessor::createArticleHtml (docOrDirTree, true).getFullPathName () :
+                             HtmlProcessor::createIndexHtml (docOrDirTree, true).getFullPathName ());
+
+        // prevent load it every time when preview a non-changed and the same web-page.
+        // the browser's scrollbar will always rolled on top (of course its default behavior) 
+        // after load a page every time. it's very annoying..
+        if (urlStr != currentUrl)
+        {
+            webView->goToURL (urlStr);
+            currentUrl = urlStr;
+        }
+        else
+        {
+            if (itNeedsCreate)
+                webView->refresh ();            
+        }
     }
     else  // file doesn't exist
     {

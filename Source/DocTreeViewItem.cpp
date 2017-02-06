@@ -233,7 +233,6 @@ void DocTreeViewItem::allChildrenNeedCreate (ValueTree tree)
 }
 
 //=================================================================================================
-// mouse click
 void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
 {
     if (isNowSelected)
@@ -258,11 +257,11 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
 }
 
 //=================================================================================================
+// for right-click menu
 void DocTreeViewItem::itemClicked (const MouseEvent& e)
 {
     const bool exist = getMdFileOrDir (tree).exists ();
     const bool isDoc = (tree.getType ().toString () == "doc");
-    //const bool isDir = (tree.getType ().toString () == "dir");
     const bool isRoot = (tree.getType ().toString () == "wdtpProject");
     const bool onlyOneSelected = getOwnerView ()->getNumSelectedItems () == 1;
 
@@ -512,7 +511,7 @@ void DocTreeViewItem::exportAsHtml ()
 
     htmlFile.create ();
     
-    // create a md-text file temporarily, and gather all medias of this dir
+    // create a md-text file temporarily, then gathering all medias of this dir
     File mdFile (File::getSpecialLocation (File::tempDirectory).getSiblingFile ("wdtpExport.md"));
     mdFile.deleteFile ();
     mdFile.create ();

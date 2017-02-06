@@ -697,24 +697,28 @@ bool EditorForMd::keyPressed (const KeyPress& key)
         insertTextAtCaret ("    ");
         return true;
     }
+
     // F3 for search the next of current selection
     else if (key == KeyPress (KeyPress::F3Key))
     {
         searchBySelectNext ();
         return true;
     }
+
     // Shift + F3 for search the previous of current selection
     else if (key == KeyPress (KeyPress::F3Key, ModifierKeys::shiftModifier, 0))
     {
         searchBySelectPrev ();
         return true;
     }
+
     // insert new paragraph above the current paragraph
     else if (key == KeyPress (KeyPress::returnKey, ModifierKeys::commandModifier, 0))
     {
         moveCaretToStartOfLine (false);
 
-        while (getTextInRange (Range<int>(getCaretPosition() - 1, getCaretPosition())).trim().isNotEmpty())
+        while (getCaretPosition () - 1 >= 0
+               && getTextInRange (Range<int>(getCaretPosition() - 1, getCaretPosition())) != "\n")
         {
             moveCaretUp (false);
         }
@@ -724,7 +728,47 @@ bool EditorForMd::keyPressed (const KeyPress& key)
         
         return moveCaretUp (false) && moveCaretUp (false);
     }
-    
+
+    // cut/copy the current paragraph when selected nothing
+    else if (key == KeyPress ('x', ModifierKeys::commandModifier, 0)
+             || key == KeyPress ('c', ModifierKeys::commandModifier, 0))
+    {
+        if (getHighlightedText ().isEmpty ())
+        {
+            moveCaretToStartOfLine (false);
+
+            while (getCaretPosition () - 1 >= 0
+                   && getTextInRange (Range<int> (getCaretPosition () - 1, getCaretPosition ())) != "\n")
+            {
+                moveCaretUp (false);
+            }
+
+            int startAt = getCaretPosition ();
+            moveCaretDown (false);
+            moveCaretToEndOfLine (false);
+            bool needSelectNextLine = false;
+
+            while (getCaretPosition () + 1 < getTotalNumChars()
+                   && getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 1)) != "\n")
+            {
+                moveCaretDown (false);
+                moveCaretToEndOfLine (false);
+                needSelectNextLine = true;
+            }
+
+            int endAt = getCaretPosition ();
+
+            if (startAt - 1 >= 0)
+                --startAt;
+
+            if (endAt + 1 < getTotalNumChars () && needSelectNextLine)
+                ++endAt;
+
+            setHighlightedRegion (Range<int> (startAt, endAt));
+        } 
+     
+        return TextEditor::keyPressed (key);
+    }
 
     return TextEditor::keyPressed (key);
 }

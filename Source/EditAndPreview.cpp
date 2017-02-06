@@ -380,6 +380,10 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (12, TRANS ("Image/Table Caption"));
         insertMenu.addItem (14, TRANS ("Separator"));
         insertMenu.addItem (15, TRANS ("Author and Date"));
+        insertMenu.addSeparator ();
+
+        const String internalLinkStr (SystemClipboard::getTextFromClipboard ());
+        insertMenu.addItem (16, TRANS ("Internal Link"), internalLinkStr.contains ("@_=#_itemPath_#=_@"));
         menu.addSubMenu (TRANS ("Insert"), insertMenu, docFile.existsAsFile ());
 
         PopupMenu formatMenu;
@@ -567,6 +571,21 @@ void EditorForMd::performPopupMenuAction (int index)
             << SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), false)
             << " ";
 
+    }
+    else if (16 == index)  // insert internal link. see: DocTreeViewItem::getPath()
+    {
+        String linkPath (SystemClipboard::getTextFromClipboard ());
+        const String titleStr (linkPath.upToFirstOccurrenceOf ("@_=#_itemPath_#=_@", false, false));
+        linkPath = linkPath.fromFirstOccurrenceOf ("@_=#_itemPath_#=_@", false, false);
+        
+        const String siteRoot (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName () 
+                               + File::separatorString);
+        linkPath = linkPath.fromFirstOccurrenceOf (siteRoot, false, false);
+
+        const String currentHtmlRelativeToRoot (HtmlProcessor::getRelativePathToRoot (
+            DocTreeViewItem::getHtmlFileOrDir (parent->getCurrentTree ())));
+
+        content << "[" << titleStr << "](" << currentHtmlRelativeToRoot << linkPath.replace ("\\", "/") << ")";
     }
     else if (30 == index) // bold
     {

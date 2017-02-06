@@ -51,8 +51,11 @@ private:
     static const String getContactInfo ();
 
     static void copyDocMediasToSite (const File& mdFile, const File& htmlFile, const String& htmlStr);
+
+public:
     static const String getRelativePathToRoot (const File &htmlFile);
 
+private:
     static const bool atLeastHasOneIsMenu (const ValueTree& tree);
 
     //=================================================================================================

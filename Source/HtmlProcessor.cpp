@@ -753,7 +753,7 @@ void HtmlProcessor::getBookListLinks (const ValueTree& tree,
 {
     const String filePath (DocTreeViewItem::getHtmlFileOrDir (tree).getFullPathName ());
     const String rootPath (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName ());
-    String path (filePath.fromFirstOccurrenceOf (rootPath, false, true).substring (1));
+    String path (filePath.fromFirstOccurrenceOf (rootPath, false, false).substring (1));
     path = path.replace ("\\", "/");
 
     if (!isRootTree)

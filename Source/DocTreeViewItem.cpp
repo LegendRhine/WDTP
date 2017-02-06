@@ -276,9 +276,12 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addItem (2, TRANS ("New Document..."), exist && !isDoc && onlyOneSelected);
         m.addSeparator ();
 
-        m.addItem (3, TRANS ("Pack Site Data..."), exist && onlyOneSelected && !isDoc);
+        m.addItem (3, TRANS ("Pack Site Data"), exist && onlyOneSelected && !isDoc);
         m.addItem (4, TRANS ("Export Docs..."), exist && onlyOneSelected && !isDoc);
+
+        m.addSeparator ();
         m.addItem (5, TRANS ("Statistics..."), exist && onlyOneSelected);
+        m.addItem (6, TRANS ("Get Path"), exist && onlyOneSelected);
         m.addSeparator ();
 
         PopupMenu sortMenu;
@@ -352,6 +355,8 @@ void DocTreeViewItem::menuPerform (const int index)
         exportAsHtml ();
     else if (index == 5)
         statistics ();
+    else if (index == 6)
+        getPath ();
     else if (index == 9)
         replaceContent ();
     else if (index == 10)
@@ -767,7 +772,7 @@ void DocTreeViewItem::statistics ()
         getWordsAndImgNumsInDoc (tree, words, imgNums);
 
         AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS ("Statistics Info"),
-                                     TRANS ("File:") + tree.getProperty ("name").toString () + newLine
+                                     TRANS ("File: ") + tree.getProperty ("name").toString () + newLine
                                      + TRANS ("Title: ") + tree.getProperty ("title").toString () + newLine + newLine
                                      + TRANS ("Words: ") + String (words) + newLine
                                      + TRANS ("Images: ") + String (imgNums));
@@ -792,6 +797,18 @@ void DocTreeViewItem::statistics ()
                                      + TRANS ("Total Words: ") + String (totalWords) + newLine
                                      + TRANS ("Total Images: ") + String (totalImgs));
     }
+}
+
+//=================================================================================================
+void DocTreeViewItem::getPath ()
+{      
+    SystemClipboard::copyTextToClipboard (tree.getProperty ("title").toString ()
+                                          + "@_=#_itemPath_#=_@" 
+                                          + getHtmlFileOrDir (tree).getFullPathName ());
+
+    SHOW_MESSAGE (TRANS ("This item's path has been copied.\n\n"
+                         "You could use it for internal link by right click in editor\n"
+                         "and select \"Insert - Internal Link\"."));
 }
 
 //=================================================================================================

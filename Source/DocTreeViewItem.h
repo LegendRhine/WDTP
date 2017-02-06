@@ -103,6 +103,7 @@ private:
     void createNewFolder ();
     void deleteSelected ();
     void statistics ();
+    void getPath ();
     void replaceContent ();
 
     //=========================================================================

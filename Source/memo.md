@@ -1,103 +1,118 @@
 ﻿# Write Down, Then Publish (WDTP)
  
-### 系统设置
-- PropertiesFile (systemFile, 系统属性文件)位于本机“用户-文档”目录下，文件名为：wdtp.sys，属性如下：
-	- recentFiles：最近打开的10个项目
-	- language: 界面语言（字符串，语言名称）
-	- uiBackground: 界面背景色
-	- uiTextColour: 界面文字只有深浅两种颜色，根据UI颜色的亮度确定
-	- fontName: 文本编辑器所用的字体(暂未使用)
-	- fontSize：文本编辑器的字体大小
-	- editorFontColour: 文本编辑器文字颜色
-	- editorBackground: 文本编辑器背景色
+### System Setup
+- PropertiesFile (systemFile, the file of system properties) is place in the local 'user-documents/wdtp.sys'.
+	- recentFiles：10 items of the recent-opened.
+	- language: The language of UI text (String, language name).
+	- uiBackground
+	- uiTextColour: it has only 2 colors (dark/light) based on the background of UI.
+	- fontName: (haven't been use yet.)
+	- fontSize：The font-size of TextEditor.
+	- editorFontColour
+	- editorBackground
 
-### 项目文档
-- 项目文档（*.wdtp）采用ValueTree数据模型+TreeView视图+派生的TreeViewItem实现文档的组织管理、显示与交互等功能。
-- 项目文档的内部结构（值树结构）同磁盘目录结构，但不含每个磁盘目录下的media文件夹，也不含'docs'之外的任何磁盘文件夹
+### Project File
+- '.wdtp' for the normal project file, the packed project is '.wpck', '.wtpl' is the templates when it has been exported.
+- It uses ValueTree (data-model), TreeView (UI) and TreeViewItems (controller) to manage/display/operate all the items which recorded in the project file.
+- The structure of project is same as the structure of local-disk file system, however it doesn't include any 'media' or other folder/files.
 
-### 属性名
-- wdtpProject总值树的属性（项目属性）：
-    - name: 值为“site”
-    - tile: 项目名称
-	- keywords: 关键字
-    - description: 简述
-	- owner: 项目所有者（作者）
-	- contact 对应模板文件中的{{contact}}
-	- copyright: 显示在网页页底的版权信息
-	- order: 文件树的排序方式。文件名（0）、标题/简介（1）、网页文件名（2）、文件大小（3）、创建时间（4）、修改时间（5）
-	- dirFirst: 目录排在前面（0），还是文档排在前面（1）
-	- ascending: 升序(0)还是降序(1)
-	- showWhat: TreeView中显示文件名（0）、标题/简介（1），还是网页文件名（2）
-	- tooltip：TreeView中的tooltip显示文件名（包括所有路径，0）、标题/简介（1），还是网页文件名（2）
-	- render: 模板目录（磁盘Themes下的某个子目录，即已安装的某套模板）
-	- tplFile: 渲染网站首页所使用的模板文件，位于render所设置的目录下
-	- js: 首页所需的js代码
-	- ad: 广告代码（格式：“图片文件名 链接地址”，一行一个），对应模板文件中的标签{{ad}}
-    - modifyDate: 最后一次修改的日期
-	- needCreateHtml: 本站根目录下的index.html是否需要重新生成
-	- identityOfLastSelectedItem: 文件树中最后一次选择的文档的标示，
-	  可由TreeView的findItemFromIdentifierString()找到对应的item，
-	  此值用于文件树中移动项目、打开项目时自动选择最后一次点选的item
+### Properties of Item
+- wdtpProject: root valueTree, also represents the Project Properties.
+    - name: it should be 'site' always.
+    - tile
+	- keywords
+    - description
+	- owner
+	- contact: matches {{contact}} in a tpl
+	- copyright: it could be place at the bottom of a page
+	- order: It'll decide the items' display order.
+	    - 0: file name
+		- 1: title
+		- 2: page file name
+		- 3: file size
+		- 4: create time
+		- 5: last modified time
+	- dirFirst: 0 for dir first, 1 for doc first
+	- ascending: up (0), down (1)
+	- showWhat: 
+	    - file name (0)
+		- title (1)
+		- page name (2)
+	- tooltip:
+	    - file name (0)
+		- title (1)
+		- page name (2)
+	- render: the dir of tpls which is placed in the 'project-dir/themes'.
+	- tplFile: for render the index.html of the site, it should be a '.html' tpl-file inside the render dir.
+	- js: JavaScript code, it'll site within < head > area of the index.html.
+	- ad: The formmat should be: 'Image-file-name (whitespace) Link-address', one for pre line. It matched the {{ad}} tag from within a tpl.
+    - modifyDate
+	- needCreateHtml
+	- identityOfLastSelectedItem: the last selected item in fileTree. 
 
-- 值树中各个dir（目录）的属性：
-    - name：目录名 (不包含任何上级路径。上级路径可通过其父节点的name获取）
-	- title：标题，即网页上所显示的菜单名称（如果该目录作为网站菜单的话）
-	- keywords: 关键字
-    - description: 目录简述，用于index的description
-	- createDate: 创建日期
-    - modifyDate: 最后一次修改的日期
-	- isMenu：是否为网站菜单
-	- tplFile: 渲染目录index页所使用的模板文件，位于项目属性render所设置的目录下
-	- js: 目录index页所需的js代码
-	- needCreateHtml: 本目录下的index.html是否需要重新生成
+- Properities of Dir
+    - name: the name of this dir, it doesn't include any parent's name (path).
+	- title: it also be the menu-text if it was set to a site menu
+	- keywords
+    - description
+	- createDate
+    - modifyDate
+	- isMenu: if true, it will be a site-menu-item
+	- tplFile: for render this dir's index.html
+	- js: see above
+	- needCreateHtml
 
-- 值树中各个doc（文档）的属性：
-    - name：文件名（不含文件扩展名，不包含任何上级路径。上级路径可通过其父节点的name获取）
-	- title：文章或页面的标题
-	- keywords: 关键字
-    - description: 简述，用于index的description
-	- createDate: 创建日期
-    - modifyDate: 最后一次修改的日期
-	- isMenu: 本文挡是否为网站菜单（菜单的话不加入列表页。作为菜单的文档，其渲染模板文件同样任意可选）
-	- tplFile: 渲染本文档所使用的模板文件，位于项目属性render所设置的目录下
-	- js: 网页所需的js代码
-	- thumb: bool值，目录index页面中是否提取并显示本文档的标题图
-	- thumbName: 标题图的文件名, 带有“media/”前缀（防止不带时无法定位其他目录的media下的图像）
-	- needCreateHtml: 本文档是否需要重新生成网页
+- Properities of Doc
+    - name: file name, it doesn't include file-extension and any parent path.
+	- title
+	- keywords
+    - description
+	- createDate
+    - modifyDate
+	- isMenu: the doc must not deep than 3 levels (relative to the root ('site/'))
+	- tplFile: for render this doc
+	- js
+	- thumb: extract an image which in this doc as the doc's title-graph or not.
+	- thumbName: name of the title-graph (image), it should begin with 'media/'
+	- needCreateHtml
 
-### 模板标签
-- 标签格式为：{{xxxx}}）
-    - {{siteRelativeRootPath}} 该网页相对于网站根目录的路径，用于该网页链接网站根目录下的css样式表文件。
-	  比如：当前网页的地址是：“site/dir/subDir/00.html”  则该值应该是：“../../../”。注意：最后一定是“/”
-	  此标签可用于< head >区中连接外部css文件等情况
+### Tags (for programmer)
+    - {{siteRelativeRootPath}} relative root-path of a page. eg. the page is 'site/dir/subDir/00.html', 
+	  its root-path should be '../../../'.
+	  Note: the last charactor must be '/'. 
+	  This tag could be used in < head >, for link the external css-file
 
-	- {{keywords}} < head >区meta属性中的的关键字
-	- {{description}} < head >区meta属性中的描述，默认：MD文档中有实际内容的第二段（标题后面的非空行段落）
-	- {{title}} < head >区meta属性中的标题，默认：MD文档的第一行（带有“# ”前缀的标题）
+	- {{keywords}}: meta in < head >
+	- {{description}}: meta in < head >
+	- {{title}}: meta in < head >
 
-	- {{contentTitle}} < body >区文章或目录的标题
-	- {{content}} < body >区中所显示的网页内容，即：MD文档的所有内容
+### Tempalte Tags (for web/tpl designer. These tages should place in < body > area)
+	- {{contentTitle}}: Title of the doc/dir.
+	- {{content}}: Content of the doc.
 
-	- {{siteLogo}} 显示网站LOGO图片，图片须位于网站根目录add-in文件夹下，文件名为logo.png
-	- {{siteMenu}} 网站主菜单
-	- {{siteNavi}} 当前页面的导航菜单
+	- {{siteLogo}}: the logo image should place in 'site/add-in/' and its name should be 'logo.png'.
+	- {{siteMenu}}
+	- {{siteNavi}}
 
-	- {{createAndModifyTime}} 创作及最后修改时间
-	- {{previousAndNext}} 上一篇，下一篇
-	- {{ad}} 广告代码，在项目根目录中设置. 格式：“图像文件名 链接地址”。图像文件应位于site/add-in目录下
-	- {{random}} 随机推荐5篇本站文章
-	- {{contact}} 联系方式
+	- {{createAndModifyTime}}
+	- {{previousAndNext}}
+	- {{ad}}: see 'ad' of Project property. Note: ad images should place in 'site/add-in/'.
+	- {{random}}: 5 random articles.
+	- {{contact}}
 
-	- {{toTop}} 点击后回到页面顶端
-	- {{backPrevious}} 专供book模板的index页所用，返回上一级
-	- {{bottomCopyright}} 每页页底的版权信息
+	- {{toTop}}: click to the top of the page.
+	- {{backPrevious}}: for 'book' tpls, click to back to the parent's index.html.
+	- {{bottomCopyright}}
 
-	- {{titleOfDir}} < body >区中所显示的当前目录的标题
-	- {{blogList}} 专供blog模板的index网页。文章列表，倒序（新的在上），不含目录，含描述，每页显示10条
-	- {{bookList}} 专供book模板的index网页。目录与文章列表，按文件名排序，含目录，不含描述，一页显示全部
+	- {{titleOfDir}}
+	- {{blogList}}: for 'blog' index.html. Articles list. 10/page.
+	- {{bookList}}: for 'book' index.html, include dir. all in one page.
 
-### 关于排序
+### 3rd Library Hack
 
-- 项目文件中的条目(总植树)不进行排序
-- 文件树面板中条目显示的顺序由 DocTreeViewItem 类内部完成（内存中排序）
-
+- Solve the confusing of line-break-up in Editor when it blends Chinese charactors and English words:
+    - L227 in TextEditor, the 'if' statement need comment `text.isWhitespace() && `
+- Increase line-spacing:
+    - Same class above, L481 change the original to `lineHeight = section->font.getHeight() + 8;`
+	- L540 change the original to `atomX, (float) roundToInt (lineY + lineHeight - maxDescent - 4));`
+	- L573 change the original to `atomX, (float) roundToInt (lineY + lineHeight - maxDescent - 4));`

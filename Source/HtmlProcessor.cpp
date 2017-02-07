@@ -443,7 +443,10 @@ void HtmlProcessor::processTags (const ValueTree& docOrDirTree,
 //=================================================================================================
 const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
 {
-    const ValueTree& pTree (FileTreeContainer::projectTree);
+    ValueTree pTree (FileTreeContainer::projectTree.createCopy ());
+    HtmlProcessor sorter (false);
+    pTree.sort (sorter, nullptr, false);
+
     StringArray menuHtmlStr;
 
     if (atLeastHasOneIsMenu (pTree))

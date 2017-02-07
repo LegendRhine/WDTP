@@ -94,6 +94,12 @@ private:
     static void getWordsAndImgNumsInDoc (const ValueTree& tree, int& words, int& imgNums);
 
     //=========================================================================
+    enum MenuIndex
+    {
+        newDir = 1, newDoc, packSite, exportDocs, dataStatis, getItemPath,
+        replaceIn, rename, deleteThis, vewInFinder, openInExEditor, browseInEx
+    };
+
     void menuPerform (const int menuIndex);
     
     void packSiteData ();

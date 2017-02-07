@@ -56,7 +56,7 @@ public:
     static const String getRelativePathToRoot (const File &htmlFile);
 
 private:
-    static const bool atLeastHasOneIsMenu (const ValueTree& tree);
+    static const bool atLeastHasOneMenu (const ValueTree& tree);
 
     //=================================================================================================
     /** get a tree that create time previous/next the arg tree */

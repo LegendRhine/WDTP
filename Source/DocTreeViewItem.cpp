@@ -271,17 +271,17 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
     if (e.mods.isPopupMenu ())
     {
         PopupMenu m;
-        m.addItem (1, TRANS ("New Folder..."), exist && !isDoc && onlyOneSelected
+        m.addItem (newDir, TRANS ("New Folder..."), exist && !isDoc && onlyOneSelected
                    && !tree.getParent ().getParent ().getParent ().isValid ());  // at most 3 level dir
-        m.addItem (2, TRANS ("New Document..."), exist && !isDoc && onlyOneSelected);
+        m.addItem (newDoc, TRANS ("New Document..."), exist && !isDoc && onlyOneSelected);
         m.addSeparator ();
 
-        m.addItem (3, TRANS ("Pack Site Data"), exist && onlyOneSelected && !isDoc);
-        m.addItem (4, TRANS ("Export Docs..."), exist && onlyOneSelected && !isDoc);
+        m.addItem (packSite, TRANS ("Pack Site Data"), exist && onlyOneSelected && !isDoc);
+        m.addItem (exportDocs, TRANS ("Export Docs..."), exist && onlyOneSelected && !isDoc);
 
         m.addSeparator ();
-        m.addItem (5, TRANS ("Statistics..."), exist && onlyOneSelected);
-        m.addItem (6, TRANS ("Get Path"), exist && onlyOneSelected);
+        m.addItem (dataStatis, TRANS ("Statistics..."), exist && onlyOneSelected);
+        m.addItem (getItemPath, TRANS ("Get Path"), exist && onlyOneSelected);
         m.addSeparator ();
 
         PopupMenu sortMenu;
@@ -311,16 +311,16 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu);
         m.addSeparator ();
 
-        m.addItem (9, TRANS ("Replace Content..."), exist && onlyOneSelected);
+        m.addItem (replaceIn, TRANS ("Replace Content..."), exist && onlyOneSelected);
         m.addSeparator ();
 
-        m.addItem (10, TRANS ("Rename..."), !isRoot && onlyOneSelected);
-        m.addItem (12, TRANS ("Delete..."), !isRoot);
+        m.addItem (rename, TRANS ("Rename..."), !isRoot && onlyOneSelected);
+        m.addItem (deleteThis, TRANS ("Delete..."), !isRoot);
         m.addSeparator ();
 
-        m.addItem (14, TRANS ("View in Explorer/Finder..."), exist && onlyOneSelected);
-        m.addItem (15, TRANS ("Open in External Editor..."), exist && onlyOneSelected);
-        m.addItem (16, TRANS ("Browse in External Browser..."), exist && onlyOneSelected);
+        m.addItem (openInExEditor, TRANS ("View in Explorer/Finder..."), exist && onlyOneSelected);
+        m.addItem (openInExEditor, TRANS ("Open in External Editor..."), exist && onlyOneSelected);
+        m.addItem (browseInEx, TRANS ("Browse in External Browser..."), exist && onlyOneSelected);
 
         menuPerform (m.show ());
     }
@@ -345,31 +345,29 @@ void DocTreeViewItem::menuPerform (const int index)
 {
     jassert (sorter != nullptr);
 
-    if (index == 1)
+    if (index == newDir)
         createNewFolder ();
-    else if (index == 2)
+    else if (index == newDoc)
         createNewDocument ();
-    else if (index == 3)
+    else if (index == packSite)
         packSiteData ();
-    else if (index == 4)
+    else if (index == exportDocs)
         exportAsHtml ();
-    else if (index == 5)
+    else if (index == dataStatis)
         statistics ();
-    else if (index == 6)
+    else if (index == getItemPath)
         getPath ();
-    else if (index == 9)
+    else if (index == replaceIn)
         replaceContent ();
-    else if (index == 10)
+    else if (index == rename)
         renameSelectedItem ();
-    else if (index == 12)
+    else if (index == deleteThis)
         deleteSelected ();
-
-    // open in external app..
-    else if (index == 14)
+    else if (index == vewInFinder)
         getMdFileOrDir (tree).revealToUser ();
-    else if (index == 15)
+    else if (index == openInExEditor)
         getMdFileOrDir (tree).startAsProcess ();
-    else if (index == 16)
+    else if (index == browseInEx)
         getHtmlFileOrDir (tree).startAsProcess ();
 
     // sort and show what...

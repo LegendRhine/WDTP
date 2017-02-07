@@ -74,7 +74,7 @@ const String HtmlProcessor::getRelativePathToRoot (const File &htmlFile)
 }
 
 //=================================================================================================
-const bool HtmlProcessor::atLeastHasOneIsMenu (const ValueTree& tree)
+const bool HtmlProcessor::atLeastHasOneMenu (const ValueTree& tree)
 {
     for (int i = tree.getNumChildren (); --i >= 0; )
     {
@@ -449,7 +449,7 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
 
     StringArray menuHtmlStr;
 
-    if (atLeastHasOneIsMenu (pTree))
+    if (atLeastHasOneMenu (pTree))
         menuHtmlStr.add ("<div class=\"siteMenu\"><ul>");
     else
         return String ();
@@ -478,7 +478,7 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
             const String& linkStr ("<li><a href=\"" + path + "\">" + menuName + "</a>");
             menuHtmlStr.add (linkStr);
 
-            if (atLeastHasOneIsMenu (fd))
+            if (atLeastHasOneMenu (fd))
             {
                 menuHtmlStr.add ("<ul>");
 

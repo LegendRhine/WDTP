@@ -12,7 +12,7 @@
 #define EDITANDPREVIEW_H_INCLUDED
 
 class SetupPanel;
-class EditorForMd;
+class MarkdownEditor;
 class WebBrowserComp;
 
 //==============================================================================
@@ -79,19 +79,20 @@ private:
 };
 
 //=========================================================================
-class EditorForMd : public TextEditor,
+class MarkdownEditor : public TextEditor,
                     public Slider::Listener,
                     public ChangeListener
 {
 public:
-    EditorForMd (EditAndPreview* parent_);
-    ~EditorForMd () { }
+    MarkdownEditor (EditAndPreview* parent_);
+    ~MarkdownEditor () { }
     void paint (Graphics& g) override;
 
     virtual void addPopupMenuItems (PopupMenu& menuToAddTo, 
                                     const MouseEvent* mouseClickEvent) override;
-    virtual void performPopupMenuAction (int menuItemID) override;
 
+    virtual void performPopupMenuAction (int menuItemID) override;
+    
     /** for TAB keypress input 4 spaces.
         somehow the original TextEditor can't do it whilst the caret doesn't move at all. */
     bool keyPressed (const KeyPress& key) override;
@@ -101,7 +102,7 @@ public:
     virtual void changeListenerCallback (ChangeBroadcaster* source) override;
 
 private:
-    //=================================================================================================
+    //=============================================================================================
     enum MenuIndex
     {
         pickTitle = 1, addKeywords, pickDesc, 
@@ -114,15 +115,45 @@ private:
         fontSize, fontColor, setBackground, resetDefault
     };
 
+    void hyperlinkInsert ();
+    void insertImages ();
+    void tableInsert ();
+    void quotaInsert ();
+    void insertTitle (const int level);
+    void pickAsDescription ();
+    void pickSelectedAsTitle ();
+    void addSelectedToKeywords ();
+    void alignCenterInsert ();
+    void alignRightInsert ();
+    void orderListInsert ();
+    void unorderListInsert ();
+    void captionInsert ();
+    void separatorInsert ();
+    void interLinkInsert ();
+    void authorInsert ();
+
     void searchBySelectPrev ();
     void searchBySelectNext ();
 
+    void setFontSize ();
+    void setFontColour ();
+    void setBackgroundColour ();
+    void resetToDefault ();
+
+    /** 0 for bold, 1 for italic, 2 for inline code */
+    enum inlineFormatIndex { bold = 0, italic, codeOfinline };
+    void inlineFormat (const inlineFormatIndex& format);
+    void codeBlockFormat ();    
+
+    void saveAndUpdate ();
+
+    //=============================================================================================
     EditAndPreview* parent;
     Slider fontSizeSlider;
     ScopedPointer<ColourSelectorWithPreset> fontColourSelector;
     ScopedPointer<ColourSelectorWithPreset> bgColourSelector;
 
-    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditorForMd)
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MarkdownEditor)
 };
 
 //=================================================================================================

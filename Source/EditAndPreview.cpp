@@ -24,7 +24,7 @@ EditAndPreview::EditAndPreview (MainContentComponent* mainComp_)
     layoutManager.setItemLayout (1, 2, 2, 2);            // layoutBar
     layoutManager.setItemLayout (2, 2, -0.5, -0.28);     // propertiesPanel
 
-    addAndMakeVisible (editor = new EditorForMd (this));
+    addAndMakeVisible (editor = new MarkdownEditor (this));
     addAndMakeVisible (setupPanel = new SetupPanel (this));
     addAndMakeVisible (layoutBar = new StrechableBar (&layoutManager, 1, true));
 
@@ -327,7 +327,7 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
 }
 
 //=================================================================================================
-EditorForMd::EditorForMd (EditAndPreview* parent_)
+MarkdownEditor::MarkdownEditor (EditAndPreview* parent_)
     : parent (parent_),
     fontSizeSlider (Slider::LinearHorizontal, Slider::TextBoxBelow)
 {
@@ -338,7 +338,7 @@ EditorForMd::EditorForMd (EditAndPreview* parent_)
 }
 
 //=================================================================================================
-void EditorForMd::paint (Graphics& g)
+void MarkdownEditor::paint (Graphics& g)
 {
     TextEditor::paint (g);
     g.setColour (Colours::grey);
@@ -346,7 +346,7 @@ void EditorForMd::paint (Graphics& g)
 }
 
 //=================================================================================================
-void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
+void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 {
     const File& docFile (parent->getCurrentDocFile ());
 
@@ -414,97 +414,267 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 }
 
 //=================================================================================================
-void EditorForMd::performPopupMenuAction (int index)
+void MarkdownEditor::performPopupMenuAction (int index)
+{
+         if (addKeywords == index)          addSelectedToKeywords ();
+    else if (pickTitle == index)            pickSelectedAsTitle ();
+    else if (pickDesc == index)             pickAsDescription ();
+    else if (searchPrev == index)           searchBySelectPrev ();
+    else if (searchNext == index)           searchBySelectNext ();
+    else if (insertImage == index)          insertImages ();
+    else if (insertHyperlink == index)      hyperlinkInsert ();    
+    else if (insertTable == index)          tableInsert ();
+    else if (insertQuota == index)          quotaInsert ();
+    else if (insertAlignCenter == index)    alignCenterInsert ();
+    else if (insertAlignRight == index)     alignRightInsert ();
+    else if (insertUnoerderList == index)   unorderListInsert ();
+    else if (insertOrderList == index)      orderListInsert ();
+    else if (insertFirstTitle == index)     insertTitle (1);
+    else if (insertSecondTitle == index)    insertTitle (2);
+    else if (insertThirdTitle == index)     insertTitle (3);    
+    else if (insertCaption == index)        captionInsert ();
+    else if (insertSeparator == index)      separatorInsert ();
+    else if (insertAuthor == index)         authorInsert ();
+    else if (insertInterLink == index)      interLinkInsert ();
+    else if (formatBold == index)           inlineFormat (bold);
+    else if (formatItalic == index)         inlineFormat (italic);
+    else if (inlineCode == index)           inlineFormat (codeOfinline);
+    else if (codeBlock == index)            codeBlockFormat ();
+    else if (fontSize == index)             setFontSize ();
+    else if (fontColor == index)            setFontColour ();
+    else if (setBackground == index)        setBackgroundColour ();
+    else if (resetDefault == index)         resetToDefault ();
+
+    else
+        TextEditor::performPopupMenuAction (index);
+}
+
+//=================================================================================================
+void MarkdownEditor::resetToDefault ()
+{
+    if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),
+                                      TRANS ("Are you sure you want to reset the font size,\n"
+                                             "text color and background to the default?")))
+    {
+
+        systemFile->setValue ("fontSize", SwingUtilities::getFontSize ());
+        systemFile->setValue ("editorFontColour", Colour (0xff303030).toString ());
+        systemFile->setValue ("editorBackground", Colour (0xffdedede).toString ());
+
+        parent->getEditor ()->setColour (TextEditor::textColourId, Colour (0xff303030));
+        parent->getEditor ()->setColour (CaretComponent::caretColourId, Colour (0xff303030).withAlpha (0.6f));
+        parent->getEditor ()->setColour (TextEditor::backgroundColourId, Colour (0xffdedede));
+        parent->getEditor ()->setFont (SwingUtilities::getFontSize ());
+
+        parent->getEditor ()->applyFontToAllText (SwingUtilities::getFontSize ());
+        systemFile->saveIfNeeded ();
+    }
+}
+
+//=================================================================================================
+void MarkdownEditor::setBackgroundColour ()
+{
+    bgColourSelector = new ColourSelectorWithPreset ();
+
+    bgColourSelector->setSize (450, 480);
+    bgColourSelector->setCurrentColour (Colour::fromString (systemFile->getValue ("editorBackground")));
+    bgColourSelector->addChangeListener (this);
+
+    CallOutBox callOut (*bgColourSelector, getLocalBounds (), this);
+    callOut.runModalLoop ();
+
+    systemFile->setValue ("editorBackground", bgColourSelector->getCurrentColour ().toString ());
+    systemFile->saveIfNeeded ();
+}
+
+//=================================================================================================
+void MarkdownEditor::setFontColour ()
+{
+    fontColourSelector = new ColourSelectorWithPreset ();
+
+    fontColourSelector->setSize (450, 480);
+    fontColourSelector->setCurrentColour (Colour::fromString (systemFile->getValue ("editorFontColour")));
+    fontColourSelector->addChangeListener (this);
+
+    CallOutBox callOut (*fontColourSelector, getLocalBounds (), this);
+    callOut.runModalLoop ();
+
+    systemFile->setValue ("editorFontColour", fontColourSelector->getCurrentColour ().toString ());
+    systemFile->saveIfNeeded ();
+}
+
+//=================================================================================================
+void MarkdownEditor::setFontSize ()
+{
+    fontSizeSlider.setValue (systemFile->getValue ("fontSize").getDoubleValue (),
+                             dontSendNotification);
+    CallOutBox callOut (fontSizeSlider, getLocalBounds (), this);
+    callOut.runModalLoop ();
+
+    systemFile->setValue ("fontSize", fontSizeSlider.getValue ());
+    systemFile->saveIfNeeded ();
+}
+
+//=================================================================================================
+void MarkdownEditor::codeBlockFormat ()
 {
     String content;
-    ValueTree& docTree = parent->getCurrentTree ();
+    content << newLine
+        << "```" << newLine
+        << getHighlightedText () << newLine
+        << "```" << newLine;
+
+    insertTextAtCaret (content);
+    saveAndUpdate ();
+}
+
+//=================================================================================================
+void MarkdownEditor::inlineFormat (const inlineFormatIndex& format)
+{
+    String content (getHighlightedText ());
+
+    if (format == bold)
+        content = "**" + content + "**";
+    else if (format == italic)
+        content = "*" + content + "*";
+    else if (format == codeOfinline)
+        content = "`" + content + "`";
+
+    insertTextAtCaret (content);
+    saveAndUpdate ();
+}
+
+//=================================================================================================
+void MarkdownEditor::interLinkInsert ()
+{
+    String linkPath (SystemClipboard::getTextFromClipboard ());
+    const String titleStr (linkPath.upToFirstOccurrenceOf ("@_=#_itemPath_#=_@", false, false));
+    linkPath = linkPath.fromFirstOccurrenceOf ("@_=#_itemPath_#=_@", false, false);
+
+    const String siteRoot (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName ()
+                           + File::separatorString);
+    linkPath = linkPath.fromFirstOccurrenceOf (siteRoot, false, false);
+
+    const String currentHtmlRelativeToRoot (HtmlProcessor::getRelativePathToRoot (
+        DocTreeViewItem::getHtmlFileOrDir (parent->getCurrentTree ())));
+
+    String content;
+    content << "[" << titleStr << "](" << currentHtmlRelativeToRoot << linkPath.replace ("\\", "/") << ")";
+
+    insertTextAtCaret (content);
+    saveAndUpdate ();
+}
+
+//=================================================================================================
+void MarkdownEditor::authorInsert ()
+{
+    String content;
+    content << newLine << newLine
+        << ">>> "
+        << TRANS ("Author: ")
+        << FileTreeContainer::projectTree.getProperty ("owner").toString ()
+        << " " << newLine << ">>> "
+        << SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), false)
+        << " ";
+
+    insertTextAtCaret (content);
+    saveAndUpdate ();
+}
+
+//=================================================================================================
+void MarkdownEditor::separatorInsert ()
+{
+    insertTextAtCaret (newLine + "---" + newLine);
+    saveAndUpdate ();
+}
+
+//=================================================================================================
+void MarkdownEditor::captionInsert ()
+{
+    insertTextAtCaret (newLine + "^^ ");
+    saveAndUpdate ();
+}
+
+//=================================================================================================
+void MarkdownEditor::insertTitle (const int level)
+{
+    String content;
+
+    if (1 == level)
+        content << newLine << "# ";
+    else if (2 == level)
+        content << newLine << "## ";
+    else if (3 == level)
+        content << newLine << "### ";
+ 
+    insertTextAtCaret (content);
+    saveAndUpdate ();
+}
+
+//=================================================================================================
+void MarkdownEditor::orderListInsert ()
+{
+    String content;
+    content << newLine
+            << "+ " << newLine
+            << "+ " << newLine
+            << "+ " << newLine;
+
+    insertTextAtCaret (content);
+
+    moveCaretUp (false);
+    moveCaretUp (false);
+    moveCaretUp (false);
+    moveCaretToEndOfLine (false);
+
+    saveAndUpdate ();
+}
+
+//=================================================================================================
+void MarkdownEditor::unorderListInsert ()
+{
+    String content;
+    content << newLine
+            << "- " << newLine
+            << "- " << newLine
+            << "- " << newLine;
+
+    insertTextAtCaret (content);
     
-    if (addKeywords == index) // add the selected to this doc's keywords
-    {
-        content = getHighlightedText ();
-        const String currentKeyWords (docTree.getProperty ("keywords").toString ().trim ());
+    moveCaretUp (false);
+    moveCaretUp (false);
+    moveCaretUp (false);
+    moveCaretToEndOfLine (false);
 
-        String keyWords (currentKeyWords);
+    saveAndUpdate ();
+}
 
-        // update the doc-tree
-        if (currentKeyWords.isNotEmpty ())
-        {
-            if (!currentKeyWords.containsIgnoreCase (content))
-                keyWords = currentKeyWords + ", " + content;
-        }
-        else
-        {
-            keyWords = content;
-        }
+//=================================================================================================
+void MarkdownEditor::alignRightInsert ()
+{
+    insertTextAtCaret (newLine + ">>> ");
+    saveAndUpdate ();
+}
 
-        docTree.setProperty ("keywords", keyWords, nullptr);
-    }
-    else if (pickTitle == index)  // pickup as title
-    {
-        content = getHighlightedText ();
-        docTree.setProperty ("title", content, nullptr);
-    }
-    else if (pickDesc == index)  // pickup as description
-    {
-        content = getHighlightedText ();
-        docTree.setProperty ("description", content, nullptr);
-    }
-    else if (searchPrev == index)  // search by selected prev
-    {
-        searchBySelectPrev ();
-        return;  // don't insert anything in current content
-    }
-    else if (searchNext == index)  // search by selected next
-    {
-        searchBySelectNext ();
-        return;  // don't insert anything in current content
-    }
-    else if (insertImage == index) // image
-    {
-        FileChooser fc (TRANS ("Select Images..."), File::nonexistent,
-                        "*.jpg;*.png;*.gif", true);
-        Array<File> imageFiles;
+//=================================================================================================
+void MarkdownEditor::alignCenterInsert ()
+{
+    insertTextAtCaret (newLine + ">|< ");
+    saveAndUpdate ();
+}
 
-        if (!fc.browseForMultipleFilesToOpen ())
-            return;
+//=================================================================================================
+void MarkdownEditor::quotaInsert ()
+{
+    insertTextAtCaret (newLine + "> ");
+    saveAndUpdate ();
+}
 
-        imageFiles = fc.getResults ();
-        const File imgPath (DocTreeViewItem::getMdFileOrDir (docTree).getSiblingFile ("media"));
-
-        for (auto f : imageFiles)
-        {
-            const File targetFile (imgPath.getChildFile (f.getFileName ()).getNonexistentSibling (false));
-            targetFile.create ();
-
-            if (f.copyFileTo (targetFile))
-                content << newLine << "![ ](media/" << targetFile.getFileName () << ")" << newLine
-                << "^^ " << TRANS ("Image: ");
-            else
-                SHOW_MESSAGE (TRANS ("Can't insert this image: ") + newLine + f.getFullPathName ());
-        }
-    }
-    else if (insertHyperlink == index) // hyperlink
-    {
-        AlertWindow dialog (TRANS ("Insert Hyperlink"), TRANS ("Please input the url."),
-                            AlertWindow::InfoIcon);
-
-        dialog.addTextEditor ("name", String ());
-        dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
-        dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
-
-        if (0 == dialog.runModalLoop ())
-        {
-            const String inputStr (dialog.getTextEditor ("name")->getText ().trim ());
-            content << "[" << inputStr << "](" << inputStr << ") ";
-        }
-        else
-        {
-            return;  // for: no need to perform other codes below...
-        }
-    }
-    else if (insertTable == index) // table (4 x 3)
-    {
-        content << newLine
+//=================================================================================================
+void MarkdownEditor::tableInsert ()
+{
+    String content;
+    content << newLine
             << " H1 | H2 | H3 " << newLine
             << "--------------" << newLine
             << " 11 | 12 | 13 " << newLine
@@ -513,182 +683,82 @@ void EditorForMd::performPopupMenuAction (int index)
             << " 41 | 42 | 43 " << newLine << newLine
             << "^^ " << TRANS ("Table: ")
             << newLine;
-    }
-    else if (insertQuota == index) // Quotation
-    {
-        content << newLine << "> ";
-    }
-    else if (insertAlignCenter == index) // align center
-    {
-        content << newLine << ">|< ";
-    }
-    else if (insertAlignRight == index) // align right
-    {
-        content << newLine << ">>> ";
-    }
-    else if (insertUnoerderList == index)  // unordered list
-    {
-        content << newLine
-            << "- " << newLine
-            << "- " << newLine
-            << "- " << newLine;
-    }
-    else if (insertOrderList == index)  // ordered list. it'll parse as "1. 2. 3." etc.
-    {
-        content << newLine
-            << "+ " << newLine
-            << "+ " << newLine
-            << "+ " << newLine;
-    }
-    else if (insertFirstTitle == index)  // first heading
-    {
-        content << newLine << "# ";
-    }
-    else if (insertSecondTitle == index)  // second heading
-    {
-        content << newLine << "## ";
-    }
-    else if (insertThirdTitle == index) // third heading
-    {
-        content << newLine << "### ";
-    }
-    else if (insertCaption == index) // image/table caption
-    {
-        content << newLine << "^^ ";
-    }
-    else if (insertSeparator == index) // separator
-    {
-        content << newLine << "---" << newLine;
-    }
-    else if (insertAuthor == index) // author and date
-    {
-        content << newLine << newLine
-            << ">>> "
-            << TRANS ("Author: ")
-            << FileTreeContainer::projectTree.getProperty ("owner").toString ()
-            << " " << newLine << ">>> "
-            << SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), false)
-            << " ";
-
-    }
-    else if (insertInterLink == index)  // insert internal link. see: DocTreeViewItem::getPath()
-    {
-        String linkPath (SystemClipboard::getTextFromClipboard ());
-        const String titleStr (linkPath.upToFirstOccurrenceOf ("@_=#_itemPath_#=_@", false, false));
-        linkPath = linkPath.fromFirstOccurrenceOf ("@_=#_itemPath_#=_@", false, false);
-        
-        const String siteRoot (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName () 
-                               + File::separatorString);
-        linkPath = linkPath.fromFirstOccurrenceOf (siteRoot, false, false);
-
-        const String currentHtmlRelativeToRoot (HtmlProcessor::getRelativePathToRoot (
-            DocTreeViewItem::getHtmlFileOrDir (parent->getCurrentTree ())));
-
-        content << "[" << titleStr << "](" << currentHtmlRelativeToRoot << linkPath.replace ("\\", "/") << ")";
-    }
-    else if (formatBold == index) // bold
-    {
-        content << "**" << getHighlightedText () << "**";
-    }
-    else if (formatItalic == index) // italic
-    {
-        content << "*" << getHighlightedText () << "*";
-    }
-    else if (codeBlock == index) // code block
-    {
-        content << newLine
-            << "```" << newLine
-            << getHighlightedText () << newLine
-            << "```" << newLine;
-    }
-    else if (inlineCode == index) // code inline
-    {
-        content << "`" << getHighlightedText () << "`";
-    }
-    else if (fontSize == index)  // font size
-    {
-        fontSizeSlider.setValue (systemFile->getValue ("fontSize").getDoubleValue (),
-                                 dontSendNotification);
-        CallOutBox callOut (fontSizeSlider, getLocalBounds (), this);
-        callOut.runModalLoop ();
-
-        systemFile->setValue ("fontSize", fontSizeSlider.getValue ());
-        systemFile->saveIfNeeded ();
-    }
-    else if (fontColor == index)  // font color
-    {
-        fontColourSelector = new ColourSelectorWithPreset ();
-
-        fontColourSelector->setSize (450, 480);
-        fontColourSelector->setCurrentColour (Colour::fromString (systemFile->getValue ("editorFontColour")));
-        fontColourSelector->addChangeListener (this);
-
-        CallOutBox callOut (*fontColourSelector, getLocalBounds (), this);
-        callOut.runModalLoop ();
-
-        systemFile->setValue ("editorFontColour", fontColourSelector->getCurrentColour ().toString ());
-        systemFile->saveIfNeeded ();
-    }
-    else if (setBackground == index)  // background color
-    {
-        bgColourSelector = new ColourSelectorWithPreset ();
-
-        bgColourSelector->setSize (450, 480);
-        bgColourSelector->setCurrentColour (Colour::fromString (systemFile->getValue ("editorBackground")));
-        bgColourSelector->addChangeListener (this);
-
-        CallOutBox callOut (*bgColourSelector, getLocalBounds (), this);
-        callOut.runModalLoop ();
-
-        systemFile->setValue ("editorBackground", bgColourSelector->getCurrentColour ().toString ());
-        systemFile->saveIfNeeded ();
-    }
-    else if (resetDefault == index)  // reset color and font-size
-    {
-        if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),
-                                          TRANS ("Are you sure you want to reset the font size,\n"
-                                                 "text color and background to the default?")))
-        {
-
-            systemFile->setValue ("fontSize", SwingUtilities::getFontSize ());
-            systemFile->setValue ("editorFontColour", Colour (0xff303030).toString ());
-            systemFile->setValue ("editorBackground", Colour (0xffdedede).toString ());
-
-            parent->getEditor ()->setColour (TextEditor::textColourId, Colour (0xff303030));
-            parent->getEditor ()->setColour (CaretComponent::caretColourId, Colour (0xff303030).withAlpha (0.6f));
-            parent->getEditor ()->setColour (TextEditor::backgroundColourId, Colour (0xffdedede));
-            parent->getEditor ()->setFont (SwingUtilities::getFontSize ());
-
-            parent->getEditor ()->applyFontToAllText (SwingUtilities::getFontSize ());
-            systemFile->saveIfNeeded ();
-        }
-    }
-    else
-    {
-        TextEditor::performPopupMenuAction (index);
-        return;
-    }
 
     insertTextAtCaret (content);
-
-    // move up the currsor...
-    if (7 == index || 8 == index)
-    {
-        moveCaretUp (false);
-        moveCaretUp (false);
-        moveCaretUp (false);
-        moveCaretToEndOfLine (false);
-    }
-
-    DocTreeViewItem::needCreate (docTree);
-
-    // save the project then update the setup panel
-    FileTreeContainer::saveProject ();
-    parent->getSetupPanel ()->showDocProperties (docTree);
+    saveAndUpdate ();
 }
 
 //=================================================================================================
-bool EditorForMd::keyPressed (const KeyPress& key)
+void MarkdownEditor::hyperlinkInsert ()
+{
+    AlertWindow dialog (TRANS ("Insert Hyperlink"), TRANS ("Please input the url."),
+                        AlertWindow::InfoIcon);
+
+    dialog.addTextEditor ("name", String ());
+    dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
+    dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
+
+    String content;
+
+    if (0 == dialog.runModalLoop ())
+    {
+        content << "[](" << dialog.getTextEditor ("name")->getText ().trim () << ") ";
+
+        insertTextAtCaret (content);
+        saveAndUpdate ();
+    }
+}
+
+//=================================================================================================
+void MarkdownEditor::insertImages ()
+{
+    FileChooser fc (TRANS ("Select Images..."), File::nonexistent,
+                    "*.jpg;*.png;*.gif", true);
+    Array<File> imageFiles;
+
+    if (!fc.browseForMultipleFilesToOpen ())
+        return;
+
+    imageFiles = fc.getResults ();
+    ValueTree& docTree (parent->getCurrentTree ());
+    const File imgPath (DocTreeViewItem::getMdFileOrDir (docTree).getSiblingFile ("media"));
+    String content;
+
+    for (auto f : imageFiles)
+    {
+        const File targetFile (imgPath.getChildFile (f.getFileName ()).getNonexistentSibling (false));
+        targetFile.create ();
+
+        if (f.copyFileTo (targetFile))
+            content << newLine << "![ ](media/" << targetFile.getFileName () << ")" << newLine
+                    << "^^ " << TRANS ("Image: ");
+        else
+            SHOW_MESSAGE (TRANS ("Can't insert this image: ") + newLine + f.getFullPathName ());
+    }
+
+    insertTextAtCaret (content);
+    saveAndUpdate ();
+}
+
+//=================================================================================================
+void MarkdownEditor::pickAsDescription ()
+{
+    ValueTree& docTree (parent->getCurrentTree ());
+    docTree.setProperty ("description", getHighlightedText (), nullptr);
+
+    saveAndUpdate ();
+}
+
+//=================================================================================================
+void MarkdownEditor::pickSelectedAsTitle ()
+{
+    ValueTree& docTree (parent->getCurrentTree ());
+    docTree.setProperty ("title", getHighlightedText (), nullptr);
+    saveAndUpdate ();
+}
+
+//=================================================================================================
+bool MarkdownEditor::keyPressed (const KeyPress& key)
 {
     // tab for 4 spaces
     if (key == KeyPress (KeyPress::tabKey))
@@ -768,7 +838,7 @@ bool EditorForMd::keyPressed (const KeyPress& key)
 }
 
 //=================================================================================================
-void EditorForMd::sliderValueChanged (Slider* slider)
+void MarkdownEditor::sliderValueChanged (Slider* slider)
 {
     if (slider == &fontSizeSlider)
     {
@@ -778,7 +848,7 @@ void EditorForMd::sliderValueChanged (Slider* slider)
 }
 
 //=================================================================================================
-void EditorForMd::changeListenerCallback (ChangeBroadcaster* source)
+void MarkdownEditor::changeListenerCallback (ChangeBroadcaster* source)
 {
     if (source == fontColourSelector)
     {
@@ -794,7 +864,31 @@ void EditorForMd::changeListenerCallback (ChangeBroadcaster* source)
 }
 
 //=================================================================================================
-void EditorForMd::searchBySelectPrev ()
+void MarkdownEditor::addSelectedToKeywords ()
+{
+    ValueTree& docTree (parent->getCurrentTree ());
+    const String& selectedStr = getHighlightedText ();
+    const String currentKeyWords (docTree.getProperty ("keywords").toString ().trim ());
+
+    String keyWords (currentKeyWords);
+
+    // update the doc-tree
+    if (currentKeyWords.isNotEmpty ())
+    {
+        if (!currentKeyWords.containsIgnoreCase (selectedStr))
+            keyWords = currentKeyWords + ", " + selectedStr;
+    }
+    else
+    {
+        keyWords = selectedStr;
+    }
+
+    docTree.setProperty ("keywords", keyWords, nullptr);
+    saveAndUpdate ();
+}
+
+//=================================================================================================
+void MarkdownEditor::searchBySelectPrev ()
 {
     const String& selected (getHighlightedText ());
 
@@ -814,7 +908,7 @@ void EditorForMd::searchBySelectPrev ()
 }
 
 //=================================================================================================
-void EditorForMd::searchBySelectNext ()
+void MarkdownEditor::searchBySelectNext ()
 {
     const String& selected (getHighlightedText ());
 
@@ -831,6 +925,16 @@ void EditorForMd::searchBySelectNext ()
     {
         LookAndFeel::getDefaultLookAndFeel ().playAlertSound ();
     }
+}
+
+//=================================================================================================
+void MarkdownEditor::saveAndUpdate ()
+{
+    ValueTree& docTree (parent->getCurrentTree ());
+    DocTreeViewItem::needCreate (docTree);
+    FileTreeContainer::saveProject ();
+
+    parent->getSetupPanel ()->showDocProperties (docTree);
 }
 
 //=================================================================================================

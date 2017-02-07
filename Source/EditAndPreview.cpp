@@ -352,62 +352,62 @@ void EditorForMd::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 
     if (e->mods.isPopupMenu ())
     {
-        menu.addItem (21, TRANS ("Pickup as Title"), getHighlightedText ().isNotEmpty ());
-        menu.addItem (20, TRANS ("Add to Keywords"), getHighlightedText ().isNotEmpty ());
-        menu.addItem (23, TRANS ("Pickup as Description"), getHighlightedText ().isNotEmpty ());
+        menu.addItem (pickTitle, TRANS ("Pickup as Title"), getHighlightedText ().isNotEmpty ());
+        menu.addItem (addKeywords, TRANS ("Add to Keywords"), getHighlightedText ().isNotEmpty ());
+        menu.addItem (pickDesc, TRANS ("Pickup as Description"), getHighlightedText ().isNotEmpty ());
         menu.addSeparator ();
 
         PopupMenu insertMenu;
-        insertMenu.addItem (1, TRANS ("Iamge(s)..."));
-        insertMenu.addItem (2, TRANS ("Hyperlink..."));
-        insertMenu.addItem (3, TRANS ("Table (4 x 3)"));
-        insertMenu.addItem (4, TRANS ("Quotation"));
+        insertMenu.addItem (insertImage, TRANS ("Iamge(s)..."));
+        insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink..."));
+        insertMenu.addItem (insertTable, TRANS ("Table (4 x 3)"));
+        insertMenu.addItem (insertQuota, TRANS ("Quotation"));
         insertMenu.addSeparator ();
 
-        insertMenu.addItem (5, TRANS ("Align Center"));
-        insertMenu.addItem (6, TRANS ("Align Right"));
+        insertMenu.addItem (insertAlignCenter, TRANS ("Align Center"));
+        insertMenu.addItem (insertAlignRight, TRANS ("Align Right"));
         insertMenu.addSeparator ();
 
-        insertMenu.addItem (7, TRANS ("Unordered List"));
-        insertMenu.addItem (8, TRANS ("Ordered List"));
+        insertMenu.addItem (insertUnoerderList, TRANS ("Unordered List"));
+        insertMenu.addItem (insertOrderList, TRANS ("Ordered List"));
         insertMenu.addSeparator ();
 
-        insertMenu.addItem (9, TRANS ("Primary Heading"));
-        insertMenu.addItem (10, TRANS ("Secondary Heading"));
-        insertMenu.addItem (11, TRANS ("Tertiary Heading"));
+        insertMenu.addItem (insertFirstTitle, TRANS ("Primary Heading"));
+        insertMenu.addItem (insertSecondTitle, TRANS ("Secondary Heading"));
+        insertMenu.addItem (insertThirdTitle, TRANS ("Tertiary Heading"));
         insertMenu.addSeparator ();
 
-        insertMenu.addItem (12, TRANS ("Image/Table Caption"));
-        insertMenu.addItem (14, TRANS ("Separator"));
-        insertMenu.addItem (15, TRANS ("Author and Date"));
+        insertMenu.addItem (insertCaption, TRANS ("Image/Table Caption"));
+        insertMenu.addItem (insertSeparator, TRANS ("Separator"));
+        insertMenu.addItem (insertAuthor, TRANS ("Author and Date"));
         insertMenu.addSeparator ();
 
         const String internalLinkStr (SystemClipboard::getTextFromClipboard ());
-        insertMenu.addItem (16, TRANS ("Internal Link"), internalLinkStr.contains ("@_=#_itemPath_#=_@"));
+        insertMenu.addItem (insertInterLink, TRANS ("Internal Link"), internalLinkStr.contains ("@_=#_itemPath_#=_@"));
         menu.addSubMenu (TRANS ("Insert"), insertMenu, docFile.existsAsFile ());
-
+        
         PopupMenu formatMenu;
-        formatMenu.addItem (30, TRANS ("Bold"), getHighlightedText ().isNotEmpty ());
-        formatMenu.addItem (31, TRANS ("Italic"), getHighlightedText ().isNotEmpty ());
-        formatMenu.addItem (32, TRANS ("Code Block"));
-        formatMenu.addItem (33, TRANS ("Code Inline"), getHighlightedText ().isNotEmpty ());
+        formatMenu.addItem (formatBold, TRANS ("Bold"), getHighlightedText ().isNotEmpty ());
+        formatMenu.addItem (formatItalic, TRANS ("Italic"), getHighlightedText ().isNotEmpty ());
+        formatMenu.addItem (codeBlock, TRANS ("Code Block"));
+        formatMenu.addItem (inlineCode, TRANS ("Code Inline"), getHighlightedText ().isNotEmpty ());
 
         menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile ());
         menu.addSeparator ();
 
-        menu.addItem (35, TRANS ("Search Next Selection..."), getHighlightedText ().isNotEmpty ());
-        menu.addItem (34, TRANS ("Search Prev Selection..."), getHighlightedText ().isNotEmpty ());
+        menu.addItem (searchNext, TRANS ("Search Next Selection..."), getHighlightedText ().isNotEmpty ());
+        menu.addItem (searchPrev, TRANS ("Search Prev Selection..."), getHighlightedText ().isNotEmpty ());
         menu.addSeparator ();
 
         TextEditor::addPopupMenuItems (menu, e);
         menu.addSeparator ();
 
         PopupMenu editorSetup;
-        editorSetup.addItem (40, TRANS ("Font Size..."));
-        editorSetup.addItem (41, TRANS ("Font Color..."));
-        editorSetup.addItem (42, TRANS ("Backgroud..."));
+        editorSetup.addItem (fontSize, TRANS ("Font Size..."));
+        editorSetup.addItem (fontColor, TRANS ("Font Color..."));
+        editorSetup.addItem (setBackground, TRANS ("Backgroud..."));
         editorSetup.addSeparator ();
-        editorSetup.addItem (43, TRANS ("Reset to Default"));
+        editorSetup.addItem (resetDefault, TRANS ("Reset to Default"));
 
         menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docFile.existsAsFile ());
     }
@@ -418,9 +418,8 @@ void EditorForMd::performPopupMenuAction (int index)
 {
     String content;
     ValueTree& docTree = parent->getCurrentTree ();
-
-    // add the selected to this doc's keywords
-    if (20 == index)  
+    
+    if (addKeywords == index) // add the selected to this doc's keywords
     {
         content = getHighlightedText ();
         const String currentKeyWords (docTree.getProperty ("keywords").toString ().trim ());
@@ -440,27 +439,27 @@ void EditorForMd::performPopupMenuAction (int index)
 
         docTree.setProperty ("keywords", keyWords, nullptr);
     }
-    else if (21 == index)  // pickup as title
+    else if (pickTitle == index)  // pickup as title
     {
         content = getHighlightedText ();
         docTree.setProperty ("title", content, nullptr);
     }
-    else if (23 == index)  // pickup as description
+    else if (pickDesc == index)  // pickup as description
     {
         content = getHighlightedText ();
         docTree.setProperty ("description", content, nullptr);
     }
-    else if (34 == index)  // search by selected prev
+    else if (searchPrev == index)  // search by selected prev
     {
         searchBySelectPrev ();
         return;  // don't insert anything in current content
     }
-    else if (35 == index)  // search by selected next
+    else if (searchNext == index)  // search by selected next
     {
         searchBySelectNext ();
         return;  // don't insert anything in current content
     }
-    else if (1 == index) // image
+    else if (insertImage == index) // image
     {
         FileChooser fc (TRANS ("Select Images..."), File::nonexistent,
                         "*.jpg;*.png;*.gif", true);
@@ -484,7 +483,7 @@ void EditorForMd::performPopupMenuAction (int index)
                 SHOW_MESSAGE (TRANS ("Can't insert this image: ") + newLine + f.getFullPathName ());
         }
     }
-    else if (2 == index) // hyperlink
+    else if (insertHyperlink == index) // hyperlink
     {
         AlertWindow dialog (TRANS ("Insert Hyperlink"), TRANS ("Please input the url."),
                             AlertWindow::InfoIcon);
@@ -503,7 +502,7 @@ void EditorForMd::performPopupMenuAction (int index)
             return;  // for: no need to perform other codes below...
         }
     }
-    else if (3 == index) // table (4 x 3)
+    else if (insertTable == index) // table (4 x 3)
     {
         content << newLine
             << " H1 | H2 | H3 " << newLine
@@ -515,53 +514,53 @@ void EditorForMd::performPopupMenuAction (int index)
             << "^^ " << TRANS ("Table: ")
             << newLine;
     }
-    else if (4 == index) // Quotation
+    else if (insertQuota == index) // Quotation
     {
         content << newLine << "> ";
     }
-    else if (5 == index) // align center
+    else if (insertAlignCenter == index) // align center
     {
         content << newLine << ">|< ";
     }
-    else if (6 == index) // align right
+    else if (insertAlignRight == index) // align right
     {
         content << newLine << ">>> ";
     }
-    else if (7 == index)  // unordered list
+    else if (insertUnoerderList == index)  // unordered list
     {
         content << newLine
             << "- " << newLine
             << "- " << newLine
             << "- " << newLine;
     }
-    else if (8 == index)  // ordered list. it'll parse as "1. 2. 3." etc.
+    else if (insertOrderList == index)  // ordered list. it'll parse as "1. 2. 3." etc.
     {
         content << newLine
             << "+ " << newLine
             << "+ " << newLine
             << "+ " << newLine;
     }
-    else if (9 == index)  // second heading
+    else if (insertFirstTitle == index)  // first heading
     {
         content << newLine << "# ";
     }
-    else if (10 == index)  // second heading
+    else if (insertSecondTitle == index)  // second heading
     {
         content << newLine << "## ";
     }
-    else if (11 == index) // third heading
+    else if (insertThirdTitle == index) // third heading
     {
         content << newLine << "### ";
     }
-    else if (12 == index) // image/table caption
+    else if (insertCaption == index) // image/table caption
     {
         content << newLine << "^^ ";
     }
-    else if (14 == index) // separator
+    else if (insertSeparator == index) // separator
     {
         content << newLine << "---" << newLine;
     }
-    else if (15 == index) // author and date
+    else if (insertAuthor == index) // author and date
     {
         content << newLine << newLine
             << ">>> "
@@ -572,7 +571,7 @@ void EditorForMd::performPopupMenuAction (int index)
             << " ";
 
     }
-    else if (16 == index)  // insert internal link. see: DocTreeViewItem::getPath()
+    else if (insertInterLink == index)  // insert internal link. see: DocTreeViewItem::getPath()
     {
         String linkPath (SystemClipboard::getTextFromClipboard ());
         const String titleStr (linkPath.upToFirstOccurrenceOf ("@_=#_itemPath_#=_@", false, false));
@@ -587,26 +586,26 @@ void EditorForMd::performPopupMenuAction (int index)
 
         content << "[" << titleStr << "](" << currentHtmlRelativeToRoot << linkPath.replace ("\\", "/") << ")";
     }
-    else if (30 == index) // bold
+    else if (formatBold == index) // bold
     {
         content << "**" << getHighlightedText () << "**";
     }
-    else if (31 == index) // italic
+    else if (formatItalic == index) // italic
     {
         content << "*" << getHighlightedText () << "*";
     }
-    else if (32 == index) // bold + italic
+    else if (codeBlock == index) // code block
     {
         content << newLine
             << "```" << newLine
             << getHighlightedText () << newLine
             << "```" << newLine;
     }
-    else if (33 == index) // code inline
+    else if (inlineCode == index) // code inline
     {
         content << "`" << getHighlightedText () << "`";
     }
-    else if (40 == index)  // font size
+    else if (fontSize == index)  // font size
     {
         fontSizeSlider.setValue (systemFile->getValue ("fontSize").getDoubleValue (),
                                  dontSendNotification);
@@ -616,7 +615,7 @@ void EditorForMd::performPopupMenuAction (int index)
         systemFile->setValue ("fontSize", fontSizeSlider.getValue ());
         systemFile->saveIfNeeded ();
     }
-    else if (41 == index)  // font color
+    else if (fontColor == index)  // font color
     {
         fontColourSelector = new ColourSelectorWithPreset ();
 
@@ -630,7 +629,7 @@ void EditorForMd::performPopupMenuAction (int index)
         systemFile->setValue ("editorFontColour", fontColourSelector->getCurrentColour ().toString ());
         systemFile->saveIfNeeded ();
     }
-    else if (42 == index)  // background color
+    else if (setBackground == index)  // background color
     {
         bgColourSelector = new ColourSelectorWithPreset ();
 
@@ -644,7 +643,7 @@ void EditorForMd::performPopupMenuAction (int index)
         systemFile->setValue ("editorBackground", bgColourSelector->getCurrentColour ().toString ());
         systemFile->saveIfNeeded ();
     }
-    else if (43 == index)  // reset color and font-size
+    else if (resetDefault == index)  // reset color and font-size
     {
         if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),
                                           TRANS ("Are you sure you want to reset the font size,\n"

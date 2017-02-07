@@ -101,6 +101,19 @@ public:
     virtual void changeListenerCallback (ChangeBroadcaster* source) override;
 
 private:
+    //=================================================================================================
+    enum MenuIndex
+    {
+        pickTitle = 1, addKeywords, pickDesc, 
+        insertImage, insertHyperlink, insertTable, insertQuota,
+        insertAlignCenter, insertAlignRight, insertUnoerderList, insertOrderList, 
+        insertFirstTitle, insertSecondTitle, insertThirdTitle,
+        insertCaption, insertSeparator, insertAuthor, insertInterLink,
+        formatBold, formatItalic, codeBlock, inlineCode,
+        searchNext, searchPrev, 
+        fontSize, fontColor, setBackground, resetDefault
+    };
+
     void searchBySelectPrev ();
     void searchBySelectNext ();
 

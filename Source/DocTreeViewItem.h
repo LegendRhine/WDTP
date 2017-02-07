@@ -96,13 +96,16 @@ private:
     //=========================================================================
     enum MenuIndex
     {
-        newDir = 1, newDoc, packSite, exportDocs, dataStatis, getItemPath,
-        replaceIn, rename, deleteThis, vewInFinder, openInExEditor, browseInEx
+        newDir = 1, newDoc, 
+        packWholeSite, packHtmls, packMedias,
+        exportDocs, dataStatis, getItemPath,
+        replaceIn, rename, deleteThis, 
+        vewInFinder, openInExEditor, browseInEx
     };
 
     void menuPerform (const int menuIndex);
     
-    void packSiteData ();
+    void packSiteData (const bool includeHtmls, const bool includeMedias);
     void exportAsHtml (); 
     void renameSelectedItem ();
     void createNewDocument ();

@@ -276,10 +276,17 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addItem (newDoc, TRANS ("New Document..."), exist && !isDoc && onlyOneSelected);
         m.addSeparator ();
 
-        m.addItem (packSite, TRANS ("Pack Site Data"), exist && onlyOneSelected && !isDoc);
-        m.addItem (exportDocs, TRANS ("Export Docs..."), exist && onlyOneSelected && !isDoc);
+        PopupMenu packMenu;
+        packMenu.addItem (packHtmls, TRANS ("Pack Without Medias"), exist && onlyOneSelected && !isDoc);
+        packMenu.addItem (packMedias, TRANS ("Pack Without Htmls"), exist && onlyOneSelected && !isDoc);
+        packMenu.addSeparator ();
+        packMenu.addItem (packWholeSite, TRANS ("Pack All Data"), exist && onlyOneSelected && !isDoc);
 
+        m.addSubMenu (TRANS ("Pack Site Data"), packMenu);
+
+        m.addItem (exportDocs, TRANS ("Export Docs..."), exist && onlyOneSelected && !isDoc);
         m.addSeparator ();
+
         m.addItem (dataStatis, TRANS ("Statistics..."), exist && onlyOneSelected);
         m.addItem (getItemPath, TRANS ("Get Path"), exist && onlyOneSelected);
         m.addSeparator ();
@@ -349,8 +356,12 @@ void DocTreeViewItem::menuPerform (const int index)
         createNewFolder ();
     else if (index == newDoc)
         createNewDocument ();
-    else if (index == packSite)
-        packSiteData ();
+    else if (index == packHtmls)
+        packSiteData (true, false);
+    else if (index == packMedias)
+        packSiteData (false, true);
+    else if (index == packWholeSite)
+        packSiteData (true, true);
     else if (index == exportDocs)
         exportAsHtml ();
     else if (index == dataStatis)
@@ -384,8 +395,9 @@ void DocTreeViewItem::menuPerform (const int index)
 }
 
 //=================================================================================================
-void DocTreeViewItem::packSiteData ()
+void DocTreeViewItem::packSiteData (const bool includeHtmls, const bool includeMedias)
 {
+    jassert (includeHtmls || includeMedias);  // pack nothing?
     TopToolBar::generateHtmlFilesIfNeeded (tree);
 
     const File thisDir (getHtmlFileOrDir (tree).getParentDirectory ());
@@ -404,12 +416,29 @@ void DocTreeViewItem::packSiteData ()
                                                     + File::separatorString, false, false));
 
             pathStr = pathStr.replace (File::separatorString, "/");
+
+            if (includeHtmls && !includeMedias && htmlFiles[i].getFileExtension () != ".html")
+                continue;
+
+            else if (!includeHtmls && includeMedias && htmlFiles[i].getFileExtension () == ".html")
+                continue;
+
+            // Note: it'll include 'add-in' when pack the root-item
+            // and perhaps include other data. for example:
+            // user created or copied some data
             builder.addFile (htmlFiles[i], 9, pathStr);
         }
     }
 
     // write to zip file
-    const File packZipFile (thisDir.getChildFile (tree.getProperty ("name").toString () + ".zip"));
+    String postfix;
+
+    if (includeHtmls && !includeMedias)
+        postfix = "-htmls";
+    else if (!includeHtmls && includeMedias)
+        postfix = "-medias";
+
+    const File packZipFile (thisDir.getChildFile (tree.getProperty ("name").toString () + postfix + ".zip"));
     packZipFile.deleteFile ();
     packZipFile.create ();
 
@@ -419,13 +448,13 @@ void DocTreeViewItem::packSiteData ()
     {
         out->flush ();
         out = nullptr;
-        SHOW_MESSAGE (TRANS ("Site data of this folder packed successful!"));
+        SHOW_MESSAGE (TRANS ("Pack successful!"));
 
         packZipFile.revealToUser ();
     }
     else
     {
-        SHOW_MESSAGE (TRANS ("Somehow site data of this folder packed failed."));
+        SHOW_MESSAGE (TRANS ("Somehow pack failed."));
     }
 }
 

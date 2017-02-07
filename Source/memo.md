@@ -6,7 +6,7 @@
 	- language: The language of UI text (String, language name).
 	- uiBackground
 	- uiTextColour: it has only 2 colors (dark/light) based on the background of UI.
-	- fontName: (haven't been use yet.)
+	- fontName: (haven't been using yet.)
 	- fontSize：The font-size of TextEditor.
 	- editorFontColour
 	- editorBackground
@@ -76,7 +76,7 @@
 	- thumbName: name of the title-graph (image), it should begin with 'media/'
 	- needCreateHtml
 
-### Tags (for programmer)
+### Tags (for developer. These tags could be placed in < head >)
     - {{siteRelativeRootPath}} relative root-path of a page. eg. the page is 'site/dir/subDir/00.html', 
 	  its root-path should be '../../../'.
 	  Note: the last charactor must be '/'. 
@@ -86,7 +86,7 @@
 	- {{description}}: meta in < head >
 	- {{title}}: meta in < head >
 
-### Tempalte Tags (for web/tpl designer. These tages should be placed in < body > area)
+### Tempalte Tags (for web/tpl designer. These tags should be placed in < body > area)
 	- {{contentTitle}}: Title of the doc/dir.
 	- {{content}}: Content of the doc.
 
@@ -110,7 +110,7 @@
 
 ### 3rd Library Hack
 
-- Solve the confusing of line-break-up in Editor when it blends Chinese charactors and English words:
+- Solve the confusing of text line break-up of the default Editor when it blends Chinese charactors and English words:
     - L227 in TextEditor, the 'if' statement need comment `text.isWhitespace() && `
 - Increase line-spacing:
     - Same class above, L481 change the original to `lineHeight = section->font.getHeight() + 4;`

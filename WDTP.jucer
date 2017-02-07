@@ -49,6 +49,10 @@
       <FILE id="LQFmhv" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>
       <FILE id="czsEY9" name="MainComponent.h" compile="0" resource="0" file="Source/MainComponent.h"/>
+      <FILE id="HmTklT" name="MarkdownEditor.cpp" compile="1" resource="0"
+            file="Source/MarkdownEditor.cpp"/>
+      <FILE id="L8tT3N" name="MarkdownEditor.h" compile="0" resource="0"
+            file="Source/MarkdownEditor.h"/>
       <FILE id="hzPDBZ" name="memo.md" compile="0" resource="0" file="Source/memo.md"/>
       <FILE id="YEZNXG" name="ReplaceComponent.cpp" compile="1" resource="0"
             file="Source/ReplaceComponent.cpp"/>

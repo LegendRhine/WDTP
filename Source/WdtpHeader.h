@@ -17,6 +17,7 @@
 #include "SwingLibrary/MD2Html.h"
 #include "MainComponent.h"
 #include "TopToolBar.h"
+#include "MarkdownEditor.h"
 #include "EditAndPreview.h"
 #include "SetupPanel.h"
 #include "HtmlProcessor.h"

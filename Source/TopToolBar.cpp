@@ -406,7 +406,7 @@ void TopToolBar::menuPerform (const int index)
 //=================================================================================================
 void TopToolBar::createNewProject ()
 {
-    // popup file save dialog
+    // popup native file save dialog
     FileChooser fc (TRANS ("New Project..."), File::nonexistent, "*.wdtp", true);
 
     if (!fc.browseForFileToSave (false))

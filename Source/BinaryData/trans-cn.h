@@ -102,7 +102,7 @@ countries: cn
 "Backgroud..." = "背景颜色..."
 "Reset to Default" = "重置为默认"
 "Editor Setup" = "编辑器外观设置"
-"Select Images..." = "选择图片..."
+"Select Images..." = "选择图片（可多选）..."
 "Can\'t insert this image: " = "无法插入此图片: "
 "Insert Hyperlink" = "插入超链接"
 "Please input the url." = "请输入网址."

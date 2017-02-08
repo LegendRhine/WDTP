@@ -44,14 +44,20 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSeparator ();
 
         PopupMenu insertMenu;
-        insertMenu.addItem (insertImage, TRANS ("Iamge(s)..."));
-        insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink..."));
-        insertMenu.addItem (insertTable, TRANS ("Table (4 x 3)"));
+        String ctrlStr ("  (Ctrl + ");
+
+#if JUCE_MAC
+        ctrlStr = "  (Cmd + ";
+#endif
+
+        insertMenu.addItem (insertImage, TRANS ("Iamge(s)...") + ctrlStr + "M)");
+        insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink...") + ctrlStr + "H)");
+        insertMenu.addItem (insertTable, TRANS ("Table (4 x 3)") + ctrlStr + "T)");
         insertMenu.addItem (insertQuota, TRANS ("Quotation"));
         insertMenu.addSeparator ();
 
-        insertMenu.addItem (insertAlignCenter, TRANS ("Align Center"));
-        insertMenu.addItem (insertAlignRight, TRANS ("Align Right"));
+        insertMenu.addItem (insertAlignCenter, TRANS ("Align Center") + ctrlStr + "N)");
+        insertMenu.addItem (insertAlignRight, TRANS ("Align Right") + ctrlStr + "R)");
         insertMenu.addSeparator ();
 
         insertMenu.addItem (insertUnoerderList, TRANS ("Unordered List"));
@@ -63,9 +69,9 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (insertThirdTitle, TRANS ("Tertiary Heading"));
         insertMenu.addSeparator ();
 
-        insertMenu.addItem (insertCaption, TRANS ("Image/Table Caption"));
+        insertMenu.addItem (insertCaption, TRANS ("Image/Table Caption") + ctrlStr + "P)");
         insertMenu.addItem (insertSeparator, TRANS ("Separator"));
-        insertMenu.addItem (insertAuthor, TRANS ("Author and Date"));
+        insertMenu.addItem (insertAuthor, TRANS ("Author and Date") + ctrlStr + "O)");
         insertMenu.addSeparator ();
 
         const String internalLinkStr (SystemClipboard::getTextFromClipboard ());
@@ -73,16 +79,17 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSubMenu (TRANS ("Insert"), insertMenu, docFile.existsAsFile ());
 
         PopupMenu formatMenu;
-        formatMenu.addItem (formatBold, TRANS ("Bold"), getHighlightedText ().isNotEmpty ());
-        formatMenu.addItem (formatItalic, TRANS ("Italic"), getHighlightedText ().isNotEmpty ());
+        formatMenu.addItem (formatBold, TRANS ("Bold") + ctrlStr + "B)");
+        formatMenu.addItem (formatItalic, TRANS ("Italic") + ctrlStr + "I)");
+        formatMenu.addSeparator ();
+        formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
         formatMenu.addItem (codeBlock, TRANS ("Code Block"));
-        formatMenu.addItem (inlineCode, TRANS ("Code Inline"), getHighlightedText ().isNotEmpty ());
 
         menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile ());
         menu.addSeparator ();
 
-        menu.addItem (searchNext, TRANS ("Search Next Selection..."), getHighlightedText ().isNotEmpty ());
-        menu.addItem (searchPrev, TRANS ("Search Prev Selection..."), getHighlightedText ().isNotEmpty ());
+        menu.addItem (searchNext, TRANS ("Search Next Selection...") + "  F3", getHighlightedText ().isNotEmpty ());
+        menu.addItem (searchPrev, TRANS ("Search Prev Selection...") + "  Shift + F3", getHighlightedText ().isNotEmpty ());
         menu.addSeparator ();
 
         TextEditor::addPopupMenuItems (menu, e);
@@ -102,7 +109,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 //=================================================================================================
 void MarkdownEditor::performPopupMenuAction (int index)
 {
-    if (addKeywords == index)          addSelectedToKeywords ();
+        if (addKeywords == index)           addSelectedToKeywords ();
     else if (pickTitle == index)            pickSelectedAsTitle ();
     else if (pickDesc == index)             pickAsDescription ();
     else if (searchPrev == index)           searchBySelectPrev ();
@@ -218,6 +225,7 @@ void MarkdownEditor::codeBlockFormat ()
 void MarkdownEditor::inlineFormat (const inlineFormatIndex& format)
 {
     String content (getHighlightedText ());
+    const bool selectNothing = content.isEmpty ();
 
     if (format == bold)
         content = "**" + content + "**";
@@ -229,6 +237,15 @@ void MarkdownEditor::inlineFormat (const inlineFormatIndex& format)
         content = "`" + content + "`";
 
     insertTextAtCaret (content);
+
+    if (selectNothing)
+    {
+        moveCaretLeft (false, false);
+
+        if (format == bold)
+            moveCaretLeft (false, false);
+    }
+
     saveAndUpdate ();
 }
 
@@ -257,9 +274,7 @@ void MarkdownEditor::interLinkInsert ()
 void MarkdownEditor::authorInsert ()
 {
     String content;
-    content << newLine << newLine
-        << ">>> "
-        << TRANS ("Author: ")
+    content << newLine << ">>> " << TRANS ("Author: ")
         << FileTreeContainer::projectTree.getProperty ("owner").toString ()
         << " " << newLine << ">>> "
         << SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), false)
@@ -371,8 +386,7 @@ void MarkdownEditor::tableInsert ()
             << " 21 | 22 | 23 " << newLine
             << " 31 | 32 | 33 " << newLine
             << " 41 | 42 | 43 " << newLine << newLine
-            << "^^ " << TRANS ("Table: ")
-            << newLine;
+            << "^^ " << TRANS ("Table: ");
 
     insertTextAtCaret (content);
     saveAndUpdate ();
@@ -523,6 +537,48 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
         return TextEditor::keyPressed (key);
     }
+
+    // Markdown shortcut below...
+
+    // format bold
+    else if (key == KeyPress ('b', ModifierKeys::commandModifier, 0))
+        inlineFormat (bold);
+
+    // format italic
+    else if (key == KeyPress ('i', ModifierKeys::commandModifier, 0))
+        inlineFormat (italic);
+
+    // format inline-code
+    else if (key == KeyPress ('l', ModifierKeys::commandModifier, 0))
+        inlineFormat (codeOfinline);
+
+    // insert hyperlink
+    else if (key == KeyPress ('h', ModifierKeys::commandModifier, 0))
+        hyperlinkInsert ();
+
+    // insert images
+    else if (key == KeyPress ('m', ModifierKeys::commandModifier, 0))
+        insertImages ();
+
+    // insert table
+    else if (key == KeyPress ('t', ModifierKeys::commandModifier, 0))
+        tableInsert ();
+
+    // insert align center
+    else if (key == KeyPress ('n', ModifierKeys::commandModifier, 0))
+        alignCenterInsert ();
+
+    // insert align right
+    else if (key == KeyPress ('r', ModifierKeys::commandModifier, 0))
+        alignRightInsert ();
+
+    // insert caption
+    else if (key == KeyPress ('p', ModifierKeys::commandModifier, 0))
+        captionInsert ();
+
+    // insert author and date
+    else if (key == KeyPress ('o', ModifierKeys::commandModifier, 0))
+        authorInsert ();
 
     return TextEditor::keyPressed (key);
 }

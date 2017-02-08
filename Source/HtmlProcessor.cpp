@@ -804,8 +804,8 @@ void HtmlProcessor::getBlogListHtmlStr (const ValueTree& tree,
             str += "@_^_#_%_@<img src=" + rootPath
                 + "add-in/createDate.png style=\"vertical-align:middle; display:inline-block\"> "
                 + tree.getProperty ("createDate").toString ().dropLastCharacters (3) // drop seconds
-                + " <img src=" + rootPath
-                + " add-in/modifiedDate.png style=\"vertical-align:middle; display:inline-block\"> " +
+                + " &nbsp;&nbsp;<img src=" + rootPath
+                + "add-in/modifiedDate.png style=\"vertical-align:middle; display:inline-block\"> " +
                 // + " - " +
                 tree.getProperty ("modifyDate").toString ().dropLastCharacters (3); // drop seconds 
 

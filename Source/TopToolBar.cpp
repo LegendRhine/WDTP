@@ -407,7 +407,7 @@ void TopToolBar::menuPerform (const int index)
 void TopToolBar::createNewProject ()
 {
     // popup file save dialog
-    FileChooser fc (TRANS ("New Project..."), File::nonexistent, "*.wdtp", false);
+    FileChooser fc (TRANS ("New Project..."), File::nonexistent, "*.wdtp", true);
 
     if (!fc.browseForFileToSave (false))
         return;
@@ -468,7 +468,7 @@ void TopToolBar::createNewProject ()
 //=================================================================================================
 void TopToolBar::openProject ()
 {
-    FileChooser fc (TRANS ("Open Project..."), File::nonexistent, "*.wdtp;*.wpck", false);
+    FileChooser fc (TRANS ("Open Project..."), File::nonexistent, "*.wdtp;*.wpck", true);
 
     if (fc.browseForFileToOpen ())
         fileTreeContainer->openProject (fc.getResult ());
@@ -815,7 +815,7 @@ void TopToolBar::exportCurrentTpls ()
 //=================================================================================================
 void TopToolBar::importExternalTpls ()
 {
-    FileChooser fc (TRANS ("Open Template File..."), File::nonexistent, "*.wtpl", false);
+    FileChooser fc (TRANS ("Open Template File..."), File::nonexistent, "*.wtpl", true);
 
     if (fc.browseForFileToOpen ())
     {

@@ -530,7 +530,7 @@ void DocTreeViewItem::exportAsHtml ()
     FileChooser fc (TRANS ("Export document(s) as a single html file..."), 
                     File::getSpecialLocation (File::userDocumentsDirectory)
                     .getChildFile (tree.getProperty ("name").toString () + ".html"),
-        "*.html", false);
+        "*.html", true);
 
     if (!fc.browseForFileToSave (false))
         return;

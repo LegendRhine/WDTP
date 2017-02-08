@@ -83,7 +83,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addItem (formatItalic, TRANS ("Italic") + ctrlStr + "I)");
         formatMenu.addSeparator ();
         formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
-        formatMenu.addItem (codeBlock, TRANS ("Code Block"));
+        formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
 
         menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile ());
         menu.addSeparator ();
@@ -551,6 +551,10 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     // format inline-code
     else if (key == KeyPress ('l', ModifierKeys::commandModifier, 0))
         inlineFormat (codeOfinline);
+
+    // code block
+    else if (key == KeyPress ('k', ModifierKeys::commandModifier, 0))
+        codeBlockFormat ();
 
     // insert hyperlink
     else if (key == KeyPress ('h', ModifierKeys::commandModifier, 0))

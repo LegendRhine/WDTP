@@ -40,8 +40,11 @@ private:
     /** If one "`" in a single line (paragaph), then "`" needn't to escape :) */
     static const String inlineCodeParse (const String& mdString);
 
-    static const String boldParse (const String& mdString);
-    static const String italicParse (const String& mdString);
+    static const String boldParse (const String& mdString);     /**< **text** */
+    static const String italicParse (const String& mdString);   /**< *text* */
+
+    /** ~~text~~: change the traditional delete-line */
+    static const String highlightParse (const String& mdString);  
 
     /** This method will process: <hr>, <blockquote>, <h1> ~ <h6>, <align>.
         All of these Markdown-character(s) must at the first of a line.

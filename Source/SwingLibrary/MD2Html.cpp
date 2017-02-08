@@ -25,6 +25,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     htmlContent = inlineCodeParse (htmlContent);
     htmlContent = boldParse (htmlContent);
     htmlContent = italicParse (htmlContent);
+    htmlContent = highlightParse (htmlContent);
     htmlContent = processByLine (htmlContent);
     htmlContent = spaceLinkParse (htmlContent);
     htmlContent = imageParse (htmlContent);
@@ -203,6 +204,38 @@ const String Md2Html::italicParse (const String& mdString)
         }
 
         index = resultStr.indexOfIgnoreCase (index + 1, "*");
+    }
+
+    //DBG (resultStr);
+    return resultStr;
+}
+
+//=================================================================================================
+const String Md2Html::highlightParse (const String& mdString)
+{
+    String resultStr (mdString);
+    int index = resultStr.indexOfIgnoreCase (0, "~~");
+
+    for (int i = 1; index != -1; ++i)
+    {
+        if (resultStr.substring (index - 1, index) != "\\"
+            && resultStr.substring (index - 1, index) != "/"
+            && resultStr.substring (index - 1, index) != "~"
+            && resultStr.substring (index + 2, index + 3) != "~"
+            && resultStr.substring (index + 2, index + 3) != "/"
+            && resultStr.substring (index + 1, index + 2) != "<")
+        {
+            if (i % 2 == 1)
+                resultStr = resultStr.replaceSection (index, 2, "<span style=\"background: #bbdddd\">");
+            else
+                resultStr = resultStr.replaceSection (index, 2, "</span>");
+        }
+        else
+        {
+            --i;
+        }
+
+        index = resultStr.indexOfIgnoreCase (index + 2, "~~");
     }
 
     //DBG (resultStr);

@@ -735,8 +735,12 @@ void TopToolBar::packProject ()
                              + addFiles[m].getFileName ());
     }
 
+    // to get the date string ("-2017-0209-0508-16") for zip's file name
+    String packDate (SwingUtilities::getCurrentTimeString ());
+    packDate = "-" + packDate.replaceSection (4, 0, "-").replaceSection (9, 0, "-").replaceSection (14, 0, "-");
+
     // write to zip file
-    const File packZipFile (projectFile.getSiblingFile (projectFile.getFileNameWithoutExtension() + ".wpck"));
+    const File packZipFile (projectFile.getSiblingFile (projectFile.getFileNameWithoutExtension () + packDate + ".wpck"));
     packZipFile.deleteFile ();
     packZipFile.create ();
 

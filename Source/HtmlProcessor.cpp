@@ -397,6 +397,14 @@ void HtmlProcessor::processTags (const ValueTree& docOrDirTree,
         tplStr = tplStr.replace ("{{contentTitle}}", getContentTitle (docOrDirTree));
     }
 
+    // content decription
+    if (tplStr.contains ("{{contentDesc}}"))
+    {
+        String descStr (docOrDirTree.getProperty ("description").toString ());
+        descStr = "<div  align=\"center\"><blockquote>" + descStr + "</blockquote></div>";
+        tplStr = tplStr.replace ("{{contentDesc}}", descStr);
+    }
+
     // create and modified time
     if (tplStr.contains ("{{createAndModifyTime}}"))
     {

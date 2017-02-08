@@ -88,6 +88,7 @@
 
 ### Tempalte Tags (for web/tpl designer. These tags should be placed in < body > area)
 	- {{contentTitle}}: Title of the doc/dir.
+	- {{contentDesc}}: Description of the doc/dir.
 	- {{content}}: Content of the doc.
 
 	- {{siteLogo}}: the logo image should place in 'site/add-in/' and its name should be 'logo.png'.

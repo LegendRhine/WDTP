@@ -494,6 +494,14 @@ const String Md2Html::cleanUp (const String& mdString)
     resultStr = resultStr.replace (String ("<hr>") + newLine, "<hr>\n<p>");
     resultStr = resultStr.replace (String ("</code></pre>") + newLine, "</code></pre>\n<p>");
 
+    // for escape
+    resultStr = resultStr.replace (String ("\\*"), "*");
+    resultStr = resultStr.replace (String ("\\~"), "~");
+    resultStr = resultStr.replace (String ("\\`"), "`");
+    resultStr = resultStr.replace (String ("\\```"), "```");
+    resultStr = resultStr.replace (String ("\\#"), "#");
+    resultStr = resultStr.replace (String ("\\!["), "![");
+
     //DBG (resultStr);
     return resultStr;
 }

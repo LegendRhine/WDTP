@@ -798,12 +798,16 @@ void HtmlProcessor::getBlogListHtmlStr (const ValueTree& tree,
             const String& text (tree.getProperty ("title").toString ());
             const String& imgName (tree.getProperty ("thumbName").toString ());
 
-            // "@_^_#_%_@" for sort...
-            // create date
             String str (tree.getType ().toString () == "doc" ? "doc" : "dir");
+
+            // create and last modified date
             str += "@_^_#_%_@<img src=" + rootPath
-                + "add-in/date.png style=\"vertical-align:middle; display:inline-block\"> " +
-                tree.getProperty ("createDate").toString ().dropLastCharacters (3); // drop seconds
+                + "add-in/createDate.png style=\"vertical-align:middle; display:inline-block\"> "
+                + tree.getProperty ("createDate").toString ().dropLastCharacters (3) // drop seconds
+                + " <img src=" + rootPath
+                + " add-in/modifiedDate.png style=\"vertical-align:middle; display:inline-block\"> " +
+                // + " - " +
+                tree.getProperty ("modifyDate").toString ().dropLastCharacters (3); // drop seconds 
 
             // 2 level dir and their link
             const ValueTree parentTree (tree.getParent ());
@@ -876,7 +880,7 @@ const StringArray HtmlProcessor::getBlogList (const ValueTree& dirTree)
     for (int i = filesLinkStr.size (); --i >= 0; )
     {
         filesLinkStr.getReference (i) = filesLinkStr[i].substring (12); // remove "dir/doc @_^_#_%_@"
-        const String dateStr (filesLinkStr[i].upToFirstOccurrenceOf ("@_^_#_%_@", false, true));
+        const String dateStr (filesLinkStr[i].upToFirstOccurrenceOf ("@_^_#_%_@", false, true));        
         const String descStr (filesLinkStr[i].fromLastOccurrenceOf ("@_^_#_%_@", false, true));
         const String titleStr (filesLinkStr[i].substring (dateStr.length () + 9).dropLastCharacters (descStr.length () + 9));
 

@@ -81,6 +81,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         PopupMenu formatMenu;
         formatMenu.addItem (formatBold, TRANS ("Bold") + ctrlStr + "B)");
         formatMenu.addItem (formatItalic, TRANS ("Italic") + ctrlStr + "I)");
+        formatMenu.addItem (formatHighlight, TRANS ("Highlight") + ctrlStr + "U)");
         formatMenu.addSeparator ();
         formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
@@ -131,6 +132,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (insertInterLink == index)      interLinkInsert ();
     else if (formatBold == index)           inlineFormat (bold);
     else if (formatItalic == index)         inlineFormat (italic);
+    else if (formatHighlight == index)      inlineFormat (highlight);
     else if (inlineCode == index)           inlineFormat (codeOfinline);
     else if (codeBlock == index)            codeBlockFormat ();
     else if (fontSize == index)             setFontSize ();
@@ -233,6 +235,9 @@ void MarkdownEditor::inlineFormat (const inlineFormatIndex& format)
     else if (format == italic)
         content = "*" + content + "*";
 
+    else if (format == highlight)
+        content = "~~" + content + "~~";
+
     else if (format == codeOfinline)
         content = "`" + content + "`";
 
@@ -242,7 +247,7 @@ void MarkdownEditor::inlineFormat (const inlineFormatIndex& format)
     {
         moveCaretLeft (false, false);
 
-        if (format == bold)
+        if (format == bold || format == highlight)
             moveCaretLeft (false, false);
     }
 
@@ -547,6 +552,10 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     // format italic
     else if (key == KeyPress ('i', ModifierKeys::commandModifier, 0))
         inlineFormat (italic);
+
+    // format highlight
+    else if (key == KeyPress ('u', ModifierKeys::commandModifier, 0))
+        inlineFormat (highlight);
 
     // format inline-code
     else if (key == KeyPress ('l', ModifierKeys::commandModifier, 0))

@@ -92,6 +92,7 @@ countries: cn
 "Insert" = "插入"
 "Bold" = "加粗"
 "Italic" = "斜体"
+"Highlight" = "高亮"
 "Code Block" = "代码块"
 "Code Inline" = "行内代码"
 "Format" = "格式"

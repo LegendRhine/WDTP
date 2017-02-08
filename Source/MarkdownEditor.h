@@ -47,7 +47,8 @@ private:
         insertAlignCenter, insertAlignRight, insertUnoerderList, insertOrderList,
         insertFirstTitle, insertSecondTitle, insertThirdTitle,
         insertCaption, insertSeparator, insertAuthor, insertInterLink,
-        formatBold, formatItalic, codeBlock, inlineCode,
+        formatBold, formatItalic, formatHighlight, 
+        codeBlock, inlineCode,
         searchNext, searchPrev,
         fontSize, fontColor, setBackground, resetDefault
     };
@@ -79,7 +80,7 @@ private:
     void resetToDefault ();
 
     /** 0 for bold, 1 for italic, 2 for inline code */
-    enum inlineFormatIndex { bold = 0, italic, codeOfinline };
+    enum inlineFormatIndex { bold = 0, italic, highlight, codeOfinline };
     void inlineFormat (const inlineFormatIndex& format);
 
     void saveAndUpdate ();

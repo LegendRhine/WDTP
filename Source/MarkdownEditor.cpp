@@ -597,7 +597,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         return true;
     }
 
-    // insert new paragraph above the current paragraph
+    // ctrl + return: insert new paragraph above the current paragraph
     else if (key == KeyPress (KeyPress::returnKey, ModifierKeys::commandModifier, 0))
     {
         moveCaretToStartOfLine (false);
@@ -609,9 +609,9 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         }
 
         TextEditor::keyPressed (KeyPress (KeyPress::returnKey));
-        TextEditor::keyPressed (KeyPress (KeyPress::returnKey));
+        //TextEditor::keyPressed (KeyPress (KeyPress::returnKey));
 
-        return moveCaretUp (false) && moveCaretUp (false);
+        return moveCaretUp (false);
     }
 
     // cut/copy the current paragraph when selected nothing

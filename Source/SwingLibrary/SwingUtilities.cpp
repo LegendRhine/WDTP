@@ -26,7 +26,7 @@ void SwingUtilities::showAbout (const String& shortDescription,
                           TRANS ("Acknowledgements:") + newLine +
                           "  - Framework: JUCE (https://juce.com)\n" +
                           //"  - Library: cURL (https://curl.haxx.se)\n" +
-                          "  - Mr. Chen Ping: (http://cpww601.blog.163.com)\n" +
+                          //"  - Mr. Chen Ping: (http://cpww601.blog.163.com)\n" +
                           "  - Highlight.js (https://highlightjs.org)");
 
     Component* linkButton = new HyperlinkButton ("UnderwaySoft", URL ("http://underwaySoft.com"));

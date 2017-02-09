@@ -616,6 +616,12 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 2)) == "+ ")
             content += "+ ";
 
+        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 6)) == "    - ")
+            content += "    - ";
+
+        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 6)) == "    + ")
+            content += "    + ";
+
         setCaretPosition (position);
         TextEditor::keyPressed (key);
         insertTextAtCaret (content);

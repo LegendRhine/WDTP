@@ -479,8 +479,13 @@ void MarkdownEditor::autoWrapSelected (const KeyPress& key)
         && keyStr != "~~"
         && keyStr != "`")
     {
-        setHighlightedRegion (Range<int> (getCaretPosition () - content.length () - 2, getCaretPosition ()));
+        setHighlightedRegion (Range<int> (getCaretPosition () - content.length () - 1, getCaretPosition () - 1));
     }
+
+    // move the caret after input 2 '*'
+    if (String("*") == getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 1))
+        && String ("*") == getTextInRange (Range<int> (getCaretPosition () - 1, getCaretPosition ())))
+        setCaretPosition (getCaretPosition () + 1);
 
     saveAndUpdate ();
 }

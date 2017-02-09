@@ -577,6 +577,63 @@ void MarkdownEditor::shiftTabInput ()
 }
 
 //=================================================================================================
+void MarkdownEditor::returnKeyInput ()
+{
+    const int position = getCaretPosition ();
+
+    // cancel list mark when user doesn't want input anything on the current line
+    if (getTextInRange (Range<int> (position - 2, position)) == "- "
+        && getTextInRange (Range<int> (position - 3, position - 2)) == "\n")
+    {
+        moveCaretToStartOfLine (true);
+        insertTextAtCaret ("    - ");
+    }
+    else if (getTextInRange (Range<int> (position - 2, position)) == "+ "
+             && getTextInRange (Range<int> (position - 3, position - 2)) == "\n")
+    {
+        moveCaretToStartOfLine (true);
+        insertTextAtCaret ("    + ");
+    }
+    else if ((getTextInRange (Range<int> (position - 6, position)) == "    - "
+             || getTextInRange (Range<int> (position - 6, position)) == "    + ")
+             && getTextInRange (Range<int> (position - 7, position - 6)) == "\n")
+    {
+        moveCaretToStartOfLine (true);
+        insertTextAtCaret (newLine);
+    }
+    
+    else  // inherit the list mark when the previous paragraph has one
+    {
+        String content;
+        moveCaretToStartOfLine (false);
+
+        while (getCaretPosition () - 1 >= 0
+               && getTextInRange (Range<int> (getCaretPosition () - 1, getCaretPosition ())) != "\n")
+        {
+            moveCaretUp (false);
+        }
+
+        if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 2)) == "- ")
+            content += "- ";
+
+        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 2)) == "+ ")
+            content += "+ ";
+
+        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 6)) == "    - ")
+            content += "    - ";
+
+        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 6)) == "    + ")
+            content += "    + ";
+
+        setCaretPosition (position);
+        TextEditor::keyPressed (KeyPress (KeyPress::returnKey));
+        insertTextAtCaret (content);
+    }    
+
+    saveAndUpdate ();
+}
+
+//=================================================================================================
 bool MarkdownEditor::keyPressed (const KeyPress& key)
 {
     if (key == KeyPress (KeyPress::tabKey))
@@ -607,33 +664,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     // return-key 
     else if (key == KeyPress (KeyPress::returnKey))
     {
-        const int position = getCaretPosition ();
-        String content;
-        moveCaretToStartOfLine (false);
-
-        while (getCaretPosition () - 1 >= 0
-               && getTextInRange (Range<int> (getCaretPosition () - 1, getCaretPosition ())) != "\n")
-        {
-            moveCaretUp (false);
-        }
-
-        if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 2)) == "- ")
-            content += "- ";
-
-        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 2)) == "+ ")
-            content += "+ ";
-
-        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 6)) == "    - ")
-            content += "    - ";
-
-        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 6)) == "    + ")
-            content += "    + ";
-
-        setCaretPosition (position);
-        TextEditor::keyPressed (key);
-        insertTextAtCaret (content);
-
-        saveAndUpdate ();
+        returnKeyInput ();
         return true;
     }
 

@@ -74,6 +74,7 @@ private:
     void autoWrapSelected (const KeyPress& key);
     void tabKeyInput ();
     void shiftTabInput ();
+    void returnKeyInput ();
 
     void searchBySelectPrev ();
     void searchBySelectNext ();

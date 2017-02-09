@@ -467,6 +467,25 @@ void MarkdownEditor::pickSelectedAsTitle ()
 }
 
 //=================================================================================================
+void MarkdownEditor::autoWrapSelected (const KeyPress& key)
+{
+    const String content (getHighlightedText ());
+    const String keyStr (key.getTextDescription().replace ("shift + 8", "*").replace ("shift + `", "~~"));
+    DBGX (keyStr);
+
+    insertTextAtCaret (keyStr + content + keyStr);
+
+    if (keyStr != getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 1))
+        && keyStr != "~~"
+        && keyStr != "`")
+    {
+        setHighlightedRegion (Range<int> (getCaretPosition () - content.length () - 2, getCaretPosition ()));
+    }
+
+    saveAndUpdate ();
+}
+
+//=================================================================================================
 bool MarkdownEditor::keyPressed (const KeyPress& key)
 {
     // tab for 4 spaces
@@ -592,6 +611,17 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     // insert author and date
     else if (key == KeyPress ('o', ModifierKeys::commandModifier, 0))
         authorInsert ();
+
+    // auto-wrap the selected (when input '`, *, **, ~~' whilst some text was selected)
+    else if (getHighlightedText().isNotEmpty() && (key == KeyPress('`')
+                                                   || key == KeyPress ('*')
+                                                   || key == KeyPress ('8', ModifierKeys::shiftModifier, 0)
+                                                   || key == KeyPress ('`', ModifierKeys::shiftModifier, 0)))
+    {
+        autoWrapSelected (key);
+        return true;
+    }
+
 
     return TextEditor::keyPressed (key);
 }

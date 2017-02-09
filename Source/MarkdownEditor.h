@@ -70,6 +70,7 @@ private:
     void interLinkInsert ();
     void authorInsert ();
     void codeBlockFormat ();
+    void autoWrapSelected (const KeyPress& key);
 
     void searchBySelectPrev ();
     void searchBySelectNext ();

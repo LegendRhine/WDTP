@@ -513,11 +513,63 @@ void MarkdownEditor::tabKeyInput ()
 }
 
 //=================================================================================================
+void MarkdownEditor::shiftTabInput ()
+{
+    if (getHighlightedText ().isEmpty ())
+    {
+        moveCaretToStartOfLine (false);
+
+        if (getTextInRange (Range<int>(getCaretPosition (), getCaretPosition () + 4)) == "    ")
+            setHighlightedRegion (Range<int> (getCaretPosition (), getCaretPosition () + 4));
+        
+        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 3)) == "   ")
+            setHighlightedRegion (Range<int> (getCaretPosition (), getCaretPosition () + 3));
+
+        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 2)) == "  ")
+            setHighlightedRegion (Range<int> (getCaretPosition (), getCaretPosition () + 2));
+
+        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 1)) == " ")
+            setHighlightedRegion (Range<int> (getCaretPosition (), getCaretPosition () + 1));
+
+        insertTextAtCaret (String ());
+    }
+    else // let the selected anti-indent
+    {
+        StringArray content;
+        content.addLines (getHighlightedText ());
+
+        for (int i = content.size (); --i >= 0; )
+        {
+            if (content[i].substring (0, 4) == "    ")
+                content.getReference (i) = content[i].substring(4);
+
+            else if (content[i].substring (0, 3) == "   ")
+                content.getReference (i) = content[i].substring (3);
+
+            else if (content[i].substring (0, 2) == "  ")
+                content.getReference (i) = content[i].substring (2);
+
+            else if (content[i].substring (0, 1) == " ")
+                content.getReference (i) = content[i].substring (1);
+        }
+
+        insertTextAtCaret (content.joinIntoString (newLine));
+    }
+
+    saveAndUpdate ();
+}
+
+//=================================================================================================
 bool MarkdownEditor::keyPressed (const KeyPress& key)
 {
     if (key == KeyPress (KeyPress::tabKey))
     {
         tabKeyInput ();
+        return true;
+    }
+    else if (key == KeyPress (KeyPress::tabKey, ModifierKeys::shiftModifier, 0))
+    {
+        shiftTabInput ();
         return true;
     }
 

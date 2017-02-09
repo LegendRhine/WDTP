@@ -597,6 +597,33 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         return true;
     }
 
+    // return-key 
+    else if (key == KeyPress (KeyPress::returnKey))
+    {
+        const int position = getCaretPosition ();
+        String content;
+        moveCaretToStartOfLine (false);
+
+        while (getCaretPosition () - 1 >= 0
+               && getTextInRange (Range<int> (getCaretPosition () - 1, getCaretPosition ())) != "\n")
+        {
+            moveCaretUp (false);
+        }
+
+        if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 2)) == "- ")
+            content += "- ";
+
+        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 2)) == "+ ")
+            content += "+ ";
+
+        setCaretPosition (position);
+        TextEditor::keyPressed (key);
+        insertTextAtCaret (content);
+
+        saveAndUpdate ();
+        return true;
+    }
+
     // ctrl + return: insert new paragraph above the current paragraph
     else if (key == KeyPress (KeyPress::returnKey, ModifierKeys::commandModifier, 0))
     {

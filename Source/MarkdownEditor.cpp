@@ -495,8 +495,15 @@ void MarkdownEditor::tabKeyInput ()
 {
     if (getHighlightedText ().isEmpty ())
     {
+        const int position = getCaretPosition ();
         String content ("    ");
         moveCaretUp (false);
+
+        while (getCaretPosition () - 1 >= 0
+               && getTextInRange (Range<int> (getCaretPosition () - 1, getCaretPosition ())) != "\n")
+        {
+            moveCaretUp (false);
+        }
 
         if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 2)) == "- ")
             content += "- ";
@@ -504,7 +511,7 @@ void MarkdownEditor::tabKeyInput ()
         else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 2)) == "+ ")
             content += "+ ";
 
-        moveCaretDown (false);
+        setCaretPosition (position);
         insertTextAtCaret (content);
     } 
     else

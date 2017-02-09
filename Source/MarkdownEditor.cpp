@@ -471,7 +471,7 @@ void MarkdownEditor::autoWrapSelected (const KeyPress& key)
 {
     const String content (getHighlightedText ());
     const String keyStr (key.getTextDescription().replace ("shift + 8", "*").replace ("shift + `", "~~"));
-    DBGX (keyStr);
+    //DBGX (keyStr);
 
     insertTextAtCaret (keyStr + content + keyStr);
 
@@ -491,12 +491,33 @@ void MarkdownEditor::autoWrapSelected (const KeyPress& key)
 }
 
 //=================================================================================================
-bool MarkdownEditor::keyPressed (const KeyPress& key)
+void MarkdownEditor::tabKeyInput ()
 {
-    // tab for 4 spaces
-    if (key == KeyPress (KeyPress::tabKey))
+    if (getHighlightedText ().isEmpty ())
     {
         insertTextAtCaret ("    ");
+    } 
+    else
+    {
+        StringArray content;
+        content.addLines (getHighlightedText ());
+
+        for (int i = content.size (); --i >= 0; )
+            content.getReference (i) = "    " + content.getReference (i);
+
+        insertTextAtCaret (content.joinIntoString (newLine));
+        moveCaretRight (false, false);
+    }
+
+    saveAndUpdate ();
+}
+
+//=================================================================================================
+bool MarkdownEditor::keyPressed (const KeyPress& key)
+{
+    if (key == KeyPress (KeyPress::tabKey))
+    {
+        tabKeyInput ();
         return true;
     }
 

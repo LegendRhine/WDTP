@@ -78,18 +78,19 @@ const bool MainContentComponent::selectItemFromHtmlFile (const File& html)
 MainWindow::MainWindow (const String& name) :
     DocumentWindow (name, Colours::lightgrey, DocumentWindow::allButtons)
 {
-    setUsingNativeTitleBar (true);
     setContentOwned (mainComp = new MainContentComponent (), true);
-    setResizable (true, false);
-    setResizeLimits (640, 480, 3200, 2400);
-
-    centreWithSize (getWidth (), getHeight ());
-    setVisible (true);
-
+    
     // command manager
     cmdManager->registerAllCommandsForTarget (mainComp->getToolbar ());
     addKeyListener (cmdManager->getKeyMappings ());
     cmdManager->setFirstCommandTarget (mainComp->getToolbar ());
+
+    setResizable (true, false);
+    setResizeLimits (640, 480, 3200, 2400);
+    setUsingNativeTitleBar (true);
+
+    centreWithSize (getWidth (), getHeight ());
+    setVisible (true);
 
     mainComp->grabKeyboardFocus ();
 }

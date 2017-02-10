@@ -23,6 +23,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     htmlContent = tableParse (htmlContent);
     htmlContent = codeBlockParse (htmlContent);
     htmlContent = inlineCodeParse (htmlContent);
+    htmlContent = boldAndItalicParse (htmlContent);
     htmlContent = boldParse (htmlContent);
     htmlContent = italicParse (htmlContent);
     htmlContent = highlightParse (htmlContent);
@@ -147,6 +148,38 @@ const String Md2Html::inlineCodeParse (const String& mdString)
 }
 
 //=================================================================================================
+const String Md2Html::boldAndItalicParse (const String& mdString)
+{
+    String resultStr (mdString);
+    int index = resultStr.indexOfIgnoreCase (0, "***");
+
+    for (int i = 1; index != -1; ++i)
+    {
+        if (resultStr.substring (index - 1, index) != "\\"
+            && resultStr.substring (index - 1, index) != "/"
+            && resultStr.substring (index - 1, index) != "*"
+            && resultStr.substring (index + 3, index + 4) != "*"
+            && resultStr.substring (index + 3, index + 4) != "/"
+            && resultStr.substring (index + 4, index + 4) != "<")
+        {
+            if (i % 2 == 1)
+                resultStr = resultStr.replaceSection (index, 2, "<em><strong>");
+            else
+                resultStr = resultStr.replaceSection (index, 2, "</strong></em>");
+        }
+        else
+        {
+            --i;
+        }
+
+        index = resultStr.indexOfIgnoreCase (index + 3, "***");
+    }
+
+    //DBG (resultStr);
+    return resultStr;
+}
+
+//=================================================================================================
 const String Md2Html::boldParse (const String& mdString)
 {
     String resultStr (mdString);
@@ -159,7 +192,7 @@ const String Md2Html::boldParse (const String& mdString)
             && resultStr.substring (index - 1, index) != "*"
             && resultStr.substring (index + 2, index + 3) != "*"
             && resultStr.substring (index + 2, index + 3) != "/"
-            && resultStr.substring (index + 1, index + 2) != "<")
+            && resultStr.substring (index + 2, index + 3) != "<")
         {
             if (i % 2 == 1)
                 resultStr = resultStr.replaceSection (index, 2, "<strong>");

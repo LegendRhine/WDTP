@@ -40,6 +40,7 @@ private:
     /** If one "`" in a single line (paragaph), then "`" needn't to escape :) */
     static const String inlineCodeParse (const String& mdString);
 
+    static const String boldAndItalicParse (const String& mdString);     /**< ***text*** */
     static const String boldParse (const String& mdString);     /**< **text** */
     static const String italicParse (const String& mdString);   /**< *text* */
 

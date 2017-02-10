@@ -97,6 +97,7 @@ private:
     enum MenuIndex
     {
         newDir = 1, newDoc, 
+        importTextDocs,
         packWholeSite, packHtmls, packMedias,
         exportDocs, dataStatis, getItemPath,
         replaceIn, rename, deleteThis, 
@@ -105,6 +106,7 @@ private:
 
     void menuPerform (const int menuIndex);
     
+    void importDirOrDocs ();
     void packSiteData (const bool includeHtmls, const bool includeMedias);
     void exportAsHtml (); 
     void renameSelectedItem ();

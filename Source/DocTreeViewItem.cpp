@@ -271,9 +271,17 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
     if (e.mods.isPopupMenu ())
     {
         PopupMenu m;
+
+        // at most 3 level dir, but it can be done through double click for any deep of level
         m.addItem (newDir, TRANS ("New Folder..."), exist && !isDoc && onlyOneSelected
-                   && !tree.getParent ().getParent ().getParent ().isValid ());  // at most 3 level dir
+                   && !tree.getParent ().getParent ().getParent ().isValid ());  
         m.addItem (newDoc, TRANS ("New Document..."), exist && !isDoc && onlyOneSelected);
+
+        // import various external data...
+        PopupMenu importMenu;
+        importMenu.addItem (importTextDocs, TRANS ("Import Dir/Doc(s)..."), exist && !isDoc && onlyOneSelected);
+
+        m.addSubMenu (TRANS ("Import External Data"), importMenu);
         m.addSeparator ();
 
         PopupMenu packMenu;
@@ -284,7 +292,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
         m.addSubMenu (TRANS ("Pack Site Data"), packMenu);
 
-        m.addItem (exportDocs, TRANS ("Export Docs..."), exist && onlyOneSelected && !isDoc);
+        m.addItem (exportDocs, TRANS ("Export Single Big-Html..."), exist && onlyOneSelected && !isDoc);
         m.addSeparator ();
 
         m.addItem (dataStatis, TRANS ("Statistics..."), exist && onlyOneSelected);
@@ -356,6 +364,8 @@ void DocTreeViewItem::menuPerform (const int index)
         createNewFolder ();
     else if (index == newDoc)
         createNewDocument ();
+    else if (index == importTextDocs)
+        importDirOrDocs ();
     else if (index == packHtmls)
         packSiteData (true, false);
     else if (index == packMedias)
@@ -829,7 +839,7 @@ void DocTreeViewItem::statistics ()
 //=================================================================================================
 void DocTreeViewItem::getPath ()
 {      
-    SystemClipboard::copyTextToClipboard (tree.getProperty ("title").toString ()
+    SystemClipboard::copyTextToClipboard ("*_wdtpGetPath_*" + tree.getProperty ("title").toString ()
                                           + "@_=#_itemPath_#=_@" 
                                           + getHtmlFileOrDir (tree).getFullPathName ());
 
@@ -896,6 +906,12 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
         treeHasChanged ();
         setOpen (true);
     }
+}
+
+//=================================================================================================
+void DocTreeViewItem::importDirOrDocs ()
+{
+    //...
 }
 
 //=================================================================================================

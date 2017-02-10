@@ -258,6 +258,8 @@ void MarkdownEditor::inlineFormat (const inlineFormatIndex& format)
 void MarkdownEditor::interLinkInsert ()
 {
     String linkPath (SystemClipboard::getTextFromClipboard ());
+    linkPath = linkPath.substring (String ("*_wdtpGetPath_*").length ());
+
     const String titleStr (linkPath.upToFirstOccurrenceOf ("@_=#_itemPath_#=_@", false, false));
     linkPath = linkPath.fromFirstOccurrenceOf ("@_=#_itemPath_#=_@", false, false);
 

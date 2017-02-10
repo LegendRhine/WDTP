@@ -75,7 +75,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addSeparator ();
 
         const String internalLinkStr (SystemClipboard::getTextFromClipboard ());
-        insertMenu.addItem (insertInterLink, TRANS ("Internal Link"), internalLinkStr.contains ("@_=#_itemPath_#=_@"));
+        insertMenu.addItem (insertInterLink, TRANS ("Internal Link"), internalLinkStr.contains ("*_wdtpGetPath_*"));
         menu.addSubMenu (TRANS ("Insert"), insertMenu, docFile.existsAsFile ());
 
         PopupMenu formatMenu;
@@ -110,9 +110,18 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 //=================================================================================================
 void MarkdownEditor::performPopupMenuAction (int index)
 {
-        if (addKeywords == index)           addSelectedToKeywords ();
-    else if (pickTitle == index)            pickSelectedAsTitle ();
-    else if (pickDesc == index)             pickAsDescription ();
+    if (addKeywords == index)
+        addSelectedToKeywords ();
+
+    else if (pickTitle == index)            
+        parent->getCurrentTree ().setProperty ("title", getHighlightedText (), nullptr);
+
+    else if (pickDesc == index)             
+        parent->getCurrentTree ().setProperty ("description", getHighlightedText (), nullptr);
+
+    else if (insertSeparator == index)
+        insertTextAtCaret (newLine + "---" + newLine);
+
     else if (searchPrev == index)           searchBySelectPrev ();
     else if (searchNext == index)           searchBySelectNext ();
     else if (insertImage == index)          insertImages ();
@@ -127,7 +136,6 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (insertSecondTitle == index)    insertTitle (2);
     else if (insertThirdTitle == index)     insertTitle (3);
     else if (insertCaption == index)        captionInsert ();
-    else if (insertSeparator == index)      separatorInsert ();
     else if (insertAuthor == index)         authorInsert ();
     else if (insertInterLink == index)      interLinkInsert ();
     else if (formatBold == index)           inlineFormat (bold);
@@ -220,7 +228,6 @@ void MarkdownEditor::codeBlockFormat ()
         << "```" << newLine;
 
     insertTextAtCaret (content);
-    saveAndUpdate ();
 }
 
 //=================================================================================================
@@ -250,8 +257,6 @@ void MarkdownEditor::inlineFormat (const inlineFormatIndex& format)
         if (format == bold || format == highlight)
             moveCaretLeft (false, false);
     }
-
-    saveAndUpdate ();
 }
 
 //=================================================================================================
@@ -274,7 +279,6 @@ void MarkdownEditor::interLinkInsert ()
     content << "[" << titleStr << "](" << currentHtmlRelativeToRoot << linkPath.replace ("\\", "/") << ")";
 
     insertTextAtCaret (content);
-    saveAndUpdate ();
 }
 
 //=================================================================================================
@@ -288,21 +292,12 @@ void MarkdownEditor::authorInsert ()
         << " ";
 
     insertTextAtCaret (content);
-    saveAndUpdate ();
-}
-
-//=================================================================================================
-void MarkdownEditor::separatorInsert ()
-{
-    insertTextAtCaret (newLine + "---" + newLine);
-    saveAndUpdate ();
 }
 
 //=================================================================================================
 void MarkdownEditor::captionInsert ()
 {
     insertTextAtCaret (newLine + "^^ ");
-    saveAndUpdate ();
 }
 
 //=================================================================================================
@@ -320,7 +315,6 @@ void MarkdownEditor::insertTitle (const int level)
         content << newLine << "### ";
 
     insertTextAtCaret (content);
-    saveAndUpdate ();
 }
 
 //=================================================================================================
@@ -338,8 +332,6 @@ void MarkdownEditor::orderListInsert ()
     moveCaretUp (false);
     moveCaretUp (false);
     moveCaretToEndOfLine (false);
-
-    saveAndUpdate ();
 }
 
 //=================================================================================================
@@ -357,29 +349,24 @@ void MarkdownEditor::unorderListInsert ()
     moveCaretUp (false);
     moveCaretUp (false);
     moveCaretToEndOfLine (false);
-
-    saveAndUpdate ();
 }
 
 //=================================================================================================
 void MarkdownEditor::alignRightInsert ()
 {
     insertTextAtCaret (newLine + ">>> ");
-    saveAndUpdate ();
 }
 
 //=================================================================================================
 void MarkdownEditor::alignCenterInsert ()
 {
     insertTextAtCaret (newLine + ">|< ");
-    saveAndUpdate ();
 }
 
 //=================================================================================================
 void MarkdownEditor::quotaInsert ()
 {
     insertTextAtCaret (newLine + "> ");
-    saveAndUpdate ();
 }
 
 //=================================================================================================
@@ -396,7 +383,6 @@ void MarkdownEditor::tableInsert ()
             << "^^ " << TRANS ("Table: ");
 
     insertTextAtCaret (content);
-    saveAndUpdate ();
 }
 
 //=================================================================================================
@@ -416,7 +402,6 @@ void MarkdownEditor::hyperlinkInsert ()
         content << "[](" << dialog.getTextEditor ("name")->getText ().trim () << ") ";
 
         insertTextAtCaret (content);
-        saveAndUpdate ();
     }
 }
 
@@ -448,24 +433,6 @@ void MarkdownEditor::insertImages ()
     }
 
     insertTextAtCaret (content);
-    saveAndUpdate ();
-}
-
-//=================================================================================================
-void MarkdownEditor::pickAsDescription ()
-{
-    ValueTree& docTree (parent->getCurrentTree ());
-    docTree.setProperty ("description", getHighlightedText (), nullptr);
-
-    saveAndUpdate ();
-}
-
-//=================================================================================================
-void MarkdownEditor::pickSelectedAsTitle ()
-{
-    ValueTree& docTree (parent->getCurrentTree ());
-    docTree.setProperty ("title", getHighlightedText (), nullptr);
-    saveAndUpdate ();
 }
 
 //=================================================================================================
@@ -485,11 +452,11 @@ void MarkdownEditor::autoWrapSelected (const KeyPress& key)
     }
 
     // move the caret after input 2 '*'
-    if (String("*") == getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 1))
+    if (String ("*") == getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 1))
         && String ("*") == getTextInRange (Range<int> (getCaretPosition () - 1, getCaretPosition ())))
+    {
         setCaretPosition (getCaretPosition () + 1);
-
-    saveAndUpdate ();
+    }
 }
 
 //=================================================================================================
@@ -527,8 +494,6 @@ void MarkdownEditor::tabKeyInput ()
         insertTextAtCaret (content.joinIntoString (newLine));
         moveCaretRight (false, false);
     }
-
-    saveAndUpdate ();
 }
 
 //=================================================================================================
@@ -574,8 +539,6 @@ void MarkdownEditor::shiftTabInput ()
 
         insertTextAtCaret (content.joinIntoString (newLine));
     }
-
-    saveAndUpdate ();
 }
 
 //=================================================================================================
@@ -631,18 +594,19 @@ void MarkdownEditor::returnKeyInput ()
         TextEditor::keyPressed (KeyPress (KeyPress::returnKey));
         insertTextAtCaret (content);
     }    
-
-    saveAndUpdate ();
 }
 
 //=================================================================================================
 bool MarkdownEditor::keyPressed (const KeyPress& key)
 {
+    // tab
     if (key == KeyPress (KeyPress::tabKey))
     {
         tabKeyInput ();
         return true;
     }
+
+    // shift + tab
     else if (key == KeyPress (KeyPress::tabKey, ModifierKeys::shiftModifier, 0))
     {
         shiftTabInput ();
@@ -682,9 +646,18 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         }
 
         TextEditor::keyPressed (KeyPress (KeyPress::returnKey));
-        //TextEditor::keyPressed (KeyPress (KeyPress::returnKey));
-
         return moveCaretUp (false);
+    }
+
+    // ctrl + v: paste
+    else if (key == KeyPress ('v', ModifierKeys::commandModifier, 0))
+    {
+        String content (SystemClipboard::getTextFromClipboard ());
+
+        if (content.contains ("*_wdtpGetPath_*"))
+            interLinkInsert ();
+
+        return true;
     }
 
     // cut/copy the current paragraph when selected nothing
@@ -834,7 +807,6 @@ void MarkdownEditor::addSelectedToKeywords ()
     }
 
     docTree.setProperty ("keywords", keyWords, nullptr);
-    saveAndUpdate ();
 }
 
 //=================================================================================================
@@ -875,15 +847,5 @@ void MarkdownEditor::searchBySelectNext ()
     {
         LookAndFeel::getDefaultLookAndFeel ().playAlertSound ();
     }
-}
-
-//=================================================================================================
-void MarkdownEditor::saveAndUpdate ()
-{
-    ValueTree& docTree (parent->getCurrentTree ());
-    DocTreeViewItem::needCreate (docTree);
-    FileTreeContainer::saveProject ();
-
-    parent->getSetupPanel ()->showDocProperties (docTree);
 }
 

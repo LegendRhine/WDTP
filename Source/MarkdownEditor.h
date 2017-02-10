@@ -58,15 +58,12 @@ private:
     void tableInsert ();
     void quotaInsert ();
     void insertTitle (const int level);
-    void pickAsDescription ();
-    void pickSelectedAsTitle ();
     void addSelectedToKeywords ();
     void alignCenterInsert ();
     void alignRightInsert ();
     void orderListInsert ();
     void unorderListInsert ();
     void captionInsert ();
-    void separatorInsert ();
     void interLinkInsert ();
     void authorInsert ();
     void codeBlockFormat ();
@@ -87,8 +84,6 @@ private:
     /** 0 for bold, 1 for italic, 2 for inline code */
     enum inlineFormatIndex { bold = 0, italic, highlight, codeOfinline };
     void inlineFormat (const inlineFormatIndex& format);
-
-    void saveAndUpdate ();
 
     //=============================================================================================
     EditAndPreview* parent;

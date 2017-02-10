@@ -717,6 +717,8 @@ const String HtmlProcessor::getAdStr (const String& text, const File& htmlFile)
 {
     StringArray orignalText;
     orignalText.addLines (text.trim ());
+    orignalText.removeEmptyStrings (true);
+
     StringArray links;
 
     for (int i = 0; i < orignalText.size (); ++i)

@@ -205,6 +205,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     values[docModifyDate]->setValue (currentTree.getProperty ("modifyDate"));
     values[thumb]->setValue (currentTree.getProperty ("thumb"));
     values[thumbName]->setValue (currentTree.getProperty ("thumbName"));
+    values[docAbbrev]->setValue (currentTree.getProperty ("abbrev"));
 
     Array<PropertyComponent*> docProperties;
     docProperties.add (new TextPropertyComponent (*values[docName], TRANS ("Name: "), 0, false));
@@ -264,6 +265,8 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
 
     docProperties.add (new ChoicePropertyComponent (*values[thumbName], TRANS ("Image File: "),
                                                     imgFileSa, imgFileVar));
+    docProperties.add (new TextPropertyComponent (*values[docAbbrev], TRANS ("Abbrev: "), 0, true));
+
 
     // set height
     for (auto p : docProperties)
@@ -278,6 +281,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
 
     docProperties[3]->setPreferredHeight (28 * 5);
     docProperties[5]->setPreferredHeight (28 * 5);
+    docProperties[12]->setPreferredHeight (28 * 5);
 
     panel->addSection (TRANS ("Document Setup"), docProperties);
     valuesAddListener ();
@@ -408,6 +412,9 @@ void SetupPanel::valueChanged (Value& value)
 
     else if (value.refersToSameSourceAs (*values[thumbName]))
         currentTree.setProperty ("thumbName", values[thumbName]->getValue (), nullptr);
+
+    else if (value.refersToSameSourceAs (*values[docAbbrev]))
+        currentTree.setProperty ("abbrev", values[docAbbrev]->getValue (), nullptr);
 
     DocTreeViewItem::needCreate (currentTree);
     projectHasChanged = true;

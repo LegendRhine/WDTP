@@ -16,7 +16,13 @@
 - It uses ValueTree (data-model), TreeView (UI) and TreeViewItems (controller) to manage/display/operate all the items which recorded in the project file.
 - The structure of project is same as the structure of local-disk file system, however it doesn't include any 'media' or other folder/files.
 
-### Properties of Item
+### Properties of Project ValueTree
+
+#### Structure:
+
+- wdtpProject
+	- dir
+		- doc
 
 - wdtpProject: root valueTree, also represents the Project Properties.
     - mainWindowSizeAndPosition
@@ -77,6 +83,7 @@
 	- thumb: extract an image which in this doc as the doc's title-graph or not.
 	- thumbName: name of the title-graph (image), it should begin with 'media/'
 	- needCreateHtml
+	- abbrev: format: (abbrev-name)(space)(original content), 1 per line
 
 ### Tags (for developer. These tags could be placed in < head >)
     - {{siteRelativeRootPath}} relative root-path of a page. eg. the page is 'site/dir/subDir/00.html', 

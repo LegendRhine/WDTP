@@ -57,7 +57,7 @@ private:
 
         // doc properties' values
         docName, docTitle, docKeywords, docDesc, docIsMenu, docTpl,
-        docCreateDate, docModifyDate, docJs, wordCount, thumb, thumbName,
+        docCreateDate, docModifyDate, docJs, wordCount, thumb, thumbName, docAbbrev,
 
         totalValues
     };

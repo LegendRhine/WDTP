@@ -81,6 +81,8 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         PopupMenu formatMenu;
         formatMenu.addItem (formatBold, TRANS ("Bold") + ctrlStr + "B)");
         formatMenu.addItem (formatItalic, TRANS ("Italic") + ctrlStr + "I)");
+        formatMenu.addItem (formatBoldAndItalic, TRANS ("Bold + Italic"));
+        formatMenu.addSeparator ();
         formatMenu.addItem (formatHighlight, TRANS ("Highlight") + ctrlStr + "U)");
         formatMenu.addSeparator ();
         formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
@@ -140,6 +142,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (insertInterLink == index)      interLinkInsert ();
     else if (formatBold == index)           inlineFormat (bold);
     else if (formatItalic == index)         inlineFormat (italic);
+    else if (formatBoldAndItalic == index)  inlineFormat (boldAndItalic);
     else if (formatHighlight == index)      inlineFormat (highlight);
     else if (inlineCode == index)           inlineFormat (codeOfinline);
     else if (codeBlock == index)            codeBlockFormat ();
@@ -242,6 +245,9 @@ void MarkdownEditor::inlineFormat (const inlineFormatIndex& format)
     else if (format == italic)
         content = "*" + content + "*";
 
+    else if (format == boldAndItalic)
+        content = "***" + content + "***";
+
     else if (format == highlight)
         content = "~~" + content + "~~";
 
@@ -254,7 +260,12 @@ void MarkdownEditor::inlineFormat (const inlineFormatIndex& format)
     {
         moveCaretLeft (false, false);
 
-        if (format == bold || format == highlight)
+        if (format == bold || format == highlight || format == boldAndItalic)
+            moveCaretLeft (false, false);
+
+        // here must another if instead of 'else if' because 
+        // the caret should move left thrice for '***' (bold + italic)
+        if (format == boldAndItalic)
             moveCaretLeft (false, false);
     }
 }

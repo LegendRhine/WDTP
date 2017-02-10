@@ -659,12 +659,29 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress ('v', ModifierKeys::commandModifier, 0))
     {
         const String& content (SystemClipboard::getTextFromClipboard ());
+        const int position = getCaretPosition ();
 
-        if (content.contains ("*_wdtpGetPath_*"))
+        String linkText (TRANS ("Click here"));
+        bool needSelectLinkText = false;
+        
+        if (content.substring (0, 4) == "http") // url
+        {
+            if (getHighlightedText ().isNotEmpty ())
+                linkText = getHighlightedText ();
+            else
+                needSelectLinkText = true;
+            
+            insertTextAtCaret ("[" + linkText + "](" + content + ")");
+        }
+
+        else if (content.contains ("*_wdtpGetPath_*"))  // internal link
             interLinkInsert ();
+        
+        else
+            return TextEditor::keyPressed (key);
 
-        else if (content.substring (0, 4) == "http")
-            insertTextAtCaret ("[](" + content + ")");
+        if (needSelectLinkText)  // select 'Click here'
+            setHighlightedRegion (Range<int> (position + 1, position + linkText.length () + 1));
 
         return true;
     }

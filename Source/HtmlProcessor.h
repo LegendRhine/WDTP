@@ -29,6 +29,9 @@ struct HtmlProcessor
 
     static void getDocNumbersOfTheDir (const ValueTree& dirTree, int& num);
 
+    /** process the arg-string if it includes any abbrev */
+    static const String processAbbrev (const ValueTree& docTree, const String& originalStr);
+
 private:
     /** Process tpl-file's tags */
     static void processTags (const ValueTree& docOrDirTree, const File& htmlFile, String& tplStr);

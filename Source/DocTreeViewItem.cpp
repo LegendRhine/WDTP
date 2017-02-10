@@ -963,7 +963,10 @@ const bool DocTreeViewItem::getDirDocsAndAllMedias (DocTreeViewItem* item,
         if (currentFile.existsAsFile () && currentFile.getSize () > 0)
         {
             getMdMediaFiles (currentFile, medias);
-            return mdFile.appendText (currentFile.loadFileAsString ().trimEnd () + newLine + newLine);
+            const String& mdStr (HtmlProcessor::processAbbrev (item->getTree (),
+                                                               currentFile.loadFileAsString ()));
+
+            return mdFile.appendText (mdStr.trimEnd () + newLine + newLine);
         }
 
     }

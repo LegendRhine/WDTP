@@ -24,7 +24,8 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
     if (!mdDoc.existsAsFile ())
         return;
 
-    const String htmlContentStr (Md2Html::mdStringToHtml (mdDoc.loadFileAsString ()));
+    const String& mdStrWithoutAbbrev (processAbbrev (docTree, mdDoc.loadFileAsString ()));
+    const String htmlContentStr (Md2Html::mdStringToHtml (mdStrWithoutAbbrev));
 
     if (htmlContentStr.isEmpty ())
         return;
@@ -446,6 +447,47 @@ void HtmlProcessor::processTags (const ValueTree& docOrDirTree,
     {
         tplStr = tplStr.replace ("{{bottomCopyright}}", getCopyrightInfo ());
     }
+}
+
+//=================================================================================================
+const String HtmlProcessor::processAbbrev (const ValueTree& docTree, const String& originalStr)
+{
+    // want to process dir or project?!?
+    jassert (docTree.getType().toString() == "doc");
+
+    String resultStr (originalStr);
+
+    // get the abbrevs by line
+    StringArray abbrevAndOriginal;
+    abbrevAndOriginal.addLines (docTree.getProperty ("abbrev").toString ().trim ());
+    abbrevAndOriginal.removeDuplicates (false);
+    abbrevAndOriginal.removeEmptyStrings (true);
+
+    if (abbrevAndOriginal.size () != 0)
+    {
+        // for replace the abbrevs
+        StringArray abbrevs, originals;
+
+        for (int i = abbrevAndOriginal.size (); --i >= 0; )
+        {
+            abbrevAndOriginal.getReference (i) = abbrevAndOriginal[i].trim ();
+
+            const String abbrev (abbrevAndOriginal[i].upToFirstOccurrenceOf (" ", false, false));
+            const String original (abbrevAndOriginal[i].fromFirstOccurrenceOf (" ", false, false).trimStart ());
+
+            if (abbrev.isNotEmpty () && original.isNotEmpty ())
+            {
+                abbrevs.add (abbrev);
+                originals.add (original);
+            }
+        }
+        
+        // replace
+        for (int i = abbrevs.size (); --i >= 0; )
+            resultStr = resultStr.replace (abbrevs[i], originals[i], false);
+    }
+
+    return resultStr;
 }
 
 //=================================================================================================

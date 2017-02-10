@@ -72,6 +72,7 @@ private:
     void tabKeyInput ();
     void shiftTabInput ();
     void returnKeyInput ();
+    void pasteForCtrlV ();
 
     void searchBySelectPrev ();
     void searchBySelectNext ();

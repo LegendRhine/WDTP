@@ -603,6 +603,55 @@ void MarkdownEditor::returnKeyInput ()
 }
 
 //=================================================================================================
+void MarkdownEditor::pasteForCtrlV ()
+{
+    const String& content (SystemClipboard::getTextFromClipboard ());
+    const int position = getCaretPosition ();
+
+    String linkText (TRANS ("Click here"));
+    bool needSelectLinkText = false;
+
+    // url or web-image
+    if (content.substring (0, 4) == "http")
+    {
+        // image
+        if (content.getLastCharacters (3) == "jpg"
+            || content.getLastCharacters (3) == "JPG"
+            || content.getLastCharacters (3) == "png"
+            || content.getLastCharacters (3) == "PNG"
+            || content.getLastCharacters (3) == "gif"
+            || content.getLastCharacters (3) == "GIF"
+            || content.getLastCharacters (4) == "jpeg"
+            || content.getLastCharacters (4) == "JPEG")
+        {
+            insertTextAtCaret ("![](" + content + ")");
+        }
+        else     // url
+        {
+            if (getHighlightedText ().isNotEmpty ())
+                linkText = getHighlightedText ();
+            else
+                needSelectLinkText = true;
+
+            insertTextAtCaret ("[" + linkText + "](" + content + ")");
+        }
+
+    }
+
+    // internal link
+    else if (content.contains ("*_wdtpGetPath_*"))  
+        interLinkInsert ();
+
+    // others
+    else  
+        TextEditor::keyPressed (KeyPress ('v', ModifierKeys::commandModifier, 0));
+
+    // select 'Click here' when paste an url and selected nothing before
+    if (needSelectLinkText)  
+        setHighlightedRegion (Range<int> (position + 1, position + linkText.length () + 1));
+}
+
+//=================================================================================================
 bool MarkdownEditor::keyPressed (const KeyPress& key)
 {
     // tab
@@ -658,31 +707,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     // ctrl + v: paste
     else if (key == KeyPress ('v', ModifierKeys::commandModifier, 0))
     {
-        const String& content (SystemClipboard::getTextFromClipboard ());
-        const int position = getCaretPosition ();
-
-        String linkText (TRANS ("Click here"));
-        bool needSelectLinkText = false;
-        
-        if (content.substring (0, 4) == "http") // url
-        {
-            if (getHighlightedText ().isNotEmpty ())
-                linkText = getHighlightedText ();
-            else
-                needSelectLinkText = true;
-            
-            insertTextAtCaret ("[" + linkText + "](" + content + ")");
-        }
-
-        else if (content.contains ("*_wdtpGetPath_*"))  // internal link
-            interLinkInsert ();
-        
-        else
-            return TextEditor::keyPressed (key);
-
-        if (needSelectLinkText)  // select 'Click here'
-            setHighlightedRegion (Range<int> (position + 1, position + linkText.length () + 1));
-
+        pasteForCtrlV ();
         return true;
     }
 

@@ -22,7 +22,7 @@
                          "Line: " + String (__LINE__))
 #endif
 
-    /** Replace AlertWindow::showMessageWindow() */
+/** Replace AlertWindow::showMessageWindow() */
 #ifndef SHOW_MESSAGE
 #define SHOW_MESSAGE(info) AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS("Message"), String(info))
 #endif
@@ -36,8 +36,8 @@
                    juce::Logger::outputDebugString (tempDbgBuf);)
 #endif
 
-    //=========================================================================
-    /** Some static methods and const value */
+//=========================================================================
+/** Some static methods and const value */
 struct SwingUtilities
 {
     /** Return the platform-special font size */
@@ -46,7 +46,7 @@ struct SwingUtilities
     /** Return the platform-special font name */
     static const String getFontName () { return "Microsoft YaHei"; }
 
-    /** Display "About window" which can be used on Android platform.
+    /** Display "About window" which could be used on Android platform.
         Arg 'shortDescription' (may app's name): the first text line inside the box with
         brown colour and bigger size. */
     static void showAbout (const String& shortDescription,
@@ -58,7 +58,7 @@ struct SwingUtilities
         using WebBroswerComponent to display a html-page.
 
         After called, it will change the web-core to IE-11 on Windows (write to user's Windows register).
-        This method should be called when the app is about to start. */
+        This method should be called when the app is about to start (eg. first run it). */
     static void fixWindowsRegistry ();
 
     //=========================================================================

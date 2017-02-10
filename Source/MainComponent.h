@@ -52,7 +52,7 @@ class MainWindow : public DocumentWindow
 {
 public:
     MainWindow (const String& name);
-    ~MainWindow ()  { }
+    ~MainWindow ();
 
     void closeButtonPressed () override;
     void openProject (const File& projectFile);

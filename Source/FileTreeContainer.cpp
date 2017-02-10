@@ -121,8 +121,15 @@ void FileTreeContainer::openProject (const File& project)
     // change the text of main window's title-bar
     MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent ());
     jassert (mainWindow != nullptr);
+
     mainWindow->setName (JUCEApplication::getInstance ()->getApplicationName () + " - " +
                          realProject.getFileNameWithoutExtension ());
+
+    // set the main-window's size and position
+    const String& sizeAndPostion (projectTree.getProperty ("mainWindowSizeAndPosition").toString ());
+
+    if (sizeAndPostion.isNotEmpty ())
+        mainWindow->restoreWindowStateFromString (sizeAndPostion);
 
     // add the project to recent opened file list
     RecentlyOpenedFilesList  recentFiles;
@@ -137,19 +144,27 @@ void FileTreeContainer::openProject (const File& project)
 //=================================================================================================
 void FileTreeContainer::closeProject ()
 {
-    if (hasLoadedProject () && saveDocAndProject ())
+    if (hasLoadedProject ())
     {
-        fileTree.setRootItem (nullptr);
-        docTreeItem = nullptr;
-        sorter = nullptr;
-        projectTree = ValueTree::invalid;
-        projectFile = File::nonexistent;
-        editAndPreview->projectClosed ();
-
-        // change the text of main window's title-bar
+        // store the main-window's size and position
         MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent ());
         jassert (mainWindow != nullptr);
-        mainWindow->setName (JUCEApplication::getInstance ()->getApplicationName ());
+
+        const String& sizeAndPosition (mainWindow->getWindowStateAsString ());
+        projectTree.setProperty ("mainWindowSizeAndPosition", sizeAndPosition, nullptr);
+
+        if (saveDocAndProject ())
+        {
+            fileTree.setRootItem (nullptr);
+            docTreeItem = nullptr;
+            sorter = nullptr;
+            projectTree = ValueTree::invalid;
+            projectFile = File::nonexistent;
+            editAndPreview->projectClosed ();
+
+            // change the text of main window's title-bar
+            mainWindow->setName (JUCEApplication::getInstance ()->getApplicationName ());
+        }
     }
 }
 

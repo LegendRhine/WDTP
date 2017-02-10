@@ -96,8 +96,22 @@ MainWindow::MainWindow (const String& name) :
 }
 
 //=================================================================================================
+MainWindow::~MainWindow ()
+{
+
+}
+
+//=================================================================================================
 void MainWindow::closeButtonPressed ()
 {
+    // store the main-window's size and position
+    if (FileTreeContainer::projectTree.isValid ())
+    {
+        FileTreeContainer::projectTree.setProperty ("mainWindowSizeAndPosition",
+                                                    getWindowStateAsString (), nullptr);
+    }
+
+    // save and exit
     if (mainComp->getFileTree ()->saveDocAndProject ())
     {
         JUCEApplication::getInstance ()->systemRequestedQuit ();

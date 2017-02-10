@@ -17,7 +17,9 @@
 - The structure of project is same as the structure of local-disk file system, however it doesn't include any 'media' or other folder/files.
 
 ### Properties of Item
+
 - wdtpProject: root valueTree, also represents the Project Properties.
+    - mainWindowSizeAndPosition
     - name: it should be 'site' always.
     - tile
 	- keywords

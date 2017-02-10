@@ -544,7 +544,14 @@ void MarkdownEditor::shiftTabInput ()
 //=================================================================================================
 void MarkdownEditor::returnKeyInput ()
 {
+    if (getTextInRange (Range<int> (getCaretPosition () - 1, getCaretPosition ())) == "\n")
+    {
+        TextEditor::keyPressed (KeyPress (KeyPress::returnKey));
+        return;
+    }
+
     const int position = getCaretPosition ();
+    String content;
 
     // cancel list mark when user doesn't want input anything on the current line
     if (getTextInRange (Range<int> (position - 2, position)) == "- "
@@ -569,7 +576,6 @@ void MarkdownEditor::returnKeyInput ()
     
     else  // inherit the list mark when the previous paragraph has one
     {
-        String content;
         moveCaretToStartOfLine (false);
 
         while (getCaretPosition () - 1 >= 0

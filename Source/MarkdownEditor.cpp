@@ -652,10 +652,13 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     // ctrl + v: paste
     else if (key == KeyPress ('v', ModifierKeys::commandModifier, 0))
     {
-        String content (SystemClipboard::getTextFromClipboard ());
+        const String& content (SystemClipboard::getTextFromClipboard ());
 
         if (content.contains ("*_wdtpGetPath_*"))
             interLinkInsert ();
+
+        else if (content.substring (0, 4) == "http")
+            insertTextAtCaret ("[](" + content + ")");
 
         return true;
     }

@@ -47,6 +47,10 @@ private:
     /** ~~text~~: change the traditional delete-line */
     static const String highlightParse (const String& mdString);  
 
+    /** [TOC]: process anchors. this method must called before processByLine() 
+        only 1 level deep (h2 and h3) */
+    static const String tocParse (const String& mdString);
+
     /** This method will process: <hr>, <blockquote>, <h1> ~ <h6>, <align>.
         All of these Markdown-character(s) must at the first of a line.
 

@@ -360,16 +360,16 @@ bool WebBrowserComp::pageAboutToLoad (const String& newURL)
 {
     String urlStr (newURL);
 
-    if (urlStr.substring (0, 7) == "file://")
-        urlStr = urlStr.substring (7);
+    if (urlStr.substring (0, 8) == "file:///")
+        urlStr = urlStr.substring (8);
 
+    DBGX (urlStr);
     String currentTreeUrl (DocTreeViewItem::getHtmlFileOrDir (parent->getCurrentTree ()).getFullPathName ());
 
 #if JUCE_MAC
     urlStr = URL::removeEscapeChars (urlStr);
 #endif
 
-    //DBGX (urlStr);
     //DBGX(currentTreeUrl);
 
     if (urlStr.substring (0, 3) == "res" ||

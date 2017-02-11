@@ -27,6 +27,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     htmlContent = boldParse (htmlContent);
     htmlContent = italicParse (htmlContent);
     htmlContent = highlightParse (htmlContent);
+    htmlContent = tocParse (htmlContent);
     htmlContent = processByLine (htmlContent);
     htmlContent = spaceLinkParse (htmlContent);
     htmlContent = imageParse (htmlContent);
@@ -296,6 +297,53 @@ const String Md2Html::highlightParse (const String& mdString)
 }
 
 //=================================================================================================
+const String Md2Html::tocParse (const String& mdString)
+{
+    String resultStr (mdString);
+
+    if (!resultStr.contains ("[TOC]"))
+        return resultStr;
+
+    if (!(resultStr.contains ("## ") || resultStr.contains ("### ") || resultStr.contains ("#### ")))
+        return resultStr;
+
+    // escape '\[TOC]'
+    resultStr = resultStr.replace ("\\[TOC]", "_@_tocParseReplaceStr_@_");
+
+    // get lines which include '#'s
+    StringArray lines;
+    lines.addLines (resultStr);
+    
+    for (int i = lines.size(); --i >= 0; )
+    {
+        if (lines[i].trimStart ().substring (0, 1) != "#")
+            lines.remove (i);
+    }
+
+    // only process h2 and h3
+    for (int i = lines.size(); --i >= 0; )
+    {
+        if (lines[i].substring (0, 3) == "## ")
+            lines.getReference (i) = "<a href=\"#" + lines[i].substring (3) + "\">"
+            + lines[i].substring (3) + "</a><br>";
+
+        else if (lines[i].substring (0, 4) == "### ")
+            lines.getReference (i) = " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#"
+            + lines[i].substring (4) + "\">"
+            + lines[i].substring (4) + "</a><br>";
+
+        else
+            lines.remove (i);
+    }
+
+    const String tocContent ("<div class=toc>" + lines.joinIntoString (newLine) + "</div>");
+    resultStr = resultStr.replace ("[TOC]", tocContent);
+    resultStr = resultStr.replace ("_@_tocParseReplaceStr_@_", "[TOC]");
+    
+    return resultStr;
+}
+
+//=================================================================================================
 const String Md2Html::processByLine (const String& mdString)
 {
     StringArray contentByLine;
@@ -320,10 +368,8 @@ const String Md2Html::processByLine (const String& mdString)
         else if (currentLine.trimStart ().substring (0, 6) == "##### ")
             currentLine = "<h5>" + currentLine.trimStart ().substring (6) + "</h5>";
 
-        // <h4> anchor
         else if (currentLine.trimStart ().substring (0, 5) == "#### ")
-            currentLine = "<h4 id=\"" + currentLine.trimStart ().substring (5) + "\">"
-            + currentLine.trimStart ().substring (5) + "</h4>";
+            currentLine = "<h4>" + currentLine.trimStart ().substring (5) + "</h4>";
 
         // <h3> anchor
         else if (currentLine.trimStart ().substring (0, 4) == "### ")

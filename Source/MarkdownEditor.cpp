@@ -449,8 +449,9 @@ void MarkdownEditor::insertImages ()
 //=================================================================================================
 void MarkdownEditor::autoWrapSelected (const KeyPress& key)
 {
-    const String content (getHighlightedText ());
-    const String keyStr (key.getTextDescription().replace ("shift + 8", "*").replace ("shift + `", "~~"));
+    const String& content (getHighlightedText ());
+    String keyStr (key.getTextDescription().replace ("shift + 8", "*").replace ("shift + `", "~~"));
+    keyStr = keyStr.replace ("ctrl + 8", "*").replace ("ctrl + `", "~~"); // for Chinese IME
     //DBGX (keyStr);
 
     insertTextAtCaret (keyStr + content + keyStr);
@@ -812,13 +813,15 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (getHighlightedText().isNotEmpty() && (key == KeyPress('`')
                                                    || key == KeyPress ('*')
                                                    || key == KeyPress ('8', ModifierKeys::shiftModifier, 0)
+                                                   || key == KeyPress ('8', ModifierKeys::commandModifier, 0) // for Chinese IME
+                                                   || key == KeyPress ('`', ModifierKeys::commandModifier, 0) // for Chinese IME
                                                    || key == KeyPress ('`', ModifierKeys::shiftModifier, 0)))
     {
         autoWrapSelected (key);
         return true;
     }
 
-
+    DBGX (key.getTextDescription ());
     return TextEditor::keyPressed (key);
 }
 

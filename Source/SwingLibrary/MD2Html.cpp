@@ -328,7 +328,9 @@ const String Md2Html::tocParse (const String& mdString)
             + lines[i].substring (3) + "</a><br>";
 
         else if (lines[i].substring (0, 4) == "### ")
-            lines.getReference (i) = " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href=\"#"
+            lines.getReference (i) = " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+            + String (CharPointer_UTF8 ("\xc2\xb7"))
+            + " <a href=\"#"
             + lines[i].substring (4) + "\">"
             + lines[i].substring (4) + "</a><br>";
 

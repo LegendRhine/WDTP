@@ -45,7 +45,7 @@ private:
         pickTitle = 1, addKeywords, pickDesc,
         insertImage, insertHyperlink, insertTable, insertQuota,
         insertAlignCenter, insertAlignRight, insertUnoerderList, insertOrderList,
-        insertFirstTitle, insertSecondTitle, insertThirdTitle,
+        insertFirstTitle, insertSecondTitle, insertThirdTitle, insertToc,
         insertCaption, insertSeparator, insertAuthor, insertInterLink,
         formatBold, formatItalic, formatBoldAndItalic, formatHighlight,
         codeBlock, inlineCode,
@@ -58,6 +58,7 @@ private:
     void tableInsert ();
     void quotaInsert ();
     void insertTitle (const int level);
+    void tocInsert ();
     void addSelectedToKeywords ();
     void alignCenterInsert ();
     void alignRightInsert ();

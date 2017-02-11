@@ -360,17 +360,22 @@ bool WebBrowserComp::pageAboutToLoad (const String& newURL)
 {
     String urlStr (newURL);
 
+#if JUCE_WINDOWS
     if (urlStr.substring (0, 8) == "file:///")
         urlStr = urlStr.substring (8);
-
-    //DBGX (urlStr);
-    String currentTreeUrl (DocTreeViewItem::getHtmlFileOrDir (parent->getCurrentTree ()).getFullPathName ());
-
+#endif
+   
 #if JUCE_MAC
+    if (urlStr.substring (0, 7) == "file://")
+        urlStr = urlStr.substring (7);
+    
     urlStr = URL::removeEscapeChars (urlStr);
 #endif
+    
+    String currentTreeUrl (DocTreeViewItem::getHtmlFileOrDir (parent->getCurrentTree ()).getFullPathName ());
 
-    //DBGX(currentTreeUrl);
+    DBGX (urlStr);
+    DBGX(currentTreeUrl);
     //DBGX (urlStr.upToFirstOccurrenceOf ("#", false, true));
 
     if (urlStr.substring (0, 3) == "res" ||
@@ -381,7 +386,7 @@ bool WebBrowserComp::pageAboutToLoad (const String& newURL)
         urlStr.substring (0, 5) == "email" ||
         urlStr == "about:blank" ||
         urlStr == currentTreeUrl ||
-        urlStr.upToFirstOccurrenceOf ("#", false, true) == currentTreeUrl.replace (File::separatorString, "/"))
+        urlStr.upToFirstOccurrenceOf ("#", false, true) == currentTreeUrl.replace ("\\", "/"))
     {
         return true;
     }

@@ -822,7 +822,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         return true;
     }
 
-    DBGX (key.getTextDescription ());
+    //DBGX (key.getTextDescription ());
     return TextEditor::keyPressed (key);
 }
 

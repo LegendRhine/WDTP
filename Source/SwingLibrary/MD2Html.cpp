@@ -123,28 +123,48 @@ const String Md2Html::codeBlockParse (const String& mdString)
 const String Md2Html::inlineCodeParse (const String& mdString)
 {
     String resultStr (mdString);
-    int indexStart = resultStr.indexOfIgnoreCase (0, "`");
+    int index = resultStr.indexOfIgnoreCase (0, "`");
+
+    for (int i = 1; index != -1; ++i)
+    {
+        if (resultStr.substring (index - 1, index) != "\\"
+            && resultStr.substring (index - 1, index) != "/"
+            && resultStr.substring (index - 1, index) != "`"
+            && resultStr.substring (index + 1, index + 2) != "`"
+            && resultStr.substring (index + 1, index + 2) != "/"
+            && resultStr.substring (index + 1, index + 2) != "<")
+        {
+            if (i % 2 == 1)
+                resultStr = resultStr.replaceSection (index, 1, "<code>");
+            else
+                resultStr = resultStr.replaceSection (index, 1, "</code>");
+        }
+        else
+        {
+            --i;
+        }
+
+        index = resultStr.indexOfIgnoreCase (index + 1, "`");
+    }
+
+    // for bold and italic parse (replace '*' to prevent it'll be parsed)
+    int indexStart = resultStr.indexOfIgnoreCase (0, "<code>");
 
     while (indexStart != -1)
     {
-        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 2, "`");
+        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 6, "</code>");
 
         if (indexEnd == -1)
             break;
 
-        const String mdCode (resultStr.substring (indexStart, indexEnd + 1));
-        const String htmlStr ("<code>" + mdCode.replace ("`", String ())
-                              .replace ("*", "_%5x|z%!##!_") // for bold and italic parse
-                              +"</code>");
+        const String mdCode (resultStr.substring (indexStart, indexEnd).replace ("*", "_%5x|z%!##!_"));
+        resultStr = resultStr.replaceSection (indexStart, indexEnd - indexStart, mdCode);
 
-        //DBG (htmlStr);
-        if (!htmlStr.contains (newLine)) // must place in the same line            
-            resultStr = resultStr.replaceSection (indexStart, mdCode.length (), htmlStr);
-
-        indexStart = resultStr.indexOfIgnoreCase (indexStart + htmlStr.length (), "`");
+        indexStart = resultStr.indexOfIgnoreCase (indexStart + mdCode.length (), "<code>");
     }
 
-    return resultStr;
+    //DBG (resultStr);
+    return resultStr;    
 }
 
 //=================================================================================================
@@ -488,8 +508,8 @@ const String Md2Html::cleanUp (const String& mdString)
 
     while (indexBr != -1)
     {
-        if (resultStr.substring (indexBr - 2, indexBr).contains (">"))
-            resultStr = resultStr.replaceSection (indexBr, 5, newLine);
+        if (resultStr.substring (indexBr - 1, indexBr).contains (">"))
+            resultStr = resultStr.replaceSection (indexBr, 4, newLine);
 
         indexBr = resultStr.indexOfIgnoreCase (indexBr + 4, "<br>");
     }

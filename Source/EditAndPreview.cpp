@@ -374,8 +374,8 @@ bool WebBrowserComp::pageAboutToLoad (const String& newURL)
     
     String currentTreeUrl (DocTreeViewItem::getHtmlFileOrDir (parent->getCurrentTree ()).getFullPathName ());
 
-    DBGX (urlStr);
-    DBGX(currentTreeUrl);
+    //DBGX (urlStr);
+    //DBGX (currentTreeUrl);
     //DBGX (urlStr.upToFirstOccurrenceOf ("#", false, true));
 
     if (urlStr.substring (0, 3) == "res" ||

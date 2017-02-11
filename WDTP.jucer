@@ -67,14 +67,20 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <VS2015 targetFolder="Builds/VisualStudio2015" smallIcon="S5pEoV" bigIcon="S5pEoV"
-            externalLibraries="" toolset="" extraDefs="CURL_STATICLIB" extraLinkerFlags="Wldap32.lib winmm.lib ws2_32.lib libcurl.lib">
+            externalLibraries="" toolset="" extraDefs="" extraLinkerFlags="">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/Debug"
-                       headerPath="" libraryPath="C:/Develop/SDK/Libraries" useRuntimeLibDLL="1"/>
+                       headerPath="" libraryPath="" useRuntimeLibDLL="1"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="0" optimisation="3" targetName="wdtp" binaryPath="Application/Release"
-                       libraryPath="C:/Develop/SDK/Libraries" useRuntimeLibDLL="1"/>
+                       libraryPath="" useRuntimeLibDLL="1"/>
+        <CONFIGURATION name="w32-Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       targetName="wdtp" binaryPath="Application/Release/w32" optimisation="3"
+                       useRuntimeLibDLL="1" isDebug="1"/>
+        <CONFIGURATION name="w32-Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       targetName="wdtp" binaryPath="Application/Release/w32" optimisation="3"
+                       useRuntimeLibDLL="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../JUCE/modules"/>

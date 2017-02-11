@@ -298,3 +298,4 @@ countries: cn
 "Internal Link" = "粘贴内部链接"
 "Click here" = "点此访问"
 "Abbrev: " = "缩略语："
+"Table of Contents" = "目录"

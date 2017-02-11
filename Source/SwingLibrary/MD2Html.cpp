@@ -320,14 +320,20 @@ const String Md2Html::processByLine (const String& mdString)
         else if (currentLine.trimStart ().substring (0, 6) == "##### ")
             currentLine = "<h5>" + currentLine.trimStart ().substring (6) + "</h5>";
 
+        // <h4> anchor
         else if (currentLine.trimStart ().substring (0, 5) == "#### ")
-            currentLine = "<h4>" + currentLine.trimStart ().substring (5) + "</h4>";
+            currentLine = "<h4 id=\"" + currentLine.trimStart ().substring (5) + "\">"
+            + currentLine.trimStart ().substring (5) + "</h4>";
 
+        // <h3> anchor
         else if (currentLine.trimStart ().substring (0, 4) == "### ")
-            currentLine = "<h3>" + currentLine.trimStart ().substring (4) + "</h3>";
+            currentLine = "<h3 id=\"" + currentLine.trimStart ().substring (4) + "\">"
+            + currentLine.trimStart ().substring (4) + "</h3>";
 
+        // <h2> anchor
         else if (currentLine.trimStart ().substring (0, 3) == "## ")
-            currentLine = "<h2>" + currentLine.trimStart ().substring (3) + "</h2>";
+            currentLine = "<h2 id=\"" + currentLine.trimStart ().substring (3) + "\">" 
+            + currentLine.trimStart ().substring (3) + "</h2>";
 
         else if (currentLine.trimStart ().substring (0, 2) == "# ")
             currentLine = "<h1>" + currentLine.trimStart ().substring (2) + "</h1>";

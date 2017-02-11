@@ -42,26 +42,28 @@ void SwingUtilities::showAbout (const String& shortDescription,
 void SwingUtilities::fixWindowsRegistry ()
 {
 #ifdef JUCE_WINDOWS
+
     // add a key which indicates our app's WebBroswerComponent will using IE-11 web-core
-    String keypath = "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\"
+    const String keypath = "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\"
                      "FeatureControl\\FEATURE_BROWSER_EMULATION\\";
 
     // build the full path to the key
-    String key = keypath + JUCEApplication::getInstance ()->getApplicationName () + ".exe";
+    const String key = keypath + JUCEApplication::getInstance ()->getApplicationName () + ".exe";
 
     // this is the value we want
     const uint32 correctValue = 11000;
     bool ok = false;
 
     // lets look for it anyway
-    bool v = WindowsRegistry::valueExists (key);
-    if (v)
+    if (WindowsRegistry::valueExists (key))
     {
         MemoryBlock data;
         unsigned int sz = WindowsRegistry::getBinaryValue (key, data);
+
         if (sz == 4)             // DWORD
         {
             uint32 val = *(unsigned int*)data.getData ();
+
             if (val == correctValue)
                 ok = true;
         }
@@ -71,6 +73,7 @@ void SwingUtilities::fixWindowsRegistry ()
     {
         WindowsRegistry::setValue (key, correctValue);
     }
+
 #endif
 }
 

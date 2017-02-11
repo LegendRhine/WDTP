@@ -363,7 +363,7 @@ bool WebBrowserComp::pageAboutToLoad (const String& newURL)
     if (urlStr.substring (0, 8) == "file:///")
         urlStr = urlStr.substring (8);
 
-    DBGX (urlStr);
+    //DBGX (urlStr);
     String currentTreeUrl (DocTreeViewItem::getHtmlFileOrDir (parent->getCurrentTree ()).getFullPathName ());
 
 #if JUCE_MAC
@@ -371,6 +371,7 @@ bool WebBrowserComp::pageAboutToLoad (const String& newURL)
 #endif
 
     //DBGX(currentTreeUrl);
+    //DBGX (urlStr.upToFirstOccurrenceOf ("#", false, true));
 
     if (urlStr.substring (0, 3) == "res" ||
         urlStr.getLastCharacters (4) == "#top" ||
@@ -379,7 +380,8 @@ bool WebBrowserComp::pageAboutToLoad (const String& newURL)
         urlStr.substring (0, 3) == "ftp" ||
         urlStr.substring (0, 5) == "email" ||
         urlStr == "about:blank" ||
-        urlStr == currentTreeUrl)
+        urlStr == currentTreeUrl ||
+        urlStr.upToFirstOccurrenceOf ("#", false, true) == currentTreeUrl.replace (File::separatorString, "/"))
     {
         return true;
     }

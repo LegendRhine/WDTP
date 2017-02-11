@@ -53,7 +53,7 @@
 	- render: the dir of tpls which is placed in the 'project-dir/themes'.
 	- tplFile: for render the index.html of the site, it should be a '.html' tpl-file inside the render dir.
 	- js: JavaScript code, it'll site within < head > area of the index.html.
-	- ad: The formmat should be: 'Image-file-name (whitespace) Link-address', one for pre line. It matched the {{ad}} tag from within a tpl.
+	- ad: The form should be: 'Image-file-name (whitespace) Link-address', one for pre line. It matched the {{ad}} tag from within a tpl.
     - modifyDate
 	- needCreateHtml
 	- identityOfLastSelectedItem: the last selected item in fileTree. 
@@ -83,7 +83,7 @@
 	- thumb: extract an image which in this doc as the doc's title-graph or not.
 	- thumbName: name of the title-graph (image), it should begin with 'media/'
 	- needCreateHtml
-	- abbrev: format: (abbrev-name)(space)(original content), 1 per line
+	- abbrev: form: (abbrev-name)(space)(original content), 1 per line
 
 ### Tags (for developer. These tags could be placed in < head >)
     - {{siteRelativeRootPath}} relative root-path of a page. eg. the page is 'site/dir/subDir/00.html', 

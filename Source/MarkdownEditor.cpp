@@ -452,6 +452,7 @@ void MarkdownEditor::autoWrapSelected (const KeyPress& key)
     const String& content (getHighlightedText ());
     String keyStr (key.getTextDescription().replace ("shift + 8", "*").replace ("shift + `", "~~"));
     keyStr = keyStr.replace ("ctrl + 8", "*").replace ("ctrl + `", "~~"); // for Chinese IME
+    keyStr = keyStr.replace ("command + 8", "*").replace ("command + `", "~~"); // for Chinese IME
     //DBGX (keyStr);
 
     insertTextAtCaret (keyStr + content + keyStr);

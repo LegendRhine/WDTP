@@ -895,9 +895,17 @@ void MarkdownEditor::searchBySelectPrev ()
         const int startIndex = getText ().substring (0, getCaretPosition () - 1).lastIndexOfIgnoreCase (selected);
 
         if (startIndex != -1)
-            setHighlightedRegion (Range<int> (startIndex, startIndex + selected.length ()));
+        {
+            Array<Range<int>> rangeArray;
+            rangeArray.add (Range<int> (startIndex, startIndex + selected.length ()));
+
+            setTemporaryUnderlining (rangeArray);
+            setHighlightedRegion (rangeArray[0]);
+        }
         else
+        {
             LookAndFeel::getDefaultLookAndFeel ().playAlertSound ();
+        }
     }
     else
     {
@@ -915,9 +923,17 @@ void MarkdownEditor::searchBySelectNext ()
         const int startIndex = getText ().indexOfIgnoreCase (getCaretPosition () + selected.length (), selected);
 
         if (startIndex != -1)
-            setHighlightedRegion (Range<int> (startIndex, startIndex + selected.length ()));
+        {
+            Array<Range<int>> rangeArray;
+            rangeArray.add (Range<int> (startIndex, startIndex + selected.length ()));
+
+            setTemporaryUnderlining (rangeArray);
+            setHighlightedRegion (rangeArray[0]);
+        }
         else
+        {
             LookAndFeel::getDefaultLookAndFeel ().playAlertSound ();
+        }
     }
     else
     {

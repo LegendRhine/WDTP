@@ -304,12 +304,12 @@ const String Md2Html::tocParse (const String& mdString)
     if (!resultStr.contains ("[TOC]"))
         return resultStr;
 
-    if (!(resultStr.contains ("## ") || resultStr.contains ("### ") || resultStr.contains ("#### ")))
+    if (!(resultStr.contains ("# ") || resultStr.contains ("## ") || resultStr.contains ("### ")))
         return resultStr;
 
     // escape '\[TOC]'
     resultStr = resultStr.replace ("\\[TOC]", "_@_tocParseReplaceStr_@_");
-
+    
     // get lines which include '#'s
     StringArray lines;
     lines.addLines (resultStr);
@@ -320,15 +320,25 @@ const String Md2Html::tocParse (const String& mdString)
             lines.remove (i);
     }
 
-    // only process h2 and h3
+    // doesn't extrct the title (h1) -- for article toc
+    // but when export a big-single html, it'll extrct all
+    lines.remove (0);
+
+    // process h1, h2 and h3
     for (int i = lines.size(); --i >= 0; )
     {
-        if (lines[i].substring (0, 3) == "## ")
-            lines.getReference (i) = "<a href=\"#" + lines[i].substring (3) + "\">"
+        if (lines[i].substring (0, 2) == "# ")
+            lines.getReference (i) = "<a href=\"#" + lines[i].substring (2) + "\">"
+            + lines[i].substring (2) + "</a><br>";
+
+        else if (lines[i].substring (0, 3) == "## ")
+            lines.getReference (i) = " &emsp;&emsp;"
+            + String (CharPointer_UTF8 ("\xc2\xb7"))
+            + " <a href=\"#" + lines[i].substring (3) + "\">"
             + lines[i].substring (3) + "</a><br>";
 
         else if (lines[i].substring (0, 4) == "### ")
-            lines.getReference (i) = " &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+            lines.getReference (i) = " &emsp;&emsp;&emsp;&emsp;"
             + String (CharPointer_UTF8 ("\xc2\xb7"))
             + " <a href=\"#"
             + lines[i].substring (4) + "\">"
@@ -383,8 +393,10 @@ const String Md2Html::processByLine (const String& mdString)
             currentLine = "<h2 id=\"" + currentLine.trimStart ().substring (3) + "\">" 
             + currentLine.trimStart ().substring (3) + "</h2>";
 
+        // <h1> anchor
         else if (currentLine.trimStart ().substring (0, 2) == "# ")
-            currentLine = "<h1>" + currentLine.trimStart ().substring (2) + "</h1>";
+            currentLine = "<h1 id=\"" + currentLine.trimStart ().substring (2) + "\">" 
+            + currentLine.trimStart ().substring (2) + "</h1>";
 
         // align
         else if (currentLine.trimStart ().substring (0, 4) == ">|< ")

@@ -575,9 +575,9 @@ void DocTreeViewItem::exportAsHtml ()
             
     if (getDirDocsAndAllMedias (this, mdFile, allMedias))
     {
-        // generate the html file
+        // add title and [TOC], then generate the html file
         const String titleStr (tree.getProperty ("title").toString ());
-        const String contentStr (Md2Html::mdStringToHtml (mdFile.loadFileAsString ()));
+        const String contentStr = "<h1>" + titleStr + "</h1><p>[TOC]<p>" + mdFile.loadFileAsString ();
 
         htmlFile.appendText ("<!doctype html>\n"
                              "<html lang = \"en\">\n"
@@ -588,7 +588,7 @@ void DocTreeViewItem::exportAsHtml ()
                              "  <script>hljs.initHighlightingOnLoad(); </script>\n"
                              "<title>" + titleStr + "</title>\n"
                              "</head>\n"
-                             "<body>\n\n" + contentStr + "\n\n"
+                             "<body>\n\n" + Md2Html::mdStringToHtml (contentStr) + "\n\n"
                              "</body>\n"
                              "</html>");
 
@@ -969,7 +969,7 @@ const bool DocTreeViewItem::getDirDocsAndAllMedias (DocTreeViewItem* item,
             // cancel '[TOC]' withou remove its escape
             mdStr = mdStr.replace ("\\[TOC]", "@#@_wdtpToc_@#@");
 
-            mdStr = mdStr.replace (newLine + "[TOC]" + newLine, newLine)
+            mdStr = mdStr.replace (newLine + "[TOC]" + newLine, String())
                 .replace (newLine + "[TOC]", String ())
                 .replace (String ("[TOC]") + newLine, String ())
                 .replace ("[TOC]", String ())
@@ -977,7 +977,6 @@ const bool DocTreeViewItem::getDirDocsAndAllMedias (DocTreeViewItem* item,
 
             return mdFile.appendText (mdStr.trimEnd () + newLine + newLine);
         }
-
     }
 
     return true;

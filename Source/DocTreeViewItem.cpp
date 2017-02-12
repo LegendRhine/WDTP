@@ -575,9 +575,12 @@ void DocTreeViewItem::exportAsHtml ()
             
     if (getDirDocsAndAllMedias (this, mdFile, allMedias))
     {
-        // add title and [TOC], then generate the html file
+        // add title, description and [TOC], then generate the html file
         const String titleStr (tree.getProperty ("title").toString ());
-        const String contentStr = "<h1>" + titleStr + "</h1><p>[TOC]<p>" + mdFile.loadFileAsString ();
+        const String descStr (tree.getProperty ("description").toString ());
+        const String contentStr = "# " + titleStr + newLine + newLine
+            + descStr + newLine + newLine
+            + "[TOC]" + newLine + newLine + mdFile.loadFileAsString ();
 
         htmlFile.appendText ("<!doctype html>\n"
                              "<html lang = \"en\">\n"

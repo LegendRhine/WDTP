@@ -299,3 +299,4 @@ countries: cn
 "Click here" = "点此访问"
 "Abbrev: " = "缩略语："
 "Table of Contents" = "目录"
+"Export Text Doc..." = "导出文本文档..."

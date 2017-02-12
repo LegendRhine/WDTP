@@ -62,7 +62,7 @@ public:
     /** core method, it'll call the edit/preview area's startWork()*/
     virtual void itemSelectionChanged (bool isNowSelected) override;
 
-    /** right-click menu is here */
+    /** right-click popup-menu is here */
     virtual void itemClicked (const MouseEvent& e) override;
 
     /** double click for rename it */
@@ -99,7 +99,7 @@ private:
         newDir = 1, newDoc, 
         importTextDocs,
         packWholeSite, packHtmls, packMedias,
-        exportDocs, dataStatis, getItemPath,
+        exportTextDoc, exportDocs, dataStatis, getItemPath,
         replaceIn, rename, deleteThis, 
         vewInFinder, openInExEditor, browseInEx
     };
@@ -108,6 +108,7 @@ private:
     
     void importDirOrDocs ();
     void packSiteData (const bool includeHtmls, const bool includeMedias);
+    void exportAsTextDoc ();
     void exportAsHtml (); 
     void renameSelectedItem ();
     void createNewDocument ();

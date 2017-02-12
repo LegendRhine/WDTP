@@ -292,6 +292,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
         m.addSubMenu (TRANS ("Pack Site Data"), packMenu);
 
+        m.addItem (exportTextDoc, TRANS ("Export Text Doc..."), exist && onlyOneSelected && isDoc);
         m.addItem (exportDocs, TRANS ("Export Single Big-Html..."), exist && onlyOneSelected && !isDoc);
         m.addSeparator ();
 
@@ -372,6 +373,8 @@ void DocTreeViewItem::menuPerform (const int index)
         packSiteData (false, true);
     else if (index == packWholeSite)
         packSiteData (true, true);
+    else if (index == exportTextDoc)
+        exportAsTextDoc ();
     else if (index == exportDocs)
         exportAsHtml ();
     else if (index == dataStatis)
@@ -466,6 +469,12 @@ void DocTreeViewItem::packSiteData (const bool includeHtmls, const bool includeM
     {
         SHOW_MESSAGE (TRANS ("Somehow pack failed."));
     }
+}
+
+//=================================================================================================
+void DocTreeViewItem::exportAsTextDoc ()
+{
+
 }
 
 //=================================================================================================

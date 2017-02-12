@@ -129,7 +129,7 @@ const String Md2Html::endnoteParse (const String& mdString)
     int noteNumber = 0;
     StringArray notes;
 
-    while (indexStart != -1 && resultStr.substring (indexStart - 1, indexStart) != "\\")
+    while (indexStart != -1)
     {
         // get note content's end index
         const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 2, "]");
@@ -137,23 +137,24 @@ const String Md2Html::endnoteParse (const String& mdString)
         if (indexEnd == -1)
             break;
 
-        if (resultStr.substring (indexEnd - 1, indexEnd) =="\\")
-            continue;
-
-        ++noteNumber;
-
-        // get note content
-        const String noteStr (resultStr.substring (indexStart + 2, indexEnd));
-
-        if (noteStr.trim ().isNotEmpty ())
+        if (resultStr.substring (indexStart - 1, indexStart) != "\\"
+            && resultStr.substring (indexEnd - 1, indexEnd) !="\\")
         {
-            notes.add ("<li><span id=\"endnote-" + String (noteNumber) + "\">" 
-                       + noteStr + "</span></li>\n");
+            ++noteNumber;
 
-            resultStr = resultStr.replaceSection (indexStart + 2, noteStr.length (), String ());
-            resultStr = resultStr.replaceSection (indexStart, 3, "<sup><a href=\"#endnote-"
-                                                  + String (noteNumber) + "\">"
-                                                  + TRANS ("Note ") + String (noteNumber) + "</a></sup>");
+            // get note content
+            const String noteStr (resultStr.substring (indexStart + 2, indexEnd));
+
+            if (noteStr.trim ().isNotEmpty ())
+            {
+                notes.add ("<li><span id=\"endnote-" + String (noteNumber) + "\">"
+                           + noteStr + "</span></li>\n");
+
+                resultStr = resultStr.replaceSection (indexStart + 2, noteStr.length (), String ());
+                resultStr = resultStr.replaceSection (indexStart, 3, "<sup><a href=\"#endnote-"
+                                                      + String (noteNumber) + "\">"
+                                                      + "[" + String (noteNumber) + "]</a></sup>");
+            }
         }
 
         indexStart = resultStr.indexOfIgnoreCase (indexStart + 2, "[^");
@@ -672,6 +673,8 @@ const String Md2Html::cleanUp (const String& mdString)
     resultStr = resultStr.replace (String ("\\```"), "```");
     resultStr = resultStr.replace (String ("\\#"), "#");
     resultStr = resultStr.replace (String ("\\!["), "![");
+    resultStr = resultStr.replace (String ("\\[^"), "[^");
+    resultStr = resultStr.replace (String ("\\]"), "]");
 
     //DBG (resultStr);
     return resultStr;

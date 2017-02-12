@@ -613,10 +613,11 @@ ApplicationCommandTarget* TopToolBar::getNextCommandTarget ()
 //=================================================================================================
 void TopToolBar::getAllCommands (Array<CommandID>& commands)
 {
-    commands.add (switchEdit);       // switch mode (preview / edit)
-    commands.add (switchWidth);      // switch width 
-    commands.add (generateCurrent);  // regenerate current page
-    commands.add (generateNeeded);   // generate all needed
+    commands.add (switchEdit);
+    commands.add (switchWidth);
+    commands.add (generateCurrent);
+    commands.add (generateNeeded);
+    commands.add (activeSearch);
 }
 
 //=================================================================================================
@@ -644,6 +645,12 @@ void TopToolBar::getCommandInfo (CommandID commandID, ApplicationCommandInfo& re
         result.addDefaultKeypress (KeyPress::F6Key, ModifierKeys::noModifiers);
         result.setActive (fileTreeContainer->hasLoadedProject ());
     }
+    else if (activeSearch == commandID)
+    {
+        result.setInfo (TRANS ("Active Search"), "Active Search", String (), 0);
+        result.addDefaultKeypress ('f', ModifierKeys::commandModifier);
+        result.setActive (fileTreeContainer->hasLoadedProject ());
+    }
 }
 
 //=================================================================================================
@@ -651,10 +658,11 @@ bool TopToolBar::perform (const InvocationInfo& info)
 {
     switch (info.commandID)
     {
-    case switchEdit:        bts[view]->triggerClick ();     break;
-    case switchWidth:       bts[width]->triggerClick ();    break;
-    case generateCurrent:   generateCurrentPage ();         break;
-    case generateNeeded:    generateHtmlsIfNeeded ();       break;
+    case switchEdit:        bts[view]->triggerClick ();         break;
+    case switchWidth:       bts[width]->triggerClick ();        break;
+    case generateCurrent:   generateCurrentPage ();             break;
+    case generateNeeded:    generateHtmlsIfNeeded ();           break;
+    case activeSearch:      searchInDoc->grabKeyboardFocus();   break;
 
     default:                return false; 
     }

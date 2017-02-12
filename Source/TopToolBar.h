@@ -93,7 +93,7 @@ private:
         generateCurrent, generateNeeded, generateWhole, cleanUpLocal,
         exportTpl, importTpl, releaseSystemTpl, uiEnglish, uiChinese,
         setUiColor, resetUiColor, gettingStarted, checkNewVersion, showAbout,
-        switchEdit, switchWidth
+        switchEdit, switchWidth, activeSearch
     };
 
     //=====================================================================================

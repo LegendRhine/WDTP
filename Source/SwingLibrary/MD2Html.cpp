@@ -22,6 +22,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     String htmlContent (mdString);
     htmlContent = tableParse (htmlContent);
     htmlContent = codeBlockParse (htmlContent);
+    htmlContent = endnoteParse (htmlContent);
     htmlContent = inlineCodeParse (htmlContent);
     htmlContent = boldAndItalicParse (htmlContent);
     htmlContent = boldParse (htmlContent);
@@ -115,6 +116,57 @@ const String Md2Html::codeBlockParse (const String& mdString)
         //DBG (htmlStr);
         resultStr = resultStr.replaceSection (indexStart, mdCode.length (), htmlStr);
         indexStart = resultStr.indexOfIgnoreCase (indexStart + htmlStr.length (), "```");
+    }
+
+    return resultStr;
+}
+
+//=================================================================================================
+const String Md2Html::endnoteParse (const String& mdString)
+{
+    String resultStr (mdString);
+    int indexStart = resultStr.indexOfIgnoreCase (0, "[^");
+    int noteNumber = 0;
+    StringArray notes;
+
+    while (indexStart != -1 && resultStr.substring (indexStart - 1, indexStart) != "\\")
+    {
+        // get note content's end index
+        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 2, "]");
+
+        if (indexEnd == -1)
+            break;
+
+        if (resultStr.substring (indexEnd - 1, indexEnd) =="\\")
+            continue;
+
+        ++noteNumber;
+
+        // get note content
+        const String noteStr (resultStr.substring (indexStart + 2, indexEnd));
+
+        if (noteStr.trim ().isNotEmpty ())
+        {
+            notes.add ("<li><span id=\"endnote-" + String (noteNumber) + "\">" 
+                       + noteStr + "</span></li>\n");
+
+            resultStr = resultStr.replaceSection (indexStart + 2, noteStr.length (), String ());
+            resultStr = resultStr.replaceSection (indexStart, 3, "<sup><a href=\"#endnote-"
+                                                  + String (noteNumber) + "\">"
+                                                  + TRANS ("Note ") + String (noteNumber) + "</a></sup>");
+        }
+
+        indexStart = resultStr.indexOfIgnoreCase (indexStart + 2, "[^");
+    }
+
+    if (notes.size() > 0)
+    {
+        notes.insert (0, "***" + TRANS ("Endnote(s): ") + "***");
+        notes.insert (1, "<ol><div class=endnote>");
+        notes.add ("</ol></div>");
+
+        resultStr = resultStr.trimEnd () + newLine + "----" + newLine;
+        resultStr = resultStr + notes.joinIntoString (newLine);
     }
 
     return resultStr;

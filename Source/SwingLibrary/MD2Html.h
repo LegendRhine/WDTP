@@ -37,6 +37,9 @@ private:
     /** ``` [code] ```: <pre><code>...</pre></code> */
     static const String codeBlockParse (const String& mdString);
 
+    /** [^Not text]: endnote */
+    static const String endnoteParse (const String& mdString);
+
     /** If one "`" in a single line (paragaph), then "`" needn't to escape :) */
     static const String inlineCodeParse (const String& mdString);
 

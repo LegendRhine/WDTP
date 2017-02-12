@@ -300,3 +300,5 @@ countries: cn
 "Abbrev: " = "缩略语："
 "Table of Contents" = "目录"
 "Export Text Doc..." = "导出文本文档..."
+"Note " = "注"
+"Endnote(s): " = "尾注："

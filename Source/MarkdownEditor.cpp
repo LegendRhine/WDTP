@@ -70,6 +70,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addSeparator ();
 
         insertMenu.addItem (insertToc, TRANS ("Table of Contents"));
+        insertMenu.addItem (insertEndnote, TRANS ("Endnote"));
         insertMenu.addSeparator ();
 
         insertMenu.addItem (insertCaption, TRANS ("Image/Table Caption") + ctrlStr + "P)");
@@ -141,6 +142,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (insertSecondTitle == index)    insertTitle (2);
     else if (insertThirdTitle == index)     insertTitle (3);
     else if (insertToc == index)            tocInsert ();
+    else if (insertEndnote == index)        endnoteInsert ();
     else if (insertCaption == index)        captionInsert ();
     else if (insertAuthor == index)         authorInsert ();
     else if (insertInterLink == index)      interLinkInsert ();
@@ -330,6 +332,13 @@ void MarkdownEditor::insertTitle (const int level)
         content << newLine << "### ";
 
     insertTextAtCaret (content);
+}
+
+//=================================================================================================
+void MarkdownEditor::endnoteInsert ()
+{
+    insertTextAtCaret ("[^]");
+    moveCaretLeft (false, false);
 }
 
 //=================================================================================================

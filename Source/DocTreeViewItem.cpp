@@ -963,8 +963,17 @@ const bool DocTreeViewItem::getDirDocsAndAllMedias (DocTreeViewItem* item,
         if (currentFile.existsAsFile () && currentFile.getSize () > 0)
         {
             getMdMediaFiles (currentFile, medias);
-            const String& mdStr (HtmlProcessor::processAbbrev (item->getTree (),
+            String mdStr (HtmlProcessor::processAbbrev (item->getTree (),
                                                                currentFile.loadFileAsString ()));
+
+            // cancel '[TOC]' withou remove its escape
+            mdStr = mdStr.replace ("\\[TOC]", "@#@_wdtpToc_@#@");
+
+            mdStr = mdStr.replace (newLine + "[TOC]" + newLine, newLine)
+                .replace (newLine + "[TOC]", String ())
+                .replace (String ("[TOC]") + newLine, String ())
+                .replace ("[TOC]", String ())
+                .replace ("@#@_wdtpToc_@#@", "\\[TOC]");
 
             return mdFile.appendText (mdStr.trimEnd () + newLine + newLine);
         }

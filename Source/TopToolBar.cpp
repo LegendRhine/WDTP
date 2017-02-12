@@ -32,7 +32,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
     searchInProject->setColour (TextEditor::focusedOutlineColourId, Colours::lightskyblue);
     searchInProject->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha (0.6f));
     searchInProject->setScrollBarThickness (10);
-    searchInProject->setFont (SwingUtilities::getFontSize () - 2.f);
+    searchInProject->setFont (SwingUtilities::getFontSize () - 3.f);
 
     addAndMakeVisible (searchInDoc = new TextEditor ());
     searchInDoc->addListener (this);
@@ -41,7 +41,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
     searchInDoc->setColour (TextEditor::focusedOutlineColourId, Colours::lightskyblue);
     searchInDoc->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha (0.6f));
     searchInDoc->setScrollBarThickness (10);
-    searchInDoc->setFont (SwingUtilities::getFontSize () - 2.f);
+    searchInDoc->setFont (SwingUtilities::getFontSize () - 3.f);
 
     // ui language
     setUiLanguage ((LanguageID)systemFile->getIntValue ("language"));

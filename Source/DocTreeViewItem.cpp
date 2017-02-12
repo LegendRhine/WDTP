@@ -291,6 +291,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         packMenu.addItem (packWholeSite, TRANS ("Pack All Data"), exist && onlyOneSelected && !isDoc);
 
         m.addSubMenu (TRANS ("Pack Site Data"), packMenu);
+        m.addSeparator ();
 
         m.addItem (exportTextDoc, TRANS ("Export Text Doc..."), exist && onlyOneSelected && isDoc);
         m.addItem (exportDocs, TRANS ("Export Single Big-Html..."), exist && onlyOneSelected && !isDoc);
@@ -474,7 +475,40 @@ void DocTreeViewItem::packSiteData (const bool includeHtmls, const bool includeM
 //=================================================================================================
 void DocTreeViewItem::exportAsTextDoc ()
 {
+    FileChooser fc (TRANS ("Export document"),
+                    File::getSpecialLocation (File::userDocumentsDirectory)
+                    .getChildFile (tree.getProperty ("name").toString () + ".txt"),
+                    "*.txt", true);
 
+    if (!fc.browseForFileToSave (false))
+        return;
+
+    File textFile (fc.getResult ());
+    textFile = textFile.getSiblingFile (SwingUtilities::getValidFileName (textFile.getFileNameWithoutExtension ()));
+
+    if (!textFile.hasFileExtension ("txt"))
+        textFile = textFile.withFileExtension ("txt");
+
+    // overwrite or not whether it has been there
+    if (textFile.existsAsFile () &&
+        !AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Message"),
+                                       TRANS ("This file already exists, want to overwrite it?")))
+    {
+        return;
+    }
+
+    if (!textFile.deleteFile ())
+    {
+        SHOW_MESSAGE (TRANS ("Can't write to this file! "));
+        return;
+    }
+
+    textFile.create ();
+
+    if (getMdFileOrDir (tree).copyFileTo (textFile))
+        textFile.startAsProcess ();
+    else
+        SHOW_MESSAGE (TRANS ("Export Failed."));
 }
 
 //=================================================================================================

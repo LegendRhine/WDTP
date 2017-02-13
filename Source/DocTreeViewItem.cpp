@@ -279,7 +279,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
         // import various external data...
         PopupMenu importMenu;
-        importMenu.addItem (importTextDocs, TRANS ("Import Dir/Doc(s)..."), exist && !isDoc && onlyOneSelected);
+        importMenu.addItem (importTextDocs, TRANS ("Text Doc(s)..."), exist && !isDoc && onlyOneSelected);
 
         m.addSubMenu (TRANS ("Import External Data"), importMenu);
         m.addSeparator ();
@@ -367,7 +367,7 @@ void DocTreeViewItem::menuPerform (const int index)
     else if (index == newDoc)
         createNewDocument ();
     else if (index == importTextDocs)
-        importDirOrDocs ();
+        importExternalDocs ();
     else if (index == packHtmls)
         packSiteData (true, false);
     else if (index == packMedias)
@@ -690,51 +690,60 @@ void DocTreeViewItem::createNewDocument ()
 
     if (0 == dialog.runModalLoop ())
     {
-        String docName (SwingUtilities::getValidFileName (dialog.getTextEditor ("name")->getText ()));
-
-        if (docName.isEmpty ())
-            docName = TRANS ("Untitled");
-        else if (docName == "index")
-            docName = "index(2)";
-        else if (docName == "site")
-            docName = "site-doc";
-        else if (docName == "docs")
-            docName = "docs-1";
-        else if (docName == "media")
-            docName = "media-doc";
-
-        // create this doc on disk
-        const File& thisDoc (getMdFileOrDir (tree).getChildFile (docName + ".md")
-                             .getNonexistentSibling (true));
-        thisDoc.create ();
-        thisDoc.appendText ("# ");
-
-        // valueTree of this doc
-        ValueTree docTree ("doc");
-        docTree.setProperty ("name", thisDoc.getFileNameWithoutExtension (), nullptr);
-        docTree.setProperty ("title", String (), nullptr);
-        docTree.setProperty ("keywords", String (), nullptr);
-        docTree.setProperty ("isMenu", false, nullptr);
-        docTree.setProperty ("thumb", true, nullptr);
-        docTree.setProperty ("tplFile", "article.html", nullptr);
-        docTree.setProperty ("createDate",
-                             SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), true),
-                             nullptr);
-
-        // must update this tree before show this new item
-        tree.removeListener (this);
-        tree.addChild (docTree, 0, nullptr);
-        needCreate (docTree);
-        tree.addListener (this);
-
-        // add and select the new item 
-        setOpen (true);
-        DocTreeViewItem* docItem = new DocTreeViewItem (docTree, treeContainer, sorter);
-        addSubItemSorted (*sorter, docItem);
-        docItem->setSelected (true, true);
-
+        const String& docName (SwingUtilities::getValidFileName (dialog.getTextEditor ("name")->getText ()));
+        createDoc (docName, true);
         FileTreeContainer::saveProject ();
     }
+}
+
+//=================================================================================================
+const File DocTreeViewItem::createDoc (const String& docName, const bool selectAfterCreated)
+{
+    String docFileName (docName);
+
+    if (docFileName.isEmpty ())
+        docFileName = TRANS ("Untitled");
+    else if (docFileName == "index")
+        docFileName = "index(2)";
+    else if (docFileName == "site")
+        docFileName = "site-doc";
+    else if (docFileName == "docs")
+        docFileName = "docs-1";
+    else if (docFileName == "media")
+        docFileName = "media-doc";
+
+    // create this doc on disk
+    const File& thisDoc (getMdFileOrDir (tree).getChildFile (docFileName + ".md")
+                         .getNonexistentSibling (true));
+    thisDoc.create ();
+    thisDoc.appendText ("# ");
+
+    // valueTree of this doc
+    ValueTree docTree ("doc");
+    docTree.setProperty ("name", thisDoc.getFileNameWithoutExtension (), nullptr);
+    docTree.setProperty ("title", thisDoc.getFileNameWithoutExtension (), nullptr);
+    docTree.setProperty ("description", TRANS ("Description of this doc..."), nullptr);
+    docTree.setProperty ("keywords", String (), nullptr);
+    docTree.setProperty ("isMenu", false, nullptr);
+    docTree.setProperty ("thumb", true, nullptr);
+    docTree.setProperty ("tplFile", "article.html", nullptr);
+    docTree.setProperty ("createDate",
+                         SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), true),
+                         nullptr);
+
+    // must update this tree before show this new item
+    tree.removeListener (this);
+    tree.addChild (docTree, 0, nullptr);
+    needCreate (docTree);
+    tree.addListener (this);
+
+    // add and select the new item 
+    setOpen (true);
+    DocTreeViewItem* docItem = new DocTreeViewItem (docTree, treeContainer, sorter);
+    addSubItemSorted (*sorter, docItem);
+    docItem->setSelected (selectAfterCreated, selectAfterCreated);
+
+    return thisDoc;
 }
 
 //=================================================================================================
@@ -955,9 +964,47 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
 }
 
 //=================================================================================================
-void DocTreeViewItem::importDirOrDocs ()
+void DocTreeViewItem::importExternalDocs ()
 {
-    //...
+    FileChooser fc (TRANS ("Import External Data"), File::nonexistent, "*", true);
+
+    if (fc.browseForMultipleFilesToOpen ())
+    {
+        Array<File> files (fc.getResults ());
+        const File& projectDir (FileTreeContainer::projectFile.getParentDirectory ());
+
+        if (files[0].getFullPathName ().contains (projectDir.getFullPathName ()))
+        {
+            SHOW_MESSAGE (TRANS ("Can't import file(s) inside the current project."));
+            return;
+        }
+
+        importExternalDocs (files);
+    }
+}
+
+//=================================================================================================
+void DocTreeViewItem::importExternalDocs (const Array<File>& docs)
+{
+    bool needSaveProject = false;
+
+    for (int i = docs.size(); --i >= 0; )
+    {
+        // doesn't import any big file
+        if (docs[i].getSize () / 1024 <= 256)  
+        {
+            const String& content (docs[i].loadFileAsString ());
+
+            if (content.length () >= 4)
+            {
+                File thisDoc (createDoc (docs[i].getFileNameWithoutExtension (), false));
+                needSaveProject = thisDoc.replaceWithText (content);
+            }
+        }
+    }
+
+    if (needSaveProject)
+        FileTreeContainer::saveProject ();
 }
 
 //=================================================================================================

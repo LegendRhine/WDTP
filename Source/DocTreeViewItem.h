@@ -74,6 +74,8 @@ public:
     virtual void itemDropped (const DragAndDropTarget::SourceDetails& details,
                               int insertIndex) override;
 
+    void importExternalDocs (const Array<File>& docs);
+
     /** draw lines from within the file-tree panel.. */
     virtual void paintHorizontalConnectingLine (Graphics&, const Line<float>& line) override;
     virtual void paintVerticalConnectingLine (Graphics&, const Line<float>& line) override;
@@ -106,12 +108,14 @@ private:
 
     void menuPerform (const int menuIndex);
     
-    void importDirOrDocs ();
+    void importExternalDocs ();
     void packSiteData (const bool includeHtmls, const bool includeMedias);
     void exportAsTextDoc ();
     void exportAsHtml (); 
     void renameSelectedItem ();
     void createNewDocument ();
+    const File createDoc (const String &docName, const bool selectAfterCreated);
+
     void createNewFolder ();
     void deleteSelected ();
     void statistics ();

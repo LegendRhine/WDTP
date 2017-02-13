@@ -14,7 +14,7 @@ countries: cn
 "Pack All Data" = "全部打包"
 "Export Single Big-Html..." = "文档批量集成..."
 "Import External Data" = "导入外部数据"
-"Import Dir/Doc(s)..." = "导入目录/文档..."
+"Text Doc(s)..." = "文本文档..."
 "Get Path" = "获取路径"
 "Statistics..." = "数据统计..."
 "File Name" = "文件名"
@@ -302,3 +302,4 @@ countries: cn
 "Export Text Doc..." = "导出文本文档..."
 "Endnote" = "尾注"
 "Endnote(s): " = "尾注："
+"Description of this doc..." = "此文档的描述……"

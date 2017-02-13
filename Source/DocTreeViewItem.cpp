@@ -721,7 +721,7 @@ const File DocTreeViewItem::createDoc (const String& docName, const bool selectA
     // valueTree of this doc
     ValueTree docTree ("doc");
     docTree.setProperty ("name", thisDoc.getFileNameWithoutExtension (), nullptr);
-    docTree.setProperty ("title", thisDoc.getFileNameWithoutExtension (), nullptr);
+    docTree.setProperty ("title", TRANS ("Title of this doc..."), nullptr);
     docTree.setProperty ("description", TRANS ("Description of this doc..."), nullptr);
     docTree.setProperty ("keywords", String (), nullptr);
     docTree.setProperty ("isMenu", false, nullptr);

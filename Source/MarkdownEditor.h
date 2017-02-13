@@ -34,6 +34,8 @@ public:
     somehow the original TextEditor can't do it whilst the caret doesn't move at all. */
     bool keyPressed (const KeyPress& key) override;
 
+    void insertImages (const Array<File>& imageFiles);
+
     /** for set the font-size and color of font and backgroud */
     virtual void sliderValueChanged (Slider* slider) override;
     virtual void changeListenerCallback (ChangeBroadcaster* source) override;
@@ -55,6 +57,7 @@ private:
 
     void hyperlinkInsert ();
     void insertImages ();
+
     void tableInsert ();
     void quotaInsert ();
     void insertTitle (const int level);

@@ -439,25 +439,40 @@ void MarkdownEditor::hyperlinkInsert ()
 void MarkdownEditor::insertImages ()
 {
     FileChooser fc (TRANS ("Select Images..."), File::nonexistent,
-                    "*.jpg;*.png;*.gif", true);
-    Array<File> imageFiles;
+                    "*.jpg;*.jpeg;*.png;*.gif", true);
 
     if (!fc.browseForMultipleFilesToOpen ())
         return;
 
-    imageFiles = fc.getResults ();
+    Array<File> imageFiles (fc.getResults ());
+    insertImages (imageFiles);
+}
+
+//=================================================================================================
+void MarkdownEditor::insertImages (const Array<File>& imageFiles)
+{
+    // remove non-image file(s)
+    Array<File> files (imageFiles);
+
+    for (int i = files.size(); --i >= 0; )
+    {
+        if (!files[i].hasFileExtension (".jpg;jpeg;png;gif"))
+            files.remove (i);
+    }
+
+    // copy and insert image-syntax
     ValueTree& docTree (parent->getCurrentTree ());
     const File imgPath (DocTreeViewItem::getMdFileOrDir (docTree).getSiblingFile ("media"));
     String content;
 
-    for (auto f : imageFiles)
+    for (auto f : files)
     {
         const File targetFile (imgPath.getChildFile (f.getFileName ()).getNonexistentSibling (false));
         targetFile.create ();
 
         if (f.copyFileTo (targetFile))
             content << newLine << "![ ](media/" << targetFile.getFileName () << ")" << newLine
-            << "^^ " << TRANS ("Image: ");
+            << "^^ " << TRANS ("Image: ") << newLine;
         else
             SHOW_MESSAGE (TRANS ("Can't insert this image: ") + newLine + f.getFullPathName ());
     }

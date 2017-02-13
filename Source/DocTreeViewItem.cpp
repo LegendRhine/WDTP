@@ -970,23 +970,25 @@ void DocTreeViewItem::importExternalDocs ()
                     "*.txt;*.md;*.html;*.htm;*.markdown;*.mkd;*.ini", true);
 
     if (fc.browseForMultipleFilesToOpen ())
-    {
-        Array<File> files (fc.getResults ());
-        const File& projectDir (FileTreeContainer::projectFile.getParentDirectory ());
-
-        if (files[0].getFullPathName ().contains (projectDir.getFullPathName ()))
-        {
-            SHOW_MESSAGE (TRANS ("Can't import doc(s) inside the current project!"));
-            return;
-        }
-
-        importExternalDocs (files);
-    }
+        importExternalDocs (fc.getResults ());
 }
 
 //=================================================================================================
 void DocTreeViewItem::importExternalDocs (const Array<File>& docs)
 {
+    // can't import docs under a doc!
+    jassert (tree.getType ().toString () != "doc");
+
+    // doesn't import project-internal docs
+    const File& projectDir (FileTreeContainer::projectFile.getParentDirectory ());
+
+    if (docs[0].getFullPathName ().contains (projectDir.getFullPathName ()))
+    {
+        SHOW_MESSAGE (TRANS ("Can't import doc(s) inside the current project!"));
+        return;
+    }
+
+    // import...
     bool needSaveProject = false;
 
     for (int i = docs.size(); --i >= 0; )
@@ -999,7 +1001,7 @@ void DocTreeViewItem::importExternalDocs (const Array<File>& docs)
             if (content.length () > 4)
             {
                 File thisDoc (createDoc (docs[i].getFileNameWithoutExtension (), false));
-                needSaveProject = thisDoc.replaceWithText (content);
+                needSaveProject = thisDoc.appendText (content);
             }
             else
             {
@@ -1152,6 +1154,40 @@ void DocTreeViewItem::itemDropped (const DragAndDropTarget::SourceDetails& detai
     }
 
     moveItems (selectedTrees, tree);
+}
+
+//=================================================================================================
+bool DocTreeViewItem::isInterestedInFileDrag (const StringArray& /*files*/)
+{
+    return true;
+}
+
+//=================================================================================================
+void DocTreeViewItem::filesDropped (const StringArray& pathes, int /*insertIndex*/)
+{
+    // only get text files
+    Array<File> files;
+
+    for (auto path : pathes)
+    {
+        const File file (path);
+
+        if (file.hasFileExtension (".txt;md;html;htm;markdown;mkd;ini"))
+            files.add (file);
+    }
+    
+    // import...
+    if (tree.getType ().toString () == "doc")
+    {
+        DocTreeViewItem* dirItem = static_cast<DocTreeViewItem*> (getParentItem ());
+
+        if (dirItem != nullptr)
+            dirItem->importExternalDocs (files);
+    }
+    else
+    {
+        importExternalDocs (files);
+    }
 }
 
 //=================================================================================================

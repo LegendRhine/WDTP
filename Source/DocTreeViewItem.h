@@ -74,6 +74,10 @@ public:
     virtual void itemDropped (const DragAndDropTarget::SourceDetails& details,
                               int insertIndex) override;
 
+    /** files drag to import */
+    virtual bool isInterestedInFileDrag (const StringArray&	files) override;
+    virtual void filesDropped (const StringArray& files, int insertIndex) override;
+
     void importExternalDocs (const Array<File>& docs);
 
     /** draw lines from within the file-tree panel.. */

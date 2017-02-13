@@ -28,6 +28,7 @@ public:
 
     void showNothing ()                         { panel->clear (); }
     void updateWordCount (const int wordsNum)   { values[wordCount]->setValue (wordsNum); }
+    void updateDocPanel ()                      { showDocProperties (currentTree); }
 
     void showProjectProperties (ValueTree& projectTree);
     void showDirProperties (ValueTree& dirTree);

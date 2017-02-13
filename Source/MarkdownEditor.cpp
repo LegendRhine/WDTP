@@ -117,13 +117,22 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 void MarkdownEditor::performPopupMenuAction (int index)
 {
     if (addKeywords == index)
+    {
         addSelectedToKeywords ();
+        parent->getSetupPanel ()->updateDocPanel ();
+    }
 
-    else if (pickTitle == index)            
+    else if (pickTitle == index)
+    {
         parent->getCurrentTree ().setProperty ("title", getHighlightedText (), nullptr);
+        parent->getSetupPanel ()->updateDocPanel ();
+    }
 
-    else if (pickDesc == index)             
+    else if (pickDesc == index)
+    {
         parent->getCurrentTree ().setProperty ("description", getHighlightedText (), nullptr);
+        parent->getSetupPanel ()->updateDocPanel ();
+    }
 
     else if (insertSeparator == index)
         insertTextAtCaret (newLine + "---" + newLine);

@@ -37,7 +37,9 @@ SetupPanel::~SetupPanel ()
 //=================================================================================================
 void SetupPanel::showProjectProperties (ValueTree& pTree)
 {
+    savePropertiesIfNeeded ();
     valuesRemoveListener ();
+
     currentTree = pTree;
     panel->clear ();
     jassert (currentTree.isValid () && currentTree.getType ().toString () == "wdtpProject");
@@ -124,7 +126,9 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
 //=================================================================================================
 void SetupPanel::showDirProperties (ValueTree& dTree)
 {
+    savePropertiesIfNeeded ();
     valuesRemoveListener ();
+
     panel->clear ();
     currentTree = dTree;
     jassert (currentTree.isValid () && currentTree.getType ().toString () == "dir");
@@ -189,7 +193,9 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
 //=================================================================================================
 void SetupPanel::showDocProperties (ValueTree& dTree)
 {
+    savePropertiesIfNeeded ();
     valuesRemoveListener ();
+
     panel->clear ();
     currentTree = dTree;
     jassert (currentTree.isValid () && currentTree.getType ().toString () == "doc");

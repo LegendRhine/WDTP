@@ -460,6 +460,15 @@ void MarkdownEditor::insertImages (const Array<File>& imageFiles)
             files.remove (i);
     }
 
+    // doesn't import project-internal images
+    const File& projectDir (FileTreeContainer::projectFile.getParentDirectory ());
+
+    if (files[0].getFullPathName ().contains (projectDir.getFullPathName ()))
+    {
+        SHOW_MESSAGE (TRANS ("Can't import image(s) inside the current project!"));
+        return;
+    }
+
     // copy and insert image-syntax
     ValueTree& docTree (parent->getCurrentTree ());
     const File imgPath (DocTreeViewItem::getMdFileOrDir (docTree).getSiblingFile ("media"));

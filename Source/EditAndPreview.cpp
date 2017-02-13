@@ -271,44 +271,6 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
 
         if (tempFile.overwriteTargetFileWithTemporary ())
         {
-            // title
-            if (docOrDirTree.getProperty ("title").toString ().isEmpty ())
-            {
-                const String tileStr (currentContent.trim ().upToFirstOccurrenceOf ("\n", false, true)
-                                      .replace ("#", String ()).trim ());
-
-                docOrDirTree.setProperty ("title", tileStr, nullptr);
-            }
-
-            // description
-            if (docOrDirTree.getProperty ("description").toString ().isEmpty ())
-            {
-                // get the description (the second line which not empty-line)
-                // the first line should be title
-                StringArray contentArray;
-                contentArray.addLines (currentContent);
-                contentArray.removeEmptyStrings ();
-                String description;
-
-                for (int i = 1; i < contentArray.size (); ++i)
-                {
-                    if (contentArray.getReference (i).trim ().isNotEmpty ())
-                    {
-                        description = contentArray.getReference (i).trim ()
-                            .replace ("+", String ()).replace ("-", String ())
-                            .replace ("*", String ()).replace ("#", String ())
-                            .replace ("`", String ()).replace (">", String ())
-                            .replace ("|", String ()).replace ("<", String ())
-                            .replace ("!", String ()).replace ("[", " ")
-                            .replace ("]", " ");
-
-                        break;
-                    }
-                }
-
-                docOrDirTree.setProperty ("description", description, nullptr);
-            }
-
             docHasChanged = false;
             setupPanel->showDocProperties (docOrDirTree);
             returnValue = FileTreeContainer::saveProject ();

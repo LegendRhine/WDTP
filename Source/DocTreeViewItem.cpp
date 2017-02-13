@@ -966,7 +966,8 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
 //=================================================================================================
 void DocTreeViewItem::importExternalDocs ()
 {
-    FileChooser fc (TRANS ("Import External Data"), File::nonexistent, "*", true);
+    FileChooser fc (TRANS ("Import External Data"), File::nonexistent,
+                    "*.txt;*.md;*.html;*.htm;*.markdown;*.mkd;*.ini", true);
 
     if (fc.browseForMultipleFilesToOpen ())
     {
@@ -975,7 +976,7 @@ void DocTreeViewItem::importExternalDocs ()
 
         if (files[0].getFullPathName ().contains (projectDir.getFullPathName ()))
         {
-            SHOW_MESSAGE (TRANS ("Can't import file(s) inside the current project."));
+            SHOW_MESSAGE (TRANS ("Can't import doc(s) inside the current project!"));
             return;
         }
 
@@ -995,11 +996,21 @@ void DocTreeViewItem::importExternalDocs (const Array<File>& docs)
         {
             const String& content (docs[i].loadFileAsString ());
 
-            if (content.length () >= 4)
+            if (content.length () > 4)
             {
                 File thisDoc (createDoc (docs[i].getFileNameWithoutExtension (), false));
                 needSaveProject = thisDoc.replaceWithText (content);
             }
+            else
+            {
+                SHOW_MESSAGE (TRANS ("No neeed to import a file which can't/no need to read :)")
+                              + newLine + newLine + docs[i].getFullPathName ());
+            }
+        }
+        else
+        {
+            SHOW_MESSAGE (TRANS ("Can't import a file which more than 256K :)") 
+                          + newLine + newLine + docs[i].getFullPathName ());
         }
     }
 

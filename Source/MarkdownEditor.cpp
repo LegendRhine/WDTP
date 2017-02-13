@@ -887,6 +887,23 @@ void MarkdownEditor::changeListenerCallback (ChangeBroadcaster* source)
 }
 
 //=================================================================================================
+bool MarkdownEditor::isInterestedInFileDrag (const StringArray& /*files*/)
+{
+    return true;
+}
+
+//=================================================================================================
+void MarkdownEditor::filesDropped (const StringArray& pathes, int, int)
+{
+    Array<File> files;
+
+    for (auto path : pathes)
+        files.add (File (path));
+
+    insertImages (files);
+}
+
+//=================================================================================================
 void MarkdownEditor::addSelectedToKeywords ()
 {
     ValueTree& docTree (parent->getCurrentTree ());

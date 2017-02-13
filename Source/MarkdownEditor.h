@@ -17,7 +17,8 @@
 */
 class MarkdownEditor :  public TextEditor,
                         public Slider::Listener,
-                        public ChangeListener
+                        public ChangeListener,
+                        public FileDragAndDropTarget
 {
 public:
     MarkdownEditor (EditAndPreview* parent_);
@@ -39,6 +40,10 @@ public:
     /** for set the font-size and color of font and backgroud */
     virtual void sliderValueChanged (Slider* slider) override;
     virtual void changeListenerCallback (ChangeBroadcaster* source) override;
+
+    /** drag native images to copy and insert their mark */
+    virtual bool isInterestedInFileDrag (const StringArray& files) override;
+    virtual void filesDropped (const StringArray& files, int x, int y) override;
 
 private:
     //=============================================================================================

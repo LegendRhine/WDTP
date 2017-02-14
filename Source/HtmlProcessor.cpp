@@ -938,7 +938,7 @@ const StringArray HtmlProcessor::getBlogList (const ValueTree& dirTree)
 
         linkStr.add (titleStr);
         linkStr.add (dateStr);
-        linkStr.add (descStr);
+        linkStr.add (Md2Html::mdStringToHtml (descStr));
     }
 
     for (int i = 0; i < linkStr.size (); ++i)

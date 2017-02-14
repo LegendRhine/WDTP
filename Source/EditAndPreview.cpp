@@ -347,6 +347,8 @@ bool WebBrowserComp::pageAboutToLoad (const String& newURL)
     //DBGX (urlStr.upToFirstOccurrenceOf ("#", false, true));
 
     if (urlStr.substring (0, 3) == "res" ||
+        urlStr.substring (0, 4) == "http" ||
+        urlStr.substring (0, 3) == "ftp" ||
         urlStr.getLastCharacters (4) == "#top" ||
         urlStr.getLastCharacters (8) == "404.html" ||
         urlStr.substring (0, 5) == "email" ||
@@ -355,17 +357,7 @@ bool WebBrowserComp::pageAboutToLoad (const String& newURL)
         urlStr.upToFirstOccurrenceOf ("#", false, true) == currentTreeUrl.replace ("\\", "/"))
     {
         return true;
-    }
-
-    // open a new window load it if it's an url outside current project
-    else if (urlStr.substring (0, 4) == "http" ||
-        urlStr.substring (0, 3) == "ftp" ||
-        !File (urlStr).getFullPathName ().contains (
-            FileTreeContainer::projectFile.getParentDirectory().getFullPathName ()))
-    {
-        openUrlInNewWindow (urlStr);
-        return false;
-    }
+    }    
 
     else
     {

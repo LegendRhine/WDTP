@@ -166,7 +166,7 @@ countries: cn
 "Open Project..." = "打开项目..."
 "Open Rcent" = "最近打开过的项目"
 "Close Project" = "关闭项目"
-"Regenerate Current Page" = "重新生成当前页面"
+"Update Current Page" = "刷新当前页面"
 "Regenerate All Changed" = "重新生成所有需要生成的"
 "Regenerate Whole Site..." = "重新生成整个网站..."
 "Cleanup Local Medias..." = "清理本地媒体文件..."

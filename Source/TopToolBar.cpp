@@ -637,7 +637,7 @@ void TopToolBar::getCommandInfo (CommandID commandID, ApplicationCommandInfo& re
     }
     else if (generateCurrent == commandID)
     {
-        result.setInfo (TRANS ("Regenerate Current Page"), "Regenerate Current Page", String (), 0);
+        result.setInfo (TRANS ("Update Current Page"), "Update Current Page", String (), 0);
         result.addDefaultKeypress (KeyPress::F5Key, ModifierKeys::noModifiers);
         result.setActive (bts[view]->getToggleState () && editAndPreview->getCurrentDocFile ().exists ());
     }

@@ -299,7 +299,13 @@ WebBrowserComp::WebBrowserComp (EditAndPreview* parent_)
 //=================================================================================================
 void WebBrowserComp::newWindowAttemptingToLoad (const String& newURL)
 {
-    WebBrowserComp* web = new WebBrowserComp (parent);
+    openUrlInNewWindow (newURL);
+}
+
+//=================================================================================================
+void WebBrowserComp::openUrlInNewWindow (const String& newURL)
+{
+    WebBrowserComponent* web = new WebBrowserComponent ();
     web->setSize (1000, 600);
     web->goToURL (newURL);
 
@@ -343,8 +349,6 @@ bool WebBrowserComp::pageAboutToLoad (const String& newURL)
     if (urlStr.substring (0, 3) == "res" ||
         urlStr.getLastCharacters (4) == "#top" ||
         urlStr.getLastCharacters (8) == "404.html" ||
-        urlStr.substring (0, 4) == "http" ||
-        urlStr.substring (0, 3) == "ftp" ||
         urlStr.substring (0, 5) == "email" ||
         urlStr == "about:blank" ||
         urlStr == currentTreeUrl ||
@@ -352,12 +356,20 @@ bool WebBrowserComp::pageAboutToLoad (const String& newURL)
     {
         return true;
     }
+
+    // open a new window load it if it's an url outside current project
+    else if (urlStr.substring (0, 4) == "http" ||
+        urlStr.substring (0, 3) == "ftp" ||
+        !File (urlStr).getFullPathName ().contains (FileTreeContainer::projectFile.getParentDirectory().getFullPathName ()))
+    {
+        openUrlInNewWindow (urlStr);
+        return false;
+    }
+
     else
     {
-        const File& htmlFile (urlStr);
-
         // doesn't load it instead of select the matched item
-        return !(parent->selectItemFromHtmlFile (htmlFile));
+        return !(parent->selectItemFromHtmlFile (File (urlStr)));
     }
 }
 

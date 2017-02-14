@@ -94,6 +94,8 @@ public:
     /** new dialog window to display the URL */
     virtual void newWindowAttemptingToLoad (const String& newURL) override;
 
+    void openUrlInNewWindow (const String& newURL);
+
     /** intercept the inter-link and select the matched item in file tree */
     virtual bool pageAboutToLoad (const String& newURL) override;
 

@@ -127,3 +127,4 @@
 	- L540 change the original to `atomX, (float) roundToInt (lineY + lineHeight - maxDescent - 2));`
 	- L573 change the original to `atomX, (float) roundToInt (lineY + lineHeight - maxDescent - 2));`
 	- L557 change the original to `roundToInt (lineY + currentSection->font.getAscent() + 7.f); // underline`
+	- // in WebBrowserComponent class' h file, add a method: `const String& getLastURL() const    { return lastURL; }`

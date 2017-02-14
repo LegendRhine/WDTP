@@ -69,6 +69,12 @@ void MainContentComponent::resized ()
 }
 
 //=================================================================================================
+const bool MainContentComponent::aDocSelectedCurrently () const
+{
+    return fileTree->aDocSelectedCurrently ();
+}
+
+//=================================================================================================
 const bool MainContentComponent::selectItemFromHtmlFile (const File& html)
 {
     return fileTree->selectItemFromHtmlFile (html);
@@ -134,3 +140,14 @@ void MainWindow::openProject (const File& projectFile)
     mainComp->getFileTree ()->openProject (projectFile);
 }
 
+//=================================================================================================
+void MainWindow::activeWindowStatusChanged ()
+{
+    if (mainComp->aDocSelectedCurrently ())
+    {
+        if (isActiveWindow ())
+            DBGX ("Actived");
+        else
+            DBGX ("Non-actived");
+    }
+}

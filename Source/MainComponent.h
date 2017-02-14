@@ -31,6 +31,9 @@ public:
     EditAndPreview* getEditAndPreview () const      { return editAndPreview; }
 
     /** transfer method */
+    const bool aDocSelectedCurrently () const;
+
+    /** transfer method */
     const bool selectItemFromHtmlFile (const File& htmlFile);
 
 private:
@@ -57,9 +60,12 @@ public:
     void closeButtonPressed () override;
     void openProject (const File& projectFile);
 
+    /** reload the current doc which has been edited from external editor */
+    virtual void activeWindowStatusChanged () override;
+
 private:
-    TooltipWindow  toolTips;
     ScopedPointer<MainContentComponent> mainComp;
+    TooltipWindow  toolTips;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
 };

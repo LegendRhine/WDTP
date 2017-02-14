@@ -78,6 +78,7 @@ public:
 
     void setIdentityOfLastSelectedItem (const String& str)  { lastItem = str; }
     void selectIdentityItem ();
+    const bool aDocSelectedCurrently () const;
 
     static bool saveProject ();
     const bool selectItemFromHtmlFile (const File& html);

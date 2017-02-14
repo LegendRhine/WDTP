@@ -360,7 +360,8 @@ bool WebBrowserComp::pageAboutToLoad (const String& newURL)
     // open a new window load it if it's an url outside current project
     else if (urlStr.substring (0, 4) == "http" ||
         urlStr.substring (0, 3) == "ftp" ||
-        !File (urlStr).getFullPathName ().contains (FileTreeContainer::projectFile.getParentDirectory().getFullPathName ()))
+        !File (urlStr).getFullPathName ().contains (
+            FileTreeContainer::projectFile.getParentDirectory().getFullPathName ()))
     {
         openUrlInNewWindow (urlStr);
         return false;

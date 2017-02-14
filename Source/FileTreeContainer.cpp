@@ -327,6 +327,17 @@ void FileTreeContainer::selectIdentityItem ()
 }
 
 //=================================================================================================
+const bool FileTreeContainer::aDocSelectedCurrently () const
+{
+    DocTreeViewItem* item = static_cast<DocTreeViewItem*>(fileTree.getSelectedItem (0));
+
+    if (item != nullptr)
+        return item->getTree ().getType ().toString () == "doc";
+    else
+        return false;
+}
+
+//=================================================================================================
 bool FileTreeContainer::saveProject ()
 {
     if (SwingUtilities::writeValueTreeToFile (projectTree, projectFile))

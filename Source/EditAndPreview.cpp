@@ -92,8 +92,8 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
 
         if (docOrDirFile.existsAsFile ())
         {
-            editor->setText (docOrDirFile.loadFileAsString (), false);
-            currentContent = editor->getText ();
+            currentContent = docOrDirFile.loadFileAsString ();
+            editor->setText (currentContent, false);
             editor->addListener (this);
         }
     }

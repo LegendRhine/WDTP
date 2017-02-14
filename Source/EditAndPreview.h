@@ -34,10 +34,12 @@ public:
     void paint (Graphics&) override {}
     void resized () override;
 
-    TextEditor* getEditor () const          { return editor; }
-    const File& getCurrentDocFile () const  { return docOrDirFile; }
-    ValueTree& getCurrentTree ()            { return docOrDirTree; }
-    SetupPanel* getSetupPanel () const      { return setupPanel; }
+    TextEditor* getEditor () const              { return editor; }
+    const File& getCurrentDocFile () const      { return docOrDirFile; }
+    const String& getCurrentContent () const    { return currentContent; }
+
+    ValueTree& getCurrentTree ()                { return docOrDirTree; }
+    SetupPanel* getSetupPanel () const          { return setupPanel; }
 
     /** return true if preview state at the present, flase for edit state. */
     const bool getCureentState () const;

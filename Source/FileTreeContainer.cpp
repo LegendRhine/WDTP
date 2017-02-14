@@ -338,6 +338,25 @@ const bool FileTreeContainer::aDocSelectedCurrently () const
 }
 
 //=================================================================================================
+void FileTreeContainer::reloadCurrentDoc ()
+{
+    DocTreeViewItem* item = static_cast<DocTreeViewItem*>(fileTree.getSelectedItem (0));
+
+    if (item != nullptr && item->getTree().getType().toString() == "doc")
+    {
+        const ValueTree& currentTree (item->getTree ());
+        const String& fileContent (DocTreeViewItem::getMdFileOrDir (currentTree).loadFileAsString ());
+
+        if (editAndPreview->getCurrentContent().compareNatural (fileContent, true) != 0)
+        {
+            fileTree.getRootItem()->setSelected (true, true);
+            item->needCreate (currentTree);
+            item->setSelected (true, true);
+        }
+    }
+}
+
+//=================================================================================================
 bool FileTreeContainer::saveProject ()
 {
     if (SwingUtilities::writeValueTreeToFile (projectTree, projectFile))

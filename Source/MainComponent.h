@@ -34,6 +34,9 @@ public:
     const bool aDocSelectedCurrently () const;
 
     /** transfer method */
+    void reloadCurrentDoc ();
+
+    /** transfer method */
     const bool selectItemFromHtmlFile (const File& htmlFile);
 
 private:

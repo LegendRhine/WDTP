@@ -37,7 +37,6 @@ SetupPanel::~SetupPanel ()
 //=================================================================================================
 void SetupPanel::showProjectProperties (ValueTree& pTree)
 {
-    savePropertiesIfNeeded ();
     valuesRemoveListener ();
 
     currentTree = pTree;
@@ -126,7 +125,6 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
 //=================================================================================================
 void SetupPanel::showDirProperties (ValueTree& dTree)
 {
-    savePropertiesIfNeeded ();
     valuesRemoveListener ();
 
     panel->clear ();
@@ -141,7 +139,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
     values[dirTpl]->setValue (currentTree.getProperty ("tplFile"));
     values[dirJs]->setValue (currentTree.getProperty ("js"));
     values[dirCreateDate]->setValue (currentTree.getProperty ("createDate"));
-    values[dirModifyDate]->setValue (currentTree.getProperty ("modifyDate"));
+    //values[dirModifyDate]->setValue (currentTree.getProperty ("modifyDate"));
 
     Array<PropertyComponent*> dirProperties;
     dirProperties.add (new TextPropertyComponent (*values[dirName], TRANS ("Name: "), 0, false));
@@ -172,7 +170,8 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
 
     dirProperties.add (new ChoicePropertyComponent (*values[dirTpl], TRANS ("Render TPL: "), tplFileSa, tplFileVar));
     dirProperties.add (new TextPropertyComponent (*values[dirCreateDate], TRANS ("Create Date: "), 0, false));
-    dirProperties.add (new TextPropertyComponent (*values[dirModifyDate], TRANS ("Last Modified: "), 0, false));
+    dirProperties.add (new TextPropertyComponent (Value (currentTree.getProperty ("modifyDate")), 
+                                                  TRANS ("Last Modified: "), 0, false));
 
     for (auto p : dirProperties)
         p->setPreferredHeight (28);
@@ -185,6 +184,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
 
     dirProperties[3]->setPreferredHeight (28 * 3);
     dirProperties[5]->setPreferredHeight (28 * 5);
+    dirProperties[8]->setEnabled (false);
 
     panel->addSection (TRANS ("Folder Setup"), dirProperties);
     valuesAddListener ();
@@ -193,7 +193,6 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
 //=================================================================================================
 void SetupPanel::showDocProperties (ValueTree& dTree)
 {
-    savePropertiesIfNeeded ();
     valuesRemoveListener ();
 
     panel->clear ();
@@ -208,7 +207,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     values[docTpl]->setValue (currentTree.getProperty ("tplFile"));
     values[docJs]->setValue (currentTree.getProperty ("js"));
     values[docCreateDate]->setValue (currentTree.getProperty ("createDate"));
-    values[docModifyDate]->setValue (currentTree.getProperty ("modifyDate"));
+    //values[docModifyDate]->setValue (currentTree.getProperty ("modifyDate"));
     values[thumb]->setValue (currentTree.getProperty ("thumb"));
     values[thumbName]->setValue (currentTree.getProperty ("thumbName"));
     values[docAbbrev]->setValue (currentTree.getProperty ("abbrev"));
@@ -243,7 +242,8 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docProperties.add (new ChoicePropertyComponent (*values[docTpl], TRANS ("Render TPL: "),
                                                     tplFileSa, tplFileVar));
     docProperties.add (new TextPropertyComponent (*values[docCreateDate], TRANS ("Create Date: "), 0, false));
-    docProperties.add (new TextPropertyComponent (*values[docModifyDate], TRANS ("Last Modified: "), 0, false));
+    docProperties.add (new TextPropertyComponent (Value (currentTree.getProperty ("modifyDate")), 
+                                                         TRANS ("Last Modified: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[wordCount], TRANS ("Word Count: "), 0, false));
     docProperties.add (new BooleanPropertyComponent (*values[thumb], TRANS ("Title Image: "), TRANS ("Yes")));
 
@@ -279,6 +279,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
         p->setPreferredHeight (28);
 
     docProperties[0]->setEnabled (false);
+    docProperties[8]->setEnabled (false);
     docProperties[9]->setEnabled (false);
 
     // 2 level menu, otherwise, it cannot be a site menu
@@ -379,8 +380,8 @@ void SetupPanel::valueChanged (Value& value)
     else if (value.refersToSameSourceAs (*values[dirCreateDate]))
         currentTree.setProperty ("createDate", values[dirCreateDate]->getValue (), nullptr);
 
-    else if (value.refersToSameSourceAs (*values[dirModifyDate]))
-        currentTree.setProperty ("modifyDate", values[dirModifyDate]->getValue (), nullptr);
+    /*else if (value.refersToSameSourceAs (*values[dirModifyDate]))
+        currentTree.setProperty ("modifyDate", values[dirModifyDate]->getValue (), nullptr);*/
 
     else if (value.refersToSameSourceAs (*values[dirTpl]))
         currentTree.setProperty ("tplFile", values[dirTpl]->getValue (), nullptr);
@@ -404,8 +405,8 @@ void SetupPanel::valueChanged (Value& value)
     else if (value.refersToSameSourceAs (*values[docCreateDate]))
         currentTree.setProperty ("createDate", values[docCreateDate]->getValue (), nullptr);
 
-    else if (value.refersToSameSourceAs (*values[docModifyDate]))
-        currentTree.setProperty ("modifyDate", values[docModifyDate]->getValue (), nullptr);
+    /*else if (value.refersToSameSourceAs (*values[docModifyDate]))
+        currentTree.setProperty ("modifyDate", values[docModifyDate]->getValue (), nullptr);*/
 
     else if (value.refersToSameSourceAs (*values[docTpl]))
         currentTree.setProperty ("tplFile", values[docTpl]->getValue (), nullptr);

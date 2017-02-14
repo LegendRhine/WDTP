@@ -50,15 +50,18 @@ private:
     {
         // project properties' values
         projectTitle = 0, projectKeywords, projectDesc, owner,
-        copyrightInfo, projectRenderDir, indexTpl, projectJs, contact, ad,
+        copyrightInfo, projectRenderDir, indexTpl, projectJs, 
+        contact, ad,
 
         // dir properties' values
-        dirName, dirTitle, dirKeywords, dirDesc, dirIsMenu, dirTpl, dirJs,
-        dirCreateDate, dirModifyDate,
+        dirName, dirTitle, dirKeywords, dirDesc, 
+        dirIsMenu, dirTpl, dirJs,
+        dirCreateDate, /*dirModifyDate,*/
 
         // doc properties' values
-        docName, docTitle, docKeywords, docDesc, docIsMenu, docTpl,
-        docCreateDate, docModifyDate, docJs, wordCount, thumb, thumbName, docAbbrev,
+        docName, docTitle, docKeywords, docDesc, 
+        docIsMenu, docTpl, docCreateDate, /*docModifyDate,*/ 
+        docJs, wordCount, thumb, thumbName, docAbbrev,
 
         totalValues
     };

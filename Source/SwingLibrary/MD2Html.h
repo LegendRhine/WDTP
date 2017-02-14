@@ -83,6 +83,9 @@ private:
     // only support two-level nested lists. + for ordered (true), - for unordered (false)
     static const String orderedListParse (const String& mdString, const bool isOrdered);
 
+    /** process the content inside Chinese brackets, give it a <span class=cnBracket> */
+    static const String cnBracketParse (const String& mdString);
+
     static const String cleanUp (const String& mdString);
 
 };

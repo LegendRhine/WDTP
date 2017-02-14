@@ -35,6 +35,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     htmlContent = mdLinkParse (htmlContent);
     htmlContent = orderedListParse (htmlContent, true);
     htmlContent = orderedListParse (htmlContent, false);
+    htmlContent = cnBracketParse (htmlContent);
     htmlContent = cleanUp (htmlContent);
 
     //DBG (htmlContent);
@@ -611,6 +612,35 @@ const String Md2Html::orderedListParse (const String& mdString, const bool isOrd
 
     contentByLine.removeString ("%%__ordered@List@Parse__%%");
     return contentByLine.joinIntoString (newLine);
+}
+
+//=================================================================================================
+const String Md2Html::cnBracketParse (const String& mdString)
+{
+    String resultStr (mdString);
+    int indexStart = resultStr.indexOfIgnoreCase (0, CharPointer_UTF8 ("\xef\xbc\x88"));
+
+    while (indexStart != -1)
+    {
+        // get note content's end index
+        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 1, CharPointer_UTF8 ("\xef\xbc\x89"));
+
+        if (indexEnd == -1)
+            break;
+
+        // get content inside 2 brackets
+        const String content (resultStr.substring (indexStart + 1, indexEnd));
+
+        if (content.isNotEmpty ())
+        {
+            const String withSpan ("<span class=cnBracket>" + content + "</span>");
+            resultStr = resultStr.replaceSection (indexStart + 1, content.length (), withSpan);
+        }
+
+        indexStart = resultStr.indexOfIgnoreCase (indexEnd, CharPointer_UTF8 ("\xef\xbc\x88"));
+    }
+    
+    return resultStr;
 }
 
 //=================================================================================================

@@ -75,12 +75,6 @@
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="0" optimisation="3" targetName="wdtp" binaryPath="Application/Release"
                        libraryPath="" useRuntimeLibDLL="1"/>
-        <CONFIGURATION name="w32-Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       targetName="wdtp" binaryPath="Application/Release/w32" optimisation="3"
-                       useRuntimeLibDLL="1" isDebug="1"/>
-        <CONFIGURATION name="w32-Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       targetName="wdtp" binaryPath="Application/Release/w32" optimisation="3"
-                       useRuntimeLibDLL="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../JUCE/modules"/>

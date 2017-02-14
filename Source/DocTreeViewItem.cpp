@@ -139,7 +139,9 @@ const File DocTreeViewItem::getHtmlFileOrDir (const ValueTree& tree)
 //=================================================================================================
 const int DocTreeViewItem::getHtmlMediaFiles (const File& htmlFile, Array<File>& files)
 {
-    jassert (htmlFile.existsAsFile ());
+    if (!htmlFile.existsAsFile ())
+        return;
+
     const String htmlStr (htmlFile.loadFileAsString ());
 
     if (htmlStr.trim () == String ())

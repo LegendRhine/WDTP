@@ -258,7 +258,7 @@ countries: cn
 "Delete" = "删除"
 "Select All" = "全选"
 "Undo" = "撤销"
-"Redo" = "撤销"
+"Redo" = "重做"
 "Copies the currently selected text to the clipboard and deletes it." = "将当前所选文本复制到剪贴板中并清除之."
 "Copies the currently selected text to the clipboard." = "将当前所选文本复制到剪贴板中."
 "Inserts text from the clipboard." = "从剪贴板中插入文本."

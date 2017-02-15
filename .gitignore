@@ -1,7 +1,7 @@
 # Common dirs
 
 Application/Debug
-Application/Release/w32
+Application/w32
 Application/Release/*.exe
 Application/Release/*.iobj
 Application/Release/*.ipdb

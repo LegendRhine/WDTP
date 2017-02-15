@@ -308,3 +308,4 @@ countries: cn
 "Can't import a file which more than 256K :)" = "无法导入大小超过256K的文件 :)"
 "No neeed to import a file which can't/no need to read :)" = "没必要导入无法阅读或缺乏实际内容的文件 :)"
 "Title of this doc..." - "本文的标题……"
+"Identifier" = "标识符"

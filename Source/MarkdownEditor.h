@@ -53,6 +53,7 @@ private:
         insertImage, insertHyperlink, insertTable, insertQuota,
         insertAlignCenter, insertAlignRight, insertUnoerderList, insertOrderList,
         insertFirstTitle, insertSecondTitle, insertThirdTitle, insertToc, insertEndnote,
+        insertIdentifier,
         insertCaption, insertSeparator, insertAuthor, insertInterLink,
         formatBold, formatItalic, formatBoldAndItalic, formatHighlight,
         codeBlock, inlineCode,
@@ -68,6 +69,7 @@ private:
     void insertTitle (const int level);
     void endnoteInsert ();
     void tocInsert ();
+    void identifierInsert ();
     void addSelectedToKeywords ();
     void alignCenterInsert ();
     void alignRightInsert ();

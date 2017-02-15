@@ -34,6 +34,9 @@ private:
     */
     static const String tableParse (const String& mdString);
 
+    /** process "****" (at least 6 '*') to none. call this method must before codeBlockParse() */
+    static const String identifierParse (const String& mdString);
+
     /** ``` [code] ```: <pre><code>...</pre></code> */
     static const String codeBlockParse (const String& mdString);
 

@@ -21,6 +21,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     // parse markdown, must followed by these order
     String htmlContent (mdString);
     htmlContent = tableParse (htmlContent);
+    htmlContent = identifierParse (htmlContent);
     htmlContent = codeBlockParse (htmlContent);
     htmlContent = endnoteParse (htmlContent);
     htmlContent = inlineCodeParse (htmlContent);
@@ -45,9 +46,6 @@ const String Md2Html::mdStringToHtml (const String& mdString)
 //=================================================================================================
 const String Md2Html::tableParse (const String& mdString)
 {
-    if (mdString.isEmpty ())
-        return mdString;
-
     StringArray contentByLine;
     contentByLine.addLines (mdString);
 
@@ -93,6 +91,21 @@ const String Md2Html::tableParse (const String& mdString)
 
     contentByLine.removeString ("%%__table@MDtag@Parse__%%");
     return contentByLine.joinIntoString (newLine);
+}
+
+//=================================================================================================
+const String Md2Html::identifierParse (const String& mdString)
+{
+    StringArray lines;
+    lines.addLines (mdString);
+    
+    for (int i = lines.size(); --i >= 0; )
+    {
+        if (lines[i].substring (0, 6) == "******")
+            lines.remove (i);
+    }
+
+    return lines.joinIntoString (newLine);
 }
 
 //=================================================================================================
@@ -554,9 +567,6 @@ const String Md2Html::mdLinkParse (const String& mdString)
 //=================================================================================================
 const String Md2Html::orderedListParse (const String& mdString, const bool isOrdered)
 {
-    if (mdString.isEmpty ())
-        return mdString;
-
     StringArray contentByLine;
     contentByLine.addLines (mdString);
 

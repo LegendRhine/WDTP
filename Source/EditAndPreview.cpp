@@ -354,7 +354,9 @@ bool WebBrowserComp::pageAboutToLoad (const String& newURL)
         urlStr.substring (0, 5) == "email" ||
         urlStr == "about:blank" ||
         urlStr == currentTreeUrl ||
-        urlStr.upToFirstOccurrenceOf ("#", false, true) == currentTreeUrl.replace ("\\", "/"))
+        urlStr.upToFirstOccurrenceOf ("#", false, true) == currentTreeUrl.replace ("\\", "/") ||
+        (!urlStr.contains ("http") && urlStr.contains ("index-"))
+        )
     {
         return true;
     }    

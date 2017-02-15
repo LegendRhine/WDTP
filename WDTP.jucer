@@ -67,7 +67,7 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <VS2015 targetFolder="Builds/VisualStudio2015" smallIcon="S5pEoV" bigIcon="S5pEoV"
-            externalLibraries="" toolset="" extraDefs="" extraLinkerFlags="">
+            externalLibraries="" toolset="v140_xp" extraDefs="" extraLinkerFlags="">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/Debug"

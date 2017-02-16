@@ -103,12 +103,12 @@
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2012 targetFolder="Builds/VisualStudio2012" smallIcon="S5pEoV" bigIcon="S5pEoV"
-            toolset="v110_xp">
+            toolset="v110_xp" extraDefs="" extraCompilerFlags="">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="1" targetName="WDTP" binaryPath="Application/Debug"/>
+                       isDebug="1" optimisation="1" targetName="WDTP" binaryPath="Application/w32/Debug"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="0" optimisation="3" targetName="WDTP" binaryPath="Application/Release"/>
+                       isDebug="0" optimisation="3" targetName="WDTP" binaryPath="Application/w32/Release"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../JUCE/modules"/>

@@ -748,9 +748,15 @@ void TopToolBar::packProject ()
     {
         if (addFiles[m].getFileName () != "desktop.ini" 
             && themeFiles[m].getFileName () != ".DS_Store")
-            builder.addFile (addFiles[m], 9, addStr + File::separatorString 
+        {
+            builder.addFile (addFiles[m], 9, addStr + File::separatorString
                              + addFiles[m].getFileName ());
+        }
     }
+
+    // add favicon.ico
+    builder.addFile (projectFile.getSiblingFile ("site").getChildFile ("favicon.ico"), 
+                     9, "site" + File::separatorString + "favicon.ico");
 
     // to get the date string ("-2017-0209-0508-16") for zip's file name
     String packDate (SwingUtilities::getCurrentTimeString ());

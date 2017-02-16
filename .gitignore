@@ -4,6 +4,8 @@ Application/w32-Debug
 Application/w32-Release
 Application/x64-Debug
 Application/x64-Release
+Application/Debug
+Application/Release
 
 Builds/
 JuceLibraryCode/

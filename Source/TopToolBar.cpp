@@ -491,10 +491,14 @@ void TopToolBar::cleanAndGenerateAll ()
                                       TRANS ("Do you really want to cleanup the whole site\n"
                                              "and then auto-regenerate them all?")))
     {
-        // move the add-in dir prevent it will be deleted
+        // move the add-in dir and favicon.ico prevent they will be deleted
         const File addinDir (FileTreeContainer::projectFile.getSiblingFile ("site").getChildFile ("add-in"));
         const File tempDirForAddin (FileTreeContainer::projectFile.getSiblingFile ("add-in"));
         addinDir.copyDirectoryTo (tempDirForAddin);
+
+        const File iconFile (FileTreeContainer::projectFile.getSiblingFile ("site").getChildFile ("favicon.ico"));
+        const File tempIconFile (FileTreeContainer::projectFile.getSiblingFile ("favicon.ico"));
+        iconFile.copyFileTo (tempIconFile);
 
         // cleanup
         FileTreeContainer::projectFile.getSiblingFile ("site").deleteRecursively ();
@@ -502,11 +506,14 @@ void TopToolBar::cleanAndGenerateAll ()
         generateHtmlFiles (FileTreeContainer::projectTree);
         FileTreeContainer::saveProject ();
 
-        // restore the add-in dir
+        // restore the add-in dir and favicon.ico
         tempDirForAddin.moveFileTo (addinDir);
+        tempIconFile.moveFileTo (iconFile);
+
         SHOW_MESSAGE (TRANS ("Site clean and regenerate successful!"));
 
         tempDirForAddin.deleteRecursively ();
+        tempIconFile.deleteFile ();
     }
 }
 

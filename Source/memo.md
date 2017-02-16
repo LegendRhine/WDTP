@@ -128,3 +128,8 @@
 	- L573 change the original to `atomX, (float) roundToInt (lineY + lineHeight - maxDescent - 2));`
 	- L557 change the original to `roundToInt (lineY + currentSection->font.getAscent() + 7.f); // underline`
 	- // in WebBrowserComponent class' h file, add a method: `const String& getLastURL() const    { return lastURL; }`
+
+### About Compile
+
+On Windows, it should using VS2015 to open and compile the VS2012-project, which exported by Projucer.
+In its settings (Projucer-VS2012), the 'Platform Toolset' should set to 'V110_XP' (for downward compatibility).

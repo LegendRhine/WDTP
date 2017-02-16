@@ -52,7 +52,7 @@ void SwingUtilities::fixWindowsRegistry ()
 
     // this is the value we want
 	// see: https://msdn.microsoft.com/en-us/library/ee330730(v=vs.85).aspx
-    const uint32 correctValue = 10000;  // IE 10
+    const uint32 correctValue = 10001;  // IE 10
     bool ok = false;
 
     // lets look for it anyway

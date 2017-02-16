@@ -34,7 +34,7 @@ private:
 
     ValueTree tree;
     TextEditor* editor;
-    bool replaced = false;
+    bool replaced;
 
     ScopedPointer<Label> label;
     ScopedPointer<Label> orignalLb;

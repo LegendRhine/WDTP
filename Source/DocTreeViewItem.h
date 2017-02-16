@@ -137,7 +137,7 @@ private:
     //=========================================================================
     ValueTree tree; // no need and must NOT be refernce!!
     FileTreeContainer* treeContainer;
-    ItemSorter* sorter = nullptr;
+    ItemSorter* sorter;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DocTreeViewItem)
 };

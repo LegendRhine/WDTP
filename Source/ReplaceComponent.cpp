@@ -14,7 +14,8 @@ Author:  SwingCoder
 ReplaceComponent::ReplaceComponent (TextEditor* editor_,
                                     ValueTree& tree_)
     : tree (tree_),
-    editor (editor_)
+    editor (editor_),
+	replaced (false)
 {
     jassert (editor != nullptr);
     jassert (tree.isValid ());

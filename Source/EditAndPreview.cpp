@@ -14,7 +14,8 @@ extern PropertiesFile* systemFile;
 
 //==============================================================================
 EditAndPreview::EditAndPreview (MainContentComponent* mainComp_) 
-    : mainComp (mainComp_)
+    : mainComp (mainComp_),
+	docHasChanged (false)
 {
     addAndMakeVisible (webView = new WebBrowserComp (this));
     webView->setWantsKeyboardFocus (false);

@@ -63,9 +63,9 @@ private:
     virtual void timerCallback () override;
 
     //=========================================================================
-    File docOrDirFile = File::nonexistent;
+    File docOrDirFile;
     ValueTree docOrDirTree;
-    bool docHasChanged = false;
+    bool docHasChanged;
     String currentContent, currentUrl;
 
     MainContentComponent* mainComp;

@@ -43,7 +43,7 @@ void SwingUtilities::fixWindowsRegistry ()
 {
 #ifdef JUCE_WINDOWS
 
-    // add a key which indicates our app's WebBroswerComponent will using IE-11 web-core
+    // add a key which indicates our app's WebBroswerComponent will using newer IE web-core
     const String keypath = "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\"
                      "FeatureControl\\FEATURE_BROWSER_EMULATION\\";
 
@@ -51,7 +51,8 @@ void SwingUtilities::fixWindowsRegistry ()
     const String key = keypath + JUCEApplication::getInstance ()->getApplicationName () + ".exe";
 
     // this is the value we want
-    const uint32 correctValue = 11000;
+	// see: https://msdn.microsoft.com/en-us/library/ee330730(v=vs.85).aspx
+    const uint32 correctValue = 10000;  // IE 10
     bool ok = false;
 
     // lets look for it anyway

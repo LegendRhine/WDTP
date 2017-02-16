@@ -14,7 +14,8 @@ extern PropertiesFile* systemFile;
 
 //==============================================================================
 SetupPanel::SetupPanel (EditAndPreview* ed) 
-    : editor (ed)
+    : editor (ed),
+	projectHasChanged (false)
 {
     jassert (systemFile != nullptr);
 

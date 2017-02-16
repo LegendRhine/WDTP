@@ -48,7 +48,7 @@ public:
 private:
     //=========================================================================
     ValueTree& projectTree;
-    DocTreeViewItem* rootItem = nullptr;
+    DocTreeViewItem* rootItem;
 
     Value order, showWhat, tooltip, ascending, dirFirst;
 

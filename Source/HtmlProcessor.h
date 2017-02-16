@@ -95,7 +95,7 @@ private:
     static const String getToTop ();
 
     //=================================================================================================
-    bool sortByReverse = true;
+    bool sortByReverse;
 
 };
 

@@ -18,7 +18,8 @@
 class MarkdownEditor :  public TextEditor,
                         public Slider::Listener,
                         public ChangeListener,
-                        public FileDragAndDropTarget
+                        public FileDragAndDropTarget,
+                        public Timer
 {
 public:
     MarkdownEditor (EditAndPreview* parent_);
@@ -44,6 +45,9 @@ public:
     /** drag native images to copy and insert their mark */
     virtual bool isInterestedInFileDrag (const StringArray& files) override;
     virtual void filesDropped (const StringArray& files, int x, int y) override;
+    
+    /** for Chinese punc-matching */
+    virtual void timerCallback () override;
 
 private:
     //=============================================================================================
@@ -97,11 +101,14 @@ private:
     enum inlineFormatIndex { bold = 0, italic, boldAndItalic, highlight, codeOfinline };
     void inlineFormat (const inlineFormatIndex& format);
 
+    const bool puncMatchingForChinese (const KeyPress& key);
+
     //=============================================================================================
     EditAndPreview* parent;
     Slider fontSizeSlider;
     ScopedPointer<ColourSelectorWithPreset> fontColourSelector;
     ScopedPointer<ColourSelectorWithPreset> bgColourSelector;
+    String selectedForPunc;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MarkdownEditor)
 };

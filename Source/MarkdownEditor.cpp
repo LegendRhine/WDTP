@@ -938,10 +938,92 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         return true;
     }
 
-    /* key.getTextDescription() == CharPointer_UTF8 ("\xe2\x80\x9c")
+    // Chinese punctuation matching
+    else if (key.getKeyCode () == 0)
+    {
+        puncMatchingForChinese (key);
+        return true;
+    }
 
-    //DBGX (key.getTextDescription ());
+    //DBGX (key.getKeyCode ());
     return TextEditor::keyPressed (key);
+}
+
+//=================================================================================================
+const bool MarkdownEditor::puncMatchingForChinese (const KeyPress& key)
+{
+    selectedForPunc = getHighlightedText ();
+    bool returnValue = TextEditor::keyPressed (key);
+    startTimer (5);    
+
+    return returnValue;
+}
+
+//=================================================================================================
+void MarkdownEditor::timerCallback ()
+{
+    const Range<int> lastPosition (getCaretPosition () - 1, getCaretPosition ());
+    const String& lastChar (getTextInRange (lastPosition));
+    bool puncMatched = false;
+    //DBGX (lastChar);
+
+    if (lastChar == CharPointer_UTF8 ("\xe2\x80\x9c")) // 1. Chinese "
+    {
+        puncMatched = true;
+        insertTextAtCaret (selectedForPunc + String (CharPointer_UTF8 ("\xe2\x80\x9d")));
+    }
+    
+    else if (lastChar == CharPointer_UTF8 ("\xe2\x80\x9d")) // Chinese "
+    {
+        puncMatched = true;
+        moveCaretLeft (false, true);
+        insertTextAtCaret (String (CharPointer_UTF8 ("\xe2\x80\x9c")) + selectedForPunc
+                           + String (CharPointer_UTF8 ("\xe2\x80\x9d")));
+    }
+
+    else if (lastChar == CharPointer_UTF8 ("\xe2\x80\x98")) // 2. Chinese '
+    {
+        puncMatched = true;
+        insertTextAtCaret (selectedForPunc + String (CharPointer_UTF8 ("\xe2\x80\x99")));
+    }
+
+    else if (lastChar == CharPointer_UTF8 ("\xe2\x80\x99")) // Chinese '
+    {
+        puncMatched = true;
+        moveCaretLeft (false, true);
+        insertTextAtCaret (String (CharPointer_UTF8 ("\xe2\x80\x98")) + selectedForPunc
+                           + String (CharPointer_UTF8 ("\xe2\x80\x99")));
+    }
+
+    else if (lastChar == CharPointer_UTF8 ("\xe3\x80\x90")) // 3. Chinese [
+    {
+        puncMatched = true;
+        insertTextAtCaret (selectedForPunc + String (CharPointer_UTF8 ("\xe3\x80\x91")));
+    }
+
+    else if (lastChar == CharPointer_UTF8 ("\xe3\x80\x8a")) // 4. Chinese <<
+    {
+        puncMatched = true;
+        insertTextAtCaret (selectedForPunc + String (CharPointer_UTF8 ("\xe3\x80\x8b")));
+    }
+
+    else if (lastChar == CharPointer_UTF8 ("\xef\xbc\x88")) // 5. Chinese (
+    {
+        puncMatched = true;
+        insertTextAtCaret (selectedForPunc + String (CharPointer_UTF8 ("\xef\xbc\x89")));
+    }
+
+    else if (lastChar == "{") // 6. Chinese {
+    {
+        puncMatched = true;
+        insertTextAtCaret (selectedForPunc + "}");
+    }
+
+    if (puncMatched && selectedForPunc.isEmpty ())
+        moveCaretLeft (false, false);
+
+    selectedForPunc.clear();
+    stopTimer();
 }
 
 //=================================================================================================

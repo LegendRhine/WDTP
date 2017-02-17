@@ -2,12 +2,12 @@
  
 ### System Setup
 - PropertiesFile (systemFile, the file of system properties) is place in the local 'user-documents/wdtp.sys'.
-	- recentFiles：10 items of the recent-opened.
+	- recentFiles: 10 items of the recent-opened.
 	- language: The language of UI text (String, language name).
 	- uiBackground
 	- uiTextColour: it has only 2 colors (dark/light) based on the background of UI.
 	- fontName: (haven't been using yet.)
-	- fontSize：The font-size of TextEditor.
+	- fontSize: The font-size of TextEditor.
 	- editorFontColour
 	- editorBackground
 

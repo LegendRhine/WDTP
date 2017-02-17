@@ -506,7 +506,7 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
 
     for (int i = 0; i < pTree.getNumChildren (); ++i)
     {
-        const ValueTree& fd (pTree.getChild (i));
+        ValueTree fd (pTree.getChild (i));
 
         if ((bool)fd.getProperty ("isMenu") && DocTreeViewItem::getMdFileOrDir (fd).exists ())
         {
@@ -525,18 +525,17 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
                     + dirIndex.getParentDirectory ().getFileName () + "/index.html";
             }
 
-            const String& linkStr ("<li><a href=\"" + path + "\">" + menuName + "</a>");
-            menuHtmlStr.add (linkStr);
+            menuHtmlStr.add ("<li><a href=\"" + path + "\">" + menuName + "</a>");
 
             if (atLeastHasOneMenu (fd))
             {
                 menuHtmlStr.add ("<ul>");
+                fd.sort (sorter, nullptr, false);
 
                 for (int j = 0; j < fd.getNumChildren (); ++j)
                 {
                     const ValueTree& sd (fd.getChild (j));
 
-                    // only extrct dir, non-include doc
                     if (DocTreeViewItem::getMdFileOrDir (sd).exists ()
                         && (bool)sd.getProperty ("isMenu"))
                     {
@@ -557,8 +556,7 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
                                 + sDirIndex.getParentDirectory ().getFileName () + "/index.html";
                         }
 
-                        const String& sLinkStr ("<li><a href=\"" + sPath + "\">" + sMenuName + "</a></li>");
-                        menuHtmlStr.add (sLinkStr);
+                        menuHtmlStr.add ("<li><a href=\"" + sPath + "\">" + sMenuName + "</a></li>");
                     }
                 }
 

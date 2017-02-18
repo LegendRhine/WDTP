@@ -44,12 +44,13 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
     }
 
     processTags (docTree, htmlFile, tplStr);
+    const String& siteName (FileTreeContainer::projectTree.getProperty ("title").toString ());
 
     // generate the html file
     htmlFile.appendText (tplStr.replace ("{{keywords}}", docTree.getProperty ("keywords").toString ())
                          .replace ("{{author}}", FileTreeContainer::projectTree.getProperty ("owner").toString ())
                          .replace ("{{description}}", docTree.getProperty ("description").toString ())
-                         .replace ("{{title}}", docTree.getProperty ("title").toString ())
+                         .replace ("{{title}}", docTree.getProperty ("title").toString () + " - " + siteName)
                          .replace ("{{siteRelativeRootPath}}", rootRelativePath)
                          .replace ("{{content}}", htmlContentStr));
 
@@ -215,12 +216,13 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
 
             const String indexTileStr (dirTree.getProperty ("title").toString ());
             const String indexAuthorStr (FileTreeContainer::projectTree.getProperty ("owner").toString ());
+            const String siteName (FileTreeContainer::projectTree.getProperty ("title").toString ());
             const String indexKeywordsStr (dirTree.getProperty ("keywords").toString ());
             const String indexDescStr (dirTree.getProperty ("description").toString ());
 
             tplStr = tplStr.replace ("{{siteRelativeRootPath}}", cssRelativePath)
                 .replace ("{{author}}", indexAuthorStr)
-                .replace ("{{title}}", indexTileStr)
+                .replace ("{{title}}", indexTileStr + " - " + siteName)
                 .replace ("{{keywords}}", indexKeywordsStr)
                 .replace ("{{description}}", indexDescStr);
 

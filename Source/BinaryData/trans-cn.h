@@ -166,7 +166,7 @@ countries: cn
 "Open Project..." = "打开项目..."
 "Open Rcent" = "最近打开过的项目"
 "Close Project" = "关闭项目"
-"Update Current Page" = "刷新当前页面"
+"Update Current Page" = "重新生成并刷新当前页面"
 "Regenerate All Changed" = "重新生成所有需要生成的"
 "Regenerate Whole Site..." = "重新生成整个网站..."
 "Cleanup Local Medias..." = "清理本地媒体文件..."
@@ -309,3 +309,4 @@ countries: cn
 "No neeed to import a file which can't/no need to read :)" = "没必要导入无法阅读或缺乏实际内容的文件 :)"
 "Title of this doc..." - "本文的标题……"
 "Identifier" = "标识符"
+" WDTP is GPL(v3) licensed." =" WDTP遵循GPL(v3)开源协议."

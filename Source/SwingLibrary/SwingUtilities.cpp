@@ -17,11 +17,11 @@ void SwingUtilities::showAbout (const String& shortDescription,
 {
     SwingDialog* window = new SwingDialog (shortDescription);
 
-    window->addTextBlock (TRANS ("Author: ") + "SwingCoder" + newLine +
-                          "underwaySoft@126.com" + newLine +
-                          "QQ: 843775" + newLine + newLine +
-                          String (CharPointer_UTF8 ("\xc2\xa9")) + copyrightYear + " UnderwaySoft. " +
-                          TRANS ("All Right Reserved.") + newLine +
+    window->addTextBlock (TRANS ("Author: ") + "SwingCoder  QQ: 843775" + newLine +
+                          "underwaySoft@126.com" + newLine + newLine +
+                          String (CharPointer_UTF8 ("\xc2\xa9")) + copyrightYear + " UnderwaySoft " +
+                          TRANS ("All Right Reserved.") + newLine  +
+                          TRANS (" WDTP is GPL(v3) licensed.") + newLine +
                           "=================================\n" +
                           TRANS ("Acknowledgements:") + newLine +
                           "  - Framework: JUCE (https://juce.com)\n" +
@@ -433,7 +433,7 @@ void SwingDialog::addTextBlock (const String& content)
     te->setFont (Font (SwingUtilities::getFontSize () - 3.0f));
     te->setReadOnly (true);
     te->setColour (TextEditor::textColourId, Colour (0xff303030));
-    te->setColour (TextEditor::backgroundColourId, Colours::white.withAlpha (0.15f));
+    te->setColour (TextEditor::backgroundColourId, Colour (0x00));
     te->setColour (TextEditor::highlightColourId, Colours::lightskyblue);
     //te->setColour (TextEditor::highlightedTextColourId, Colours::black);
     te->setScrollbarsShown (true);

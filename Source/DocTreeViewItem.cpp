@@ -900,9 +900,9 @@ void DocTreeViewItem::getPath ()
                                           + "@_=#_itemPath_#=_@" 
                                           + getHtmlFileOrDir (tree).getFullPathName ());
 
-    SHOW_MESSAGE (TRANS ("This item's path has been copied.\n\n"
+    /*SHOW_MESSAGE (TRANS ("This item's path has been copied.\n\n"
                          "You could use it for internal link by right click in editor\n"
-                         "and select \"Insert - Internal Link\"."));
+                         "and select \"Insert - Internal Link\"."));*/
 }
 
 //=================================================================================================

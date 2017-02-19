@@ -21,6 +21,8 @@ MarkdownEditor::MarkdownEditor (EditAndPreview* parent_)
     fontSizeSlider.setDoubleClickReturnValue (true, 20.0);
     fontSizeSlider.setSize (300, 60);
     fontSizeSlider.addListener (this);
+
+    addChildComponent (pointToSelect);
 }
 
 //=================================================================================================
@@ -504,6 +506,15 @@ void MarkdownEditor::insertImages (const Array<File>& imageFiles)
     }
 
     insertTextAtCaret (content);
+}
+
+//=================================================================================================
+void MarkdownEditor::pointHighlighted ()
+{
+    if (getHighlightedText ().isNotEmpty ())
+    {
+
+    }
 }
 
 //=================================================================================================
@@ -1148,3 +1159,25 @@ void MarkdownEditor::searchBySelectNext ()
     }
 }
 
+//=================================================================================================
+MarkdownEditor::PointComponent::PointComponent() 
+{
+    setSize (270, 90);
+}
+
+//=================================================================================================
+void MarkdownEditor::PointComponent::setTextAndBackColour (const String& text_, const Colour& backClr)
+{
+    text = text_;
+    backgound = backClr;
+}
+
+//=================================================================================================
+void MarkdownEditor::PointComponent::paint (Graphics& g)
+{
+    g.setColour (backgound.contrasting (0.6f));
+    g.fillRoundedRectangle (getLocalBounds ().toFloat (), 5.f);
+
+    g.setColour (backgound.darker (0.8f));
+    g.drawText (text, getLocalBounds ().reduced (30).toFloat (), Justification::centred);
+}

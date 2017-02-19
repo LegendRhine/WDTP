@@ -260,7 +260,7 @@ void TopToolBar::findInDoc (const bool next)
         return;
 
     editAndPreview->switchMode (false);
-    TextEditor* editor = editAndPreview->getEditor ();
+    MarkdownEditor* editor = (MarkdownEditor*)editAndPreview->getEditor ();
     const String& content = editor->getText ();
 
     int startIndex = 0;
@@ -278,8 +278,9 @@ void TopToolBar::findInDoc (const bool next)
         Array<Range<int>> rangeArray;
         rangeArray.add (Range<int> (startIndex, startIndex + keyword.length ()));
 
-        editor->setTemporaryUnderlining (rangeArray);
+        //editor->setTemporaryUnderlining (rangeArray);
         editor->setHighlightedRegion (rangeArray[0]);
+        editor->pointHighlighted ();
     }
     else
     {

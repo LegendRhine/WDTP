@@ -537,29 +537,34 @@ const String Md2Html::mdLinkParse (const String& mdString)
         if (altStart == -1)
             break;
 
-        if (resultStr.substring (altStart - 1, altStart) == "\\")
-            break;
+        if (resultStr.substring (altStart - 1, altStart) != "\\")
+        {
+            const String altContent (resultStr.substring (altStart + 1, linkPathStart));
 
-        const String altContent (resultStr.substring (altStart + 1, linkPathStart));
+            // get link path
+            const int pathEnd = resultStr.indexOfIgnoreCase (linkPathStart + 2, ")");
 
-        // get link path
-        const int pathEnd = resultStr.indexOfIgnoreCase (linkPathStart + 2, ")");
+            if (pathEnd == -1)
+                break;
 
-        if (pathEnd == -1)
-            break;
+            String linkPath (resultStr.substring (linkPathStart + 2, pathEnd).trimEnd ());
 
-        String linkPath (resultStr.substring (linkPathStart + 2, pathEnd).trimEnd());
+            // [](http://xxx.com/xxx.html -), the end ' -' will open the link in new window
+            if (linkPath.getLastCharacters (2) == " -")
+                linkPath = "\"" + linkPath.dropLastCharacters (2) + "\" target=\"_blank\"";
+            else
+                linkPath = "\"" + linkPath + "\"";
 
-        // [](http://xxx.com/xxx.html -), the end ' -' will open the link in new window
-        if (linkPath.getLastCharacters (2) == " -")
-            linkPath = "\"" + linkPath.dropLastCharacters (2) + "\" target=\"_blank\"";
+            const String linkStr ("<a href=" + linkPath + ">" + altContent + "</a>");
+
+            resultStr = resultStr.replaceSection (altStart, pathEnd + 1 - altStart, linkStr);
+            linkPathStart = resultStr.indexOfIgnoreCase (linkPathStart + linkStr.length (), "](");
+        }
         else
-            linkPath = "\"" + linkPath + "\"";
+        {
+            linkPathStart = resultStr.indexOfIgnoreCase (linkPathStart + 2, "](");
+        }
 
-        const String linkStr ("<a href=" + linkPath + ">" + altContent + "</a>");
-
-        resultStr = resultStr.replaceSection (altStart, pathEnd + 1 - altStart, linkStr);
-        linkPathStart = resultStr.indexOfIgnoreCase (linkPathStart + linkStr.length (), "](");
     }
 
     return resultStr;

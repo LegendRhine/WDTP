@@ -30,10 +30,7 @@ public:
     virtual void addPopupMenuItems (PopupMenu& menuToAddTo,
                                     const MouseEvent* mouseClickEvent) override;
 
-    virtual void performPopupMenuAction (int menuItemID) override;
-
-    /** for TAB keypress input 4 spaces.
-    somehow the original TextEditor can't do it whilst the caret doesn't move at all. */
+    virtual void performPopupMenuAction (int menuItemID) override;        
     bool keyPressed (const KeyPress& key) override;
 
     void insertImages (const Array<File>& imageFiles);

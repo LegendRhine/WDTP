@@ -197,11 +197,8 @@ const String Md2Html::inlineCodeParse (const String& mdString)
     for (int i = 1; index != -1; ++i)
     {
         if (resultStr.substring (index - 1, index) != "\\"
-            && resultStr.substring (index - 1, index) != "/"
             && resultStr.substring (index - 1, index) != "`"
-            && resultStr.substring (index + 1, index + 2) != "`"
-            && resultStr.substring (index + 1, index + 2) != "/"
-            && resultStr.substring (index + 1, index + 2) != "<")
+            && resultStr.substring (index + 1, index + 2) != "`")
         {
             if (i % 2 == 1)
                 resultStr = resultStr.replaceSection (index, 1, "<code>");
@@ -245,11 +242,8 @@ const String Md2Html::boldAndItalicParse (const String& mdString)
     for (int i = 1; index != -1; ++i)
     {
         if (resultStr.substring (index - 1, index) != "\\"
-            && resultStr.substring (index - 1, index) != "/"
             && resultStr.substring (index - 1, index) != "*"
-            && resultStr.substring (index + 3, index + 4) != "*"
-            && resultStr.substring (index + 3, index + 4) != "/"
-            && resultStr.substring (index + 4, index + 4) != "<")
+            && resultStr.substring (index + 3, index + 4) != "*")
         {
             if (i % 2 == 1)
                 resultStr = resultStr.replaceSection (index, 2, "<em><strong>");
@@ -277,11 +271,8 @@ const String Md2Html::boldParse (const String& mdString)
     for (int i = 1; index != -1; ++i)
     {
         if (resultStr.substring (index - 1, index) != "\\"
-            && resultStr.substring (index - 1, index) != "/"
             && resultStr.substring (index - 1, index) != "*"
-            && resultStr.substring (index + 2, index + 3) != "*"
-            && resultStr.substring (index + 2, index + 3) != "/"
-            && resultStr.substring (index + 2, index + 3) != "<")
+            && resultStr.substring (index + 2, index + 3) != "*")
         {
             if (i % 2 == 1)
                 resultStr = resultStr.replaceSection (index, 2, "<strong>");
@@ -309,11 +300,8 @@ const String Md2Html::italicParse (const String& mdString)
     for (int i = 1; index != -1; ++i)
     {
         if (resultStr.substring (index - 1, index) != "\\"
-            && resultStr.substring (index - 1, index) != "/"
             && resultStr.substring (index - 1, index) != "*"
-            && resultStr.substring (index + 1, index + 2) != "*"
-            && resultStr.substring (index + 1, index + 2) != "/"
-            && resultStr.substring (index + 1, index + 2) != "<")
+            && resultStr.substring (index + 1, index + 2) != "*")
         {
             if (i % 2 == 1)
                 resultStr = resultStr.replaceSection (index, 1, "<em>");
@@ -341,11 +329,8 @@ const String Md2Html::highlightParse (const String& mdString)
     for (int i = 1; index != -1; ++i)
     {
         if (resultStr.substring (index - 1, index) != "\\"
-            && resultStr.substring (index - 1, index) != "/"
             && resultStr.substring (index - 1, index) != "~"
-            && resultStr.substring (index + 2, index + 3) != "~"
-            && resultStr.substring (index + 2, index + 3) != "/"
-            && resultStr.substring (index + 1, index + 2) != "<")
+            && resultStr.substring (index + 2, index + 3) != "~")
         {
             if (i % 2 == 1)
                 resultStr = resultStr.replaceSection (index, 2, "<span style=\"background: #bbdddd\">");
@@ -552,6 +537,9 @@ const String Md2Html::mdLinkParse (const String& mdString)
         if (altStart == -1)
             break;
 
+        if (resultStr.substring (altStart - 1, altStart) == "\\")
+            break;
+
         const String altContent (resultStr.substring (altStart + 1, linkPathStart));
 
         // get link path
@@ -725,6 +713,7 @@ const String Md2Html::cleanUp (const String& mdString)
     resultStr = resultStr.replace (String ("\\`"), "`");
     resultStr = resultStr.replace (String ("\\```"), "```");
     resultStr = resultStr.replace (String ("\\#"), "#");
+    resultStr = resultStr.replace (String ("\\["), "[");
     resultStr = resultStr.replace (String ("\\!["), "![");
     resultStr = resultStr.replace (String ("\\[^"), "[^");
     resultStr = resultStr.replace (String ("\\]"), "]");

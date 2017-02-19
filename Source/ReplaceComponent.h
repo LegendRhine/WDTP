@@ -34,6 +34,8 @@ private:
 
     ValueTree tree;
     TextEditor* editor;
+    int numberFilesOfReplaced;
+    int numberOfReplaced;
     bool replaced;
 
     ScopedPointer<Label> label;

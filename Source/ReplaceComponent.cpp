@@ -15,6 +15,8 @@ ReplaceComponent::ReplaceComponent (TextEditor* editor_,
                                     ValueTree& tree_)
     : tree (tree_),
     editor (editor_),
+    numberFilesOfReplaced (0),
+    numberOfReplaced (0),
     replaced (false)
 {
     jassert (editor != nullptr);
@@ -115,10 +117,23 @@ void ReplaceComponent::buttonClicked (Button* buttonThatWasClicked)
         const String& originalText (originalTe->getText ());
         const String& replaceText (replaceTe->getText ());
 
+        numberFilesOfReplaced = 0;
+        numberOfReplaced = 0;
+
         replaceContent (tree, originalText, replaceText);
 
         if (replaced)
+        {
             DocTreeViewItem::needCreate (tree);
+            SHOW_MESSAGE (TRANS ("Total replaced: ") 
+                          + String(numberOfReplaced) + TRANS(" matched in ")
+                          + String(numberFilesOfReplaced) + TRANS(" file(s)."));
+        }
+        else
+        {
+            LookAndFeel::getDefaultLookAndFeel ().playAlertSound ();
+            SHOW_MESSAGE (TRANS ("Nothing could be found."));
+        }
 
         if (replaced && tree.getType ().toString () == "doc")
             editor->setText (DocTreeViewItem::getMdFileOrDir (tree).loadFileAsString ());
@@ -127,6 +142,7 @@ void ReplaceComponent::buttonClicked (Button* buttonThatWasClicked)
     {
         originalTe->setText (String ());
         replaceTe->setText (String ());
+        
         originalTe->grabKeyboardFocus ();
         replaced = false;
     }
@@ -144,11 +160,29 @@ void ReplaceComponent::replaceContent (ValueTree tree_,
     if (tree_.getType ().toString () == "doc")
     {
         const File& docFile (DocTreeViewItem::getMdFileOrDir (tree_));
-        const String& content (docFile.loadFileAsString ());
+        String content (docFile.loadFileAsString ());
 
         if (content.contains (originalText))
         {
-            docFile.replaceWithText (content.replace (originalText, replaceText, caseBt->getToggleState ()));
+            ++numberFilesOfReplaced;
+
+            //docFile.replaceWithText (content.replace (originalText, replaceText, caseBt->getToggleState ()));
+
+            int startIndex = caseBt->getToggleState ()
+                ? content.indexOf (0, originalText)
+                : content.indexOfIgnoreCase (0, originalText);
+
+            while (startIndex != -1)
+            {
+                content = content.replaceSection (startIndex, originalText.length(), replaceText);
+                ++numberOfReplaced;
+
+                startIndex = caseBt->getToggleState ()
+                    ? content.indexOf (startIndex + replaceText.length (), originalText)
+                    : content.indexOfIgnoreCase (startIndex + replaceText.length (), originalText);
+            }
+
+            docFile.replaceWithText (content);
             replaced = true;
         }
         else

@@ -278,9 +278,8 @@ void TopToolBar::findInDoc (const bool next)
         Array<Range<int>> rangeArray;
         rangeArray.add (Range<int> (startIndex, startIndex + keyword.length ()));
 
-        //editor->setTemporaryUnderlining (rangeArray);
         editor->setHighlightedRegion (rangeArray[0]);
-        editor->pointHighlighted ();
+        editor->setTemporaryUnderlining (rangeArray);
     }
     else
     {

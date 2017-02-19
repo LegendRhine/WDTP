@@ -35,9 +35,6 @@ public:
 
     void insertImages (const Array<File>& imageFiles);
 
-    /** show an animitaed component point to the selected text */
-    void pointHighlighted ();
-
     /** for set the font-size and color of font and backgroud */
     virtual void sliderValueChanged (Slider* slider) override;
     virtual void changeListenerCallback (ChangeBroadcaster* source) override;
@@ -51,25 +48,6 @@ public:
 
 private:
     //=============================================================================================
-    /** a component which would be animated to point to the selected text.
-        usage: create object, call setTextAndBackColour() */
-    class PointComponent : public Component
-    {
-    public:
-        PointComponent();
-        void setTextAndBackColour (const String& text_, const Colour& backClr);
-
-        virtual void paint (Graphics& g) override;
-
-    private:
-        String text;
-        Colour backgound;
-
-        JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (PointComponent)
-    };
-
-    PointComponent pointToSelect;
-
     enum MenuIndex
     {
         pickTitle = 1, addKeywords, pickDesc,

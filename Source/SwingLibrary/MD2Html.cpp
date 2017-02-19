@@ -541,25 +541,37 @@ const String Md2Html::mdLinkParse (const String& mdString)
 {
     // [](http://xxx.com)
     String resultStr (mdString);
-    int midStart = resultStr.indexOfIgnoreCase (0, "](");
+    int linkPathStart = resultStr.indexOfIgnoreCase (0, "](");
 
-    while (midStart != -1)
+    while (linkPathStart != -1)
     {
         // get alt content
-        const String splitContent (resultStr.substring (0, midStart));
+        const String splitContent (resultStr.substring (0, linkPathStart));
         const int altStart = splitContent.lastIndexOfIgnoreCase ("[");
-        if (altStart == -1)            break;
-        const String altContent (resultStr.substring (altStart + 1, midStart));
+
+        if (altStart == -1)
+            break;
+
+        const String altContent (resultStr.substring (altStart + 1, linkPathStart));
 
         // get link path
-        const int pathEnd = resultStr.indexOfIgnoreCase (midStart + 2, ")");
-        if (pathEnd == -1)            break;
+        const int pathEnd = resultStr.indexOfIgnoreCase (linkPathStart + 2, ")");
 
-        const String linkPath (resultStr.substring (midStart + 2, pathEnd));
-        const String linkStr ("<a href=\"" + linkPath + "\">" + altContent + "</a>");
+        if (pathEnd == -1)
+            break;
+
+        String linkPath (resultStr.substring (linkPathStart + 2, pathEnd).trimEnd());
+
+        // [](http://xxx.com/xxx.html -), the end ' -' will open the link in new window
+        if (linkPath.getLastCharacters (2) == " -")
+            linkPath = "\"" + linkPath.dropLastCharacters (2) + "\" target=\"_blank\"";
+        else
+            linkPath = "\"" + linkPath + "\"";
+
+        const String linkStr ("<a href=" + linkPath + ">" + altContent + "</a>");
 
         resultStr = resultStr.replaceSection (altStart, pathEnd + 1 - altStart, linkStr);
-        midStart = resultStr.indexOfIgnoreCase (midStart + linkStr.length (), "](");
+        linkPathStart = resultStr.indexOfIgnoreCase (linkPathStart + linkStr.length (), "](");
     }
 
     return resultStr;

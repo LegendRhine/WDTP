@@ -1103,21 +1103,15 @@ void MarkdownEditor::searchBySelectPrev()
 
         if (startIndex != -1)
         {
-            Array<Range<int>> rangeArray;
-            rangeArray.add (Range<int> (startIndex, startIndex + selected.length()));
-
-            setTemporaryUnderlining (rangeArray);
-            setHighlightedRegion (rangeArray[0]);
-        }
-        else
-        {
-            LookAndFeel::getDefaultLookAndFeel().playAlertSound();
+            //Array<Range<int>> rangeArray;
+            //rangeArray.add (Range<int> (startIndex, startIndex + selected.length()));
+            //setTemporaryUnderlining (rangeArray);
+            setHighlightedRegion (Range<int> (startIndex, startIndex + selected.length()));
+            return;
         }
     }
-    else
-    {
-        LookAndFeel::getDefaultLookAndFeel().playAlertSound();
-    }
+ 
+    LookAndFeel::getDefaultLookAndFeel().playAlertSound();
 }
 
 //=================================================================================================
@@ -1131,20 +1125,14 @@ void MarkdownEditor::searchBySelectNext()
 
         if (startIndex != -1)
         {
-            Array<Range<int>> rangeArray;
-            rangeArray.add (Range<int> (startIndex, startIndex + selected.length()));
-
-            setTemporaryUnderlining (rangeArray);
-            setHighlightedRegion (rangeArray[0]);
-        }
-        else
-        {
-            LookAndFeel::getDefaultLookAndFeel().playAlertSound();
+            //Array<Range<int>> rangeArray;
+            //rangeArray.add (Range<int> (startIndex, startIndex + selected.length()));
+            //setTemporaryUnderlining (rangeArray);
+            setHighlightedRegion (Range<int> (startIndex, startIndex + selected.length()));
+            return;
         }
     }
-    else
-    {
-        LookAndFeel::getDefaultLookAndFeel().playAlertSound();
-    }
+     
+    LookAndFeel::getDefaultLookAndFeel().playAlertSound();
 }
 

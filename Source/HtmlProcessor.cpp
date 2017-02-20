@@ -360,8 +360,7 @@ void HtmlProcessor::processTags (const ValueTree& docOrDirTree,
     if (docOrDirTree.getProperty ("js").toString().trim().isNotEmpty())
     {
         tplStr = tplStr.replace ("\n  <title>",
-                                 "\n  <script type=\"text/javascript\">\n"
-                                 + docOrDirTree.getProperty ("js").toString().trim() + "\n  </script>\n"
+                                 "\n" + docOrDirTree.getProperty ("js").toString().trim() + "\n\n"
                                  "  <title>");
     }
 

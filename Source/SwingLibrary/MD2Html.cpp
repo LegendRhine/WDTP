@@ -147,10 +147,14 @@ const String Md2Html::endnoteParse (const String& mdString)
     while (indexStart != -1)
     {
         // get note content's end index
-        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 2, "]");
+        int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 2, "]");
 
         if (indexEnd == -1)
             break;
+
+        // need to process the link mark which may inside endnote
+        if (resultStr.substring (indexEnd + 1, indexEnd + 2) == "(")
+            indexEnd = resultStr.indexOfIgnoreCase (indexEnd + 2, "]");
 
         if (resultStr.substring (indexStart - 1, indexStart) != "\\"
             && resultStr.substring (indexEnd - 1, indexEnd) !="\\")

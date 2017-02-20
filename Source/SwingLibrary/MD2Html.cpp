@@ -558,7 +558,7 @@ const String Md2Html::mdLinkParse (const String& mdString)
             const String linkStr ("<a href=" + linkPath + ">" + altContent + "</a>");
 
             resultStr = resultStr.replaceSection (altStart, pathEnd + 1 - altStart, linkStr);
-            linkPathStart = resultStr.indexOfIgnoreCase (linkPathStart + linkStr.length(), "](");
+            linkPathStart = resultStr.indexOfIgnoreCase (altStart + linkStr.length(), "](");
         }
         else
         {

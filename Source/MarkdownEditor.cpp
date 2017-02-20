@@ -17,7 +17,7 @@ MarkdownEditor::MarkdownEditor (EditAndPreview* parent_)
     : parent (parent_),
     fontSizeSlider (Slider::LinearHorizontal, Slider::TextBoxBelow)
 {
-    fontSizeSlider.setRange (12.0, 60.0, 1.0);
+    fontSizeSlider.setRange (15.0, 35.0, 1.0);
     fontSizeSlider.setDoubleClickReturnValue (true, 20.0);
     fontSizeSlider.setSize (300, 60);
     fontSizeSlider.addListener (this);

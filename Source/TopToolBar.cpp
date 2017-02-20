@@ -856,14 +856,17 @@ void TopToolBar::importExternalTpls()
             message = TRANS ("Invalid templates file.");
 
         if (message.isNotEmpty() || notZip)
+        {
             SHOW_MESSAGE (TRANS ("Import failed:") + newLine + message);
+        }
         else
+        {
             SHOW_MESSAGE (TRANS ("Import successful!\nPlease regenerate the whole site if you want to use it."));
-    }
-
-    // here should update the project-setup panel
-    fileTreeContainer->getTreeView().getRootItem()->setSelected (true, true);
-    editAndPreview->setProjectProperties (FileTreeContainer::projectTree);
+         
+            // here should update the project-setup panel
+            fileTreeContainer->getTreeView ().getRootItem ()->setSelected (true, true);
+        }
+    }    
 }
 
 //=================================================================================================

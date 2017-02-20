@@ -125,7 +125,7 @@ const String Md2Html::codeBlockParse (const String& mdString)
         const String htmlStr ("<pre><code>"
                               + mdCode.replace ("```", String())
                               .replace ("*", "_%5x|z%!##!_") // see cleanup(), prevent bold and italic parse it
-                              .replace ("<", "&lt;")  // escape html code
+                              .replace ("<", "&lt;").replace (">", "&gt;")  // escape html code
                               + "</code></pre>");
 
         //DBG (htmlStr);

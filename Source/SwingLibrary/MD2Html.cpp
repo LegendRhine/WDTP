@@ -102,7 +102,7 @@ const String Md2Html::identifierParse (const String& mdString)
     for (int i = lines.size(); --i >= 0; )
     {
         if (lines[i].substring (0, 6) == "******")
-            lines.remove (i);
+            lines.getReference (i) = "<p>";
     }
 
     return lines.joinIntoString (newLine);
@@ -722,6 +722,7 @@ const String Md2Html::cleanUp (const String& mdString)
     resultStr = resultStr.replace (String ("\\!["), "![");
     resultStr = resultStr.replace (String ("\\[^"), "[^");
     resultStr = resultStr.replace (String ("\\]"), "]");
+    resultStr = resultStr.replace (String ("<p><br>"), "<p>");
 
     //DBG (resultStr);
     return resultStr;

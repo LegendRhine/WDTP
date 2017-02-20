@@ -217,7 +217,7 @@ const String Md2Html::inlineCodeParse (const String& mdString)
         index = resultStr.indexOfIgnoreCase (index + 1, "`");
     }
 
-    // for bold and italic parse (replace '*' to prevent it'll be parsed)
+    // for bold, italic and html code parse
     int indexStart = resultStr.indexOfIgnoreCase (0, "<code>");
 
     while (indexStart != -1)
@@ -227,9 +227,11 @@ const String Md2Html::inlineCodeParse (const String& mdString)
         if (indexEnd == -1)
             break;
 
-        const String mdCode (resultStr.substring (indexStart, indexEnd).replace ("*", "_%5x|z%!##!_"));
-        resultStr = resultStr.replaceSection (indexStart, indexEnd - indexStart, mdCode);
+        const String mdCode (resultStr.substring (indexStart + 1, indexEnd)
+                             .replace ("*", "_%5x|z%!##!_")
+                             .replace ("<", "&lt;"));
 
+        resultStr = resultStr.replaceSection (indexStart, indexEnd - indexStart, "<" + mdCode);
         indexStart = resultStr.indexOfIgnoreCase (indexStart + mdCode.length(), "<code>");
     }
 

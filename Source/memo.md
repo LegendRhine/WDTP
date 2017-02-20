@@ -126,7 +126,14 @@
     - Same class above, L481 change the original to `lineHeight = section->font.getHeight() + 4;`
 	- L540 change the original to `atomX, (float) roundToInt (lineY + lineHeight - maxDescent - 2));`
 	- L573 change the original to `atomX, (float) roundToInt (lineY + lineHeight - maxDescent - 2));`
-	- L557 change the original to `roundToInt (lineY + currentSection->font.getAscent() + 7.f); // underline`
+	- L560-561 change to (underline change to backgound highlight):
+```
+	//g.reduceClipRegion (Rectangle<int> (startX, baselineY, endX - startX, 1));
+    //g.fillCheckerBoard (Rectangle<int> (endX, baselineY + 1), 3, 1, colour, Colours::transparentBlack);
+    g.setColour (Colours::cyan.withAlpha (0.95f));
+    g.fillRoundedRectangle (startX - 1.f, baselineY - lineHeight + 10.5f, endX - startX + 2.f, lineHeight - 2.5f, 5.f);
+    drawSelectedText (g, underline, colour);
+```
 	
 ### About Compile
 

@@ -24,7 +24,7 @@ class EditAndPreview : public Component,
 {
 public:
     EditAndPreview (MainContentComponent* mainComp);
-    ~EditAndPreview ();
+    ~EditAndPreview();
 
     void startWork (ValueTree& newDocTree);
 
@@ -32,20 +32,20 @@ public:
     void switchMode (const bool switchToPreview);
 
     void paint (Graphics&) override {}
-    void resized () override;
+    void resized() override;
 
-    TextEditor* getEditor () const              { return editor; }
-    const File& getCurrentDocFile () const      { return docOrDirFile; }
-    const String& getCurrentContent () const    { return currentContent; }
+    TextEditor* getEditor() const              { return editor; }
+    const File& getCurrentDocFile() const      { return docOrDirFile; }
+    const String& getCurrentContent() const    { return currentContent; }
 
-    ValueTree& getCurrentTree ()                { return docOrDirTree; }
-    SetupPanel* getSetupPanel () const          { return setupPanel; }
+    ValueTree& getCurrentTree()                { return docOrDirTree; }
+    SetupPanel* getSetupPanel() const          { return setupPanel; }
 
     /** return true if preview state at the present, flase for edit state. */
-    const bool getCureentState () const;
+    const bool getCureentState() const;
 
-    void projectClosed ();
-    const bool saveCurrentDocIfChanged ();
+    void projectClosed();
+    const bool saveCurrentDocIfChanged();
 
     void setProjectProperties (ValueTree& projectTree);
     void setDirProperties (ValueTree& dirTree);
@@ -56,11 +56,11 @@ public:
 
 private:
     //=========================================================================
-    void editCurrentDoc ();
-    void previewCurrentDoc ();
+    void editCurrentDoc();
+    void previewCurrentDoc();
 
     virtual void textEditorTextChanged (TextEditor&) override;
-    virtual void timerCallback () override;
+    virtual void timerCallback() override;
 
     //=========================================================================
     File docOrDirFile;
@@ -91,7 +91,7 @@ class WebBrowserComp : public WebBrowserComponent
 {
 public:
     WebBrowserComp (EditAndPreview* parent_);
-    ~WebBrowserComp () { }
+    ~WebBrowserComp() { }
 
     /** new dialog window to display the URL */
     virtual void newWindowAttemptingToLoad (const String& newURL) override;

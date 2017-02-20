@@ -19,7 +19,7 @@ public:
     DocTreeViewItem (const ValueTree& tree,
                      FileTreeContainer* container,
                      ItemSorter* itemSorter);
-    ~DocTreeViewItem ();
+    ~DocTreeViewItem();
 
     /** Note 1: when this item is the root (project item of the top),
     this method will return this project's 'docs' dir instead of the project file!
@@ -48,15 +48,15 @@ public:
                            ValueTree newParent);
 
     /** callback method whnever the project-tree has some changed */
-    void refreshDisplay ();
-    const ValueTree& getTree () const       { return tree; }
+    void refreshDisplay();
+    const ValueTree& getTree() const       { return tree; }
 
     /** override the parent class... */
-    virtual bool mightContainSubItems () override;
-    virtual String getUniqueName () const override;
+    virtual bool mightContainSubItems() override;
+    virtual String getUniqueName() const override;
     virtual void itemOpennessChanged (bool isNowOpen) override;
 
-    virtual String getTooltip () override;
+    virtual String getTooltip() override;
     virtual void paintItem (Graphics& g, int width, int height) override;
 
     /** core method, it'll call the edit/preview area's startWork()*/
@@ -69,7 +69,7 @@ public:
     virtual void itemDoubleClicked (const MouseEvent& e) override;
 
     /** for move items.. */
-    virtual var getDragSourceDescription () override;
+    virtual var getDragSourceDescription() override;
     virtual bool isInterestedInDragSource (const DragAndDropTarget::SourceDetails& details) override;
     virtual void itemDropped (const DragAndDropTarget::SourceDetails& details,
                               int insertIndex) override;
@@ -112,19 +112,19 @@ private:
 
     void menuPerform (const int menuIndex);
     
-    void importExternalDocs ();
+    void importExternalDocs();
     void packSiteData (const bool includeHtmls, const bool includeMedias);
-    void exportAsTextDoc ();
-    void exportAsHtml (); 
-    void renameSelectedItem ();
-    void createNewDocument ();
+    void exportAsTextDoc();
+    void exportAsHtml(); 
+    void renameSelectedItem();
+    void createNewDocument();
     const File createDoc (const String &docName, const bool selectAfterCreated);
 
-    void createNewFolder ();
-    void deleteSelected ();
-    void statistics ();
-    void getPath ();
-    void replaceContent ();
+    void createNewFolder();
+    void deleteSelected();
+    void statistics();
+    void getPath();
+    void replaceContent();
 
     //=========================================================================
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;

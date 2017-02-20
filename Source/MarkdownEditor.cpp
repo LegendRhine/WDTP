@@ -28,20 +28,20 @@ void MarkdownEditor::paint (Graphics& g)
 {
     TextEditor::paint (g);
     g.setColour (Colours::grey);
-    g.drawVerticalLine (getWidth () - 1, 0, getBottom () - 0.f);
+    g.drawVerticalLine (getWidth() - 1, 0, getBottom() - 0.f);
 }
 
 //=================================================================================================
 void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 {
-    const File& docFile (parent->getCurrentDocFile ());
+    const File& docFile (parent->getCurrentDocFile());
 
-    if (e->mods.isPopupMenu ())
+    if (e->mods.isPopupMenu())
     {
-        menu.addItem (pickTitle, TRANS ("Pickup as Title"), getHighlightedText ().isNotEmpty ());
-        menu.addItem (addKeywords, TRANS ("Add to Keywords"), getHighlightedText ().isNotEmpty ());
-        menu.addItem (pickDesc, TRANS ("Pickup as Description"), getHighlightedText ().isNotEmpty ());
-        menu.addSeparator ();
+        menu.addItem (pickTitle, TRANS ("Pickup as Title"), getHighlightedText().isNotEmpty());
+        menu.addItem (addKeywords, TRANS ("Add to Keywords"), getHighlightedText().isNotEmpty());
+        menu.addItem (pickDesc, TRANS ("Pickup as Description"), getHighlightedText().isNotEmpty());
+        menu.addSeparator();
 
         PopupMenu insertMenu;
         String ctrlStr ("  (Ctrl + ");
@@ -54,63 +54,63 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink...") + ctrlStr + "H)");
         insertMenu.addItem (insertTable, TRANS ("Table (4 x 3)") + ctrlStr + "T)");
         insertMenu.addItem (insertQuota, TRANS ("Quotation"));
-        insertMenu.addSeparator ();
+        insertMenu.addSeparator();
 
         insertMenu.addItem (insertAlignCenter, TRANS ("Align Center") + ctrlStr + "N)");
         insertMenu.addItem (insertAlignRight, TRANS ("Align Right") + ctrlStr + "R)");
-        insertMenu.addSeparator ();
+        insertMenu.addSeparator();
 
         insertMenu.addItem (insertUnoerderList, TRANS ("Unordered List"));
         insertMenu.addItem (insertOrderList, TRANS ("Ordered List"));
-        insertMenu.addSeparator ();
+        insertMenu.addSeparator();
 
         insertMenu.addItem (insertFirstTitle, TRANS ("Primary Heading"));
         insertMenu.addItem (insertSecondTitle, TRANS ("Secondary Heading"));
         insertMenu.addItem (insertThirdTitle, TRANS ("Tertiary Heading"));
-        insertMenu.addSeparator ();
+        insertMenu.addSeparator();
 
         insertMenu.addItem (insertToc, TRANS ("Table of Contents"));
         insertMenu.addItem (insertEndnote, TRANS ("Endnote"));
         insertMenu.addItem (insertIdentifier, TRANS ("Identifier"));
-        insertMenu.addSeparator ();
+        insertMenu.addSeparator();
 
         insertMenu.addItem (insertCaption, TRANS ("Image/Table Caption") + ctrlStr + "P)");
         insertMenu.addItem (insertSeparator, TRANS ("Separator"));
         insertMenu.addItem (insertAuthor, TRANS ("Author and Date") + ctrlStr + "O)");
-        insertMenu.addSeparator ();
+        insertMenu.addSeparator();
 
-        const String internalLinkStr (SystemClipboard::getTextFromClipboard ());
+        const String internalLinkStr (SystemClipboard::getTextFromClipboard());
         insertMenu.addItem (insertInterLink, TRANS ("Internal Link"), internalLinkStr.contains ("*_wdtpGetPath_*"));
-        menu.addSubMenu (TRANS ("Insert"), insertMenu, docFile.existsAsFile ());
+        menu.addSubMenu (TRANS ("Insert"), insertMenu, docFile.existsAsFile());
 
         PopupMenu formatMenu;
         formatMenu.addItem (formatBold, TRANS ("Bold") + ctrlStr + "B)");
         formatMenu.addItem (formatItalic, TRANS ("Italic") + ctrlStr + "I)");
         formatMenu.addItem (formatBoldAndItalic, TRANS ("Bold + Italic"));
-        formatMenu.addSeparator ();
+        formatMenu.addSeparator();
         formatMenu.addItem (formatHighlight, TRANS ("Highlight") + ctrlStr + "U)");
-        formatMenu.addSeparator ();
+        formatMenu.addSeparator();
         formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
 
-        menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile ());
-        menu.addSeparator ();
+        menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile());
+        menu.addSeparator();
 
-        menu.addItem (searchNext, TRANS ("Search Next Selection...") + "  F3", getHighlightedText ().isNotEmpty ());
-        menu.addItem (searchPrev, TRANS ("Search Prev Selection...") + "  Shift + F3", getHighlightedText ().isNotEmpty ());
-        menu.addSeparator ();
+        menu.addItem (searchNext, TRANS ("Search Next Selection...") + "  F3", getHighlightedText().isNotEmpty());
+        menu.addItem (searchPrev, TRANS ("Search Prev Selection...") + "  Shift + F3", getHighlightedText().isNotEmpty());
+        menu.addSeparator();
 
         TextEditor::addPopupMenuItems (menu, e);
-        menu.addSeparator ();
+        menu.addSeparator();
 
         PopupMenu editorSetup;
         editorSetup.addItem (fontSize, TRANS ("Font Size..."));
         editorSetup.addItem (fontColor, TRANS ("Font Color..."));
         editorSetup.addItem (setBackground, TRANS ("Backgroud..."));
-        editorSetup.addSeparator ();
+        editorSetup.addSeparator();
         editorSetup.addItem (resetDefault, TRANS ("Reset to Default"));
 
-        menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docFile.existsAsFile ());
+        menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docFile.existsAsFile());
     }
 }
 
@@ -119,132 +119,132 @@ void MarkdownEditor::performPopupMenuAction (int index)
 {
     if (addKeywords == index)
     {
-        addSelectedToKeywords ();
-        parent->getSetupPanel ()->updateDocPanel ();
+        addSelectedToKeywords();
+        parent->getSetupPanel()->updateDocPanel();
     }
 
     else if (pickTitle == index)
     {
-        parent->getCurrentTree ().setProperty ("title", getHighlightedText (), nullptr);
-        parent->getSetupPanel ()->updateDocPanel ();
+        parent->getCurrentTree().setProperty ("title", getHighlightedText(), nullptr);
+        parent->getSetupPanel()->updateDocPanel();
     }
 
     else if (pickDesc == index)
     {
-        parent->getCurrentTree ().setProperty ("description", getHighlightedText (), nullptr);
-        parent->getSetupPanel ()->updateDocPanel ();
+        parent->getCurrentTree().setProperty ("description", getHighlightedText(), nullptr);
+        parent->getSetupPanel()->updateDocPanel();
     }
 
     else if (insertSeparator == index)
         insertTextAtCaret (newLine + "---" + newLine);
 
-    else if (searchPrev == index)           searchBySelectPrev ();
-    else if (searchNext == index)           searchBySelectNext ();
-    else if (insertImage == index)          insertImages ();
-    else if (insertHyperlink == index)      hyperlinkInsert ();
-    else if (insertTable == index)          tableInsert ();
-    else if (insertQuota == index)          quotaInsert ();
-    else if (insertAlignCenter == index)    alignCenterInsert ();
-    else if (insertAlignRight == index)     alignRightInsert ();
-    else if (insertUnoerderList == index)   unorderListInsert ();
-    else if (insertOrderList == index)      orderListInsert ();
+    else if (searchPrev == index)           searchBySelectPrev();
+    else if (searchNext == index)           searchBySelectNext();
+    else if (insertImage == index)          insertImages();
+    else if (insertHyperlink == index)      hyperlinkInsert();
+    else if (insertTable == index)          tableInsert();
+    else if (insertQuota == index)          quotaInsert();
+    else if (insertAlignCenter == index)    alignCenterInsert();
+    else if (insertAlignRight == index)     alignRightInsert();
+    else if (insertUnoerderList == index)   unorderListInsert();
+    else if (insertOrderList == index)      orderListInsert();
     else if (insertFirstTitle == index)     insertTitle (1);
     else if (insertSecondTitle == index)    insertTitle (2);
     else if (insertThirdTitle == index)     insertTitle (3);
-    else if (insertToc == index)            tocInsert ();
-    else if (insertEndnote == index)        endnoteInsert ();
-    else if (insertIdentifier == index)     identifierInsert ();
-    else if (insertCaption == index)        captionInsert ();
-    else if (insertAuthor == index)         authorInsert ();
-    else if (insertInterLink == index)      interLinkInsert ();
+    else if (insertToc == index)            tocInsert();
+    else if (insertEndnote == index)        endnoteInsert();
+    else if (insertIdentifier == index)     identifierInsert();
+    else if (insertCaption == index)        captionInsert();
+    else if (insertAuthor == index)         authorInsert();
+    else if (insertInterLink == index)      interLinkInsert();
     else if (formatBold == index)           inlineFormat (bold);
     else if (formatItalic == index)         inlineFormat (italic);
     else if (formatBoldAndItalic == index)  inlineFormat (boldAndItalic);
     else if (formatHighlight == index)      inlineFormat (highlight);
     else if (inlineCode == index)           inlineFormat (codeOfinline);
-    else if (codeBlock == index)            codeBlockFormat ();
-    else if (fontSize == index)             setFontSize ();
-    else if (fontColor == index)            setFontColour ();
-    else if (setBackground == index)        setBackgroundColour ();
-    else if (resetDefault == index)         resetToDefault ();
+    else if (codeBlock == index)            codeBlockFormat();
+    else if (fontSize == index)             setFontSize();
+    else if (fontColor == index)            setFontColour();
+    else if (setBackground == index)        setBackgroundColour();
+    else if (resetDefault == index)         resetToDefault();
 
     else
         TextEditor::performPopupMenuAction (index);
 }
 
 //=================================================================================================
-void MarkdownEditor::resetToDefault ()
+void MarkdownEditor::resetToDefault()
 {
     if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),
                                       TRANS ("Are you sure you want to reset the font size,\n"
                                              "text color and background to the default?")))
     {
 
-        systemFile->setValue ("fontSize", SwingUtilities::getFontSize ());
-        systemFile->setValue ("editorFontColour", Colour (0xff303030).toString ());
-        systemFile->setValue ("editorBackground", Colour (0xffdedede).toString ());
+        systemFile->setValue ("fontSize", SwingUtilities::getFontSize());
+        systemFile->setValue ("editorFontColour", Colour (0xff303030).toString());
+        systemFile->setValue ("editorBackground", Colour (0xffdedede).toString());
 
-        parent->getEditor ()->setColour (TextEditor::textColourId, Colour (0xff303030));
-        parent->getEditor ()->setColour (CaretComponent::caretColourId, Colour (0xff303030).withAlpha (0.6f));
-        parent->getEditor ()->setColour (TextEditor::backgroundColourId, Colour (0xffdedede));
-        parent->getEditor ()->setFont (SwingUtilities::getFontSize ());
+        parent->getEditor()->setColour (TextEditor::textColourId, Colour (0xff303030));
+        parent->getEditor()->setColour (CaretComponent::caretColourId, Colour (0xff303030).withAlpha (0.6f));
+        parent->getEditor()->setColour (TextEditor::backgroundColourId, Colour (0xffdedede));
+        parent->getEditor()->setFont (SwingUtilities::getFontSize());
 
-        parent->getEditor ()->applyFontToAllText (SwingUtilities::getFontSize ());
-        systemFile->saveIfNeeded ();
+        parent->getEditor()->applyFontToAllText (SwingUtilities::getFontSize());
+        systemFile->saveIfNeeded();
     }
 }
 
 //=================================================================================================
-void MarkdownEditor::setBackgroundColour ()
+void MarkdownEditor::setBackgroundColour()
 {
-    bgColourSelector = new ColourSelectorWithPreset ();
+    bgColourSelector = new ColourSelectorWithPreset();
 
     bgColourSelector->setSize (450, 480);
     bgColourSelector->setCurrentColour (Colour::fromString (systemFile->getValue ("editorBackground")));
     bgColourSelector->addChangeListener (this);
 
-    CallOutBox callOut (*bgColourSelector, getLocalBounds (), this);
-    callOut.runModalLoop ();
+    CallOutBox callOut (*bgColourSelector, getLocalBounds(), this);
+    callOut.runModalLoop();
 
-    systemFile->setValue ("editorBackground", bgColourSelector->getCurrentColour ().toString ());
-    systemFile->saveIfNeeded ();
+    systemFile->setValue ("editorBackground", bgColourSelector->getCurrentColour().toString());
+    systemFile->saveIfNeeded();
 }
 
 //=================================================================================================
-void MarkdownEditor::setFontColour ()
+void MarkdownEditor::setFontColour()
 {
-    fontColourSelector = new ColourSelectorWithPreset ();
+    fontColourSelector = new ColourSelectorWithPreset();
 
     fontColourSelector->setSize (450, 480);
     fontColourSelector->setCurrentColour (Colour::fromString (systemFile->getValue ("editorFontColour")));
     fontColourSelector->addChangeListener (this);
 
-    CallOutBox callOut (*fontColourSelector, getLocalBounds (), this);
-    callOut.runModalLoop ();
+    CallOutBox callOut (*fontColourSelector, getLocalBounds(), this);
+    callOut.runModalLoop();
 
-    systemFile->setValue ("editorFontColour", fontColourSelector->getCurrentColour ().toString ());
-    systemFile->saveIfNeeded ();
+    systemFile->setValue ("editorFontColour", fontColourSelector->getCurrentColour().toString());
+    systemFile->saveIfNeeded();
 }
 
 //=================================================================================================
-void MarkdownEditor::setFontSize ()
+void MarkdownEditor::setFontSize()
 {
-    fontSizeSlider.setValue (systemFile->getValue ("fontSize").getDoubleValue (),
+    fontSizeSlider.setValue (systemFile->getValue ("fontSize").getDoubleValue(),
                              dontSendNotification);
-    CallOutBox callOut (fontSizeSlider, getLocalBounds (), this);
-    callOut.runModalLoop ();
+    CallOutBox callOut (fontSizeSlider, getLocalBounds(), this);
+    callOut.runModalLoop();
 
-    systemFile->setValue ("fontSize", fontSizeSlider.getValue ());
-    systemFile->saveIfNeeded ();
+    systemFile->setValue ("fontSize", fontSizeSlider.getValue());
+    systemFile->saveIfNeeded();
 }
 
 //=================================================================================================
-void MarkdownEditor::codeBlockFormat ()
+void MarkdownEditor::codeBlockFormat()
 {
     String content;
     content << newLine
         << "```" << newLine
-        << getHighlightedText () << newLine
+        << getHighlightedText() << newLine
         << "```" << newLine;
 
     insertTextAtCaret (content);
@@ -253,8 +253,8 @@ void MarkdownEditor::codeBlockFormat ()
 //=================================================================================================
 void MarkdownEditor::inlineFormat (const inlineFormatIndex& format)
 {
-    String content (getHighlightedText ());
-    const bool selectNothing = content.isEmpty ();
+    String content (getHighlightedText());
+    const bool selectNothing = content.isEmpty();
 
     if (format == bold)
         content = "**" + content + "**";
@@ -288,20 +288,20 @@ void MarkdownEditor::inlineFormat (const inlineFormatIndex& format)
 }
 
 //=================================================================================================
-void MarkdownEditor::interLinkInsert ()
+void MarkdownEditor::interLinkInsert()
 {
-    String linkPath (SystemClipboard::getTextFromClipboard ());
-    linkPath = linkPath.substring (String ("*_wdtpGetPath_*").length ());
+    String linkPath (SystemClipboard::getTextFromClipboard());
+    linkPath = linkPath.substring (String ("*_wdtpGetPath_*").length());
 
     const String titleStr (linkPath.upToFirstOccurrenceOf ("@_=#_itemPath_#=_@", false, false));
     linkPath = linkPath.fromFirstOccurrenceOf ("@_=#_itemPath_#=_@", false, false);
 
-    const String siteRoot (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName ()
+    const String siteRoot (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName()
                            + File::separatorString);
     linkPath = linkPath.fromFirstOccurrenceOf (siteRoot, false, false);
 
     const String currentHtmlRelativeToRoot (HtmlProcessor::getRelativePathToRoot (
-        DocTreeViewItem::getHtmlFileOrDir (parent->getCurrentTree ())));
+        DocTreeViewItem::getHtmlFileOrDir (parent->getCurrentTree())));
 
     String content;
     content << "[" << titleStr << "](" << currentHtmlRelativeToRoot << linkPath.replace ("\\", "/") << ")";
@@ -310,20 +310,20 @@ void MarkdownEditor::interLinkInsert ()
 }
 
 //=================================================================================================
-void MarkdownEditor::authorInsert ()
+void MarkdownEditor::authorInsert()
 {
     String content;
     content << newLine << ">>> " << TRANS ("Author: ")
-        << FileTreeContainer::projectTree.getProperty ("owner").toString ()
+        << FileTreeContainer::projectTree.getProperty ("owner").toString()
         << " " << newLine << ">>> "
-        << SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (), false)
+        << SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), false)
         << " ";
 
     insertTextAtCaret (content);
 }
 
 //=================================================================================================
-void MarkdownEditor::captionInsert ()
+void MarkdownEditor::captionInsert()
 {
     insertTextAtCaret (newLine + "^^ ");
 }
@@ -346,26 +346,26 @@ void MarkdownEditor::insertTitle (const int level)
 }
 
 //=================================================================================================
-void MarkdownEditor::endnoteInsert ()
+void MarkdownEditor::endnoteInsert()
 {
     insertTextAtCaret ("[^]");
     moveCaretLeft (false, false);
 }
 
 //=================================================================================================
-void MarkdownEditor::tocInsert ()
+void MarkdownEditor::tocInsert()
 {
     insertTextAtCaret (newLine + "[TOC]" + newLine + newLine);
 }
 
 //=================================================================================================
-void MarkdownEditor::identifierInsert ()
+void MarkdownEditor::identifierInsert()
 {
     insertTextAtCaret (newLine + "*********************************" + newLine + newLine);
 }
 
 //=================================================================================================
-void MarkdownEditor::orderListInsert ()
+void MarkdownEditor::orderListInsert()
 {
     String content;
     content << newLine
@@ -382,7 +382,7 @@ void MarkdownEditor::orderListInsert ()
 }
 
 //=================================================================================================
-void MarkdownEditor::unorderListInsert ()
+void MarkdownEditor::unorderListInsert()
 {
     String content;
     content << newLine
@@ -399,25 +399,25 @@ void MarkdownEditor::unorderListInsert ()
 }
 
 //=================================================================================================
-void MarkdownEditor::alignRightInsert ()
+void MarkdownEditor::alignRightInsert()
 {
     insertTextAtCaret (newLine + ">>> ");
 }
 
 //=================================================================================================
-void MarkdownEditor::alignCenterInsert ()
+void MarkdownEditor::alignCenterInsert()
 {
     insertTextAtCaret (newLine + ">|< ");
 }
 
 //=================================================================================================
-void MarkdownEditor::quotaInsert ()
+void MarkdownEditor::quotaInsert()
 {
     insertTextAtCaret (newLine + "> ");
 }
 
 //=================================================================================================
-void MarkdownEditor::tableInsert ()
+void MarkdownEditor::tableInsert()
 {
     String content;
     content << newLine
@@ -433,35 +433,35 @@ void MarkdownEditor::tableInsert ()
 }
 
 //=================================================================================================
-void MarkdownEditor::hyperlinkInsert ()
+void MarkdownEditor::hyperlinkInsert()
 {
     AlertWindow dialog (TRANS ("Insert Hyperlink"), TRANS ("Please input the url."),
                         AlertWindow::InfoIcon);
 
-    dialog.addTextEditor ("name", String ());
+    dialog.addTextEditor ("name", String());
     dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
     dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
 
     String content;
 
-    if (0 == dialog.runModalLoop ())
+    if (0 == dialog.runModalLoop())
     {
-        content << "[](" << dialog.getTextEditor ("name")->getText ().trim () << ") ";
+        content << "[](" << dialog.getTextEditor ("name")->getText().trim() << ") ";
 
         insertTextAtCaret (content);
     }
 }
 
 //=================================================================================================
-void MarkdownEditor::insertImages ()
+void MarkdownEditor::insertImages()
 {
     FileChooser fc (TRANS ("Select Images..."), File::nonexistent,
                     "*.jpg;*.jpeg;*.png;*.gif", true);
 
-    if (!fc.browseForMultipleFilesToOpen ())
+    if (!fc.browseForMultipleFilesToOpen())
         return;
 
-    Array<File> imageFiles (fc.getResults ());
+    Array<File> imageFiles (fc.getResults());
     insertImages (imageFiles);
 }
 
@@ -478,29 +478,29 @@ void MarkdownEditor::insertImages (const Array<File>& imageFiles)
     }
 
     // doesn't import project-internal images
-    const File& projectDir (FileTreeContainer::projectFile.getParentDirectory ());
+    const File& projectDir (FileTreeContainer::projectFile.getParentDirectory());
 
-    if (files[0].getFullPathName ().contains (projectDir.getFullPathName ()))
+    if (files[0].getFullPathName().contains (projectDir.getFullPathName()))
     {
         SHOW_MESSAGE (TRANS ("Can't import image(s) inside the current project!"));
         return;
     }
 
     // copy and insert image-syntax
-    ValueTree& docTree (parent->getCurrentTree ());
+    ValueTree& docTree (parent->getCurrentTree());
     const File imgPath (DocTreeViewItem::getMdFileOrDir (docTree).getSiblingFile ("media"));
     String content;
 
     for (auto f : files)
     {
-        const File targetFile (imgPath.getChildFile (f.getFileName ()).getNonexistentSibling (false));
-        targetFile.create ();
+        const File targetFile (imgPath.getChildFile (f.getFileName()).getNonexistentSibling (false));
+        targetFile.create();
 
         if (f.copyFileTo (targetFile))
-            content << newLine << "![ ](media/" << targetFile.getFileName () << ")" << newLine
+            content << newLine << "![ ](media/" << targetFile.getFileName() << ")" << newLine
             << "^^ " << TRANS ("Image: ") << newLine;
         else
-            SHOW_MESSAGE (TRANS ("Can't insert this image: ") + newLine + f.getFullPathName ());
+            SHOW_MESSAGE (TRANS ("Can't insert this image: ") + newLine + f.getFullPathName());
     }
 
     insertTextAtCaret (content);
@@ -509,7 +509,7 @@ void MarkdownEditor::insertImages (const Array<File>& imageFiles)
 //=================================================================================================
 void MarkdownEditor::autoWrapSelected (const KeyPress& key)
 {
-    const String& content (getHighlightedText ());
+    const String& content (getHighlightedText());
     String keyStr (key.getTextDescription().replace ("shift + 8", "*").replace ("shift + `", "~~"));
     keyStr = keyStr.replace ("ctrl + 8", "*").replace ("ctrl + `", "~~"); // for Chinese IME
     keyStr = keyStr.replace ("command + 8", "*").replace ("command + `", "~~"); // for Chinese IME
@@ -517,40 +517,40 @@ void MarkdownEditor::autoWrapSelected (const KeyPress& key)
 
     insertTextAtCaret (keyStr + content + keyStr);
 
-    if (keyStr != getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 1))
+    if (keyStr != getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 1))
         && keyStr != "~~"
         && keyStr != "`")
     {
-        setHighlightedRegion (Range<int> (getCaretPosition () - content.length () - 1, getCaretPosition () - 1));
+        setHighlightedRegion (Range<int> (getCaretPosition() - content.length() - 1, getCaretPosition() - 1));
     }
 
     // move the caret after input 2 '*'
-    if (String ("*") == getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 1))
-        && String ("*") == getTextInRange (Range<int> (getCaretPosition () - 1, getCaretPosition ())))
+    if (String ("*") == getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 1))
+        && String ("*") == getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())))
     {
-        setCaretPosition (getCaretPosition () + 1);
+        setCaretPosition (getCaretPosition() + 1);
     }
 }
 
 //=================================================================================================
-void MarkdownEditor::tabKeyInput ()
+void MarkdownEditor::tabKeyInput()
 {
-    if (getHighlightedText ().isEmpty ())
+    if (getHighlightedText().isEmpty())
     {
-        const int position = getCaretPosition ();
+        const int position = getCaretPosition();
         String content ("    ");
         moveCaretUp (false);
 
-        while (getCaretPosition () - 1 >= 0
-               && getTextInRange (Range<int> (getCaretPosition () - 1, getCaretPosition ())) != "\n")
+        while (getCaretPosition() - 1 >= 0
+               && getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())) != "\n")
         {
             moveCaretUp (false);
         }
 
-        if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 2)) == "- ")
+        if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 2)) == "- ")
             content += "- ";
 
-        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 2)) == "+ ")
+        else if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 2)) == "+ ")
             content += "+ ";
 
         setCaretPosition (position);
@@ -559,9 +559,9 @@ void MarkdownEditor::tabKeyInput ()
     else
     {
         StringArray content;
-        content.addLines (getHighlightedText ());
+        content.addLines (getHighlightedText());
 
-        for (int i = content.size (); --i >= 0; )
+        for (int i = content.size(); --i >= 0; )
             content.getReference (i) = "    " + content.getReference (i);
 
         insertTextAtCaret (content.joinIntoString (newLine));
@@ -570,32 +570,32 @@ void MarkdownEditor::tabKeyInput ()
 }
 
 //=================================================================================================
-void MarkdownEditor::shiftTabInput ()
+void MarkdownEditor::shiftTabInput()
 {
-    if (getHighlightedText ().isEmpty ())
+    if (getHighlightedText().isEmpty())
     {
         moveCaretToStartOfLine (false);
 
-        if (getTextInRange (Range<int>(getCaretPosition (), getCaretPosition () + 4)) == "    ")
-            setHighlightedRegion (Range<int> (getCaretPosition (), getCaretPosition () + 4));
+        if (getTextInRange (Range<int>(getCaretPosition(), getCaretPosition() + 4)) == "    ")
+            setHighlightedRegion (Range<int> (getCaretPosition(), getCaretPosition() + 4));
         
-        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 3)) == "   ")
-            setHighlightedRegion (Range<int> (getCaretPosition (), getCaretPosition () + 3));
+        else if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 3)) == "   ")
+            setHighlightedRegion (Range<int> (getCaretPosition(), getCaretPosition() + 3));
 
-        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 2)) == "  ")
-            setHighlightedRegion (Range<int> (getCaretPosition (), getCaretPosition () + 2));
+        else if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 2)) == "  ")
+            setHighlightedRegion (Range<int> (getCaretPosition(), getCaretPosition() + 2));
 
-        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 1)) == " ")
-            setHighlightedRegion (Range<int> (getCaretPosition (), getCaretPosition () + 1));
+        else if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 1)) == " ")
+            setHighlightedRegion (Range<int> (getCaretPosition(), getCaretPosition() + 1));
 
-        insertTextAtCaret (String ());
+        insertTextAtCaret (String());
     }
     else // let the selected anti-indent
     {
         StringArray content;
-        content.addLines (getHighlightedText ());
+        content.addLines (getHighlightedText());
 
-        for (int i = content.size (); --i >= 0; )
+        for (int i = content.size(); --i >= 0; )
         {
             if (content[i].substring (0, 4) == "    ")
                 content.getReference (i) = content[i].substring(4);
@@ -615,15 +615,15 @@ void MarkdownEditor::shiftTabInput ()
 }
 
 //=================================================================================================
-void MarkdownEditor::returnKeyInput ()
+void MarkdownEditor::returnKeyInput()
 {
-    if (getTextInRange (Range<int> (getCaretPosition () - 1, getCaretPosition ())) == "\n")
+    if (getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())) == "\n")
     {
         TextEditor::keyPressed (KeyPress (KeyPress::returnKey));
         return;
     }
 
-    const int position = getCaretPosition ();
+    const int position = getCaretPosition();
     String content;
 
     // cancel list mark when user doesn't want input anything on the current line
@@ -651,22 +651,22 @@ void MarkdownEditor::returnKeyInput ()
     {
         moveCaretToStartOfLine (false);
 
-        while (getCaretPosition () - 1 >= 0
-               && getTextInRange (Range<int> (getCaretPosition () - 1, getCaretPosition ())) != "\n")
+        while (getCaretPosition() - 1 >= 0
+               && getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())) != "\n")
         {
             moveCaretUp (false);
         }
 
-        if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 2)) == "- ")
+        if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 2)) == "- ")
             content += "- ";
 
-        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 2)) == "+ ")
+        else if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 2)) == "+ ")
             content += "+ ";
 
-        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 6)) == "    - ")
+        else if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 6)) == "    - ")
             content += "    - ";
 
-        else if (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 6)) == "    + ")
+        else if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 6)) == "    + ")
             content += "    + ";
 
         setCaretPosition (position);
@@ -676,10 +676,10 @@ void MarkdownEditor::returnKeyInput ()
 }
 
 //=================================================================================================
-void MarkdownEditor::pasteForCtrlV ()
+void MarkdownEditor::pasteForCtrlV()
 {
-    const String& content (SystemClipboard::getTextFromClipboard ());
-    const int position = getCaretPosition ();
+    const String& content (SystemClipboard::getTextFromClipboard());
+    const int position = getCaretPosition();
 
     String linkText (TRANS ("Click here"));
     bool needSelectLinkText = false;
@@ -701,8 +701,8 @@ void MarkdownEditor::pasteForCtrlV ()
         }
         else     // url
         {
-            if (getHighlightedText ().isNotEmpty ())
-                linkText = getHighlightedText ();
+            if (getHighlightedText().isNotEmpty())
+                linkText = getHighlightedText();
             else
                 needSelectLinkText = true;
 
@@ -713,7 +713,7 @@ void MarkdownEditor::pasteForCtrlV ()
 
     // internal link
     else if (content.contains ("*_wdtpGetPath_*"))  
-        interLinkInsert ();
+        interLinkInsert();
 
     // others
     else  
@@ -721,7 +721,7 @@ void MarkdownEditor::pasteForCtrlV ()
 
     // select 'Click here' when paste an url and selected nothing before
     if (needSelectLinkText)  
-        setHighlightedRegion (Range<int> (position + 1, position + linkText.length () + 1));
+        setHighlightedRegion (Range<int> (position + 1, position + linkText.length() + 1));
 }
 
 //=================================================================================================
@@ -730,35 +730,35 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     // tab
     if (key == KeyPress (KeyPress::tabKey))
     {
-        tabKeyInput ();
+        tabKeyInput();
         return true;
     }
 
     // shift + tab
     else if (key == KeyPress (KeyPress::tabKey, ModifierKeys::shiftModifier, 0))
     {
-        shiftTabInput ();
+        shiftTabInput();
         return true;
     }
 
     // F3 for search the next of current selection
     else if (key == KeyPress (KeyPress::F3Key))
     {
-        searchBySelectNext ();
+        searchBySelectNext();
         return true;
     }
 
     // Shift + F3 for search the previous of current selection
     else if (key == KeyPress (KeyPress::F3Key, ModifierKeys::shiftModifier, 0))
     {
-        searchBySelectPrev ();
+        searchBySelectPrev();
         return true;
     }
 
     // return-key 
     else if (key == KeyPress (KeyPress::returnKey))
     {
-        returnKeyInput ();
+        returnKeyInput();
         return true;
     }
 
@@ -767,8 +767,8 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     {
         moveCaretToStartOfLine (false);
 
-        while (getCaretPosition () - 1 >= 0
-               && getTextInRange (Range<int> (getCaretPosition () - 1, getCaretPosition ())) != "\n")
+        while (getCaretPosition() - 1 >= 0
+               && getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())) != "\n")
         {
             moveCaretUp (false);
         }
@@ -780,7 +780,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     // ctrl + v: paste
     else if (key == KeyPress ('v', ModifierKeys::commandModifier, 0))
     {
-        pasteForCtrlV ();
+        pasteForCtrlV();
         return true;
     }
 
@@ -788,30 +788,30 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress ('x', ModifierKeys::commandModifier, 0)
              || key == KeyPress ('c', ModifierKeys::commandModifier, 0))
     {
-        if (getHighlightedText ().isEmpty ())
+        if (getHighlightedText().isEmpty())
         {
-            //DBGX (getTextInRange (Range<int> (getCaretPosition (), getCaretPosition () + 1)));
+            //DBGX (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 1)));
             moveCaretToStartOfLine (false);
 
-            while (getCaretPosition () - 1 >= 0
-                   && getTextInRange (Range<int> (getCaretPosition () - 1, getCaretPosition ())) != "\n")
+            while (getCaretPosition() - 1 >= 0
+                   && getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())) != "\n")
             {
                 moveCaretUp (false);
             }
 
-            int startAt = getCaretPosition ();
-            int endAt = getText ().indexOfAnyOf (newLine, startAt, true);
+            int startAt = getCaretPosition();
+            int endAt = getText().indexOfAnyOf (newLine, startAt, true);
 
             // last line and no '\n' at the end
             if (-1 == endAt)
-                endAt = getTotalNumChars ();
+                endAt = getTotalNumChars();
 
             // select from the previous line, by this way, there're no extra empty line after cut
             if (startAt - 1 >= 0)
                 --startAt;
 
             // select to the next line, by this way, there're no extra empty line after cut
-            if (endAt + 1 < getTotalNumChars ())
+            if (endAt + 1 < getTotalNumChars())
                 ++endAt;
 
             setHighlightedRegion (Range<int> (startAt, endAt));
@@ -840,35 +840,35 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
     // code block
     else if (key == KeyPress ('k', ModifierKeys::commandModifier, 0))
-        codeBlockFormat ();
+        codeBlockFormat();
 
     // insert hyperlink
     else if (key == KeyPress ('h', ModifierKeys::commandModifier, 0))
-        hyperlinkInsert ();
+        hyperlinkInsert();
 
     // insert images
     else if (key == KeyPress ('m', ModifierKeys::commandModifier, 0))
-        insertImages ();
+        insertImages();
 
     // insert table
     else if (key == KeyPress ('t', ModifierKeys::commandModifier, 0))
-        tableInsert ();
+        tableInsert();
 
     // insert align center
     else if (key == KeyPress ('n', ModifierKeys::commandModifier, 0))
-        alignCenterInsert ();
+        alignCenterInsert();
 
     // insert align right
     else if (key == KeyPress ('r', ModifierKeys::commandModifier, 0))
-        alignRightInsert ();
+        alignRightInsert();
 
     // insert caption
     else if (key == KeyPress ('p', ModifierKeys::commandModifier, 0))
-        captionInsert ();
+        captionInsert();
 
     // insert author and date
     else if (key == KeyPress ('o', ModifierKeys::commandModifier, 0))
-        authorInsert ();
+        authorInsert();
 
     // auto-wrap the selected (when input '`, *, **, ~~' whilst some text was selected)
     else if (getHighlightedText().isNotEmpty() && (key == KeyPress('`')
@@ -885,10 +885,10 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     // English punctuation matching...
     else if (key == KeyPress ('\'', ModifierKeys::shiftModifier, 0))
     {
-        const String& selectedStr (getHighlightedText ());
+        const String& selectedStr (getHighlightedText());
         insertTextAtCaret ("\"" + selectedStr + "\"");
 
-        if (selectedStr.isEmpty ())
+        if (selectedStr.isEmpty())
             moveCaretLeft (false, false);
 
         return true;
@@ -896,10 +896,10 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
     else if (key == KeyPress ('\''))
     {
-        const String& selectedStr (getHighlightedText ());
+        const String& selectedStr (getHighlightedText());
         insertTextAtCaret ("\'" + selectedStr + "\'");
 
-        if (selectedStr.isEmpty ())
+        if (selectedStr.isEmpty())
             moveCaretLeft (false, false);
 
         return true;
@@ -907,10 +907,10 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
     else if (key == KeyPress ('['))
     {
-        const String& selectedStr (getHighlightedText ());
+        const String& selectedStr (getHighlightedText());
         insertTextAtCaret ("[" + selectedStr + "]");
 
-        if (selectedStr.isEmpty ())
+        if (selectedStr.isEmpty())
             moveCaretLeft (false, false);
 
         return true;
@@ -918,10 +918,10 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
     else if (key == KeyPress ('[', ModifierKeys::shiftModifier, 0))
     {
-        const String& selectedStr (getHighlightedText ());
+        const String& selectedStr (getHighlightedText());
         insertTextAtCaret ("{" + selectedStr + "}");
 
-        if (selectedStr.isEmpty ())
+        if (selectedStr.isEmpty())
             moveCaretLeft (false, false);
 
         return true;
@@ -929,30 +929,30 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
     else if (key == KeyPress ('9', ModifierKeys::shiftModifier, 0)) // '('
     {
-        const String& selectedStr (getHighlightedText ());
+        const String& selectedStr (getHighlightedText());
         insertTextAtCaret ("(" + selectedStr + ")");
 
-        if (selectedStr.isEmpty ())
+        if (selectedStr.isEmpty())
             moveCaretLeft (false, false);
 
         return true;
     }
 
     // Chinese punctuation matching
-    else if (key.getKeyCode () == 0)
+    else if (key.getKeyCode() == 0)
     {
         puncMatchingForChinese (key);
         return true;
     }
 
-    //DBGX (key.getKeyCode ());
+    //DBGX (key.getKeyCode());
     return TextEditor::keyPressed (key);
 }
 
 //=================================================================================================
 const bool MarkdownEditor::puncMatchingForChinese (const KeyPress& key)
 {
-    selectedForPunc = getHighlightedText ();
+    selectedForPunc = getHighlightedText();
     bool returnValue = TextEditor::keyPressed (key);
     startTimer (5);    
 
@@ -960,9 +960,9 @@ const bool MarkdownEditor::puncMatchingForChinese (const KeyPress& key)
 }
 
 //=================================================================================================
-void MarkdownEditor::timerCallback ()
+void MarkdownEditor::timerCallback()
 {
-    const Range<int> lastPosition (getCaretPosition () - 1, getCaretPosition ());
+    const Range<int> lastPosition (getCaretPosition() - 1, getCaretPosition());
     const String& lastChar (getTextInRange (lastPosition));
     bool puncMatched = false;
     //DBGX (lastChar);
@@ -1019,7 +1019,7 @@ void MarkdownEditor::timerCallback ()
         insertTextAtCaret (selectedForPunc + "}");
     }
 
-    if (puncMatched && selectedForPunc.isEmpty ())
+    if (puncMatched && selectedForPunc.isEmpty())
         moveCaretLeft (false, false);
 
     selectedForPunc.clear();
@@ -1031,8 +1031,8 @@ void MarkdownEditor::sliderValueChanged (Slider* slider)
 {
     if (slider == &fontSizeSlider)
     {
-        parent->getEditor ()->setFont ((float)slider->getValue ());
-        parent->getEditor ()->applyFontToAllText ((float)slider->getValue ());
+        parent->getEditor()->setFont ((float)slider->getValue());
+        parent->getEditor()->applyFontToAllText ((float)slider->getValue());
     }
 }
 
@@ -1041,14 +1041,14 @@ void MarkdownEditor::changeListenerCallback (ChangeBroadcaster* source)
 {
     if (source == fontColourSelector)
     {
-        Colour textClr (fontColourSelector->getCurrentColour ());
-        parent->getEditor ()->setColour (TextEditor::textColourId, textClr);
-        parent->getEditor ()->setColour (CaretComponent::caretColourId, textClr.withAlpha (0.6f));
-        parent->getEditor ()->applyFontToAllText (systemFile->getValue ("fontSize").getFloatValue ());
+        Colour textClr (fontColourSelector->getCurrentColour());
+        parent->getEditor()->setColour (TextEditor::textColourId, textClr);
+        parent->getEditor()->setColour (CaretComponent::caretColourId, textClr.withAlpha (0.6f));
+        parent->getEditor()->applyFontToAllText (systemFile->getValue ("fontSize").getFloatValue());
     }
     else if (source == bgColourSelector)
     {
-        parent->getEditor ()->setColour (TextEditor::backgroundColourId, bgColourSelector->getCurrentColour ());
+        parent->getEditor()->setColour (TextEditor::backgroundColourId, bgColourSelector->getCurrentColour());
     }
 }
 
@@ -1070,16 +1070,16 @@ void MarkdownEditor::filesDropped (const StringArray& pathes, int, int)
 }
 
 //=================================================================================================
-void MarkdownEditor::addSelectedToKeywords ()
+void MarkdownEditor::addSelectedToKeywords()
 {
-    ValueTree& docTree (parent->getCurrentTree ());
-    const String& selectedStr = getHighlightedText ();
-    const String currentKeyWords (docTree.getProperty ("keywords").toString ().trim ());
+    ValueTree& docTree (parent->getCurrentTree());
+    const String& selectedStr = getHighlightedText();
+    const String currentKeyWords (docTree.getProperty ("keywords").toString().trim());
 
     String keyWords (currentKeyWords);
 
     // update the doc-tree
-    if (currentKeyWords.isNotEmpty ())
+    if (currentKeyWords.isNotEmpty())
     {
         if (!currentKeyWords.containsIgnoreCase (selectedStr))
             keyWords = currentKeyWords + ", " + selectedStr;
@@ -1093,58 +1093,58 @@ void MarkdownEditor::addSelectedToKeywords ()
 }
 
 //=================================================================================================
-void MarkdownEditor::searchBySelectPrev ()
+void MarkdownEditor::searchBySelectPrev()
 {
-    const String& selected (getHighlightedText ());
+    const String& selected (getHighlightedText());
 
-    if (selected.isNotEmpty ())
+    if (selected.isNotEmpty())
     {
-        const int startIndex = getText ().substring (0, getCaretPosition () - 1).lastIndexOfIgnoreCase (selected);
+        const int startIndex = getText().substring (0, getCaretPosition() - 1).lastIndexOfIgnoreCase (selected);
 
         if (startIndex != -1)
         {
             Array<Range<int>> rangeArray;
-            rangeArray.add (Range<int> (startIndex, startIndex + selected.length ()));
+            rangeArray.add (Range<int> (startIndex, startIndex + selected.length()));
 
             setTemporaryUnderlining (rangeArray);
             setHighlightedRegion (rangeArray[0]);
         }
         else
         {
-            LookAndFeel::getDefaultLookAndFeel ().playAlertSound ();
+            LookAndFeel::getDefaultLookAndFeel().playAlertSound();
         }
     }
     else
     {
-        LookAndFeel::getDefaultLookAndFeel ().playAlertSound ();
+        LookAndFeel::getDefaultLookAndFeel().playAlertSound();
     }
 }
 
 //=================================================================================================
-void MarkdownEditor::searchBySelectNext ()
+void MarkdownEditor::searchBySelectNext()
 {
-    const String& selected (getHighlightedText ());
+    const String& selected (getHighlightedText());
 
-    if (selected.isNotEmpty ())
+    if (selected.isNotEmpty())
     {
-        const int startIndex = getText ().indexOfIgnoreCase (getCaretPosition () + selected.length (), selected);
+        const int startIndex = getText().indexOfIgnoreCase (getCaretPosition() + selected.length(), selected);
 
         if (startIndex != -1)
         {
             Array<Range<int>> rangeArray;
-            rangeArray.add (Range<int> (startIndex, startIndex + selected.length ()));
+            rangeArray.add (Range<int> (startIndex, startIndex + selected.length()));
 
             setTemporaryUnderlining (rangeArray);
             setHighlightedRegion (rangeArray[0]);
         }
         else
         {
-            LookAndFeel::getDefaultLookAndFeel ().playAlertSound ();
+            LookAndFeel::getDefaultLookAndFeel().playAlertSound();
         }
     }
     else
     {
-        LookAndFeel::getDefaultLookAndFeel ().playAlertSound ();
+        LookAndFeel::getDefaultLookAndFeel().playAlertSound();
     }
 }
 

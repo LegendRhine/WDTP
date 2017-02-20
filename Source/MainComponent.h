@@ -20,21 +20,21 @@ class MainContentComponent : public Component
 {
 public:
     //==============================================================================
-    MainContentComponent ();
-    ~MainContentComponent ();
+    MainContentComponent();
+    ~MainContentComponent();
 
     void paint (Graphics&) override;
-    void resized () override;
+    void resized() override;
 
-    FileTreeContainer* getFileTree () const         { return fileTree; }
-    TopToolBar* getToolbar () const                 { return toolBar; }
-    EditAndPreview* getEditAndPreview () const      { return editAndPreview; }
-
-    /** transfer method */
-    const bool aDocSelectedCurrently () const;
+    FileTreeContainer* getFileTree() const         { return fileTree; }
+    TopToolBar* getToolbar() const                 { return toolBar; }
+    EditAndPreview* getEditAndPreview() const      { return editAndPreview; }
 
     /** transfer method */
-    void reloadCurrentDoc ();
+    const bool aDocSelectedCurrently() const;
+
+    /** transfer method */
+    void reloadCurrentDoc();
 
     /** transfer method */
     const bool selectItemFromHtmlFile (const File& htmlFile);
@@ -58,13 +58,13 @@ class MainWindow : public DocumentWindow
 {
 public:
     MainWindow (const String& name);
-    ~MainWindow ();
+    ~MainWindow();
 
-    void closeButtonPressed () override;
+    void closeButtonPressed() override;
     void openProject (const File& projectFile);
 
     /** reload the current doc which has been edited from external editor */
-    virtual void activeWindowStatusChanged () override;
+    virtual void activeWindowStatusChanged() override;
 
 private:
     ScopedPointer<MainContentComponent> mainComp;

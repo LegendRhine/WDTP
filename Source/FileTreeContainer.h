@@ -22,7 +22,7 @@ class ItemSorter : public Value::Listener
 {
 public:
     ItemSorter (ValueTree& tree);
-    ~ItemSorter ();
+    ~ItemSorter();
 
     void setTreeViewItem (DocTreeViewItem* item) { rootItem = item; }
 
@@ -30,11 +30,11 @@ public:
                                TreeViewItem* second) const;
 
     //============================================================================
-    const int getOrder () const             { return var (order); }
-    const int getShowWhat () const          { return var (showWhat); }
-    const int getTooltipToShow () const     { return var (tooltip); }
-    const int getAscending ()  const        { return var (ascending); }
-    const int getWhichFirst ()  const       { return var (dirFirst); }
+    const int getOrder() const             { return var (order); }
+    const int getShowWhat() const          { return var (showWhat); }
+    const int getTooltipToShow() const     { return var (tooltip); }
+    const int getAscending()  const        { return var (ascending); }
+    const int getWhichFirst()  const       { return var (dirFirst); }
 
     void setOrder (const int value)         { order.setValue (value); }
     void setShowWhat (const int value)      { showWhat.setValue (value); }
@@ -63,26 +63,26 @@ class FileTreeContainer : public Component,
 {
 public:
     FileTreeContainer (EditAndPreview* editAndPreview);
-    ~FileTreeContainer ();
+    ~FileTreeContainer();
 
-    void resized () override;
+    void resized() override;
     void paint (Graphics& g) override;
 
     void openProject (const File& projectFile);
-    void closeProject ();
-    const bool saveDocAndProject ();
-    const bool hasLoadedProject () const                    { return projectTree.isValid (); }
+    void closeProject();
+    const bool saveDocAndProject();
+    const bool hasLoadedProject() const                    { return projectTree.isValid(); }
 
-    TreeView& getTreeView ()                                { return fileTree; }
-    EditAndPreview* getEditAndPreview () const              { return editAndPreview; }
+    TreeView& getTreeView()                                { return fileTree; }
+    EditAndPreview* getEditAndPreview() const              { return editAndPreview; }
 
     void setIdentityOfLastSelectedItem (const String& str)  { lastItem = str; }
-    void selectIdentityItem ();
+    void selectIdentityItem();
 
-    const bool aDocSelectedCurrently () const;
-    void reloadCurrentDoc ();
+    const bool aDocSelectedCurrently() const;
+    void reloadCurrentDoc();
 
-    static bool saveProject ();
+    static bool saveProject();
     const bool selectItemFromHtmlFile (const File& html);
 
     // 2 core static objects. this's a BAD design I totally know that but it's handy :)

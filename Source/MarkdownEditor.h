@@ -23,7 +23,7 @@ class MarkdownEditor :  public TextEditor,
 {
 public:
     MarkdownEditor (EditAndPreview* parent_);
-    ~MarkdownEditor () { }
+    ~MarkdownEditor() { }
 
     void paint (Graphics& g) override;
 
@@ -44,7 +44,7 @@ public:
     virtual void filesDropped (const StringArray& files, int x, int y) override;
     
     /** for Chinese punc-matching */
-    virtual void timerCallback () override;
+    virtual void timerCallback() override;
 
 private:
     //=============================================================================================
@@ -62,38 +62,38 @@ private:
         fontSize, fontColor, setBackground, resetDefault
     };
 
-    void hyperlinkInsert ();
-    void insertImages ();
+    void hyperlinkInsert();
+    void insertImages();
 
-    void tableInsert ();
-    void quotaInsert ();
+    void tableInsert();
+    void quotaInsert();
     void insertTitle (const int level);
-    void endnoteInsert ();
-    void tocInsert ();
-    void identifierInsert ();
-    void addSelectedToKeywords ();
-    void alignCenterInsert ();
-    void alignRightInsert ();
-    void orderListInsert ();
-    void unorderListInsert ();
-    void captionInsert ();
-    void interLinkInsert ();
-    void authorInsert ();
-    void codeBlockFormat ();
+    void endnoteInsert();
+    void tocInsert();
+    void identifierInsert();
+    void addSelectedToKeywords();
+    void alignCenterInsert();
+    void alignRightInsert();
+    void orderListInsert();
+    void unorderListInsert();
+    void captionInsert();
+    void interLinkInsert();
+    void authorInsert();
+    void codeBlockFormat();
 
     void autoWrapSelected (const KeyPress& key);
-    void tabKeyInput ();
-    void shiftTabInput ();
-    void returnKeyInput ();
-    void pasteForCtrlV ();
+    void tabKeyInput();
+    void shiftTabInput();
+    void returnKeyInput();
+    void pasteForCtrlV();
 
-    void searchBySelectPrev ();
-    void searchBySelectNext ();
+    void searchBySelectPrev();
+    void searchBySelectNext();
 
-    void setFontSize ();
-    void setFontColour ();
-    void setBackgroundColour ();
-    void resetToDefault ();
+    void setFontSize();
+    void setFontColour();
+    void setBackgroundColour();
+    void resetToDefault();
 
     enum inlineFormatIndex { bold = 0, italic, boldAndItalic, highlight, codeOfinline };
     void inlineFormat (const inlineFormatIndex& format);

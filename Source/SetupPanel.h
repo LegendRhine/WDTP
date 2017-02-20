@@ -21,14 +21,14 @@ class SetupPanel : public Component,
 {
 public:
     SetupPanel (EditAndPreview* editor);
-    ~SetupPanel ();
+    ~SetupPanel();
 
-    void resized () override;
-    void projectClosed ();
+    void resized() override;
+    void projectClosed();
 
-    void showNothing ()                         { panel->clear (); }
+    void showNothing()                         { panel->clear(); }
     void updateWordCount (const int wordsNum)   { values[wordCount]->setValue (wordsNum); }
-    void updateDocPanel ()                      { showDocProperties (currentTree); }
+    void updateDocPanel()                      { showDocProperties (currentTree); }
 
     void showProjectProperties (ValueTree& projectTree);
     void showDirProperties (ValueTree& dirTree);
@@ -36,14 +36,14 @@ public:
 
 private:
     //=========================================================================    
-    void valuesAddListener ();
-    void valuesRemoveListener ();
+    void valuesAddListener();
+    void valuesRemoveListener();
 
     virtual void valueChanged (Value & value) override;
 
     // for save the systemFile and project
-    virtual void timerCallback () override;  
-    void savePropertiesIfNeeded ();
+    virtual void timerCallback() override;  
+    void savePropertiesIfNeeded();
 
     //=========================================================================
     enum

@@ -40,7 +40,7 @@ EditAndPreview::EditAndPreview (MainContentComponent* mainComp_)
     editor->setColour (TextEditor::textColourId, textClr);
     editor->setColour (CaretComponent::caretColourId, textClr.withAlpha (0.6f));
     editor->setColour (TextEditor::backgroundColourId, Colour::fromString (systemFile->getValue ("editorBackground")));
-    editor->setFont (systemFile->getValue ("fontSize").getFloatValue ());
+    editor->setFont (systemFile->getValue ("fontSize").getFloatValue());
 
     editor->setScrollBarThickness (10);
     editor->setIndents (10, 10);
@@ -49,41 +49,41 @@ EditAndPreview::EditAndPreview (MainContentComponent* mainComp_)
 }
 
 //=========================================================================
-EditAndPreview::~EditAndPreview ()
+EditAndPreview::~EditAndPreview()
 {
-    stopTimer ();
+    stopTimer();
 }
 
 //=========================================================================
-void EditAndPreview::resized ()
+void EditAndPreview::resized()
 {
-    Component* wordArea = (webView->isVisible () ? dynamic_cast<Component*>(webView.get ())
-                           : dynamic_cast<Component*>(editor.get ()));
+    Component* wordArea = (webView->isVisible() ? dynamic_cast<Component*>(webView.get())
+                           : dynamic_cast<Component*>(editor.get()));
 
     jassert (wordArea != nullptr);
 
-    if (getParentComponent ()->getWidth () > 1020)  // stretched layout
+    if (getParentComponent()->getWidth() > 1020)  // stretched layout
     {
         setupPanel->setVisible (true);
         layoutBar->setVisible (true);
 
         Component* comps[] = { wordArea, layoutBar, setupPanel };
 
-        layoutManager.layOutComponents (comps, 3, 0, 0, getWidth (), getHeight (), false, true);
+        layoutManager.layOutComponents (comps, 3, 0, 0, getWidth(), getHeight(), false, true);
     }
     else  // silent-mode (only makes the editor visable)
     {
         setupPanel->setVisible (false);
         layoutBar->setVisible (false);
-        wordArea->setBounds (0, 0, getWidth (), getHeight ());
+        wordArea->setBounds (0, 0, getWidth(), getHeight());
     }
 }
 
 //=================================================================================================
 void EditAndPreview::startWork (ValueTree& newDocTree)
 {
-    jassert (newDocTree.isValid ());
-    saveCurrentDocIfChanged ();
+    jassert (newDocTree.isValid());
+    saveCurrentDocIfChanged();
 
     if (newDocTree != docOrDirTree || docOrDirFile != DocTreeViewItem::getMdFileOrDir (newDocTree))
     {
@@ -91,73 +91,73 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
         docOrDirTree = newDocTree;
         docOrDirFile = DocTreeViewItem::getMdFileOrDir (newDocTree);
 
-        if (docOrDirFile.existsAsFile ())
+        if (docOrDirFile.existsAsFile())
         {
-            editor->setText (docOrDirFile.loadFileAsString (), false);
-            currentContent = editor->getText ();
+            editor->setText (docOrDirFile.loadFileAsString(), false);
+            currentContent = editor->getText();
             editor->addListener (this);
         }
     }
 
     // prevent auto-enter preview mode when created a new document
-    switchMode (!(docOrDirFile.exists () && currentContent.length () < 3));
+    switchMode (!(docOrDirFile.exists() && currentContent.length() < 3));
 
-    if (currentContent.length () < 3)
+    if (currentContent.length() < 3)
         editor->moveCaretToEnd (false);
 
     // word count doesn't include the ' ' and newLine of current content 
     setupPanel->updateWordCount (currentContent.removeCharacters (" ")
-                                 .removeCharacters (newLine).length ());
+                                 .removeCharacters (newLine).length());
 }
 
 //=================================================================================================
 void EditAndPreview::switchMode (const bool switchToPreview)
 {
-    TopToolBar* toolBar = findParentComponentOfClass<MainContentComponent> ()->getToolbar ();
+    TopToolBar* toolBar = findParentComponentOfClass<MainContentComponent>()->getToolbar();
     jassert (toolBar != nullptr);
 
-    if (!docOrDirFile.existsAsFile ())
+    if (!docOrDirFile.existsAsFile())
     {
-        previewCurrentDoc ();
+        previewCurrentDoc();
         toolBar->enableEditPreviewBt (false, true);
     }
-    else if ((docOrDirTree.getType ().toString () != "doc") 
-             || (switchToPreview && toolBar->getStateOfViewButton ()))
+    else if ((docOrDirTree.getType().toString() != "doc") 
+             || (switchToPreview && toolBar->getStateOfViewButton()))
     {
-        previewCurrentDoc ();
-        toolBar->enableEditPreviewBt (!docOrDirFile.isDirectory (), true);
+        previewCurrentDoc();
+        toolBar->enableEditPreviewBt (!docOrDirFile.isDirectory(), true);
     }
     else
     {
-        editCurrentDoc ();
+        editCurrentDoc();
         toolBar->enableEditPreviewBt (true, false);
     }
 }
 
 //=================================================================================================
-void EditAndPreview::editCurrentDoc ()
+void EditAndPreview::editCurrentDoc()
 {
     webView->setVisible (false);
     editor->setEnabled (true);
-    editor->grabKeyboardFocus ();
-
-    resized ();
+    editor->grabKeyboardFocus();
+    
+    resized();
 }
 
 //=================================================================================================
-void EditAndPreview::previewCurrentDoc ()
+void EditAndPreview::previewCurrentDoc()
 {
     editor->setEnabled (false);
     webView->setVisible (true);
-    webView->stop ();
+    webView->stop();
 
-    if (docOrDirFile.exists ())
+    if (docOrDirFile.exists())
     {
         const bool itNeedsCreate = (bool)docOrDirTree.getProperty ("needCreateHtml");
 
-        const String urlStr ((docOrDirFile.existsAsFile ()) ?
-                             HtmlProcessor::createArticleHtml (docOrDirTree, true).getFullPathName () :
-                             HtmlProcessor::createIndexHtml (docOrDirTree, true).getFullPathName ());
+        const String urlStr ((docOrDirFile.existsAsFile()) ?
+                             HtmlProcessor::createArticleHtml (docOrDirTree, true).getFullPathName() :
+                             HtmlProcessor::createIndexHtml (docOrDirTree, true).getFullPathName());
 
         // prevent load it every time when preview a non-changed and the same web-page.
         // the browser's scrollbar will always rolled on top (of course its default behavior) 
@@ -170,48 +170,48 @@ void EditAndPreview::previewCurrentDoc ()
         else
         {
             if (itNeedsCreate)
-                webView->refresh ();            
+                webView->refresh();            
         }
     }
     else  // file doesn't exist
     {
         File urlFile (File::getSpecialLocation (File::tempDirectory).getSiblingFile ("404.html"));
 
-        if (docOrDirTree.getType ().toString () == "doc")
+        if (docOrDirTree.getType().toString() == "doc")
             urlFile.replaceWithText (TRANS ("The file doesn't exist!"));
         else
             urlFile.replaceWithText (TRANS ("The folder doesn't exist!"));
 
-        webView->goToURL (urlFile.getFullPathName ());
+        webView->goToURL (urlFile.getFullPathName());
     }
 
-    resized ();
+    resized();
 }
 
 //=================================================================================================
-const bool EditAndPreview::getCureentState () const
+const bool EditAndPreview::getCureentState() const
 {
-    return webView->isVisible ();
+    return webView->isVisible();
 }
 
 //=================================================================================================
-void EditAndPreview::projectClosed ()
+void EditAndPreview::projectClosed()
 {
-    saveCurrentDocIfChanged ();
+    saveCurrentDocIfChanged();
     webView->setVisible (false);
-    setupPanel->projectClosed ();
+    setupPanel->projectClosed();
 
     editor->removeListener (this);
-    editor->setText (String (), false);
+    editor->setText (String(), false);
     editor->setVisible (true);
     editor->setEnabled (false);
 
     docOrDirFile = File::nonexistent;
     docOrDirTree = ValueTree::invalid;
     docHasChanged = false;
-    currentContent.clear ();
+    currentContent.clear();
 
-    resized ();
+    resized();
 }
 
 //=================================================================================================
@@ -243,9 +243,9 @@ void EditAndPreview::textEditorTextChanged (TextEditor&)
 {
     // somehow, this method always be called when about to load a doc, 
     // so this ugly judge has to be here...
-    if (currentContent.compare (editor->getText ()) != 0)
+    if (currentContent.compare (editor->getText()) != 0)
     {
-        currentContent = editor->getText ();
+        currentContent = editor->getText();
         docHasChanged = true;
         DocTreeViewItem::needCreate (docOrDirTree);
 
@@ -254,27 +254,27 @@ void EditAndPreview::textEditorTextChanged (TextEditor&)
 }
 
 //=================================================================================================
-void EditAndPreview::timerCallback ()
+void EditAndPreview::timerCallback()
 {
-    saveCurrentDocIfChanged ();
+    saveCurrentDocIfChanged();
 }
 
 //=================================================================================================
-const bool EditAndPreview::saveCurrentDocIfChanged ()
+const bool EditAndPreview::saveCurrentDocIfChanged()
 {
-    stopTimer ();
+    stopTimer();
     bool returnValue = true;
 
     if (docHasChanged && docOrDirFile != File::nonexistent)
     {
         TemporaryFile tempFile (docOrDirFile);
-        tempFile.getFile ().appendText (currentContent);
+        tempFile.getFile().appendText (currentContent);
 
-        if (tempFile.overwriteTargetFileWithTemporary ())
+        if (tempFile.overwriteTargetFileWithTemporary())
         {
             docHasChanged = false;
             setupPanel->showDocProperties (docOrDirTree);
-            returnValue = FileTreeContainer::saveProject ();
+            returnValue = FileTreeContainer::saveProject();
         }
         else
         {
@@ -283,7 +283,7 @@ const bool EditAndPreview::saveCurrentDocIfChanged ()
 
         // word count doesn't include ' ' and newLine. 
         setupPanel->updateWordCount (currentContent.removeCharacters (" ")
-                                     .removeCharacters (newLine).length ());
+                                     .removeCharacters (newLine).length());
     }
 
     return returnValue;
@@ -306,7 +306,7 @@ void WebBrowserComp::newWindowAttemptingToLoad (const String& newURL)
 //=================================================================================================
 void WebBrowserComp::openUrlInNewWindow (const String& newURL)
 {
-    WebBrowserComponent* web = new WebBrowserComponent ();
+    WebBrowserComponent* web = new WebBrowserComponent();
     web->setSize (1000, 600);
     web->goToURL (newURL);
 
@@ -321,7 +321,7 @@ void WebBrowserComp::openUrlInNewWindow (const String& newURL)
     option.resizable = true;
     option.useBottomRightCornerResizer = false;
 
-    option.launchAsync ();
+    option.launchAsync();
 }
 
 //=================================================================================================
@@ -341,7 +341,7 @@ bool WebBrowserComp::pageAboutToLoad (const String& newURL)
     urlStr = URL::removeEscapeChars (urlStr);
 #endif
     
-    String currentTreeUrl (DocTreeViewItem::getHtmlFileOrDir (parent->getCurrentTree ()).getFullPathName ());
+    String currentTreeUrl (DocTreeViewItem::getHtmlFileOrDir (parent->getCurrentTree()).getFullPathName());
 
     //DBGX (urlStr);
     //DBGX (currentTreeUrl);

@@ -14,7 +14,7 @@ extern PropertiesFile* systemFile;
 extern ApplicationCommandManager* cmdManager;
 
 //==============================================================================
-MainContentComponent::MainContentComponent ()
+MainContentComponent::MainContentComponent()
 {
     // must be these order...
     addAndMakeVisible (editAndPreview = new EditAndPreview (this));
@@ -37,7 +37,7 @@ MainContentComponent::MainContentComponent ()
 }
 
 //=======================================================================
-MainContentComponent::~MainContentComponent ()
+MainContentComponent::~MainContentComponent()
 {
 
 }
@@ -48,36 +48,36 @@ void MainContentComponent::paint (Graphics& g)
 }
 
 //=========================================================================
-void MainContentComponent::resized ()
+void MainContentComponent::resized()
 {
-    toolBar->setBounds (0, 0, getWidth (), 45);
+    toolBar->setBounds (0, 0, getWidth(), 45);
 
-    if (getWidth () > 760)  // stretched layout
+    if (getWidth() > 760)  // stretched layout
     {
         fileTree->setVisible (true);
         layoutBar->setVisible (true);
 
         Component* comps[] = { fileTree, layoutBar, editAndPreview };
-        layoutManager.layOutComponents (comps, 3, 0, 45, getWidth (), getHeight () - 45, false, true);
+        layoutManager.layOutComponents (comps, 3, 0, 45, getWidth(), getHeight() - 45, false, true);
     }
     else  // silent-mode (only makes the editor visable)
     {
         fileTree->setVisible (false);
         layoutBar->setVisible (false);
-        editAndPreview->setBounds (0, 45, getWidth (), getHeight () - 45);
+        editAndPreview->setBounds (0, 45, getWidth(), getHeight() - 45);
     }
 }
 
 //=================================================================================================
-const bool MainContentComponent::aDocSelectedCurrently () const
+const bool MainContentComponent::aDocSelectedCurrently() const
 {
-    return fileTree->aDocSelectedCurrently ();
+    return fileTree->aDocSelectedCurrently();
 }
 
 //=================================================================================================
-void MainContentComponent::reloadCurrentDoc ()
+void MainContentComponent::reloadCurrentDoc()
 {
-    fileTree->reloadCurrentDoc ();
+    fileTree->reloadCurrentDoc();
 }
 
 //=================================================================================================
@@ -90,43 +90,43 @@ const bool MainContentComponent::selectItemFromHtmlFile (const File& html)
 MainWindow::MainWindow (const String& name) :
     DocumentWindow (name, Colours::lightgrey, DocumentWindow::allButtons)
 {
-    setContentOwned (mainComp = new MainContentComponent (), true);
+    setContentOwned (mainComp = new MainContentComponent(), true);
     
     // command manager
-    cmdManager->registerAllCommandsForTarget (mainComp->getToolbar ());
-    addKeyListener (cmdManager->getKeyMappings ());
-    cmdManager->setFirstCommandTarget (mainComp->getToolbar ());
+    cmdManager->registerAllCommandsForTarget (mainComp->getToolbar());
+    addKeyListener (cmdManager->getKeyMappings());
+    cmdManager->setFirstCommandTarget (mainComp->getToolbar());
 
     setResizable (true, false);
     setResizeLimits (640, 480, 3200, 2400);
     setUsingNativeTitleBar (true);
 
-    centreWithSize (getWidth (), getHeight ());
+    centreWithSize (getWidth(), getHeight());
     setVisible (true);
 
-    mainComp->grabKeyboardFocus ();
+    mainComp->grabKeyboardFocus();
 }
 
 //=================================================================================================
-MainWindow::~MainWindow ()
+MainWindow::~MainWindow()
 {
 
 }
 
 //=================================================================================================
-void MainWindow::closeButtonPressed ()
+void MainWindow::closeButtonPressed()
 {
     // store the main-window's size and position
-    if (FileTreeContainer::projectTree.isValid ())
+    if (FileTreeContainer::projectTree.isValid())
     {
         FileTreeContainer::projectTree.setProperty ("mainWindowSizeAndPosition",
-                                                    getWindowStateAsString (), nullptr);
+                                                    getWindowStateAsString(), nullptr);
     }
 
     // save and exit
-    if (mainComp->getFileTree ()->saveDocAndProject ())
+    if (mainComp->getFileTree()->saveDocAndProject())
     {
-        JUCEApplication::getInstance ()->systemRequestedQuit ();
+        JUCEApplication::getInstance()->systemRequestedQuit();
     }
     else
     {
@@ -135,7 +135,7 @@ void MainWindow::closeButtonPressed ()
                                           newLine + newLine +
                                           TRANS ("Do you really want to quit?")))
         {
-            JUCEApplication::getInstance ()->systemRequestedQuit ();
+            JUCEApplication::getInstance()->systemRequestedQuit();
         }
     }
 }
@@ -143,12 +143,12 @@ void MainWindow::closeButtonPressed ()
 //=================================================================================================
 void MainWindow::openProject (const File& projectFile)
 {
-    mainComp->getFileTree ()->openProject (projectFile);
+    mainComp->getFileTree()->openProject (projectFile);
 }
 
 //=================================================================================================
-void MainWindow::activeWindowStatusChanged ()
+void MainWindow::activeWindowStatusChanged()
 {
-    if (isActiveWindow ())
-        mainComp->reloadCurrentDoc ();
+    if (isActiveWindow())
+        mainComp->reloadCurrentDoc();
 }

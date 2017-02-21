@@ -162,11 +162,12 @@ void ReplaceComponent::replaceContent (ValueTree tree_,
         const File& docFile (DocTreeViewItem::getMdFileOrDir (tree_));
         String content (docFile.loadFileAsString ());
 
-        if (content.contains (originalText))
+        const bool contained = caseBt->getToggleState () ? content.contains (originalText)
+            : content.containsIgnoreCase (originalText);
+
+        if (contained)
         {
             ++numberFilesOfReplaced;
-
-            //docFile.replaceWithText (content.replace (originalText, replaceText, caseBt->getToggleState ()));
 
             int startIndex = caseBt->getToggleState ()
                 ? content.indexOf (0, originalText)

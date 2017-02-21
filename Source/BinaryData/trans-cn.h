@@ -307,7 +307,6 @@ countries: cn
 "Can't import image(s) inside the current project!" = "无需导入本项目内部的图片：）"
 "Can't import a file which more than 256K :)" = "无法导入大小超过256K的文件 :)"
 "No neeed to import a file which can't/no need to read :)" = "没必要导入无法阅读或缺乏实际内容的文件 :)"
-"Title of this doc..." - "本文的标题……"
 "Identifier" = "标识符"
 " WDTP is GPL(v3) licensed." =" WDTP遵循GPL(v3)开源协议."
 "Total replaced: " = "共替换了: "

@@ -1,7 +1,7 @@
 ﻿language: Chinese
 countries: cn
 
-"Author: " = "作者: "
+"Author" = "作者"
 "All Right Reserved." = "版权所有."
 "Acknowledgements:" = "鸣谢:"
 "About " = "关于 "
@@ -90,7 +90,6 @@ countries: cn
 "Secondary Heading" = "二级标题"
 "Tertiary Heading" = "三级标题"
 "Separator" = "分割线"
-"Author and Date" = "作者与日期"
 "Insert" = "插入"
 "Bold" = "加粗"
 "Italic" = "斜体"

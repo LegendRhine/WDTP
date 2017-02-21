@@ -76,7 +76,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 
         insertMenu.addItem (insertCaption, TRANS ("Image/Table Caption") + ctrlStr + "P)");
         insertMenu.addItem (insertSeparator, TRANS ("Separator"));
-        insertMenu.addItem (insertAuthor, TRANS ("Author and Date") + ctrlStr + "O)");
+        insertMenu.addItem (insertAuthor, TRANS ("Author") + ctrlStr + "O)");
         insertMenu.addSeparator();
 
         const String internalLinkStr (SystemClipboard::getTextFromClipboard());
@@ -313,11 +313,9 @@ void MarkdownEditor::interLinkInsert()
 void MarkdownEditor::authorInsert()
 {
     String content;
-    content << newLine << ">>> " << TRANS ("Author: ")
-        << FileTreeContainer::projectTree.getProperty ("owner").toString()
-        << " " << newLine << ">>> "
-        << SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), false)
-        << " ";
+    content << newLine 
+        << ">>> " << FileTreeContainer::projectTree.getProperty ("owner").toString () 
+        << newLine;
 
     insertTextAtCaret (content);
 }

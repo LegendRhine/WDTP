@@ -103,6 +103,7 @@
 	- {{siteLogo}}: the logo image should place in 'site/add-in/' and its name should be 'logo.png'.
 	- {{siteMenu}}
 	- {{siteNavi}}
+	- {{siteLink}}: the result is "<a href=../../index.html>ProjectTitle</a>"
 
 	- {{createAndModifyTime}}
 	- {{previousAndNext}}

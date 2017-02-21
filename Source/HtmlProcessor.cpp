@@ -76,6 +76,15 @@ const String HtmlProcessor::getRelativePathToRoot (const File &htmlFile)
 }
 
 //=================================================================================================
+const String HtmlProcessor::getSiteLink (const File &htmlFile)
+{
+    const String& rootPathLink (getRelativePathToRoot (htmlFile) + "index.html");
+    const String& siteTitle (FileTreeContainer::projectTree.getProperty ("title").toString());
+
+    return "<a href=\"" + rootPathLink + "\">" + siteTitle + "</a>";
+}
+
+//=================================================================================================
 const bool HtmlProcessor::atLeastHasOneMenu (const ValueTree& tree)
 {
     for (int i = tree.getNumChildren(); --i >= 0; )
@@ -385,6 +394,12 @@ void HtmlProcessor::processTags (const ValueTree& docOrDirTree,
     if (tplStr.contains ("{{siteNavi}}"))
     {
         tplStr = tplStr.replace ("{{siteNavi}}", getSiteNavi (docOrDirTree));
+    }
+
+    // site link
+    if (tplStr.contains ("{{siteLink}}"))
+    {
+        tplStr = tplStr.replace ("{{siteLink}}", getSiteLink (htmlFile));
     }
 
     // back to previous level

@@ -56,7 +56,9 @@ private:
     static void copyDocMediasToSite (const File& mdFile, const File& htmlFile, const String& htmlStr);
 
 public:
+    /** the end character in the result is '/' */
     static const String getRelativePathToRoot (const File &htmlFile);
+    static const String getSiteLink(const File &htmlFile);
 
 private:
     static const bool atLeastHasOneMenu (const ValueTree& tree);

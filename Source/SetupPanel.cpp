@@ -246,7 +246,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docProperties.add (new TextPropertyComponent (Value (currentTree.getProperty ("modifyDate")), 
                                                          TRANS ("Last Modified: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[wordCount], TRANS ("Word Count: "), 0, false));
-    docProperties.add (new BooleanPropertyComponent (*values[thumb], TRANS ("Title Image: "), TRANS ("Yes")));
+    docProperties.add (new BooleanPropertyComponent (*values[thumb], TRANS ("Title Image: "), TRANS ("Using")));
 
     // images in this doc
     StringArray imgFileSa;

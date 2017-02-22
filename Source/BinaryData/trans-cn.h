@@ -312,3 +312,4 @@ countries: cn
 " matched in " = "处, 修改了"
 " file(s)." = " 个文件."
 "Nothing could be found." = "没找到需要替换的内容."
+"Using" = "使用"

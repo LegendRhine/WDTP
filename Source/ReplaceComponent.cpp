@@ -109,9 +109,8 @@ void ReplaceComponent::buttonClicked (Button* buttonThatWasClicked)
 {
     if (buttonThatWasClicked == replaceBt)
     {
-        if (originalTe->getText ().isEmpty ()
-            || replaceTe->getText ().isEmpty ()
-            || originalTe->getText () == replaceTe->getText ())
+        if (originalTe->getText().isEmpty()
+            || originalTe->getText() == replaceTe->getText())
             return;
 
         const String& originalText (originalTe->getText ());

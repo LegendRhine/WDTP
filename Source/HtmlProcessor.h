@@ -58,6 +58,8 @@ private:
 public:
     /** the end character in the result is '/' */
     static const String getRelativePathToRoot (const File &htmlFile);
+
+    /** extrct the project's title (up to first occurrence of ' ') */
     static const String getSiteLink(const File &htmlFile);
 
 private:

@@ -81,7 +81,7 @@ const String HtmlProcessor::getSiteLink (const File &htmlFile)
     const String& rootPathLink (getRelativePathToRoot (htmlFile) + "index.html");
     const String& siteTitle (FileTreeContainer::projectTree.getProperty ("title").toString());
 
-    return "<a href=\"" + rootPathLink + "\">" + siteTitle + "</a>";
+    return "<a href=\"" + rootPathLink + "\">" + siteTitle.upToFirstOccurrenceOf (" ", false, true) + "</a>";
 }
 
 //=================================================================================================
@@ -596,7 +596,7 @@ const String HtmlProcessor::getSiteNavi (const ValueTree& docTree)
 
     while (parent.isValid())
     {
-        const String& text (parent.getProperty ("title").toString());
+        const String& text (parent.getProperty ("title").toString().upToFirstOccurrenceOf (" ", false, true));
         navi = "<a href=\"" + path + "index.html\">" + text + "</a>/" + navi;
         path += "../";
 

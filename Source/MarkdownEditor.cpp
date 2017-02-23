@@ -936,6 +936,17 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         return true;
     }
 
+    else if (key == KeyPress (',', ModifierKeys::shiftModifier, 0)) // '<'
+    {
+        const String& selectedStr (getHighlightedText ());
+        insertTextAtCaret ("<" + selectedStr + ">");
+
+        if (selectedStr.isEmpty ())
+            moveCaretLeft (false, false);
+
+        return true;
+    }
+
     // Chinese punctuation matching
     else if (key.getKeyCode() == 0)
     {

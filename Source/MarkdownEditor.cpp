@@ -127,12 +127,14 @@ void MarkdownEditor::performPopupMenuAction (int index)
     {
         parent->getCurrentTree().setProperty ("title", getHighlightedText(), nullptr);
         parent->getSetupPanel()->updateDocPanel();
+        DocTreeViewItem::needCreate (parent->getCurrentTree());
     }
 
     else if (pickDesc == index)
     {
         parent->getCurrentTree().setProperty ("description", getHighlightedText(), nullptr);
         parent->getSetupPanel()->updateDocPanel();
+        DocTreeViewItem::needCreate (parent->getCurrentTree());
     }
 
     else if (insertSeparator == index)

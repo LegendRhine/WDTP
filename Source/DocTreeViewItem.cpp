@@ -884,7 +884,7 @@ void DocTreeViewItem::statistics()
         statis (tree, dirNums, totalWords, totalImgs);
 
         AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS ("Statistics Info"),
-                                     (isDir ? (TRANS ("Dir Name: ") + tree.getProperty ("name").toString() + newLine) : String())
+                                     (isDir ? (TRANS ("Dir: ") + tree.getProperty ("name").toString() + newLine) : String())
                                      + (isDir ? TRANS ("Title: ") : TRANS ("Project: ")) 
                                      + tree.getProperty ("title").toString() + newLine + newLine
                                      + TRANS ("Sub-dirs: ") + String (dirNums) + newLine

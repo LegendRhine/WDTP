@@ -14,7 +14,8 @@ Author:  SwingCoder
 //==============================================================================
 /** This component used for replace all the matched-content in an item (valueTree) */
 class ReplaceComponent : public Component,
-                         public ButtonListener
+                         public ButtonListener,
+                         public TextEditor::Listener
 {
 public:
     //==============================================================================
@@ -23,7 +24,9 @@ public:
 
     void paint (Graphics& g) override;
     void resized () override;
+
     void buttonClicked (Button* buttonThatWasClicked) override;
+    virtual void textEditorReturnKeyPressed (TextEditor&) override;
 
 private:
     //=================================================================================================

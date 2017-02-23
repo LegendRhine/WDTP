@@ -32,43 +32,38 @@ ReplaceComponent::ReplaceComponent (TextEditor* editor_,
     label->setFont (Font (16.00f, Font::plain));
     label->setJustificationType (Justification::centred);
     label->setEditable (false, false, false);
-    label->setColour (Label::textColourId, Colours::red);
-    label->setColour (TextEditor::textColourId, Colours::black);
-    label->setColour (TextEditor::backgroundColourId, Colour (0x00));
 
     addAndMakeVisible (orignalLb = new Label (String (),
                                               TRANS ("Original Content:")));
     orignalLb->setFont (Font (15.00f, Font::plain));
     orignalLb->setJustificationType (Justification::centredLeft);
     orignalLb->setEditable (false, false, false);
-    orignalLb->setColour (TextEditor::textColourId, Colours::black);
-    orignalLb->setColour (TextEditor::backgroundColourId, Colour (0x00));
 
     addAndMakeVisible (replaceToLb = new Label (String (),
                                                 TRANS ("Replace To: ")));
     replaceToLb->setFont (Font (15.00f, Font::plain));
     replaceToLb->setJustificationType (Justification::centredLeft);
     replaceToLb->setEditable (false, false, false);
-    replaceToLb->setColour (TextEditor::textColourId, Colours::black);
-    replaceToLb->setColour (TextEditor::backgroundColourId, Colour (0x00));
-
+    
     addAndMakeVisible (originalTe = new TextEditor (String ()));
     originalTe->setMultiLine (false);
     originalTe->setReturnKeyStartsNewLine (false);
     originalTe->setReadOnly (false);
-    originalTe->setScrollbarsShown (true);
     originalTe->setCaretVisible (true);
     originalTe->setPopupMenuEnabled (true);
-    originalTe->setText (String ());
+    originalTe->setSelectAllWhenFocused (true);
+    originalTe->setText (SystemClipboard::getTextFromClipboard ().removeCharacters ("\n")
+                         .removeCharacters ("\r"), dontSendNotification);
 
     addAndMakeVisible (replaceTe = new TextEditor (String ()));
     replaceTe->setMultiLine (false);
     replaceTe->setReturnKeyStartsNewLine (false);
     replaceTe->setReadOnly (false);
-    replaceTe->setScrollbarsShown (true);
     replaceTe->setCaretVisible (true);
     replaceTe->setPopupMenuEnabled (true);
     replaceTe->setText (String ());
+    replaceTe->setSelectAllWhenFocused (true);
+    replaceTe->addListener (this);
 
     addAndMakeVisible (replaceBt = new TextButton (String ()));
     replaceBt->setButtonText (TRANS ("Replace"));
@@ -83,6 +78,12 @@ ReplaceComponent::ReplaceComponent (TextEditor* editor_,
     caseBt->addListener (this);
 
     setSize (385, 175);
+
+    replaceTe->setExplicitFocusOrder (1);
+    caseBt->setExplicitFocusOrder (2);
+    replaceBt->setExplicitFocusOrder (3);
+    cancelBt->setExplicitFocusOrder (4);
+    originalTe->setExplicitFocusOrder (5);
 }
 
 //==============================================================================
@@ -149,6 +150,13 @@ void ReplaceComponent::buttonClicked (Button* buttonThatWasClicked)
     {
         replaced = false;
     }
+}
+
+//=================================================================================================
+void ReplaceComponent::textEditorReturnKeyPressed (TextEditor& te)
+{
+    if (&te == replaceTe)
+        replaceBt->triggerClick();
 }
 
 //=================================================================================================

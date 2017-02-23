@@ -879,13 +879,14 @@ void DocTreeViewItem::statistics()
         int dirNums = -1;  // non-include itself
         int totalWords = 0;
         int totalImgs = 0;
+        const bool isDir = (tree.getType ().toString () == "dir");
 
         statis (tree, dirNums, totalWords, totalImgs);
-        const String& name (tree.getType().toString() == "dir" ? TRANS ("Dir Name: ") : TRANS ("Project: "));
 
         AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS ("Statistics Info"),
-                                     name + tree.getProperty ("name").toString() + newLine
-                                     + TRANS ("Title: ") + tree.getProperty ("title").toString() + newLine + newLine
+                                     (isDir ? (TRANS ("Dir Name: ") + tree.getProperty ("name").toString() + newLine) : String())
+                                     + (isDir ? TRANS ("Title: ") : TRANS ("Project: ")) 
+                                     + tree.getProperty ("title").toString() + newLine + newLine
                                      + TRANS ("Sub-dirs: ") + String (dirNums) + newLine
                                      + TRANS ("Docs: ") + String (docNums) + newLine
                                      + TRANS ("Total Words: ") + String (totalWords) + newLine

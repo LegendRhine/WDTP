@@ -181,7 +181,7 @@ const String Md2Html::endnoteParse (const String& mdString)
 
     if (notes.size() > 0)
     {
-        notes.insert (0, "***" + TRANS ("Endnote(s): ") + "***");
+        notes.insert (0, "**" + TRANS ("Endnote(s): ") + "**");
         notes.insert (1, "<ol><div class=endnote>");
         notes.add ("</ol></div>");
 

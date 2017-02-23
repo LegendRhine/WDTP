@@ -320,10 +320,11 @@ void FileTreeContainer::selectIdentityItem()
 {
     TreeViewItem* item = fileTree.findItemFromIdentifierString (lastItem);
 
-    if (item != nullptr)
-        item->setSelected (true, true);
-    else
-        fileTree.getRootItem()->setSelected (true, true);
+    if (item == nullptr)
+        item = fileTree.getRootItem ();
+
+    item->setSelected (true, true);
+    fileTree.scrollToKeepItemVisible (item);
 }
 
 //=================================================================================================

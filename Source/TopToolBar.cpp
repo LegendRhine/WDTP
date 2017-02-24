@@ -553,14 +553,18 @@ void TopToolBar::generateHtmlFilesIfNeeded (ValueTree tree)
 {
     if ((bool)tree.getProperty ("needCreateHtml"))
     {
-        if (tree.getType().toString() == "doc")
+        if (tree.getType ().toString () == "doc")
+        {
             HtmlProcessor::createArticleHtml (tree, false);
+        }
         else
+        {
             HtmlProcessor::createIndexHtml (tree, false);
-    }
 
-    for (int i = tree.getNumChildren(); --i >= 0; )
-        generateHtmlFilesIfNeeded (tree.getChild (i));
+            for (int i = tree.getNumChildren (); --i >= 0; )
+                generateHtmlFilesIfNeeded (tree.getChild (i));
+        }
+    }    
 }
 
 //=================================================================================================

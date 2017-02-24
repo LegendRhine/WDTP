@@ -716,7 +716,7 @@ const File DocTreeViewItem::createDoc (const String& docName, const bool selectA
 
     // create this doc on disk
     const File& thisDoc (getMdFileOrDir (tree).getChildFile (docFileName + ".md")
-                         .getNonexistentSibling (true));
+                         .getNonexistentSibling (false));
     thisDoc.create();
     thisDoc.appendText ("# ");
 
@@ -771,7 +771,7 @@ void DocTreeViewItem::createNewFolder()
             dirName += "(2)";
 
         // create this dir on disk
-        File thisDir (getMdFileOrDir (tree).getChildFile (dirName).getNonexistentSibling (true));
+        File thisDir (getMdFileOrDir (tree).getChildFile (dirName).getNonexistentSibling (false));
         thisDir.createDirectory();
 
         // dir tree

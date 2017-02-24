@@ -90,6 +90,7 @@ void FileTreeContainer::openProject (const File& project)
             realProject = unpackDir.getChildFile (project.getFileNameWithoutExtension() + ".wdtp");
     }
 
+    // start a new instance of this app
     if (projectTree.isValid())
     {
         Process::openDocument (File::getSpecialLocation (File::currentApplicationFile).getFullPathName(),
@@ -98,7 +99,15 @@ void FileTreeContainer::openProject (const File& project)
         return;
     }
 
-    projectTree = SwingUtilities::readValueTreeFromFile (realProject);
+    // for backward compatibility (0.9.170217)
+    // check the file has been gziped or not
+    MemoryBlock mb;
+    realProject.loadFileAsData (mb);
+    const uint8* const data = (const uint8*)mb.getData ();
+    const bool isGzip = ((int)data[0] == 120 && (int)data[1] == 218);
+    // should remove above at some point (backward compatibility)
+
+    projectTree = SwingUtilities::readValueTreeFromFile (realProject, isGzip);
 
     // check if this is an vaild project file
     if (projectTree.getType().toString() != "wdtpProject")
@@ -321,7 +330,7 @@ void FileTreeContainer::selectIdentityItem()
     TreeViewItem* item = fileTree.findItemFromIdentifierString (lastItem);
 
     if (item == nullptr)
-        item = fileTree.getRootItem ();
+        item = fileTree.getRootItem();
 
     item->setSelected (true, true);
     fileTree.scrollToKeepItemVisible (item);
@@ -360,15 +369,13 @@ void FileTreeContainer::reloadCurrentDoc()
 //=================================================================================================
 bool FileTreeContainer::saveProject()
 {
-    if (SwingUtilities::writeValueTreeToFile (projectTree, projectFile))
-    {
-        return true;
-    }
-    else
+    if (!SwingUtilities::writeValueTreeToFile (projectTree, projectFile, true))
     {
         SHOW_MESSAGE (TRANS ("Something wrong during saving this project."));
         return false;
     }
+
+    return true;
 }
 
 //=================================================================================================

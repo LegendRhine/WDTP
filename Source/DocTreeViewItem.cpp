@@ -879,7 +879,7 @@ void DocTreeViewItem::statistics()
         int dirNums = -1;  // non-include itself
         int totalWords = 0;
         int totalImgs = 0;
-        const bool isDir = (tree.getType ().toString () == "dir");
+        const bool isDir = (tree.getType().toString() == "dir");
 
         statis (tree, dirNums, totalWords, totalImgs);
 

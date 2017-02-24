@@ -19,18 +19,18 @@ class WDTPApplication : public JUCEApplication
 {
 public:
     //==============================================================================
-    WDTPApplication () {}
+    WDTPApplication() {}
 
-    const String getApplicationName () override     { return ProjectInfo::projectName; }
-    const String getApplicationVersion () override  { return ProjectInfo::versionString; }
-    bool moreThanOneInstanceAllowed () override     { return true; }
+    const String getApplicationName() override     { return ProjectInfo::projectName; }
+    const String getApplicationVersion() override  { return ProjectInfo::versionString; }
+    bool moreThanOneInstanceAllowed() override     { return true; }
 
     //==============================================================================
     void initialise (const String& commandLine) override
     {
         // for WebBroswerComponent's web-core on Windows (IE7-IE11)
         // otherwise, the embedded broswer cannot load any js (e.g. code-hightlight..)
-        SwingUtilities::fixWindowsRegistry ();
+        SwingUtilities::fixWindowsRegistry();
 
         // initial system properties file
         const File& f (File::getSpecialLocation (File::userDocumentsDirectory).getChildFile ("wdtp.sys"));
@@ -39,30 +39,30 @@ public:
         systemFile = new PropertiesFile (f, options);
 
         // when first run this application...
-        if (!f.existsAsFile ())
+        if (!f.existsAsFile())
         {
             systemFile->setValue ("language", 0);  // 0 for English
-            systemFile->setValue ("uiBackground", Colour (0xffdcdbdb).toString ());
-            systemFile->setValue ("uiTextColour", Colour (0xff303030).toString ());
-            systemFile->setValue ("editorFontColour", Colour (0xff303030).toString ());
-            systemFile->setValue ("editorBackground", Colour (0xffdedede).toString ());
-            systemFile->setValue ("fontSize", SwingUtilities::getFontSize ());
+            systemFile->setValue ("uiBackground", Colour (0xffdcdbdb).toString());
+            systemFile->setValue ("uiTextColour", Colour (0xff303030).toString());
+            systemFile->setValue ("editorFontColour", Colour (0xff303030).toString());
+            systemFile->setValue ("editorBackground", Colour (0xffdedede).toString());
+            systemFile->setValue ("fontSize", SwingUtilities::getFontSize());
 
-            systemFile->save ();
+            systemFile->save();
         }
 
         // command manager
-        cmdManager = new ApplicationCommandManager ();
+        cmdManager = new ApplicationCommandManager();
 
         // initial application's GUI
-        LookAndFeel::setDefaultLookAndFeel (lnf = new SwingLookAndFeel ());
-        mainWindow = new MainWindow (getApplicationName ());
+        LookAndFeel::setDefaultLookAndFeel (lnf = new SwingLookAndFeel());
+        mainWindow = new MainWindow (getApplicationName());
 
         // double click to open a project/packed-project in OS-finder
-        if (commandLine.isNotEmpty () &&
+        if (commandLine.isNotEmpty() &&
             (commandLine.contains (".wdtp") || commandLine.contains (".wpck")))
         {
-            mainWindow->openProject (File (commandLine.unquoted ()));
+            mainWindow->openProject (File (commandLine.unquoted()));
         }
         else // open the project when eixts the app the last time
         {
@@ -70,25 +70,25 @@ public:
             recentFiles.restoreFromString (systemFile->getValue ("recentFiles"));
             const File& projectFile (recentFiles.getFile (0));
 
-            if (projectFile.existsAsFile ())
+            if (projectFile.existsAsFile())
                 mainWindow->openProject (projectFile);
         }
     }
     //=========================================================================
-    void shutdown () override
+    void shutdown() override
     {
         // must destroy all guis first since they're using the systemFile object
         mainWindow = nullptr;
 
-        systemFile->saveIfNeeded ();
+        systemFile->saveIfNeeded();
         deleteAndZero (systemFile);
         deleteAndZero (cmdManager);
     }
 
     //=========================================================================
-    void systemRequestedQuit () override
+    void systemRequestedQuit() override
     {
-        quit ();
+        quit();
     }
 
     //=========================================================================

@@ -39,7 +39,7 @@ void SwingUtilities::showAbout (const String& shortDescription,
 }
 
 //=================================================================================================
-void SwingUtilities::fixWindowsRegistry ()
+void SwingUtilities::fixWindowsRegistry()
 {
 #ifdef JUCE_WINDOWS
 
@@ -48,7 +48,7 @@ void SwingUtilities::fixWindowsRegistry ()
                      "FeatureControl\\FEATURE_BROWSER_EMULATION\\";
 
     // build the full path to the key
-    const String key = keypath + JUCEApplication::getInstance ()->getApplicationName () + ".exe";
+    const String key = keypath + JUCEApplication::getInstance()->getApplicationName() + ".exe";
 
     // this is the value we want
 	// see: https://msdn.microsoft.com/en-us/library/ee330730(v=vs.85).aspx
@@ -63,7 +63,7 @@ void SwingUtilities::fixWindowsRegistry ()
 
         if (sz == 4)             // DWORD
         {
-            uint32 val = *(unsigned int*)data.getData ();
+            uint32 val = *(unsigned int*)data.getData();
 
             if (val == correctValue)
                 ok = true;
@@ -83,10 +83,10 @@ const bool SwingUtilities::writeValueTreeToFile (const ValueTree& treeToWrite,
                                                  const File& fileToWriteTo,
                                                  const bool usingGZipCompresData/* = false*/)
 {
-    if (fileToWriteTo.hasWriteAccess ())
+    if (fileToWriteTo.hasWriteAccess())
     {
         TemporaryFile tempFile (fileToWriteTo);
-        FileOutputStream* outputStream (tempFile.getFile ().createOutputStream ());
+        FileOutputStream* outputStream (tempFile.getFile().createOutputStream());
         jassert (outputStream != nullptr);
 
         ScopedPointer<OutputStream> out = nullptr;
@@ -99,10 +99,10 @@ const bool SwingUtilities::writeValueTreeToFile (const ValueTree& treeToWrite,
         if (out != nullptr)
         {
             treeToWrite.writeToStream (*out);
-            out->flush ();
+            out->flush();
             out = nullptr;
 
-            return tempFile.overwriteTargetFileWithTemporary ();
+            return tempFile.overwriteTargetFileWithTemporary();
         }
     }
 
@@ -113,7 +113,7 @@ const bool SwingUtilities::writeValueTreeToFile (const ValueTree& treeToWrite,
 const ValueTree SwingUtilities::readValueTreeFromFile (const File& fileToReadFrom,
                                                        const bool usingGZipCompresData/* = false*/)
 {
-    FileInputStream* fileInputStream (fileToReadFrom.createInputStream ());
+    FileInputStream* fileInputStream (fileToReadFrom.createInputStream());
 
     if (fileInputStream != nullptr)
     {
@@ -124,7 +124,7 @@ const ValueTree SwingUtilities::readValueTreeFromFile (const File& fileToReadFro
         else
             input = fileInputStream;
 
-        if (fileInputStream->openedOk () && input != nullptr)
+        if (fileInputStream->openedOk() && input != nullptr)
         {
             return ValueTree::readFromStream (*input);
         }
@@ -138,12 +138,12 @@ const String SwingUtilities::getTimeString (const Time& time)
 {
     String s;
 
-    s << String (time.getYear ())
-        << String (time.getMonth () + 1).paddedLeft ('0', 2)
-        << String (time.getDayOfMonth ()).paddedLeft ('0', 2)
-        << String (time.getHours ()).paddedLeft ('0', 2)
-        << String (time.getMinutes ()).paddedLeft ('0', 2)
-        << String (time.getSeconds ()).paddedLeft ('0', 2);
+    s << String (time.getYear())
+        << String (time.getMonth() + 1).paddedLeft ('0', 2)
+        << String (time.getDayOfMonth()).paddedLeft ('0', 2)
+        << String (time.getHours()).paddedLeft ('0', 2)
+        << String (time.getMinutes()).paddedLeft ('0', 2)
+        << String (time.getSeconds()).paddedLeft ('0', 2);
 
     return s;
 }
@@ -151,7 +151,7 @@ const String SwingUtilities::getTimeString (const Time& time)
 //=================================================================================================
 const String SwingUtilities::getCurrentTimeString (const int plusDays /*= 0*/)
 {
-    return getTimeString (Time::getCurrentTime () + RelativeTime::days (plusDays));
+    return getTimeString (Time::getCurrentTime() + RelativeTime::days (plusDays));
 }
 
 //=================================================================================================
@@ -167,13 +167,13 @@ const String SwingUtilities::getTimeStringWithSeparator (const String& dateAndTi
         (includeTime ? " " +
          dateAndTimeString.substring (8, 10) + ":" +
          dateAndTimeString.substring (10, 12) + ":" +
-         dateAndTimeString.substring (12, 14) : String ());
+         dateAndTimeString.substring (12, 14) : String());
 }
 
 //=================================================================================================
 const String SwingUtilities::getDateWeekdayAndTimeString (const String& dateAndTimeString)
 {
-    if (dateAndTimeString.isEmpty ())
+    if (dateAndTimeString.isEmpty())
         return String::empty;
 
     const String& weekday (getTimeFromString (dateAndTimeString).getWeekdayName (true));
@@ -190,7 +190,7 @@ const String SwingUtilities::getDateWeekdayAndTimeString (const String& dateAndT
 //=================================================================================================
 const String SwingUtilities::getWeekdayFromTimeString (const String& dateAndTimeString)
 {
-    if (dateAndTimeString.isEmpty ())
+    if (dateAndTimeString.isEmpty())
         return String::empty;
 
     return TRANS (getTimeFromString (dateAndTimeString).getWeekdayName (true));
@@ -200,7 +200,7 @@ const String SwingUtilities::getWeekdayFromTimeString (const String& dateAndTime
 const bool SwingUtilities::earlyThanCurrentTime (const String& dateAndTimeString)
 {
     if (isTimeStringValid (dateAndTimeString))
-        return dateAndTimeString <= getCurrentTimeString ();
+        return dateAndTimeString <= getCurrentTimeString();
     else
         return false;
 }
@@ -208,14 +208,14 @@ const bool SwingUtilities::earlyThanCurrentTime (const String& dateAndTimeString
 //=================================================================================================
 const Time SwingUtilities::getTimeFromString (const String& dateAndTimeString)
 {
-    if (dateAndTimeString.isEmpty ())
-        return Time::getCurrentTime ();
+    if (dateAndTimeString.isEmpty())
+        return Time::getCurrentTime();
 
-    const int year = dateAndTimeString.substring (0, 4).getIntValue ();
-    const int month = dateAndTimeString.substring (4, 6).getIntValue ();
-    const int day = dateAndTimeString.substring (6, 8).getIntValue ();
-    const int hour = dateAndTimeString.substring (8, 10).getIntValue ();
-    const int mins = dateAndTimeString.substring (10, 12).getIntValue ();
+    const int year = dateAndTimeString.substring (0, 4).getIntValue();
+    const int month = dateAndTimeString.substring (4, 6).getIntValue();
+    const int day = dateAndTimeString.substring (6, 8).getIntValue();
+    const int hour = dateAndTimeString.substring (8, 10).getIntValue();
+    const int mins = dateAndTimeString.substring (10, 12).getIntValue();
 
     return Time (year, month - 1, day, hour, mins);
 }
@@ -223,25 +223,25 @@ const Time SwingUtilities::getTimeFromString (const String& dateAndTimeString)
 //=================================================================================================
 const bool SwingUtilities::isTimeStringValid (const String& dateAndTimeString)
 {
-    return (dateAndTimeString.length () == 14 &&
-            dateAndTimeString.substring (0, 4).getIntValue () >= 2000 &&
-            dateAndTimeString.substring (0, 4).getIntValue () <= 2100 &&
-            dateAndTimeString.substring (4, 6).getIntValue () >= 1 &&
-            dateAndTimeString.substring (4, 6).getIntValue () <= 12 &&
-            dateAndTimeString.substring (6, 8).getIntValue () >= 1 &&
-            dateAndTimeString.substring (6, 8).getIntValue () <= 31 &&
-            dateAndTimeString.substring (8, 10).getIntValue () >= 0 &&
-            dateAndTimeString.substring (8, 10).getIntValue () <= 24 &&
-            dateAndTimeString.substring (10, 12).getIntValue () >= 0 &&
-            dateAndTimeString.substring (10, 12).getIntValue () <= 59 &&
-            dateAndTimeString.substring (12, 14).getIntValue () >= 0 &&
-            dateAndTimeString.substring (14, 16).getIntValue () <= 59);
+    return (dateAndTimeString.length() == 14 &&
+            dateAndTimeString.substring (0, 4).getIntValue() >= 2000 &&
+            dateAndTimeString.substring (0, 4).getIntValue() <= 2100 &&
+            dateAndTimeString.substring (4, 6).getIntValue() >= 1 &&
+            dateAndTimeString.substring (4, 6).getIntValue() <= 12 &&
+            dateAndTimeString.substring (6, 8).getIntValue() >= 1 &&
+            dateAndTimeString.substring (6, 8).getIntValue() <= 31 &&
+            dateAndTimeString.substring (8, 10).getIntValue() >= 0 &&
+            dateAndTimeString.substring (8, 10).getIntValue() <= 24 &&
+            dateAndTimeString.substring (10, 12).getIntValue() >= 0 &&
+            dateAndTimeString.substring (10, 12).getIntValue() <= 59 &&
+            dateAndTimeString.substring (12, 14).getIntValue() >= 0 &&
+            dateAndTimeString.substring (14, 16).getIntValue() <= 59);
 }
 
 //=================================================================================================
 const String SwingUtilities::getValidFileName (const String& originalStr)
 {
-    return originalStr.trim ()
+    return originalStr.trim()
         .replaceCharacter ('.', '-').replaceCharacter ('?', '-')
         .replaceCharacter ('*', '-').replaceCharacter ('/', '-')
         .replaceCharacter ('~', '-').replaceCharacter (':', '-')
@@ -257,49 +257,49 @@ SwingDialog::SwingDialog (const String& description) :
     addAndMakeVisible (titleLb = new Label (String::empty, description));
     titleLb->setColour (Label::textColourId, Colour (0xffb85c1a));
     titleLb->setJustificationType (Justification::centred);
-    titleLb->setFont (Font (SwingUtilities::getFontSize ()));
+    titleLb->setFont (Font (SwingUtilities::getFontSize()));
 }
 //=========================================================================
-SwingDialog::~SwingDialog ()
+SwingDialog::~SwingDialog()
 {
 }
 //=========================================================================
 void SwingDialog::paint (Graphics& g)
 {
     g.fillAll (Colour (0xffdcdbdb));
-    g.drawImageAt (logo, getWidth () - 165, 2);
+    g.drawImageAt (logo, getWidth() - 165, 2);
 }
 //=========================================================================
-void SwingDialog::resized ()
+void SwingDialog::resized()
 {
     int h = 5;
 
-    if (titleLb->getText ().isNotEmpty ())
+    if (titleLb->getText().isNotEmpty())
     {
-        titleLb->setBounds (10, h, getWidth () - 130, 28);
+        titleLb->setBounds (10, h, getWidth() - 130, 28);
         h += 35;
     }
 
     // text blocks
-    for (int i = 0; i < blocks.size (); ++i)
+    for (int i = 0; i < blocks.size(); ++i)
     {
-        blocks[i]->setBounds (20, h, getWidth () - 40, jmin (200, blocks[i]->getTextHeight () + 10));
+        blocks[i]->setBounds (20, h, getWidth() - 40, jmin (200, blocks[i]->getTextHeight() + 10));
         //DBG (blocks[i]->getTextHeight());
-        h += blocks[i]->getHeight ();
+        h += blocks[i]->getHeight();
     }
 
     // text labels (tips) and editors (inputs)
-    for (int i = 0; i < inputs.size (); ++i)
+    for (int i = 0; i < inputs.size(); ++i)
     {
-        if (inputLbs[i]->getText ().isNotEmpty ())
+        if (inputLbs[i]->getText().isNotEmpty())
         {
-            inputLbs[i]->setBounds (15, h, getWidth () - 30, 23);
-            inputs[i]->setBounds (15, h + 23, getWidth () - 30, 25);
+            inputLbs[i]->setBounds (15, h, getWidth() - 30, 23);
+            inputs[i]->setBounds (15, h + 23, getWidth() - 30, 25);
             h += 53;
         }
         else
         {
-            inputs[i]->setBounds (15, h, getWidth () - 30, 25);
+            inputs[i]->setBounds (15, h, getWidth() - 30, 25);
             h += 30;
         }
     }
@@ -307,16 +307,16 @@ void SwingDialog::resized ()
     // custom component
     if (custComp != nullptr)
     {
-        custComp->setBounds (15, h + 5, getWidth () - 30, custComp->getHeight ());
-        h += custComp->getHeight () + 10;
+        custComp->setBounds (15, h + 5, getWidth() - 30, custComp->getHeight());
+        h += custComp->getHeight() + 10;
     }
 
     // buttons
-    if (bts.size () > 0)
+    if (bts.size() > 0)
     {
-        const int firstBtsX = (getWidth () - bts.size () * 70) / 2 + 5;
+        const int firstBtsX = (getWidth() - bts.size() * 70) / 2 + 5;
 
-        for (int i = 0; i < bts.size (); ++i)
+        for (int i = 0; i < bts.size(); ++i)
         {
             bts[i]->setSize (60, 25);
             bts[i]->setTopLeftPosition (firstBtsX + i * 70, h + 10);
@@ -325,13 +325,13 @@ void SwingDialog::resized ()
         h += 35;
     }
 
-    setSize (getWidth (), h + 10);
+    setSize (getWidth(), h + 10);
 }
 //=================================================================================================
 void SwingDialog::addButton (const String& btName, const KeyPress& shortKey)
 {
-    for (int i = bts.size (); --i >= 0; )
-        jassert (btName != bts[i]->getName ());  // mustn't use the same name!
+    for (int i = bts.size(); --i >= 0; )
+        jassert (btName != bts[i]->getName());  // mustn't use the same name!
 
     TextButton* bt = new TextButton (btName);
     bts.add (bt);
@@ -342,9 +342,9 @@ void SwingDialog::addButton (const String& btName, const KeyPress& shortKey)
 //=================================================================================================
 TextButton* SwingDialog::getButton (const String& btName)
 {
-    for (int i = bts.size (); --i >= 0; )
+    for (int i = bts.size(); --i >= 0; )
     {
-        if (btName == bts[i]->getName ())
+        if (btName == bts[i]->getName())
             return bts[i];
     }
 
@@ -358,21 +358,21 @@ void SwingDialog::addTextEditor (const String& teName,
                                  const bool isPw,
                                  const bool readOnly)
 {
-    for (int i = inputs.size (); --i >= 0; )
-        jassert (teName != inputs[i]->getName ());  // mustn't use the same name!
+    for (int i = inputs.size(); --i >= 0; )
+        jassert (teName != inputs[i]->getName());  // mustn't use the same name!
 
     // label 
     Label* lb = new Label (String::empty, tip);
     inputLbs.add (lb);
     addAndMakeVisible (lb);
-    lb->setFont (Font (SwingUtilities::getFontSize () - 3.0f));
+    lb->setFont (Font (SwingUtilities::getFontSize() - 3.0f));
     //lb->setColour (Label::textColourId, Colours::lightgrey);
 
     // text editor
     InputTextEditor* te = new InputTextEditor (teName, (isPw ? '*' : 0U));
     inputs.add (te);
     addAndMakeVisible (te);
-    te->setFont (Font (SwingUtilities::getFontSize () - 1.0f));
+    te->setFont (Font (SwingUtilities::getFontSize() - 1.0f));
     te->setSelectAllWhenFocused (true);
     te->setText (TRANS (content), false);
 
@@ -381,16 +381,16 @@ void SwingDialog::addTextEditor (const String& teName,
         te->setReadOnly (true);
         te->setColour (TextEditor::backgroundColourId, Colour (0x00));
         //te->setColour (TextEditor::textColourId, Colours::lightgrey);
-        te->applyFontToAllText (te->getFont ());
+        te->applyFontToAllText (te->getFont());
     }
 }
 //=================================================================================================
 const String SwingDialog::getTextEditorContents (const String& editorName)
 {
-    for (int i = inputs.size (); --i >= 0; )
+    for (int i = inputs.size(); --i >= 0; )
     {
-        if (editorName == inputs[i]->getName ())
-            return inputs[i]->getText ();
+        if (editorName == inputs[i]->getName())
+            return inputs[i]->getText();
     }
 
     return String::empty;
@@ -398,23 +398,23 @@ const String SwingDialog::getTextEditorContents (const String& editorName)
 //=================================================================================================
 void SwingDialog::buttonClicked (Button*)
 {
-    DialogWindow* dw = findParentComponentOfClass<DialogWindow> ();
+    DialogWindow* dw = findParentComponentOfClass<DialogWindow>();
 
     if (dw != nullptr)
         dw->setVisible (false);
 }
 //=================================================================================================
-void SwingDialog::setFocus ()
+void SwingDialog::setFocus()
 {
-    if (inputs.size () > 0)
-        inputs[0]->grabKeyboardFocus ();
+    if (inputs.size() > 0)
+        inputs[0]->grabKeyboardFocus();
 }
 //=================================================================================================
 TextEditor* SwingDialog::getTextEditor (const String& teName)
 {
-    for (int i = inputs.size (); --i >= 0; )
+    for (int i = inputs.size(); --i >= 0; )
     {
-        if (teName == inputs[i]->getName ())
+        if (teName == inputs[i]->getName())
             return inputs[i];
     }
 
@@ -429,8 +429,8 @@ void SwingDialog::addCustomComponent (Component* comp)
 //=================================================================================================
 void SwingDialog::addTextBlock (const String& content)
 {
-    TextEditor* te = new TextEditor ();
-    te->setFont (Font (SwingUtilities::getFontSize () - 3.0f));
+    TextEditor* te = new TextEditor();
+    te->setFont (Font (SwingUtilities::getFontSize() - 3.0f));
     te->setReadOnly (true);
     te->setColour (TextEditor::textColourId, Colour (0xff303030));
     te->setColour (TextEditor::backgroundColourId, Colour (0x00));
@@ -449,11 +449,11 @@ void SwingDialog::addTextBlock (const String& content)
 //=================================================================================================
 bool SwingDialog::keyPressed (const KeyPress& key)
 {
-    for (int i = bts.size (); --i >= 0; )
+    for (int i = bts.size(); --i >= 0; )
     {
         if (bts[i]->isRegisteredForShortcut (key))
         {
-            bts[i]->triggerClick ();
+            bts[i]->triggerClick();
             return true;
         }
     }
@@ -463,7 +463,7 @@ bool SwingDialog::keyPressed (const KeyPress& key)
 //=================================================================================================
 void SwingDialog::showDialog (const String& windowTitle)
 {
-    resized ();
+    resized();
 
     OptionalScopedPointer<Component> comp (this, true);
     DialogWindow::LaunchOptions option;
@@ -476,8 +476,8 @@ void SwingDialog::showDialog (const String& windowTitle)
     option.resizable = false;
     option.useBottomRightCornerResizer = false;
 
-    option.launchAsync ();
-    setFocus ();
+    option.launchAsync();
+    setFocus();
 }
 
 //=================================================================================================
@@ -485,10 +485,10 @@ void SwingDialog::showDialog (const String& windowTitle)
 Array<Colour> ColourSelectorWithPreset::colours;
 
 //=================================================================================================
-ColourSelectorWithPreset::ColourSelectorWithPreset ()
+ColourSelectorWithPreset::ColourSelectorWithPreset()
 {
-    if (colours.size () <= 0)
-        setPresetDefaultColour ();
+    if (colours.size() <= 0)
+        setPresetDefaultColour();
 }
 //=================================================================================================
 void ColourSelectorWithPreset::setSwatchColour (int index,
@@ -497,7 +497,7 @@ void ColourSelectorWithPreset::setSwatchColour (int index,
     colours.set (index, newColour);
 }
 //=================================================================================================
-void ColourSelectorWithPreset::setPresetDefaultColour ()
+void ColourSelectorWithPreset::setPresetDefaultColour()
 {
     colours.add (Colour (0xFF000000));
     colours.add (Colour (0xFFFFFFFF));

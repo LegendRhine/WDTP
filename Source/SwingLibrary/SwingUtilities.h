@@ -41,10 +41,10 @@
 struct SwingUtilities
 {
     /** Return the platform-special font size */
-    static const float getFontSize () { return 20.f; }
+    static const float getFontSize() { return 20.f; }
 
     /** Return the platform-special font name */
-    static const String getFontName () { return "Microsoft YaHei"; }
+    static const String getFontName() { return "Microsoft YaHei"; }
 
     /** Display "About window" which could be used on Android platform.
         Arg 'shortDescription' (may app's name): the first text line inside the box with
@@ -59,7 +59,7 @@ struct SwingUtilities
 
         After called, it will change the web-core to IE-11 on Windows (write to user's Windows register).
         This method should be called when the app is about to start (eg. first run it). */
-    static void fixWindowsRegistry ();
+    static void fixWindowsRegistry();
 
     //=========================================================================
     /** Write an ValueTree to a file. */
@@ -137,13 +137,13 @@ public:
         : TextEditor (componentName, passwordCharacter)
     { }
 
-    ~InputTextEditor () { }
+    ~InputTextEditor() { }
 
     virtual bool keyPressed (const KeyPress& key) override
     {
         if (key == KeyPress::returnKey)
         {
-            Component* parentComp = getParentComponent ();
+            Component* parentComp = getParentComponent();
 
             if (parentComp != nullptr)
                 parentComp->keyPressed (key);
@@ -174,13 +174,13 @@ class SwingDialog : public Component,
 {
 public:
     SwingDialog (const String& dialogTitle);
-    ~SwingDialog ();
+    ~SwingDialog();
 
     void paint (Graphics&) override;
-    void resized () override;
+    void resized() override;
 
     /** set focus to the first text editor if there is one */
-    void setFocus ();
+    void setFocus();
 
     void addButton (const String& btName, const KeyPress& shortKey);
     TextButton* getButton (const String& btName);
@@ -236,19 +236,19 @@ public:
     //=========================================================================
     void paint (Graphics& g) override
     {
-        g.setColour (isMouseOver () ? Colours::lightskyblue : Colour (0x00));
-        g.fillAll ();
+        g.setColour (isMouseOver() ? Colours::lightskyblue : Colour (0x00));
+        g.fillAll();
     }
 
     //=========================================================================
     virtual void mouseEnter (const MouseEvent&) override
     {
-        repaint ();
+        repaint();
     }
 
     virtual void mouseExit (const MouseEvent&) override
     {
-        repaint ();
+        repaint();
     }
 
     //=========================================================================
@@ -262,9 +262,9 @@ private:
 class ColourSelectorWithPreset : public ColourSelector
 {
 public:
-    ColourSelectorWithPreset ();
+    ColourSelectorWithPreset();
 
-    int getNumSwatches () const override { return colours.size (); }
+    int getNumSwatches() const override { return colours.size(); }
     Colour getSwatchColour (int index) const override { return colours[index]; }
 
     void setSwatchColour (int index, const Colour& newColour) const override;
@@ -272,7 +272,7 @@ public:
 private:
     //=================================================================================================
     static Array<Colour> colours;
-    static void setPresetDefaultColour ();
+    static void setPresetDefaultColour();
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ColourSelectorWithPreset)
 };

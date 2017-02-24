@@ -20,10 +20,10 @@ class ReplaceComponent : public Component,
 public:
     //==============================================================================
     ReplaceComponent (TextEditor* editor, ValueTree& tree);
-    ~ReplaceComponent () { }
+    ~ReplaceComponent() { }
 
     void paint (Graphics& g) override;
-    void resized () override;
+    void resized() override;
 
     void buttonClicked (Button* buttonThatWasClicked) override;
     virtual void textEditorReturnKeyPressed (TextEditor&) override;

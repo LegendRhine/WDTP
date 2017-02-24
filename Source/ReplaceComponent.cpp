@@ -20,12 +20,12 @@ ReplaceComponent::ReplaceComponent (TextEditor* editor_,
     replaced (false)
 {
     jassert (editor != nullptr);
-    jassert (tree.isValid ());
+    jassert (tree.isValid());
 
-    const String& nameText (tree.getType ().toString () == "wdtpProject" ? TRANS ("project!") :
-        (tree.getType ().toString () == "dir" ? TRANS ("dir!") : TRANS ("doc!")));
+    const String& nameText (tree.getType().toString() == "wdtpProject" ? TRANS ("project!") :
+        (tree.getType().toString() == "dir" ? TRANS ("dir!") : TRANS ("doc!")));
 
-    addAndMakeVisible (label = new Label (String (),
+    addAndMakeVisible (label = new Label (String(),
                                           TRANS ("Warning! This will replace all matching content in this ")
                                           + nameText));
 
@@ -33,47 +33,47 @@ ReplaceComponent::ReplaceComponent (TextEditor* editor_,
     label->setJustificationType (Justification::centred);
     label->setEditable (false, false, false);
 
-    addAndMakeVisible (orignalLb = new Label (String (),
+    addAndMakeVisible (orignalLb = new Label (String(),
                                               TRANS ("Original Content:")));
     orignalLb->setFont (Font (15.00f, Font::plain));
     orignalLb->setJustificationType (Justification::centredLeft);
     orignalLb->setEditable (false, false, false);
 
-    addAndMakeVisible (replaceToLb = new Label (String (),
+    addAndMakeVisible (replaceToLb = new Label (String(),
                                                 TRANS ("Replace To: ")));
     replaceToLb->setFont (Font (15.00f, Font::plain));
     replaceToLb->setJustificationType (Justification::centredLeft);
     replaceToLb->setEditable (false, false, false);
     
-    addAndMakeVisible (originalTe = new TextEditor (String ()));
+    addAndMakeVisible (originalTe = new TextEditor (String()));
     originalTe->setMultiLine (false);
     originalTe->setReturnKeyStartsNewLine (false);
     originalTe->setReadOnly (false);
     originalTe->setCaretVisible (true);
     originalTe->setPopupMenuEnabled (true);
     originalTe->setSelectAllWhenFocused (true);
-    originalTe->setText (SystemClipboard::getTextFromClipboard ().removeCharacters ("\n")
+    originalTe->setText (SystemClipboard::getTextFromClipboard().removeCharacters ("\n")
                          .removeCharacters ("\r"), dontSendNotification);
 
-    addAndMakeVisible (replaceTe = new TextEditor (String ()));
+    addAndMakeVisible (replaceTe = new TextEditor (String()));
     replaceTe->setMultiLine (false);
     replaceTe->setReturnKeyStartsNewLine (false);
     replaceTe->setReadOnly (false);
     replaceTe->setCaretVisible (true);
     replaceTe->setPopupMenuEnabled (true);
-    replaceTe->setText (String ());
+    replaceTe->setText (String());
     replaceTe->setSelectAllWhenFocused (true);
     replaceTe->addListener (this);
 
-    addAndMakeVisible (replaceBt = new TextButton (String ()));
+    addAndMakeVisible (replaceBt = new TextButton (String()));
     replaceBt->setButtonText (TRANS ("Replace"));
     replaceBt->addListener (this);
 
-    addAndMakeVisible (cancelBt = new TextButton (String ()));
+    addAndMakeVisible (cancelBt = new TextButton (String()));
     cancelBt->setButtonText (TRANS ("Re-input"));
     cancelBt->addListener (this);
 
-    addAndMakeVisible (caseBt = new ToggleButton (String ()));
+    addAndMakeVisible (caseBt = new ToggleButton (String()));
     caseBt->setButtonText (TRANS ("Case sensitive"));
     caseBt->addListener (this);
 
@@ -93,9 +93,9 @@ void ReplaceComponent::paint (Graphics& g)
 }
 
 //=================================================================================================
-void ReplaceComponent::resized ()
+void ReplaceComponent::resized()
 {
-    label->setBounds (0, 8, getWidth () - 0, 24);
+    label->setBounds (0, 8, getWidth() - 0, 24);
     orignalLb->setBounds (16, 45, 112, 24);
     replaceToLb->setBounds (16, 77, 112, 24);
     originalTe->setBounds (136, 45, 230, 24);
@@ -114,8 +114,8 @@ void ReplaceComponent::buttonClicked (Button* buttonThatWasClicked)
             || originalTe->getText() == replaceTe->getText())
             return;
 
-        const String& originalText (originalTe->getText ());
-        const String& replaceText (replaceTe->getText ());
+        const String& originalText (originalTe->getText());
+        const String& replaceText (replaceTe->getText());
 
         numberFilesOfReplaced = 0;
         numberOfReplaced = 0;
@@ -131,19 +131,19 @@ void ReplaceComponent::buttonClicked (Button* buttonThatWasClicked)
         }
         else
         {
-            LookAndFeel::getDefaultLookAndFeel ().playAlertSound ();
+            LookAndFeel::getDefaultLookAndFeel().playAlertSound();
             SHOW_MESSAGE (TRANS ("Nothing could be found."));
         }
 
-        if (replaced && tree.getType ().toString () == "doc")
-            editor->setText (DocTreeViewItem::getMdFileOrDir (tree).loadFileAsString ());
+        if (replaced && tree.getType().toString() == "doc")
+            editor->setText (DocTreeViewItem::getMdFileOrDir (tree).loadFileAsString());
     }
     else if (buttonThatWasClicked == cancelBt)
     {
-        originalTe->setText (String ());
-        replaceTe->setText (String ());
+        originalTe->setText (String());
+        replaceTe->setText (String());
         
-        originalTe->grabKeyboardFocus ();
+        originalTe->grabKeyboardFocus();
         replaced = false;
     }
     else if (buttonThatWasClicked == caseBt)
@@ -164,19 +164,19 @@ void ReplaceComponent::replaceContent (ValueTree tree_,
                                        const String& originalText,
                                        const String& replaceText)
 {
-    if (tree_.getType ().toString () == "doc")
+    if (tree_.getType().toString() == "doc")
     {
         const File& docFile (DocTreeViewItem::getMdFileOrDir (tree_));
-        String content (docFile.loadFileAsString ());
+        String content (docFile.loadFileAsString());
 
-        const bool contained = caseBt->getToggleState () ? content.contains (originalText)
+        const bool contained = caseBt->getToggleState() ? content.contains (originalText)
             : content.containsIgnoreCase (originalText);
 
         if (contained)
         {
             ++numberFilesOfReplaced;
 
-            int startIndex = caseBt->getToggleState ()
+            int startIndex = caseBt->getToggleState()
                 ? content.indexOf (0, originalText)
                 : content.indexOfIgnoreCase (0, originalText);
 
@@ -185,9 +185,9 @@ void ReplaceComponent::replaceContent (ValueTree tree_,
                 content = content.replaceSection (startIndex, originalText.length(), replaceText);
                 ++numberOfReplaced;
 
-                startIndex = caseBt->getToggleState ()
-                    ? content.indexOf (startIndex + replaceText.length (), originalText)
-                    : content.indexOfIgnoreCase (startIndex + replaceText.length (), originalText);
+                startIndex = caseBt->getToggleState()
+                    ? content.indexOf (startIndex + replaceText.length(), originalText)
+                    : content.indexOfIgnoreCase (startIndex + replaceText.length(), originalText);
             }
 
             docFile.replaceWithText (content);
@@ -200,7 +200,7 @@ void ReplaceComponent::replaceContent (ValueTree tree_,
     }
     else
     {
-        for (int i = tree_.getNumChildren (); --i >= 0; )
+        for (int i = tree_.getNumChildren(); --i >= 0; )
             replaceContent (tree_.getChild (i), originalText, replaceText);
     }
 }

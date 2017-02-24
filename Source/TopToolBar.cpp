@@ -278,7 +278,7 @@ void TopToolBar::findInDoc (const bool next)
         Array<Range<int>> rangeArray;
         rangeArray.add (Range<int> (startIndex, startIndex + keyword.length()));
 
-        editor->setCaretPosition (startIndex + keyword.length ());
+        editor->setCaretPosition (startIndex + keyword.length());
         //editor->setHighlightedRegion (rangeArray[0]);
         editor->setTemporaryUnderlining (rangeArray);
     }
@@ -864,7 +864,7 @@ void TopToolBar::importExternalTpls()
             SHOW_MESSAGE (TRANS ("Import successful!\nPlease regenerate the whole site if you want to use it."));
          
             // here should update the project-setup panel
-            fileTreeContainer->getTreeView ().getRootItem ()->setSelected (true, true);
+            fileTreeContainer->getTreeView().getRootItem()->setSelected (true, true);
         }
     }    
 }

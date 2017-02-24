@@ -598,7 +598,7 @@ const String HtmlProcessor::getSiteNavi (const ValueTree& docTree)
     {
         String text (parent.getProperty ("title").toString());
 
-        if (parent.getType ().toString () == "wdtpProject")
+        if (parent.getType().toString() == "wdtpProject")
             text = text.upToFirstOccurrenceOf (" ", false, true);
 
         navi = "<a href=\"" + path + "index.html\">" + text + "</a>/" + navi;

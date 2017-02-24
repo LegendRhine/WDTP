@@ -316,7 +316,7 @@ void MarkdownEditor::authorInsert()
 {
     String content;
     content << newLine 
-        << ">>> " << FileTreeContainer::projectTree.getProperty ("owner").toString () 
+        << ">>> " << FileTreeContainer::projectTree.getProperty ("owner").toString() 
         << newLine;
 
     insertTextAtCaret (content);
@@ -940,10 +940,10 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
     else if (key == KeyPress (',', ModifierKeys::shiftModifier, 0)) // '<'
     {
-        const String& selectedStr (getHighlightedText ());
+        const String& selectedStr (getHighlightedText());
         insertTextAtCaret ("<" + selectedStr + ">");
 
-        if (selectedStr.isEmpty ())
+        if (selectedStr.isEmpty())
             moveCaretLeft (false, false);
 
         return true;

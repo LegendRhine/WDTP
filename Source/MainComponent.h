@@ -68,7 +68,7 @@ public:
 
 private:
     ScopedPointer<MainContentComponent> mainComp;
-    TooltipWindow  toolTips;
+    TooltipWindow toolTips;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainWindow)
 };

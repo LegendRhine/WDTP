@@ -124,8 +124,15 @@ void FileTreeContainer::openProject (const File& project)
     sorter->setTreeViewItem (docTreeItem);
 
     fileTree.setRootItem (docTreeItem);
-    lastItem = projectTree.getProperty ("identityOfLastSelectedItem").toString();
-    selectIdentityItem();
+    
+    // select the last item
+    const String& lastItem = projectTree.getProperty ("identityOfLastSelectedItem").toString();
+    TreeViewItem* item = fileTree.findItemFromIdentifierString (lastItem);
+
+    if (item == nullptr)
+        item = fileTree.getRootItem ();
+
+    item->setSelected (true, true);
 
     // change the text of main window's title-bar
     MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent());
@@ -148,6 +155,7 @@ void FileTreeContainer::openProject (const File& project)
     recentFiles.addFile (realProject);
 
     systemFile->setValue ("recentFiles", recentFiles.toString());
+    fileTree.scrollToKeepItemVisible (item);
 }
 
 //=================================================================================================
@@ -156,10 +164,10 @@ void FileTreeContainer::closeProject()
     if (hasLoadedProject())
     {
         // store the main-window's size and position
-        MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent());
+        MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent ());
         jassert (mainWindow != nullptr);
 
-        const String& sizeAndPosition (mainWindow->getWindowStateAsString());
+        const String& sizeAndPosition (mainWindow->getWindowStateAsString ());
         projectTree.setProperty ("mainWindowSizeAndPosition", sizeAndPosition, nullptr);
 
         if (saveDocAndProject())
@@ -171,23 +179,19 @@ void FileTreeContainer::closeProject()
             projectFile = File::nonexistent;
             editAndPreview->projectClosed();
 
-            // change the text of main window's title-bar
+            // change the text of main window's title-bar           
             mainWindow->setName (JUCEApplication::getInstance()->getApplicationName());
         }
     }
 }
 
 //=================================================================================================
-const bool FileTreeContainer::saveDocAndProject()
+const bool FileTreeContainer::saveDocAndProject ()
 {
     // Here must check to prevent invalid assert 
     // eg. when quit this application after closed project..
     if (projectTree.isValid())
-    {
-        projectTree.setProperty ("identityOfLastSelectedItem", lastItem, nullptr);
-
         return editAndPreview->saveCurrentDocIfChanged() && saveProject();
-    }
 
     return true;
 }
@@ -325,15 +329,10 @@ void ItemSorter::valueChanged (Value& value)
 }
 
 //=================================================================================================
-void FileTreeContainer::selectIdentityItem()
+void FileTreeContainer::setIdentityOfLastSelectedItem (const String& str)
 {
-    TreeViewItem* item = fileTree.findItemFromIdentifierString (lastItem);
-
-    if (item == nullptr)
-        item = fileTree.getRootItem();
-
-    item->setSelected (true, true);
-    fileTree.scrollToKeepItemVisible (item);
+    projectTree.setProperty ("identityOfLastSelectedItem", str, nullptr);
+    saveProject();
 }
 
 //=================================================================================================

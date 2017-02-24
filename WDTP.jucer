@@ -67,7 +67,7 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <VS2015 targetFolder="Builds/VisualStudio2015" smallIcon="S5pEoV" bigIcon="S5pEoV"
-            externalLibraries="" toolset="v140_xp" extraDefs="" extraLinkerFlags=""
+            externalLibraries="" toolset="v140" extraDefs="" extraLinkerFlags=""
             userNotes="This for Windows 10 x64">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"

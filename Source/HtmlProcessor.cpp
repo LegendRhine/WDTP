@@ -169,8 +169,11 @@ void HtmlProcessor::copyDocMediasToSite (const File& mdFile,
     {
         if (docMedias[i].existsAsFile())
         {
-            htmlMedias[i].deleteFile();
             htmlMedias[i].create();
+
+            if ((docMedias[i].getLastModificationTime() == htmlMedias[i].getLastModificationTime())
+                && (docMedias[i].getSize() == htmlMedias[i].getSize()))
+                continue;
 
             if (!docMedias[i].copyFileTo (htmlMedias[i]))
                 errorStr << docMedias[i].getFullPathName() << newLine;

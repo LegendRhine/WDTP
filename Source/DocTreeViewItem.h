@@ -107,7 +107,7 @@ private:
         packWholeSite, packHtmls, packMedias,
         exportTextDoc, exportDocs, dataStatis, getItemPath,
         replaceIn, rename, deleteThis, 
-        vewInFinder, openInExEditor, browseInEx
+        viewInFinder, openInExEditor, browseInEx
     };
 
     void menuPerform (const int menuIndex);

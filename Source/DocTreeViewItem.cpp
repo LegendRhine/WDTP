@@ -337,7 +337,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addItem (deleteThis, TRANS ("Delete..."), !isRoot);
         m.addSeparator();
 
-        m.addItem (openInExEditor, TRANS ("View in Explorer/Finder..."), exist && onlyOneSelected);
+        m.addItem (viewInFinder, TRANS ("View in Explorer/Finder..."), exist && onlyOneSelected);
         m.addItem (openInExEditor, TRANS ("Open in External Editor..."), exist && onlyOneSelected);
         m.addItem (browseInEx, TRANS ("Browse in External Browser..."), exist && onlyOneSelected);
 
@@ -390,7 +390,7 @@ void DocTreeViewItem::menuPerform (const int index)
         renameSelectedItem();
     else if (index == deleteThis)
         deleteSelected();
-    else if (index == vewInFinder)
+    else if (index == viewInFinder)
         getMdFileOrDir (tree).revealToUser();
     else if (index == openInExEditor)
         getMdFileOrDir (tree).startAsProcess();

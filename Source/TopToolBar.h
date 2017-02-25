@@ -19,13 +19,14 @@ class TopToolBar :  public Component,
                     private TextEditor::Listener,
                     private Button::Listener,
                     public ChangeListener,
-                    public ApplicationCommandTarget
+                    public ApplicationCommandTarget,
+                    private Thread
 {
 public:
     TopToolBar (FileTreeContainer* container, 
                 EditAndPreview* editAndPreview);
 
-    ~TopToolBar() { }
+    ~TopToolBar();
 
     void paint (Graphics&) override;
     void resized() override;
@@ -46,6 +47,9 @@ public:
 
 private:
     //==========================================================================
+    /** for progressBar when generate all */
+    virtual void run () override; 
+
     virtual void textEditorReturnKeyPressed (TextEditor&) override;
     virtual void textEditorEscapeKeyPressed (TextEditor&) override;
 
@@ -64,6 +68,10 @@ private:
 
     /** generate the tree and all its children's html file */
     static void generateHtmlFiles (ValueTree tree);
+    static double progressValue;
+    static int totalItems;
+    static int accumulator;
+
     void generateHtmlsIfNeeded();
     void generateCurrentPage();
 
@@ -126,6 +134,7 @@ private:
 
     ScopedPointer<ColourSelectorWithPreset> bgColourSelector;
     String languageStr;
+    ProgressBar progressBar;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TopToolBar)
 };

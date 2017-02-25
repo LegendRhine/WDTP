@@ -18,8 +18,10 @@ const float imageTrans = 1.f;
 //==============================================================================
 TopToolBar::TopToolBar (FileTreeContainer* f, 
                         EditAndPreview* e) 
-    : fileTreeContainer (f),
-    editAndPreview (e)
+    : Thread ("forGenerateHtmls"),
+    fileTreeContainer (f),
+    editAndPreview (e),
+    progressBar (progressValue)
 {
     jassert (fileTreeContainer != nullptr);
     jassert (editAndPreview != nullptr);
@@ -124,6 +126,19 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
                            Image::null, 1.0f, Colours::darkcyan);
 
     bts[width]->setToggleState (true, dontSendNotification);
+
+    // progressBar
+    progressBar.setColour (ProgressBar::backgroundColourId, Colour (0x00));
+    progressBar.setColour (ProgressBar::foregroundColourId, Colours::lightskyblue);
+    progressBar.setPercentageDisplay (false);
+    addAndMakeVisible (progressBar);
+}
+
+//=================================================================================================
+TopToolBar::~TopToolBar ()
+{
+    if (isThreadRunning())
+        stopThread (2000);
 }
 
 //=======================================================================
@@ -169,6 +184,9 @@ void TopToolBar::resized()
     bts[system]->setTopLeftPosition (getWidth() / 2 - 9, 12);
     bts[view]->setTopRightPosition (bts[system]->getX() - 40, 12);
     bts[width]->setTopLeftPosition (bts[system]->getRight() + 40, 12);
+
+    // progressBar
+    progressBar.setBounds (0, getHeight() - 5, getWidth(), 5);
 }
 
 //=================================================================================================
@@ -501,22 +519,32 @@ void TopToolBar::cleanAndGenerateAll()
         const File tempIconFile (FileTreeContainer::projectFile.getSiblingFile ("favicon.ico"));
         iconFile.copyFileTo (tempIconFile);
 
-        // cleanup
+        // cleanup and initial progress value
         FileTreeContainer::projectFile.getSiblingFile ("site").deleteRecursively();
 
-        generateHtmlFiles (FileTreeContainer::projectTree);
-        FileTreeContainer::saveProject();
+        fileTreeContainer->getTreeView().getRootItem()->setOpen (true);
+        totalItems = fileTreeContainer->getTreeView().getNumRowsInTree();
+        accumulator = 0;
+        progressValue = 0.0;
+
+        startThread();  // start generate..
 
         // restore the add-in dir and favicon.ico
+        addinDir.createDirectory();
+        iconFile.create();
+
         tempDirForAddin.moveFileTo (addinDir);
         tempIconFile.moveFileTo (iconFile);
 
-        SHOW_MESSAGE (TRANS ("Site clean and regenerate successful!"));
-
-        tempDirForAddin.deleteRecursively();
-        tempIconFile.deleteFile();
+        tempDirForAddin.deleteRecursively ();
+        tempIconFile.deleteFile ();
     }
 }
+
+//=================================================================================================
+double TopToolBar::progressValue = 0.0;
+int TopToolBar::totalItems = 0;
+int TopToolBar::accumulator = 0;
 
 //=================================================================================================
 void TopToolBar::generateHtmlFiles (ValueTree tree)
@@ -524,17 +552,24 @@ void TopToolBar::generateHtmlFiles (ValueTree tree)
     if (!DocTreeViewItem::getMdFileOrDir (tree).exists())
         return;
 
-    tree.setProperty ("needCreateHtml", true, nullptr);
+    ++accumulator;
+    progressValue = (double)accumulator / totalItems;
+    const bool isDoc = (tree.getType ().toString () == "doc");
 
-    if (tree.getType().toString() == "doc")
     {
-        HtmlProcessor::createArticleHtml (tree, false);
+        // here must using messageThreadLock for item's repaint
+        const MessageManagerLock mmLock;
+        tree.setProperty ("needCreateHtml", true, nullptr);
+
+        if (isDoc)
+            HtmlProcessor::createArticleHtml (tree, false);
+        else
+            HtmlProcessor::createIndexHtml (tree, false);
     }
-    else
-    {
-        HtmlProcessor::createIndexHtml (tree, false);
 
-        for (int i = tree.getNumChildren(); --i >= 0; )
+    if (!isDoc)
+    {
+        for (int i = tree.getNumChildren (); --i >= 0; )
             generateHtmlFiles (tree.getChild (i));
     }
 }
@@ -565,6 +600,21 @@ void TopToolBar::generateHtmlFilesIfNeeded (ValueTree tree)
                 generateHtmlFilesIfNeeded (tree.getChild (i));
         }
     }    
+}
+
+//=================================================================================================
+void TopToolBar::run ()
+{
+    getTopLevelComponent ()->setInterceptsMouseClicks (false, false);
+    generateHtmlFiles (FileTreeContainer::projectTree);
+
+    accumulator = 0;
+    progressValue = 0.999;
+
+    SHOW_MESSAGE (TRANS ("Site clean and regenerate successful!"));
+    FileTreeContainer::saveProject ();
+    progressValue = 0.0;
+    getTopLevelComponent ()->setInterceptsMouseClicks (true, true);
 }
 
 //=================================================================================================

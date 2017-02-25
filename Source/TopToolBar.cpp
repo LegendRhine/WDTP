@@ -138,7 +138,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
 TopToolBar::~TopToolBar ()
 {
     if (isThreadRunning())
-        stopThread (2000);
+        stopThread (3000);
 }
 
 //=======================================================================
@@ -527,6 +527,7 @@ void TopToolBar::cleanAndGenerateAll()
         accumulator = 0;
         progressValue = 0.0;
 
+        progressBar.enterModalState();
         startThread();  // start generate..
 
         // restore the add-in dir and favicon.ico
@@ -605,7 +606,6 @@ void TopToolBar::generateHtmlFilesIfNeeded (ValueTree tree)
 //=================================================================================================
 void TopToolBar::run ()
 {
-    getTopLevelComponent ()->setInterceptsMouseClicks (false, false);
     generateHtmlFiles (FileTreeContainer::projectTree);
 
     accumulator = 0;
@@ -614,7 +614,9 @@ void TopToolBar::run ()
     SHOW_MESSAGE (TRANS ("Site clean and regenerate successful!"));
     FileTreeContainer::saveProject ();
     progressValue = 0.0;
-    getTopLevelComponent ()->setInterceptsMouseClicks (true, true);
+
+    const MessageManagerLock mmLock;
+    progressBar.exitModalState (0);
 }
 
 //=================================================================================================

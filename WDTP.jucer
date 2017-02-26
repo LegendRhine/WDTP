@@ -60,6 +60,8 @@
             file="Source/ReplaceComponent.h"/>
       <FILE id="g1rrrF" name="SetupPanel.cpp" compile="1" resource="0" file="Source/SetupPanel.cpp"/>
       <FILE id="BBKmUd" name="SetupPanel.h" compile="0" resource="0" file="Source/SetupPanel.h"/>
+      <FILE id="v1zP1A" name="StatisComp.cpp" compile="1" resource="0" file="Source/StatisComp.cpp"/>
+      <FILE id="C3qaR2" name="StatisComp.h" compile="0" resource="0" file="Source/StatisComp.h"/>
       <FILE id="pSSMLr" name="TopToolBar.cpp" compile="1" resource="0" file="Source/TopToolBar.cpp"/>
       <FILE id="P6zan5" name="TopToolBar.h" compile="0" resource="0" file="Source/TopToolBar.h"/>
       <FILE id="PqDad8" name="WdtpHeader.h" compile="0" resource="0" file="Source/WdtpHeader.h"/>

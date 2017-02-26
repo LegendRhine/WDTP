@@ -39,7 +39,7 @@ class StatisComp  : public Component,
 {
 public:
     //==============================================================================
-    StatisComp (FileTreeContainer* fileTree, ValueTree& tree_, const String& statisStr);
+    StatisComp (FileTreeContainer* fileTree, DocTreeViewItem* item, const bool isDoc_, const String& statisStr);
     ~StatisComp();
 
     //==============================================================================
@@ -51,16 +51,21 @@ public:
     void paint (Graphics& g) override;
     void resized() override;
     void buttonClicked (Button* buttonThatWasClicked) override;
-    
+
+
+
 private:
     //[UserVariables]   -- You can add your own custom variables in this section.
 
     void analyseDoc();
     void analyseDir();
+    void analyseDir (DocTreeViewItem* currentItem, int& files, int& totalNumbers);
+
     void showAnalyseResult(const int docNum, const int totalNum);
 
-    const ValueTree tree;
     FileTreeContainer* treeContainer;
+    DocTreeViewItem* dirItem;
+    const bool isDoc;
     //[/UserVariables]
 
     //==============================================================================

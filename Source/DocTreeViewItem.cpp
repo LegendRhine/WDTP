@@ -860,17 +860,19 @@ void DocTreeViewItem::deleteSelected()
 //=================================================================================================
 void DocTreeViewItem::statistics()
 {
-    if (tree.getType().toString() == "doc")
+    String staStr;
+    const bool isDoc = (tree.getType ().toString () == "doc");
+
+    if (isDoc)
     {
         int words = 0;
         int imgNums = 0;
         getWordsAndImgNumsInDoc (tree, words, imgNums);
 
-        AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS ("Statistics Info"),
-                                     TRANS ("File: ") + tree.getProperty ("name").toString() + newLine
-                                     + TRANS ("Title: ") + tree.getProperty ("title").toString() + newLine + newLine
-                                     + TRANS ("Words: ") + String (words) + newLine
-                                     + TRANS ("Images: ") + String (imgNums));
+        staStr = TRANS ("File: ") + tree.getProperty ("name").toString() + newLine
+            + TRANS ("Title: ") + tree.getProperty ("title").toString() + newLine
+            + TRANS ("Words: ") + String (words) + "  "
+            + TRANS ("Images: ") + String (imgNums);
     }
     else
     {
@@ -883,16 +885,19 @@ void DocTreeViewItem::statistics()
         const bool isDir = (tree.getType().toString() == "dir");
 
         statis (tree, dirNums, totalWords, totalImgs);
-
-        AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS ("Statistics Info"),
-                                     (isDir ? (TRANS ("Dir: ") + tree.getProperty ("name").toString() + newLine) : String())
-                                     + (isDir ? TRANS ("Title: ") : TRANS ("Project: ")) 
-                                     + tree.getProperty ("title").toString() + newLine + newLine
-                                     + TRANS ("Sub-dirs: ") + String (dirNums) + newLine
-                                     + TRANS ("Docs: ") + String (docNums) + newLine
-                                     + TRANS ("Total Words: ") + String (totalWords) + newLine
-                                     + TRANS ("Total Images: ") + String (totalImgs));
+        staStr = (isDir ? (TRANS ("Dir: ") + tree.getProperty ("name").toString() + "  ") : String())
+            + (isDir ? TRANS ("Title: ") : TRANS ("Project: "))
+            + tree.getProperty ("title").toString() + newLine
+            + TRANS ("Sub-dirs: ") + String (dirNums) + "  "
+            + TRANS ("Docs: ") + String (docNums) + newLine
+            + TRANS ("Total Words: ") + String (totalWords) + "  "
+            + TRANS ("Total Images: ") + String (totalImgs);
     }
+
+    ScopedPointer<StatisComp> statisComp = new StatisComp (treeContainer, this, isDoc, staStr);
+    CallOutBox callOut (*statisComp, treeContainer->getScreenBounds(), nullptr);
+
+    callOut.runModalLoop();
 }
 
 //=================================================================================================

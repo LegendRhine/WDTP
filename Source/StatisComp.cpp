@@ -29,8 +29,8 @@ static String statisKeyword = "";
 //[/MiscUserDefs]
 
 //==============================================================================
-StatisComp::StatisComp (FileTreeContainer* fileTree, ValueTree& tree_, const String& statisStr)
-    : treeContainer (fileTree), tree (tree_)
+StatisComp::StatisComp (FileTreeContainer* fileTree, DocTreeViewItem* item, const bool isDoc_, const String& statisStr)
+    : treeContainer (fileTree), dirItem (item), isDoc (isDoc_)
 {
     //[Constructor_pre] You can add your own custom stuff here..
     //[/Constructor_pre]
@@ -55,7 +55,7 @@ StatisComp::StatisComp (FileTreeContainer* fileTree, ValueTree& tree_, const Str
 
     addAndMakeVisible (keywordLabel = new Label ("new label",
                                                  TRANS("Keyword: ")));
-    keywordLabel->setFont (Font (16.00f, Font::plain));
+    keywordLabel->setFont (Font (17.00f, Font::plain));
     keywordLabel->setJustificationType (Justification::centredRight);
     keywordLabel->setEditable (false, false, false);
     keywordLabel->setColour (TextEditor::textColourId, Colours::black);
@@ -89,12 +89,18 @@ StatisComp::StatisComp (FileTreeContainer* fileTree, ValueTree& tree_, const Str
 
     //[UserPreSize]
 
-    infoEditor->setFont (16.f);
-    analyseEditor->setFont (16.f);
+    infoEditor->setFont (17.f);
+    keywordEditor->setFont (17.f);
+    analyseEditor->setFont (17.f);
 
     infoEditor->setText (statisStr);
     keywordEditor->setText (statisKeyword);
+    keywordEditor->setSelectAllWhenFocused (true);
     keywordEditor->addListener (this);
+
+    if (statisKeyword.isEmpty())
+        keywordEditor->setText (SystemClipboard::getTextFromClipboard().removeCharacters ("\n")
+                                .removeCharacters ("\r"), false);
 
     //[/UserPreSize]
 
@@ -141,8 +147,8 @@ void StatisComp::resized()
 
     titleLabel->setBounds (120, 5, 150, 24);
     infoEditor->setBounds (30, 32, getWidth() - 60, 70);
-    keywordLabel->setBounds (10, 110, 78, 24);
-    keywordEditor->setBounds (95, 110, getWidth() - 125, 24);
+    keywordLabel->setBounds (10, 110, 80, 25);
+    keywordEditor->setBounds (95, 110, getWidth() - 125, 26);
     analyseEditor->setBounds (15, 144, getWidth() - 30, 26);
     analyseBt->setBounds (140, 178, 100, 24);
     //[UserResized] Add your own custom resize handling here..
@@ -163,10 +169,7 @@ void StatisComp::buttonClicked (Button* buttonThatWasClicked)
         if (statisKeyword.isEmpty())
             return;
 
-        if (tree.getType().toString() == "doc")
-            analyseDoc();
-        else
-            analyseDir();
+        isDoc ? analyseDoc() : analyseDir();
 
         //[/UserButtonCode_analyseBt]
     }
@@ -174,6 +177,7 @@ void StatisComp::buttonClicked (Button* buttonThatWasClicked)
     //[UserbuttonClicked_Post]
     //[/UserbuttonClicked_Post]
 }
+
 
 
 //[MiscUserCode] You can add your own definitions of your custom methods or any other code here...
@@ -203,20 +207,77 @@ void StatisComp::analyseDoc()
     }
 
     editor->setTemporaryUnderlining (rangeArray);
-    showAnalyseResult (1, numbers);
+
+    if (numbers == 0)
+        analyseEditor->setText (TRANS ("Nothing could be found. "));
+    else
+        analyseEditor->setText (TRANS ("This keyword appears in this doc sum total ")
+                                + String (numbers) + TRANS (" time(s)."), false);
 }
 
 //=================================================================================================
 void StatisComp::analyseDir()
 {
+    dirItem->setOpen (true);
+    int files = 0;
+    int totalNumbers = 0;
 
+    analyseDir (dirItem, files, totalNumbers);
+
+    if (files == 0)
+    {
+        analyseEditor->setText (TRANS ("Nothing could be found. "));
+    }
+    else
+    {
+        showAnalyseResult (files, totalNumbers);
+        dirItem->setSelected (false, false);
+    }
+}
+
+//=================================================================================================
+void StatisComp::analyseDir (DocTreeViewItem* currentItem, int& files, int& totalNumbers)
+{
+    for (int i = currentItem->getNumSubItems(); --i >= 0; )
+    {
+        DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (currentItem->getSubItem (i));
+
+        if (item == nullptr)
+            continue;
+
+        const File& docFile (DocTreeViewItem::getMdFileOrDir (item->getTree()));
+
+        if (docFile.existsAsFile())
+        {
+            const String& docContent (docFile.loadFileAsString());
+
+            if (docContent.containsIgnoreCase (statisKeyword))
+            {
+                ++files;
+                item->setSelected (true, false);
+                treeContainer->getTreeView().scrollToKeepItemVisible (item);
+
+                int startIndex = docContent.indexOfIgnoreCase (0, statisKeyword);
+
+                while (startIndex != -1)
+                {
+                    ++totalNumbers;
+                    startIndex = docContent.indexOfIgnoreCase (startIndex + statisKeyword.length(), statisKeyword);
+                }
+            }
+        }
+        else if (docFile.isDirectory())
+        {
+            analyseDir (item, files, totalNumbers);
+        }
+    }
 }
 
 //=================================================================================================
 void StatisComp::showAnalyseResult(const int docNum, const int totalNum)
 {
     analyseEditor->setText (TRANS ("This keyword appears in ") + String (docNum) + TRANS (" doc(s). ")
-                            + TRANS ("Sum total ") + String (totalNum) + TRANS (" times."), false);
+                            + TRANS ("Sum total ") + String (totalNum) + TRANS (" time(s)."), false);
 }
 
 //=================================================================================================
@@ -224,8 +285,6 @@ void StatisComp::textEditorReturnKeyPressed (TextEditor& te)
 {
     if (keywordEditor == &te && keywordEditor->getText().isNotEmpty())
         analyseBt->triggerClick();
-
-
 }
 //=================================================================================================
 void StatisComp::textEditorEscapeKeyPressed (TextEditor& te)
@@ -248,8 +307,8 @@ BEGIN_JUCER_METADATA
 
 <JUCER_COMPONENT documentType="Component" className="StatisComp" componentName=""
                  parentClasses="public Component, public TextEditor::Listener"
-                 constructorParams="FileTreeContainer* fileTree, ValueTree&amp; tree_, const String&amp; statisStr"
-                 variableInitialisers="treeContainer (fileTree), tree (tree_)"
+                 constructorParams="FileTreeContainer* fileTree, DocTreeViewItem* item, const bool isDoc_, const String&amp; statisStr"
+                 variableInitialisers="treeContainer (fileTree), dirItem (item), isDoc (isDoc_)"
                  snapPixels="8" snapActive="1" snapShown="1" overlayOpacity="0.330"
                  fixedSize="1" initialWidth="385" initialHeight="210">
   <BACKGROUND backgroundColour="ffdcdbdb"/>
@@ -263,12 +322,12 @@ BEGIN_JUCER_METADATA
               multiline="1" retKeyStartsLine="1" readonly="1" scrollbars="0"
               caret="0" popupmenu="1"/>
   <LABEL name="new label" id="518978ad17a9f68b" memberName="keywordLabel"
-         virtualName="" explicitFocusOrder="0" pos="10 110 78 24" edTextCol="ff000000"
+         virtualName="" explicitFocusOrder="0" pos="10 110 80 25" edTextCol="ff000000"
          edBkgCol="0" labelText="Keyword: " editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="16"
+         focusDiscardsChanges="0" fontname="Default font" fontsize="17"
          bold="0" italic="0" justification="34"/>
   <TEXTEDITOR name="new text editor" id="b495c65e0a391d5e" memberName="keywordEditor"
-              virtualName="" explicitFocusOrder="1" pos="95 110 125M 24" initialText=""
+              virtualName="" explicitFocusOrder="1" pos="95 110 125M 26" initialText=""
               multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="0"
               caret="1" popupmenu="1"/>
   <TEXTEDITOR name="new text editor" id="90b4a9a5ac61a342" memberName="analyseEditor"

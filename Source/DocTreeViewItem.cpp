@@ -537,7 +537,7 @@ void DocTreeViewItem::renameSelectedItem()
             newName = TRANS ("Untitled");
         else if (newName == "index" || newName == "media"
                  || newName == "add-in" || newName == "docs" || newName == "site")
-            newName += "(2)";
+            newName += "-2";
 
         File newDocFile (docFileOrDir.getSiblingFile (newName + (docFileOrDir.isDirectory() ? String() : ".md")));
         newDocFile = newDocFile.getNonexistentSibling (true);
@@ -685,8 +685,9 @@ void DocTreeViewItem::createNewDocument()
 
     AlertWindow dialog (TRANS ("Create a new document"), TRANS ("Please input the new doc's name."),
                         AlertWindow::InfoIcon);
+    const String fileName (SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), true));
 
-    dialog.addTextEditor ("name", String());
+    dialog.addTextEditor ("name", fileName.dropLastCharacters (9).replace (".", "-"));
     dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
     dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
 
@@ -706,7 +707,7 @@ const File DocTreeViewItem::createDoc (const String& docName, const bool selectA
     if (docFileName.isEmpty())
         docFileName = TRANS ("Untitled");
     else if (docFileName == "index")
-        docFileName = "index(2)";
+        docFileName = "index-2";
     else if (docFileName == "site")
         docFileName = "site-doc";
     else if (docFileName == "docs")
@@ -768,7 +769,7 @@ void DocTreeViewItem::createNewFolder()
         if (dirName.isEmpty())
             dirName = TRANS ("New folder");
         else if (dirName == "media" || dirName == "add-in" || dirName == "docs" || dirName == "site")
-            dirName += "(2)";
+            dirName += "-2";
 
         // create this dir on disk
         File thisDir (getMdFileOrDir (tree).getChildFile (dirName).getNonexistentSibling (false));

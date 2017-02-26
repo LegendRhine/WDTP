@@ -103,7 +103,7 @@ void FileTreeContainer::openProject (const File& project)
     // check the file has been gziped or not
     MemoryBlock mb;
     realProject.loadFileAsData (mb);
-    const uint8* const data = (const uint8*)mb.getData ();
+    const uint8* const data = (const uint8*)mb.getData();
     const bool isGzip = ((int)data[0] == 120 && (int)data[1] == 218);
     // should remove above at some point (backward compatibility)
 
@@ -130,7 +130,7 @@ void FileTreeContainer::openProject (const File& project)
     TreeViewItem* item = fileTree.findItemFromIdentifierString (lastItem);
 
     if (item == nullptr)
-        item = fileTree.getRootItem ();
+        item = fileTree.getRootItem();
 
     item->setSelected (true, true);
 
@@ -164,10 +164,10 @@ void FileTreeContainer::closeProject()
     if (hasLoadedProject())
     {
         // store the main-window's size and position
-        MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent ());
+        MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent());
         jassert (mainWindow != nullptr);
 
-        const String& sizeAndPosition (mainWindow->getWindowStateAsString ());
+        const String& sizeAndPosition (mainWindow->getWindowStateAsString());
         projectTree.setProperty ("mainWindowSizeAndPosition", sizeAndPosition, nullptr);
 
         if (saveDocAndProject())
@@ -186,7 +186,7 @@ void FileTreeContainer::closeProject()
 }
 
 //=================================================================================================
-const bool FileTreeContainer::saveDocAndProject ()
+const bool FileTreeContainer::saveDocAndProject()
 {
     // Here must check to prevent invalid assert 
     // eg. when quit this application after closed project..

@@ -48,7 +48,7 @@ public:
 private:
     //==========================================================================
     /** for progressBar when generate all */
-    virtual void run () override; 
+    virtual void run() override; 
 
     virtual void textEditorReturnKeyPressed (TextEditor&) override;
     virtual void textEditorEscapeKeyPressed (TextEditor&) override;

@@ -24,6 +24,7 @@
 #include "FileTreeContainer.h"
 #include "DocTreeViewItem.h"
 #include "ReplaceComponent.h"
+#include "StatisComp.h"
 
 
 #endif  // HEADERGUA

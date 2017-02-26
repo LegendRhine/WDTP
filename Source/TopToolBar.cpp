@@ -135,7 +135,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
 }
 
 //=================================================================================================
-TopToolBar::~TopToolBar ()
+TopToolBar::~TopToolBar()
 {
     if (isThreadRunning())
         stopThread (3000);
@@ -537,8 +537,8 @@ void TopToolBar::cleanAndGenerateAll()
         tempDirForAddin.moveFileTo (addinDir);
         tempIconFile.moveFileTo (iconFile);
 
-        tempDirForAddin.deleteRecursively ();
-        tempIconFile.deleteFile ();
+        tempDirForAddin.deleteRecursively();
+        tempIconFile.deleteFile();
     }
 }
 
@@ -555,7 +555,7 @@ void TopToolBar::generateHtmlFiles (ValueTree tree)
 
     ++accumulator;
     progressValue = (double)accumulator / totalItems;
-    const bool isDoc = (tree.getType ().toString () == "doc");
+    const bool isDoc = (tree.getType().toString() == "doc");
 
     {
         // here must using messageThreadLock for item's repaint
@@ -570,7 +570,7 @@ void TopToolBar::generateHtmlFiles (ValueTree tree)
 
     if (!isDoc)
     {
-        for (int i = tree.getNumChildren (); --i >= 0; )
+        for (int i = tree.getNumChildren(); --i >= 0; )
             generateHtmlFiles (tree.getChild (i));
     }
 }
@@ -589,7 +589,7 @@ void TopToolBar::generateHtmlFilesIfNeeded (ValueTree tree)
 {
     if ((bool)tree.getProperty ("needCreateHtml"))
     {
-        if (tree.getType ().toString () == "doc")
+        if (tree.getType().toString() == "doc")
         {
             HtmlProcessor::createArticleHtml (tree, false);
         }
@@ -597,14 +597,14 @@ void TopToolBar::generateHtmlFilesIfNeeded (ValueTree tree)
         {
             HtmlProcessor::createIndexHtml (tree, false);
 
-            for (int i = tree.getNumChildren (); --i >= 0; )
+            for (int i = tree.getNumChildren(); --i >= 0; )
                 generateHtmlFilesIfNeeded (tree.getChild (i));
         }
     }    
 }
 
 //=================================================================================================
-void TopToolBar::run ()
+void TopToolBar::run()
 {
     generateHtmlFiles (FileTreeContainer::projectTree);
 
@@ -612,7 +612,7 @@ void TopToolBar::run ()
     progressValue = 0.999;
 
     SHOW_MESSAGE (TRANS ("Site clean and regenerate successful!"));
-    FileTreeContainer::saveProject ();
+    FileTreeContainer::saveProject();
     progressValue = 0.0;
 
     const MessageManagerLock mmLock;

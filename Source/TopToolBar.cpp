@@ -1,4 +1,4 @@
-/*
+﻿/*
   ==============================================================================
 
     TopToolBar.cpp
@@ -317,7 +317,7 @@ void TopToolBar::buttonClicked (Button* bt)
     else if (bt == bts[width])
     {
         bts[width]->setToggleState (!bts[width]->getToggleState(), dontSendNotification);
-        getParentComponent()->setSize ((bts[width]->getToggleState() ? 1200 : 660), 780);
+        getParentComponent()->setSize ((bts[width]->getToggleState() ? 1260 : 700), 800);
         getTopLevelComponent()->setCentreRelative (0.5f, 0.53f);
     }
     else if (bt == bts[system])

@@ -29,19 +29,19 @@ ReplaceComponent::ReplaceComponent (TextEditor* editor_,
                                           TRANS ("Warning! This will replace all matching content in this ")
                                           + nameText));
 
-    label->setFont (Font (16.00f, Font::plain));
+    label->setFont (Font (17.00f, Font::plain));
     label->setJustificationType (Justification::centred);
     label->setEditable (false, false, false);
 
     addAndMakeVisible (orignalLb = new Label (String(),
                                               TRANS ("Original Content:")));
-    orignalLb->setFont (Font (15.00f, Font::plain));
+    orignalLb->setFont (Font (16.00f, Font::plain));
     orignalLb->setJustificationType (Justification::centredLeft);
     orignalLb->setEditable (false, false, false);
 
     addAndMakeVisible (replaceToLb = new Label (String(),
                                                 TRANS ("Replace To: ")));
-    replaceToLb->setFont (Font (15.00f, Font::plain));
+    replaceToLb->setFont (Font (16.00f, Font::plain));
     replaceToLb->setJustificationType (Justification::centredLeft);
     replaceToLb->setEditable (false, false, false);
     
@@ -52,6 +52,7 @@ ReplaceComponent::ReplaceComponent (TextEditor* editor_,
     originalTe->setCaretVisible (true);
     originalTe->setPopupMenuEnabled (true);
     originalTe->setSelectAllWhenFocused (true);
+    originalTe->setFont (16.f);
     originalTe->setText (SystemClipboard::getTextFromClipboard().removeCharacters ("\n")
                          .removeCharacters ("\r"), dontSendNotification);
 
@@ -63,6 +64,7 @@ ReplaceComponent::ReplaceComponent (TextEditor* editor_,
     replaceTe->setPopupMenuEnabled (true);
     replaceTe->setText (String());
     replaceTe->setSelectAllWhenFocused (true);
+    replaceTe->setFont (16.f);
     replaceTe->addListener (this);
 
     addAndMakeVisible (replaceBt = new TextButton (String()));

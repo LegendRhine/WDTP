@@ -24,7 +24,19 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
     if (!mdDoc.existsAsFile())
         return;
 
-    const String& mdStrWithoutAbbrev (processAbbrev (docTree, mdDoc.loadFileAsString()));
+    String mdStrWithoutAbbrev (processAbbrev (docTree, mdDoc.loadFileAsString()));
+    const String& keywords (docTree.getProperty ("keywords").toString());
+
+    // here need insert this doc's keywords below the title, 
+    // this setp bases on this doc's property 'showKeywords'
+    if ((bool)docTree.getProperty ("showKeywords"))
+    {
+        const String keywordsToInsert (newLine + "> " + TRANS ("Keywords: ") + keywords);
+        const int insertIndex = mdStrWithoutAbbrev.indexOf (0, "\n");
+        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replaceSection (insertIndex, 0, keywordsToInsert);
+    }
+
+    // parse mdString to html string
     const String htmlContentStr (Md2Html::mdStringToHtml (mdStrWithoutAbbrev));
 
     if (htmlContentStr.isEmpty())
@@ -47,7 +59,7 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
     const String& siteName (" - " + FileTreeContainer::projectTree.getProperty ("title").toString());
 
     // generate the html file
-    htmlFile.appendText (tplStr.replace ("{{keywords}}", docTree.getProperty ("keywords").toString())
+    htmlFile.appendText (tplStr.replace ("{{keywords}}", keywords)
                          .replace ("{{author}}", FileTreeContainer::projectTree.getProperty ("owner").toString())
                          .replace ("{{description}}", docTree.getProperty ("description").toString())
                          .replace ("{{title}}", docTree.getProperty ("title").toString() + siteName)

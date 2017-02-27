@@ -362,7 +362,7 @@ void TopToolBar::popupSystemMenu()
     m.addItem (cleanUpLocal, TRANS ("Cleanup Local Medias"), fileTreeContainer->hasLoadedProject());
     m.addSeparator();
 
-    m.addItem (rebuildKeywords, TRANS ("Rebuild Keywords Table"), fileTreeContainer->hasLoadedProject ());
+    m.addItem (rebuildKeywords, TRANS ("Rebuild Keywords Table"), fileTreeContainer->hasLoadedProject());
     m.addSeparator();
 
     m.addItem (exportTpl, TRANS ("Export Current Templates"), fileTreeContainer->hasLoadedProject());

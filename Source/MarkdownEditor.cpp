@@ -121,7 +121,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     {
         addSelectedToKeywords();
         parent->getSetupPanel()->updateDocPanel();
-        DocTreeViewItem::needCreate (parent->getCurrentTree ());
+        DocTreeViewItem::needCreate (parent->getCurrentTree());
     }
 
     else if (pickTitle == index)
@@ -1086,7 +1086,7 @@ void MarkdownEditor::addSelectedToKeywords()
 {
     ValueTree& docTree (parent->getCurrentTree());
     const String& selectedStr = getHighlightedText();
-    const String currentKeyWords (docTree.getProperty ("keywords").toString().trim());
+    const String& currentKeyWords (docTree.getProperty ("keywords").toString().trim());
 
     String keyWords (currentKeyWords);
 

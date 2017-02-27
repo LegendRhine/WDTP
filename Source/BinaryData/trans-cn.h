@@ -323,3 +323,4 @@ countries: cn
 " time(s)." = "次。"
 "Show Keywords: " = "显示关键词: "
 "All keywords in this project have been rebuilt successfully." = "此项目的关键词表已成功重建。"
+"Pick Keyword: " = "关键词复用："

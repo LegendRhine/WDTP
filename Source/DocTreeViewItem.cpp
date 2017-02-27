@@ -861,7 +861,7 @@ void DocTreeViewItem::deleteSelected()
 void DocTreeViewItem::statistics()
 {
     String staStr;
-    const bool isDoc = (tree.getType ().toString () == "doc");
+    const bool isDoc = (tree.getType().toString() == "doc");
 
     if (isDoc)
     {

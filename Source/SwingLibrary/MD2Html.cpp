@@ -702,6 +702,23 @@ const String Md2Html::cleanUp (const String& mdString)
         indexCodeStart = resultStr.indexOfIgnoreCase (indexCodeStart + 16, "<pre><code>");
     }
 
+    // clean extra <p> and <br> which is in page's js-code (inside <body/>)
+    indexCodeStart = resultStr.indexOfIgnoreCase (0, "<script");
+
+    while (indexCodeStart != -1 && indexCodeStart + 8 <= resultStr.length ())
+    {
+        const int indexCodeEnd = resultStr.indexOfIgnoreCase (indexCodeStart + 8, "</script>");
+
+        if (indexCodeEnd == -1)
+            break;
+
+        const String jsCode (resultStr.substring (indexCodeStart, indexCodeEnd));
+        const String codeHtml (jsCode.replace ("<p>", newLine).replace ("<br>", String()));
+
+        resultStr = resultStr.replaceSection (indexCodeStart, jsCode.length(), codeHtml);
+        indexCodeStart = resultStr.indexOfIgnoreCase (indexCodeStart + 17, "<script");
+    }
+
     // somehow, there's this ugly thing. dont know why.
     resultStr = resultStr.replace ("<pre><code>				", "<pre><code>");
 

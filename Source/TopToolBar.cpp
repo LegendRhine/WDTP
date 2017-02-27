@@ -1062,7 +1062,48 @@ void TopToolBar::rebuildAllKeywords()
     ValueTree pTree (fileTreeContainer->projectTree);
 
     extractKeywords (pTree, keywordsArray);
+    keywordsArray.appendNumbersToDuplicates (true, false, CharPointer_UTF8("-"), CharPointer_UTF8(""));
     keywordsArray.sortNatural();
+
+    // remove duplicates and remain the last which include "-x (times)"
+    for (int i = keywordsArray.size(); --i >= 1; )
+    {
+        if (keywordsArray[i].upToLastOccurrenceOf ("-", false, true) ==
+            keywordsArray[i - 1].upToLastOccurrenceOf ("-", false, true))
+        {
+            keywordsArray.remove (i - 1);
+        }
+    }
+
+    // sort by duplicate-times
+    for (int i = 0; i < keywordsArray.size(); ++i)
+    {
+        for (int j = 0; j < keywordsArray.size() - 1; ++j)
+        {
+            if (keywordsArray[j].fromLastOccurrenceOf ("-", false, true).getIntValue() <
+                keywordsArray[j + 1].fromLastOccurrenceOf ("-", false, true).getIntValue())
+            {
+                const String str (keywordsArray[j]);
+                keywordsArray.getReference (j) = keywordsArray[j + 1];
+                keywordsArray.getReference (j + 1) = str;
+            }
+        }    	
+    }
+
+    // move the '123XX' to the end
+    StringArray tempStrs;
+
+    for (int i = 0; i < keywordsArray.size(); ++i)
+    {
+        if (!keywordsArray[i].contains ("-"))
+        {
+            tempStrs.add (keywordsArray[i]);
+            keywordsArray.remove (i);
+            --i;
+        }
+    }
+
+    keywordsArray.addArray (tempStrs);
     String keywords (keywordsArray.joinIntoString (","));
 
     if (keywords.substring (0, 1) == ",")
@@ -1085,9 +1126,9 @@ void TopToolBar::extractKeywords (const ValueTree& tree,
 
     thisArray.addTokens (keywords, ",", String());
     thisArray.trim();
+    thisArray.removeEmptyStrings();
     thisArray.removeDuplicates (true);
-
-    arrayToAdd.mergeArray (thisArray);
+    arrayToAdd.addArray (thisArray);
 
     for (int i = tree.getNumChildren(); --i >= 0; )
         extractKeywords (tree.getChild (i), arrayToAdd);

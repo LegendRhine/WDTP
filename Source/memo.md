@@ -74,6 +74,7 @@
     - name: file name, it doesn't include file-extension and any parent path.
 	- title
 	- keywords
+	- showKeywords
     - description
 	- createDate
     - modifyDate

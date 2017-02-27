@@ -203,6 +203,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     values[docName]->setValue (currentTree.getProperty ("name"));
     values[docTitle]->setValue (currentTree.getProperty ("title"));
     values[docKeywords]->setValue (currentTree.getProperty ("keywords"));
+    values[showKeys]->setValue (currentTree.getProperty ("showKeywords"));
     values[docDesc]->setValue (currentTree.getProperty ("description"));
     values[docIsMenu]->setValue (currentTree.getProperty ("isMenu"));
     values[docTpl]->setValue (currentTree.getProperty ("tplFile"));
@@ -217,6 +218,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docProperties.add (new TextPropertyComponent (*values[docName], TRANS ("Name: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[docTitle], TRANS ("Title: "), 0, false));
     docProperties.add (new TextPropertyComponent (*values[docKeywords], TRANS ("Keywords: "), 0, false));
+    docProperties.add (new BooleanPropertyComponent (*values[showKeys], TRANS ("Show Keywords: "), TRANS ("Yes")));
     docProperties.add (new TextPropertyComponent (*values[docDesc], TRANS ("Description: "), 0, true));
     docProperties.add (new BooleanPropertyComponent (*values[docIsMenu], TRANS ("Site Menu: "), TRANS ("Yes")));
     docProperties.add (new TextPropertyComponent (*values[docJs], "JavaScript: ", 0, true));
@@ -280,16 +282,16 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
         p->setPreferredHeight (28);
 
     docProperties[0]->setEnabled (false);
-    docProperties[8]->setEnabled (false);
     docProperties[9]->setEnabled (false);
+    docProperties[10]->setEnabled (false);
 
     // 2 level menu, otherwise, it cannot be a site menu
-    docProperties[4]->setEnabled (currentTree.getParent().getType().toString() == "wdtpProject" ||
+    docProperties[5]->setEnabled (currentTree.getParent().getType().toString() == "wdtpProject" ||
                                   currentTree.getParent().getParent().getType().toString() == "wdtpProject");
 
-    docProperties[3]->setPreferredHeight (28 * 5);
-    docProperties[5]->setPreferredHeight (28 * 5);
-    docProperties[12]->setPreferredHeight (28 * 5);
+    docProperties[4]->setPreferredHeight (28 * 5);
+    docProperties[6]->setPreferredHeight (28 * 5);
+    docProperties[13]->setPreferredHeight (28 * 5);
 
     panel->addSection (TRANS ("Document Setup"), docProperties);
     valuesAddListener();
@@ -396,6 +398,9 @@ void SetupPanel::valueChanged (Value& value)
 
     else if (value.refersToSameSourceAs (*values[docKeywords]))
         currentTree.setProperty ("keywords", values[docKeywords]->getValue(), nullptr);
+
+    else if (value.refersToSameSourceAs (*values[showKeys]))
+        currentTree.setProperty ("showKeywords", values[showKeys]->getValue(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[docDesc]))
         currentTree.setProperty ("description", values[docDesc]->getValue(), nullptr);

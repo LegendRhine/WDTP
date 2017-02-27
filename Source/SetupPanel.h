@@ -59,7 +59,7 @@ private:
         dirCreateDate, /*dirModifyDate,*/
 
         // doc properties' values
-        docName, docTitle, docKeywords, docDesc, 
+        docName, docTitle, docKeywords, showKeys, docDesc, 
         docIsMenu, docTpl, docCreateDate, /*docModifyDate,*/ 
         docJs, wordCount, thumb, thumbName, docAbbrev,
 

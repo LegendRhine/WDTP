@@ -1055,8 +1055,39 @@ void TopToolBar::cleanLocalMedias()
     }
 }
 //=================================================================================================
-void TopToolBar::rebuildAllKeywords ()
+void TopToolBar::rebuildAllKeywords()
 {
-    SHOW_MESSAGE ("rebuild all keywords");
+    // extract all keywords of each doc of this project
+    StringArray keywordsArray;
+    ValueTree pTree (fileTreeContainer->projectTree);
+
+    extractKeywords (pTree, keywordsArray);
+    keywordsArray.sortNatural();
+    String keywords (keywordsArray.joinIntoString (","));
+
+    if (keywords.substring (0, 1) == ",")
+        keywords = keywords.substring (1);
+
+    //DBGX (keywords);
+    pTree.setProperty ("allKeywords", keywords, nullptr);
+    fileTreeContainer->saveProject();
+}
+
+//=================================================================================================
+void TopToolBar::extractKeywords (const ValueTree& tree,
+                                  StringArray& arrayToAdd)
+{
+    const String& keywords (tree.getProperty ("keywords").toString()
+                            .replace (CharPointer_UTF8 ("\xef\xbc\x8c"), ",")); // Chinese ','
+    StringArray thisArray;
+
+    thisArray.addTokens (keywords, ",", String());
+    thisArray.trim();
+    thisArray.removeDuplicates (true);
+
+    arrayToAdd.mergeArray (thisArray);
+
+    for (int i = tree.getNumChildren(); --i >= 0; )
+        extractKeywords (tree.getChild (i), arrayToAdd);
 }
 

@@ -66,6 +66,7 @@ private:
     void cleanAndGenerateAll();
     void cleanLocalMedias();
     void rebuildAllKeywords();
+    void extractKeywords (const ValueTree& tree, StringArray& arrayToAddTo);
 
     /** generate the tree and all its children's html file */
     static void generateHtmlFiles (ValueTree tree);

@@ -1062,14 +1062,14 @@ void TopToolBar::rebuildAllKeywords()
     ValueTree pTree (fileTreeContainer->projectTree);
 
     extractKeywords (pTree, keywordsArray);
-    keywordsArray.appendNumbersToDuplicates (true, false, CharPointer_UTF8("-"), CharPointer_UTF8(""));
+    keywordsArray.appendNumbersToDuplicates (true, false, CharPointer_UTF8("--"), CharPointer_UTF8(""));
     keywordsArray.sortNatural();
 
     // remove duplicates and remain the last which include "-x (times)"
     for (int i = keywordsArray.size(); --i >= 1; )
     {
-        if (keywordsArray[i].upToLastOccurrenceOf ("-", false, true) ==
-            keywordsArray[i - 1].upToLastOccurrenceOf ("-", false, true))
+        if (keywordsArray[i].upToLastOccurrenceOf ("--", false, true) ==
+            keywordsArray[i - 1].upToLastOccurrenceOf ("--", false, true))
         {
             keywordsArray.remove (i - 1);
         }
@@ -1080,8 +1080,8 @@ void TopToolBar::rebuildAllKeywords()
     {
         for (int j = 0; j < keywordsArray.size() - 1; ++j)
         {
-            if (keywordsArray[j].fromLastOccurrenceOf ("-", false, true).getIntValue() <
-                keywordsArray[j + 1].fromLastOccurrenceOf ("-", false, true).getIntValue())
+            if (keywordsArray[j].fromLastOccurrenceOf ("--", false, true).getIntValue() <
+                keywordsArray[j + 1].fromLastOccurrenceOf ("--", false, true).getIntValue())
             {
                 const String str (keywordsArray[j]);
                 keywordsArray.getReference (j) = keywordsArray[j + 1];
@@ -1095,7 +1095,7 @@ void TopToolBar::rebuildAllKeywords()
 
     for (int i = 0; i < keywordsArray.size(); ++i)
     {
-        if (!keywordsArray[i].contains ("-"))
+        if (!keywordsArray[i].contains ("--"))
         {
             tempStrs.add (keywordsArray[i]);
             keywordsArray.remove (i);
@@ -1109,7 +1109,7 @@ void TopToolBar::rebuildAllKeywords()
     if (keywords.substring (0, 1) == ",")
         keywords = keywords.substring (1);
 
-    //DBGX (keywords);
+    DBGX (keywords);
     pTree.setProperty ("allKeywords", keywords, nullptr);
     fileTreeContainer->saveProject();
 

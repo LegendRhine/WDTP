@@ -992,9 +992,9 @@ void TopToolBar::setUiLanguage (const LanguageID& id)
 //=================================================================================================
 void TopToolBar::setEmptyTextOfSearchBox()
 {
-    searchInProject->setTextToShowWhenEmpty (TRANS ("Search in this project..."), 
+    searchInProject->setTextToShowWhenEmpty (TRANS ("Search in this project"), 
                                              Colour (0xff303030).withAlpha (0.6f));
-    searchInDoc->setTextToShowWhenEmpty (TRANS ("Search in current document..."), 
+    searchInDoc->setTextToShowWhenEmpty (TRANS ("Search in current document"), 
                                          Colour (0xff303030).withAlpha (0.6f));
 
     // these 4 ugly staments for switch ui language without restart this app

@@ -96,8 +96,8 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile());
         menu.addSeparator();
 
-        menu.addItem (searchNext, TRANS ("Search Next Selection...") + "  F3", getHighlightedText().isNotEmpty());
-        menu.addItem (searchPrev, TRANS ("Search Prev Selection...") + "  Shift + F3", getHighlightedText().isNotEmpty());
+        menu.addItem (searchNext, TRANS ("Search Next Selection") + "  F3", getHighlightedText().isNotEmpty());
+        menu.addItem (searchPrev, TRANS ("Search Prev Selection") + "  Shift + F3", getHighlightedText().isNotEmpty());
         menu.addSeparator();
 
         TextEditor::addPopupMenuItems (menu, e);

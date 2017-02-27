@@ -1071,6 +1071,8 @@ void TopToolBar::rebuildAllKeywords()
     //DBGX (keywords);
     pTree.setProperty ("allKeywords", keywords, nullptr);
     fileTreeContainer->saveProject();
+
+    SHOW_MESSAGE (TRANS ("All keywords in this project have been rebuilt successfully."));
 }
 
 //=================================================================================================

@@ -322,3 +322,4 @@ countries: cn
 "Sum total " = "共使用了"
 " time(s)." = "次。"
 "Show Keywords: " = "显示关键词: "
+"All keywords in this project have been rebuilt successfully." = "此项目的关键词表已成功重建。"

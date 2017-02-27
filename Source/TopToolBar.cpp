@@ -358,8 +358,11 @@ void TopToolBar::popupSystemMenu()
     m.addCommandItem (cmdManager, generateNeeded);
     m.addSeparator();
 
-    m.addItem (generateWhole, TRANS ("Regenerate Whole Site..."), fileTreeContainer->hasLoadedProject());
-    m.addItem (cleanUpLocal, TRANS ("Cleanup Local Medias..."), fileTreeContainer->hasLoadedProject());
+    m.addItem (generateWhole, TRANS ("Regenerate Whole Site"), fileTreeContainer->hasLoadedProject());
+    m.addItem (cleanUpLocal, TRANS ("Cleanup Local Medias"), fileTreeContainer->hasLoadedProject());
+    m.addSeparator();
+
+    m.addItem (rebuildKeywords, TRANS ("Rebuild Keywords Table"), fileTreeContainer->hasLoadedProject ());
     m.addSeparator();
 
     m.addItem (exportTpl, TRANS ("Export Current Templates"), fileTreeContainer->hasLoadedProject());
@@ -402,6 +405,7 @@ void TopToolBar::menuPerform (const int index)
     else if (index == openPjt)          openProject();
     else if (index == generateWhole)    cleanAndGenerateAll();
     else if (index == cleanUpLocal)     cleanLocalMedias();
+    else if (index == rebuildKeywords)  rebuildAllKeywords();
     else if (index == exportTpl)        exportCurrentTpls();
     else if (index == importTpl)        importExternalTpls();
     else if (index == releaseSystemTpl) releaseSystemTpls (FileTreeContainer::projectFile, true);
@@ -1049,5 +1053,10 @@ void TopToolBar::cleanLocalMedias()
             SHOW_MESSAGE (TRANS ("Local medias cleanup successful!"));
         }
     }
+}
+//=================================================================================================
+void TopToolBar::rebuildAllKeywords ()
+{
+    SHOW_MESSAGE ("rebuild all keywords");
 }
 

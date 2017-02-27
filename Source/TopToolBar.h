@@ -65,6 +65,7 @@ private:
     void closeProject();
     void cleanAndGenerateAll();
     void cleanLocalMedias();
+    void rebuildAllKeywords();
 
     /** generate the tree and all its children's html file */
     static void generateHtmlFiles (ValueTree tree);
@@ -99,7 +100,8 @@ private:
     {
         newPjt = 1, openPjt, closePjt, packPjt, unpackPjt,
         generateCurrent, generateNeeded, generateWhole, cleanUpLocal,
-        exportTpl, importTpl, releaseSystemTpl, uiEnglish, uiChinese,
+        exportTpl, importTpl, releaseSystemTpl, rebuildKeywords,
+        uiEnglish, uiChinese,
         setUiColor, resetUiColor, gettingStarted, checkNewVersion, showAbout,
         switchEdit, switchWidth, activeSearch
     };

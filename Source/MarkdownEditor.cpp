@@ -121,6 +121,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     {
         addSelectedToKeywords();
         parent->getSetupPanel()->updateDocPanel();
+        DocTreeViewItem::needCreate (parent->getCurrentTree ());
     }
 
     else if (pickTitle == index)

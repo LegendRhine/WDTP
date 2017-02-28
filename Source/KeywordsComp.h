@@ -19,7 +19,7 @@
 class KeywordsComp    : public Component
 {
 public:
-    KeywordsComp();
+    KeywordsComp (const bool displayInEditor);
     ~KeywordsComp();
 
     void paint (Graphics&) override;

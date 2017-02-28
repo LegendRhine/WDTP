@@ -440,7 +440,7 @@ void MarkdownEditor::tableInsert()
 //=================================================================================================
 void MarkdownEditor::showAllKeywords ()
 {   
-    ScopedPointer<KeywordsComp> keywordsComp = new KeywordsComp ();
+    ScopedPointer<KeywordsComp> keywordsComp = new KeywordsComp (true);
     CallOutBox callOut (*keywordsComp, getLocalBounds (), this);
     callOut.runModalLoop ();
 

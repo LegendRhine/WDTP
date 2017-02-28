@@ -24,7 +24,8 @@ class KeywordsButtons : public Component,
                         public Button::Listener
 {
 public:
-    KeywordsButtons()
+    KeywordsButtons (const bool showInEditor) :
+        displayInEditor (showInEditor)
     {
         TopToolBar::rebuildAllKeywords (false);        
 
@@ -37,9 +38,12 @@ public:
         // add buttons
         for (int i = keywords.size(); --i >= 0; )
         {
-            TextButton* bt = new TextButton (keywords[i].replace ("--", " (") 
-                                             + (keywords[i].contains ("--") ? ")" : String()),
-                                             TRANS ("Click to Pick/Nonuse it"));
+            TextButton* bt = new TextButton (keywords[i].replace ("--", " (")
+                                             + (keywords[i].contains ("--") ? ")" : String ()));
+
+            if (displayInEditor)
+                bt->setTooltip (TRANS ("Click to Pick/Nonuse it"));
+
             bt->addListener (this);
             bt->setSize (90, 25);
             bt->setColour (TextButton::buttonColourId, Colours::lightgrey.withAlpha (0.15f));
@@ -55,9 +59,7 @@ public:
     }
 
     //=================================================================================================
-    ~KeywordsButtons () 
-    {
-    }
+    ~KeywordsButtons ()     {    }
 
     //=================================================================================================
     void resized()
@@ -90,6 +92,7 @@ public:
 
     //=================================================================================================
 private:
+    const bool displayInEditor;
     OwnedArray<TextButton> bts;
     TextButtonLF tlf;
 
@@ -97,7 +100,7 @@ private:
 };
 
 //==============================================================================
-KeywordsComp::KeywordsComp ()
+KeywordsComp::KeywordsComp (const bool displayInEditor)
 {
     titleLb.setFont (17.f);
     titleLb.setJustificationType (Justification::centred);
@@ -107,7 +110,7 @@ KeywordsComp::KeywordsComp ()
     viewport = new Viewport ();
     viewport->setScrollBarsShown (true, false);
     viewport->setScrollBarThickness (10);
-    viewport->setViewedComponent (new KeywordsButtons());
+    viewport->setViewedComponent (new KeywordsButtons (displayInEditor));
 
     addAndMakeVisible (viewport);
     setSize (500, 320);

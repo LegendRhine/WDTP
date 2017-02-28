@@ -1060,7 +1060,6 @@ void TopToolBar::rebuildAllKeywords (const bool saveProjectAndPopupMessage)
     // extract all keywords of each doc of this project
     StringArray keywordsArray;
     ValueTree pTree (FileTreeContainer::projectTree);
-
     extractKeywords (pTree, keywordsArray);
     
     keywordsArray.appendNumbersToDuplicates (true, false, CharPointer_UTF8("--"), CharPointer_UTF8(""));

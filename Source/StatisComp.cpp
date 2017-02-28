@@ -54,9 +54,9 @@ StatisComp::StatisComp (FileTreeContainer* fileTree, DocTreeViewItem* item, cons
     infoEditor->setText (String());
 
     addAndMakeVisible (keywordLabel = new Label ("new label",
-                                                 TRANS("Keyword: ")));
+                                                 TRANS("Feature Word: ")));
     keywordLabel->setFont (Font (17.00f, Font::plain));
-    keywordLabel->setJustificationType (Justification::centredRight);
+    keywordLabel->setJustificationType (Justification::centred);
     keywordLabel->setEditable (false, false, false);
     keywordLabel->setColour (TextEditor::textColourId, Colours::black);
     keywordLabel->setColour (TextEditor::backgroundColourId, Colour (0x00000000));
@@ -147,8 +147,8 @@ void StatisComp::resized()
 
     titleLabel->setBounds (120, 5, 150, 24);
     infoEditor->setBounds (30, 32, getWidth() - 60, 70);
-    keywordLabel->setBounds (10, 110, 80, 25);
-    keywordEditor->setBounds (95, 110, getWidth() - 125, 26);
+    keywordLabel->setBounds (5, 110, 110, 25);
+    keywordEditor->setBounds (120, 110, getWidth() - 150, 26);
     analyseEditor->setBounds (15, 144, getWidth() - 30, 26);
     analyseBt->setBounds (140, 178, 100, 24);
     //[UserResized] Add your own custom resize handling here..
@@ -322,12 +322,12 @@ BEGIN_JUCER_METADATA
               multiline="1" retKeyStartsLine="1" readonly="1" scrollbars="0"
               caret="0" popupmenu="1"/>
   <LABEL name="new label" id="518978ad17a9f68b" memberName="keywordLabel"
-         virtualName="" explicitFocusOrder="0" pos="10 110 80 25" edTextCol="ff000000"
-         edBkgCol="0" labelText="Keyword: " editableSingleClick="0" editableDoubleClick="0"
-         focusDiscardsChanges="0" fontname="Default font" fontsize="17"
-         bold="0" italic="0" justification="34"/>
+         virtualName="" explicitFocusOrder="0" pos="5 110 110 25" edTextCol="ff000000"
+         edBkgCol="0" labelText="Feature Word: " editableSingleClick="0"
+         editableDoubleClick="0" focusDiscardsChanges="0" fontname="Default font"
+         fontsize="17" bold="0" italic="0" justification="36"/>
   <TEXTEDITOR name="new text editor" id="b495c65e0a391d5e" memberName="keywordEditor"
-              virtualName="" explicitFocusOrder="1" pos="95 110 125M 26" initialText=""
+              virtualName="" explicitFocusOrder="1" pos="120 110 150M 26" initialText=""
               multiline="0" retKeyStartsLine="0" readonly="0" scrollbars="0"
               caret="1" popupmenu="1"/>
   <TEXTEDITOR name="new text editor" id="90b4a9a5ac61a342" memberName="analyseEditor"

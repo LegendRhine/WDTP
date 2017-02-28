@@ -39,13 +39,13 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
     if (e->mods.isPopupMenu())
     {
         menu.addItem (pickTitle, TRANS ("Pickup as Title"), getHighlightedText().isNotEmpty());
-        menu.addSeparator ();
+        menu.addSeparator();
 
-        menu.addItem (addKeywords, TRANS ("Add to Keywords"), getHighlightedText ().isNotEmpty ());
+        menu.addItem (addKeywords, TRANS ("Add to Keywords"), getHighlightedText().isNotEmpty());
         menu.addItem (pickFromAllKeywords, TRANS ("Reuse from Keywords Table") + "...");
-        menu.addSeparator ();
+        menu.addSeparator();
         
-        menu.addItem (pickDesc, TRANS ("Pickup as Description"), getHighlightedText ().isNotEmpty ());
+        menu.addItem (pickDesc, TRANS ("Pickup as Description"), getHighlightedText().isNotEmpty());
         menu.addSeparator();
 
         PopupMenu insertMenu;
@@ -144,7 +144,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     }
 
     else if (insertSeparator == index)      insertTextAtCaret (newLine + "---" + newLine);
-    else if (pickFromAllKeywords == index)  showAllKeywords ();
+    else if (pickFromAllKeywords == index)  showAllKeywords();
     else if (searchPrev == index)           searchBySelectPrev();
     else if (searchNext == index)           searchBySelectNext();
     else if (insertImage == index)          insertImages();
@@ -438,14 +438,19 @@ void MarkdownEditor::tableInsert()
 }
 
 //=================================================================================================
-void MarkdownEditor::showAllKeywords ()
+void MarkdownEditor::showAllKeywords()
 {   
-    ScopedPointer<KeywordsComp> keywordsComp = new KeywordsComp (true);
-    CallOutBox callOut (*keywordsComp, getLocalBounds (), this);
-    callOut.runModalLoop ();
+    StringArray kws;
+    kws.addTokens (parent->getCurrentTree().getProperty ("keywords").toString(), ",", String());
+    kws.trim();
+    kws.removeEmptyStrings (true);
 
-//     parent->getSetupPanel ()->updateDocPanel ();
-//     DocTreeViewItem::needCreate (parent->getCurrentTree ());
+    ScopedPointer<KeywordsComp> keywordsComp = new KeywordsComp (true, kws);
+    CallOutBox callOut (*keywordsComp, getLocalBounds(), this);
+    callOut.runModalLoop();
+
+//     parent->getSetupPanel()->updateDocPanel();
+//     DocTreeViewItem::needCreate (parent->getCurrentTree());
 }
 
 //=================================================================================================

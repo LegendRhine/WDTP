@@ -705,7 +705,7 @@ const String Md2Html::cleanUp (const String& mdString)
     // clean extra <p> and <br> which is in page's js-code (inside <body/>)
     indexCodeStart = resultStr.indexOfIgnoreCase (0, "<script");
 
-    while (indexCodeStart != -1 && indexCodeStart + 8 <= resultStr.length ())
+    while (indexCodeStart != -1 && indexCodeStart + 8 <= resultStr.length())
     {
         const int indexCodeEnd = resultStr.indexOfIgnoreCase (indexCodeStart + 8, "</script>");
 

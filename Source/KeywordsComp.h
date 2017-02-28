@@ -19,7 +19,7 @@
 class KeywordsComp    : public Component
 {
 public:
-    KeywordsComp (const bool displayInEditor);
+    KeywordsComp (const bool displayInEditor, const StringArray& keywordsToMatch);
     ~KeywordsComp();
 
     void paint (Graphics&) override;

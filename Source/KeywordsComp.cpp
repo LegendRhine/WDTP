@@ -21,10 +21,12 @@ struct TextButtonLF : public LookAndFeel_V3
 
 //=================================================================================================
 class KeywordsButtons : public Component,
-                        public Button::Listener
+                        public Button::Listener,
+                        public ActionBroadcaster
 {
 public:
-    KeywordsButtons (const bool showInEditor) :
+    KeywordsButtons (const bool showInEditor, 
+                     const StringArray& kwToMatch) :
         displayInEditor (showInEditor)
     {
         TopToolBar::rebuildAllKeywords (false);        
@@ -32,6 +34,7 @@ public:
         // get all keywords of this project
         const ValueTree& ptree (FileTreeContainer::projectTree);
         const String& allKws (ptree.getProperty ("allKeywords").toString());
+
         StringArray keywords;
         keywords.addTokens (allKws, ",", String());
 
@@ -39,27 +42,29 @@ public:
         for (int i = keywords.size(); --i >= 0; )
         {
             TextButton* bt = new TextButton (keywords[i].replace ("--", " (")
-                                             + (keywords[i].contains ("--") ? ")" : String ()));
+                                             + (keywords[i].contains ("--") ? ")" : String()));
 
             if (displayInEditor)
-                bt->setTooltip (TRANS ("Click to Pick/Nonuse it"));
+                bt->setTooltip (keywords[i].upToFirstOccurrenceOf ("--", false, true));
+
+            bt->setSize (100, 25);
+            bt->setColour (TextButton::buttonColourId, Colours::lightgrey.withAlpha (0.15f));
+            bt->setColour (TextButton::buttonOnColourId, Colours::lightskyblue);
+            bt->setLookAndFeel (&tlf);
+
+            setButtonToggle (bt, kwToMatch);
 
             bt->addListener (this);
-            bt->setSize (90, 25);
-            bt->setColour (TextButton::buttonColourId, Colours::lightgrey.withAlpha (0.15f));
-            bt->setColour (TextButton::buttonOnColourId, Colours::grey);
-            bt->setLookAndFeel (&tlf);
             addAndMakeVisible (bt);
-
             bts.insert (0, bt);
         }
 
-        setSize (500, keywords.size () / 5 * 40 + 10/* 
-                 + (keywords.size () % 5 == 0) ? 35 : 0*/);
+        setSize (550, keywords.size() / 5 * 30 + 10/* 
+                 + (keywords.size() % 5 == 0) ? 35 : 0*/);
     }
 
     //=================================================================================================
-    ~KeywordsButtons ()     {    }
+    ~KeywordsButtons()     {    }
 
     //=================================================================================================
     void resized()
@@ -75,7 +80,7 @@ public:
                 ++y;
             }
 
-            bts[i]->setTopLeftPosition (x * 95 + 10, y * 35 + 5);
+            bts[i]->setTopLeftPosition (x * 105 + 10, y * 30 + 5);
             ++x;
         }
     }
@@ -83,37 +88,56 @@ public:
     //=================================================================================================
     virtual void buttonClicked (Button* bt) override
     {
-    }
 
-    //=================================================================================================
-    virtual void buttonStateChanged (Button* bt) override
-    {
     }
 
     //=================================================================================================
 private:
+    void setButtonToggle (TextButton* bt, const StringArray& kwToMatch)
+    {
+        const String& text (getTextWithoutTimes (bt));
+
+        for (int i = kwToMatch.size(); --i >= 0; )
+        {
+            if (kwToMatch[i] == text)
+            {
+                bt->setToggleState (true, dontSendNotification);
+                return;
+            }
+        }
+    }
+
+    //=================================================================================================
+    const String getTextWithoutTimes (TextButton* bt)
+    {
+        return bt->getButtonText().upToFirstOccurrenceOf (" (", false, true);
+    }
+
+    //=================================================================================================
     const bool displayInEditor;
-    OwnedArray<TextButton> bts;
     TextButtonLF tlf;
+    OwnedArray<TextButton> bts;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (KeywordsButtons)
 };
 
 //==============================================================================
-KeywordsComp::KeywordsComp (const bool displayInEditor)
+KeywordsComp::KeywordsComp (const bool displayInEditor,
+                            const StringArray& keywordsToMatch)
 {
     titleLb.setFont (17.f);
     titleLb.setJustificationType (Justification::centred);
-    titleLb.setText (TRANS ("Reuse from Keywords Table"), dontSendNotification);
+    titleLb.setText (TRANS ("Reuse from Keywords Table") + " - "
+                     + TRANS ("Click to Pick/Nonuse it"), dontSendNotification);
     addAndMakeVisible (titleLb);
 
-    viewport = new Viewport ();
+    viewport = new Viewport();
     viewport->setScrollBarsShown (true, false);
     viewport->setScrollBarThickness (10);
-    viewport->setViewedComponent (new KeywordsButtons (displayInEditor));
+    viewport->setViewedComponent (new KeywordsButtons (displayInEditor, keywordsToMatch));
 
     addAndMakeVisible (viewport);
-    setSize (500, 320);
+    setSize (550, 340);
 }
 
 //=================================================================================================
@@ -129,6 +153,6 @@ void KeywordsComp::paint (Graphics& g)
 //=================================================================================================
 void KeywordsComp::resized()
 {
-    titleLb.setBounds (10, 5, getWidth () - 20, 30);
-    viewport->setBounds (0, 35, getWidth (), getHeight () - 35);
+    titleLb.setBounds (10, 5, getWidth() - 20, 30);
+    viewport->setBounds (0, 35, getWidth(), getHeight() - 35);
 }

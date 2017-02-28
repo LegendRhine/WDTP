@@ -1062,14 +1062,15 @@ void TopToolBar::rebuildAllKeywords (const bool saveProjectAndPopupMessage)
     ValueTree pTree (FileTreeContainer::projectTree);
 
     extractKeywords (pTree, keywordsArray);
+    
     keywordsArray.appendNumbersToDuplicates (true, false, CharPointer_UTF8("--"), CharPointer_UTF8(""));
     keywordsArray.sortNatural();
 
     // remove duplicates and remain the last which include "-x (times)"
     for (int i = keywordsArray.size(); --i >= 1; )
     {
-        if (keywordsArray[i].upToLastOccurrenceOf ("--", false, true) ==
-            keywordsArray[i - 1].upToLastOccurrenceOf ("--", false, true))
+        if (keywordsArray[i].upToLastOccurrenceOf ("--", false, true).compareIgnoreCase (
+            keywordsArray[i - 1].upToLastOccurrenceOf ("--", false, true)) == 0)
         {
             keywordsArray.remove (i - 1);
         }
@@ -1114,7 +1115,7 @@ void TopToolBar::rebuildAllKeywords (const bool saveProjectAndPopupMessage)
 
     if (saveProjectAndPopupMessage)
     {
-        FileTreeContainer::saveProject ();
+        FileTreeContainer::saveProject();
         SHOW_MESSAGE (TRANS ("All keywords in this project have been rebuilt successfully."));
     }    
 }

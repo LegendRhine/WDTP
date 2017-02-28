@@ -39,9 +39,13 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
     if (e->mods.isPopupMenu())
     {
         menu.addItem (pickTitle, TRANS ("Pickup as Title"), getHighlightedText().isNotEmpty());
+        menu.addSeparator ();
+
         menu.addItem (addKeywords, TRANS ("Add to Keywords"), getHighlightedText ().isNotEmpty ());
-        menu.addItem (pickFromAllKeywords, TRANS ("Reuse from Keywords Table"));
-        menu.addItem (pickDesc, TRANS ("Pickup as Description"), getHighlightedText().isNotEmpty());
+        menu.addItem (pickFromAllKeywords, TRANS ("Reuse from Keywords Table") + "...");
+        menu.addSeparator ();
+        
+        menu.addItem (pickDesc, TRANS ("Pickup as Description"), getHighlightedText ().isNotEmpty ());
         menu.addSeparator();
 
         PopupMenu insertMenu;
@@ -435,13 +439,13 @@ void MarkdownEditor::tableInsert()
 
 //=================================================================================================
 void MarkdownEditor::showAllKeywords ()
-{
+{   
     ScopedPointer<KeywordsComp> keywordsComp = new KeywordsComp ();
     CallOutBox callOut (*keywordsComp, getLocalBounds (), this);
     callOut.runModalLoop ();
 
-    parent->getSetupPanel ()->updateDocPanel ();
-    DocTreeViewItem::needCreate (parent->getCurrentTree ());
+//     parent->getSetupPanel ()->updateDocPanel ();
+//     DocTreeViewItem::needCreate (parent->getCurrentTree ());
 }
 
 //=================================================================================================

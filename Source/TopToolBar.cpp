@@ -405,7 +405,7 @@ void TopToolBar::menuPerform (const int index)
     else if (index == openPjt)          openProject();
     else if (index == generateWhole)    cleanAndGenerateAll();
     else if (index == cleanUpLocal)     cleanLocalMedias();
-    else if (index == rebuildKeywords)  rebuildAllKeywords();
+    else if (index == rebuildKeywords)  rebuildAllKeywords (true);
     else if (index == exportTpl)        exportCurrentTpls();
     else if (index == importTpl)        importExternalTpls();
     else if (index == releaseSystemTpl) releaseSystemTpls (FileTreeContainer::projectFile, true);
@@ -1055,11 +1055,11 @@ void TopToolBar::cleanLocalMedias()
     }
 }
 //=================================================================================================
-void TopToolBar::rebuildAllKeywords()
+void TopToolBar::rebuildAllKeywords (const bool saveProjectAndPopupMessage)
 {
     // extract all keywords of each doc of this project
     StringArray keywordsArray;
-    ValueTree pTree (fileTreeContainer->projectTree);
+    ValueTree pTree (FileTreeContainer::projectTree);
 
     extractKeywords (pTree, keywordsArray);
     keywordsArray.appendNumbersToDuplicates (true, false, CharPointer_UTF8("--"), CharPointer_UTF8(""));
@@ -1111,9 +1111,12 @@ void TopToolBar::rebuildAllKeywords()
 
     //DBGX (keywords);
     pTree.setProperty ("allKeywords", keywords, nullptr);
-    fileTreeContainer->saveProject();
 
-    SHOW_MESSAGE (TRANS ("All keywords in this project have been rebuilt successfully."));
+    if (saveProjectAndPopupMessage)
+    {
+        FileTreeContainer::saveProject ();
+        SHOW_MESSAGE (TRANS ("All keywords in this project have been rebuilt successfully."));
+    }    
 }
 
 //=================================================================================================

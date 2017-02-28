@@ -324,3 +324,4 @@ countries: cn
 "Show Keywords: " = "显示关键词: "
 "All keywords in this project have been rebuilt successfully." = "此项目的关键词表已成功重建。"
 "Reuse from Keywords Table" = "项目关键词表"
+"Click to Pick/Nonuse it" = "点击以使用或取消使用该关键词"

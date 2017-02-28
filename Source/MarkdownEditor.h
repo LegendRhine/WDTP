@@ -50,7 +50,7 @@ private:
     //=============================================================================================
     enum MenuIndex
     {
-        pickTitle = 1, addKeywords, pickDesc,
+        pickTitle = 1, addKeywords, pickFromAllKeywords, pickDesc,
         insertImage, insertHyperlink, insertTable, insertQuota,
         insertAlignCenter, insertAlignRight, insertUnoerderList, insertOrderList,
         insertFirstTitle, insertSecondTitle, insertThirdTitle, insertToc, insertEndnote,
@@ -62,6 +62,7 @@ private:
         fontSize, fontColor, setBackground, resetDefault
     };
 
+    void showAllKeywords();
     void hyperlinkInsert();
     void insertImages();
 

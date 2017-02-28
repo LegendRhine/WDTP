@@ -1109,7 +1109,7 @@ void TopToolBar::rebuildAllKeywords()
     if (keywords.substring (0, 1) == ",")
         keywords = keywords.substring (1);
 
-    DBGX (keywords);
+    //DBGX (keywords);
     pTree.setProperty ("allKeywords", keywords, nullptr);
     fileTreeContainer->saveProject();
 

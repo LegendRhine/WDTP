@@ -45,6 +45,9 @@
       <FILE id="PSfeQz" name="HtmlProcessor.cpp" compile="1" resource="0"
             file="Source/HtmlProcessor.cpp"/>
       <FILE id="LCCa8k" name="HtmlProcessor.h" compile="0" resource="0" file="Source/HtmlProcessor.h"/>
+      <FILE id="wNFuBe" name="KeywordsComp.cpp" compile="1" resource="0"
+            file="Source/KeywordsComp.cpp"/>
+      <FILE id="ckhYZY" name="KeywordsComp.h" compile="0" resource="0" file="Source/KeywordsComp.h"/>
       <FILE id="y8wbbe" name="Main.cpp" compile="1" resource="0" file="Source/Main.cpp"/>
       <FILE id="LQFmhv" name="MainComponent.cpp" compile="1" resource="0"
             file="Source/MainComponent.cpp"/>

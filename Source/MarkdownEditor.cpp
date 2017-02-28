@@ -39,7 +39,8 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
     if (e->mods.isPopupMenu())
     {
         menu.addItem (pickTitle, TRANS ("Pickup as Title"), getHighlightedText().isNotEmpty());
-        menu.addItem (addKeywords, TRANS ("Add to Keywords"), getHighlightedText().isNotEmpty());
+        menu.addItem (addKeywords, TRANS ("Add to Keywords"), getHighlightedText ().isNotEmpty ());
+        menu.addItem (pickFromAllKeywords, TRANS ("Reuse from Keywords Table"));
         menu.addItem (pickDesc, TRANS ("Pickup as Description"), getHighlightedText().isNotEmpty());
         menu.addSeparator();
 
@@ -138,9 +139,8 @@ void MarkdownEditor::performPopupMenuAction (int index)
         DocTreeViewItem::needCreate (parent->getCurrentTree());
     }
 
-    else if (insertSeparator == index)
-        insertTextAtCaret (newLine + "---" + newLine);
-
+    else if (insertSeparator == index)      insertTextAtCaret (newLine + "---" + newLine);
+    else if (pickFromAllKeywords == index)  showAllKeywords ();
     else if (searchPrev == index)           searchBySelectPrev();
     else if (searchNext == index)           searchBySelectNext();
     else if (insertImage == index)          insertImages();
@@ -431,6 +431,17 @@ void MarkdownEditor::tableInsert()
             << "^^ " << TRANS ("Table: ");
 
     insertTextAtCaret (content);
+}
+
+//=================================================================================================
+void MarkdownEditor::showAllKeywords ()
+{
+    ScopedPointer<KeywordsComp> keywordsComp = new KeywordsComp ();
+    CallOutBox callOut (*keywordsComp, getLocalBounds (), this);
+    callOut.runModalLoop ();
+
+    parent->getSetupPanel ()->updateDocPanel ();
+    DocTreeViewItem::needCreate (parent->getCurrentTree ());
 }
 
 //=================================================================================================

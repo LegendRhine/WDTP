@@ -25,6 +25,7 @@
 #include "DocTreeViewItem.h"
 #include "ReplaceComponent.h"
 #include "StatisComp.h"
+#include "KeywordsComp.h"
 
 
 #endif  // HEADERGUA

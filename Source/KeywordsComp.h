@@ -11,11 +11,6 @@
 #ifndef KEYWORDSCOMP_H_INCLUDED
 #define KEYWORDSCOMP_H_INCLUDED
 
-#include "../JuceLibraryCode/JuceHeader.h"
-
-//==============================================================================
-/*
-*/
 class KeywordsComp    : public Component
 {
 public:

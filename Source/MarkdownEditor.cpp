@@ -287,7 +287,7 @@ void MarkdownEditor::inlineFormat (const inlineFormatIndex& format)
         if (format == bold || format == highlight || format == boldAndItalic)
             moveCaretLeft (false, false);
 
-        // here must another if instead of 'else if' because 
+        // here must another 'if' instead of 'else if' because 
         // the caret should move left thrice for '***' (bold + italic)
         if (format == boldAndItalic)
             moveCaretLeft (false, false);

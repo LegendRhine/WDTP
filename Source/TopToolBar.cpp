@@ -732,7 +732,7 @@ bool TopToolBar::perform (const InvocationInfo& info)
     case switchWidth:       bts[width]->triggerClick();        break;
     case generateCurrent:   generateCurrentPage();             break;
     case generateNeeded:    generateHtmlsIfNeeded();           break;
-    case activeSearch:      searchInDoc->grabKeyboardFocus();   break;
+    case activeSearch:      searchInDoc->grabKeyboardFocus();  break;
 
     default:                return false; 
     }

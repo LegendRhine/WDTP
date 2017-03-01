@@ -20,7 +20,11 @@ public:
     void paint (Graphics&) override;
     void resized() override;
 
+    /** the actionBrodcaster is inside the viewport. */
+    ActionBroadcaster* getKeywordsPicker();
+
 private:
+    //=================================================================================================
     Label titleLb;
     ScopedPointer<Viewport> viewport;
 

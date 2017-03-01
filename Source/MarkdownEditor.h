@@ -19,7 +19,8 @@ class MarkdownEditor :  public TextEditor,
                         public Slider::Listener,
                         public ChangeListener,
                         public FileDragAndDropTarget,
-                        public Timer
+                        public Timer,
+                        private ActionListener
 {
 public:
     MarkdownEditor (EditAndPreview* parent_);
@@ -62,7 +63,11 @@ private:
         fontSize, fontColor, setBackground, resetDefault
     };
 
+    /** for click to select/unselect a keyword from keywords-table component.
+        see showAllKeywords().    */
+    virtual void actionListenerCallback (const String& message) override;
     void showAllKeywords();
+
     void hyperlinkInsert();
     void insertImages();
 
@@ -72,7 +77,8 @@ private:
     void endnoteInsert();
     void tocInsert();
     void identifierInsert();
-    void addSelectedToKeywords();
+    void addSelectedToKeywords (const String& selectedStr);
+    void subtractFromKeywords (const String& keyword);
     void alignCenterInsert();
     void alignRightInsert();
     void orderListInsert();

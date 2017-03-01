@@ -124,7 +124,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
 {
     if (addKeywords == index)
     {
-        addSelectedToKeywords();
+        addSelectedToKeywords (getHighlightedText());
         parent->getSetupPanel()->updateDocPanel();
         DocTreeViewItem::needCreate (parent->getCurrentTree());
     }
@@ -446,11 +446,12 @@ void MarkdownEditor::showAllKeywords()
     kws.removeEmptyStrings (true);
 
     ScopedPointer<KeywordsComp> keywordsComp = new KeywordsComp (true, kws);
+    
+    if (keywordsComp->getKeywordsPicker() != nullptr)
+        keywordsComp->getKeywordsPicker()->addActionListener (this);
+
     CallOutBox callOut (*keywordsComp, getLocalBounds(), this);
     callOut.runModalLoop();
-
-//     parent->getSetupPanel()->updateDocPanel();
-//     DocTreeViewItem::needCreate (parent->getCurrentTree());
 }
 
 //=================================================================================================
@@ -1059,6 +1060,20 @@ void MarkdownEditor::timerCallback()
 }
 
 //=================================================================================================
+void MarkdownEditor::actionListenerCallback (const String& message)
+{
+    const String& prefix (message.substring (0, 2));
+
+    if (prefix == "++")
+        addSelectedToKeywords (message.substring (2));
+    else if (prefix == "--")
+        subtractFromKeywords (message.substring (2));
+
+    parent->getSetupPanel()->updateDocPanel();
+    DocTreeViewItem::needCreate (parent->getCurrentTree());
+}
+
+//=================================================================================================
 void MarkdownEditor::sliderValueChanged (Slider* slider)
 {
     if (slider == &fontSizeSlider)
@@ -1102,26 +1117,40 @@ void MarkdownEditor::filesDropped (const StringArray& pathes, int, int)
 }
 
 //=================================================================================================
-void MarkdownEditor::addSelectedToKeywords()
+void MarkdownEditor::addSelectedToKeywords (const String& selectedStr)
 {
     ValueTree& docTree (parent->getCurrentTree());
-    const String& selectedStr = getHighlightedText();
-    const String& currentKeyWords (docTree.getProperty ("keywords").toString().trim());
-
-    String keyWords (currentKeyWords);
+    String currentKeyWords (docTree.getProperty ("keywords").toString().trim());
 
     // update the doc-tree
     if (currentKeyWords.isNotEmpty())
     {
         if (!currentKeyWords.containsIgnoreCase (selectedStr))
-            keyWords = currentKeyWords + ", " + selectedStr;
+            currentKeyWords = currentKeyWords + ", " + selectedStr;
     }
     else
     {
-        keyWords = selectedStr;
+        currentKeyWords = selectedStr;
     }
 
-    docTree.setProperty ("keywords", keyWords, nullptr);
+    docTree.setProperty ("keywords", currentKeyWords, nullptr);
+}
+
+//=================================================================================================
+void MarkdownEditor::subtractFromKeywords (const String& keyword)
+{
+    ValueTree& docTree (parent->getCurrentTree());
+    String currentKeyWords (docTree.getProperty ("keywords").toString().trim());
+    currentKeyWords.replace (CharPointer_UTF8 ("\xef\xbc\x8c"), ", "); // Chinese ','
+
+    // how could to remove a keyword that hasn't been there already?!?
+    jassert (currentKeyWords.contains (keyword));
+
+    currentKeyWords = currentKeyWords.replace (", " + keyword, String(), true)
+        .replace (keyword + ", ", String(), true)
+        .replace (keyword, String(), true);
+
+    docTree.setProperty ("keywords", currentKeyWords, nullptr);
 }
 
 //=================================================================================================

@@ -23,6 +23,8 @@ struct HtmlProcessor
     static const File createArticleHtml (ValueTree& docTree, bool saveProjectAfterCreated);
     static const File createIndexHtml (ValueTree& dirTree, bool saveProjectAfterCreated);
 
+    static void rebuildAllKeywords (const bool saveProjectAndPopupMessage);
+
     //=========================================================================
     /** Use for file/dir list sort. Base on create-date */
     const int compareElements (const ValueTree& ft, const ValueTree& st);
@@ -97,6 +99,8 @@ private:
     static const String getPageNavi (const int howManyPages, const int thisIsNoX);
     static const String getBackPrevLevel();
     static const String getToTop();
+
+    static void extractKeywords (const ValueTree& tree, StringArray& arrayToAddTo);
 
     //=================================================================================================
     bool sortByReverse;

@@ -44,7 +44,6 @@ public:
     virtual bool perform (const InvocationInfo& info) override;
 
     static void generateHtmlFilesIfNeeded (ValueTree tree);
-    static void rebuildAllKeywords (const bool saveProjectAndPopupMessage);
 
 private:
     //==========================================================================
@@ -66,7 +65,6 @@ private:
     void closeProject();
     void cleanAndGenerateAll();
     void cleanLocalMedias();
-    static void extractKeywords (const ValueTree& tree, StringArray& arrayToAddTo);
 
     /** generate the tree and all its children's html file */
     static void generateHtmlFiles (ValueTree tree);
@@ -101,7 +99,7 @@ private:
     {
         newPjt = 1, openPjt, closePjt, packPjt, unpackPjt,
         generateCurrent, generateNeeded, generateWhole, cleanUpLocal,
-        exportTpl, importTpl, releaseSystemTpl, rebuildKeywords,
+        exportTpl, importTpl, releaseSystemTpl, /*rebuildKeywords,*/
         uiEnglish, uiChinese,
         setUiColor, resetUiColor, gettingStarted, checkNewVersion, showAbout,
         switchEdit, switchWidth, activeSearch

@@ -29,7 +29,7 @@ public:
                      const StringArray& kwToMatch) :
         displayInEditor (showInEditor)
     {
-        TopToolBar::rebuildAllKeywords (false);        
+        HtmlProcessor::rebuildAllKeywords (false);        
 
         // get all keywords of this project
         const ValueTree& ptree (FileTreeContainer::projectTree);

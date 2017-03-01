@@ -362,8 +362,8 @@ void TopToolBar::popupSystemMenu()
     m.addItem (cleanUpLocal, TRANS ("Cleanup Local Medias"), fileTreeContainer->hasLoadedProject());
     m.addSeparator();
 
-    m.addItem (rebuildKeywords, TRANS ("Rebuild Keywords Table"), fileTreeContainer->hasLoadedProject());
-    m.addSeparator();
+    /*m.addItem (rebuildKeywords, TRANS ("Rebuild Keywords Table"), fileTreeContainer->hasLoadedProject());
+    m.addSeparator();*/
 
     m.addItem (exportTpl, TRANS ("Export Current Templates"), fileTreeContainer->hasLoadedProject());
     m.addItem (importTpl, TRANS ("Import External Templates..."), fileTreeContainer->hasLoadedProject());
@@ -405,7 +405,7 @@ void TopToolBar::menuPerform (const int index)
     else if (index == openPjt)          openProject();
     else if (index == generateWhole)    cleanAndGenerateAll();
     else if (index == cleanUpLocal)     cleanLocalMedias();
-    else if (index == rebuildKeywords)  rebuildAllKeywords (true);
+    /*else if (index == rebuildKeywords)  rebuildAllKeywords (true);*/
     else if (index == exportTpl)        exportCurrentTpls();
     else if (index == importTpl)        importExternalTpls();
     else if (index == releaseSystemTpl) releaseSystemTpls (FileTreeContainer::projectFile, true);
@@ -1054,86 +1054,5 @@ void TopToolBar::cleanLocalMedias()
         }
     }
 }
-//=================================================================================================
-void TopToolBar::rebuildAllKeywords (const bool saveProjectAndPopupMessage)
-{
-    // extract all keywords of each doc of this project
-    StringArray keywordsArray;
-    ValueTree pTree (FileTreeContainer::projectTree);
-    extractKeywords (pTree, keywordsArray);
-    
-    keywordsArray.appendNumbersToDuplicates (true, false, CharPointer_UTF8("--"), CharPointer_UTF8(""));
-    keywordsArray.sortNatural();
 
-    // remove duplicates and remain the last which include "-x (times)"
-    for (int i = keywordsArray.size(); --i >= 1; )
-    {
-        if (keywordsArray[i].upToLastOccurrenceOf ("--", false, true).compareIgnoreCase (
-            keywordsArray[i - 1].upToLastOccurrenceOf ("--", false, true)) == 0)
-        {
-            keywordsArray.remove (i - 1);
-        }
-    }
-
-    // sort by duplicate-times
-    for (int i = 0; i < keywordsArray.size(); ++i)
-    {
-        for (int j = 0; j < keywordsArray.size() - 1; ++j)
-        {
-            if (keywordsArray[j].fromLastOccurrenceOf ("--", false, true).getIntValue() <
-                keywordsArray[j + 1].fromLastOccurrenceOf ("--", false, true).getIntValue())
-            {
-                const String str (keywordsArray[j]);
-                keywordsArray.getReference (j) = keywordsArray[j + 1];
-                keywordsArray.getReference (j + 1) = str;
-            }
-        }    	
-    }
-
-    // move the '123XX' to the end
-    StringArray tempStrs;
-
-    for (int i = 0; i < keywordsArray.size(); ++i)
-    {
-        if (!keywordsArray[i].contains ("--"))
-        {
-            tempStrs.add (keywordsArray[i]);
-            keywordsArray.remove (i);
-            --i;
-        }
-    }
-
-    keywordsArray.addArray (tempStrs);
-    String keywords (keywordsArray.joinIntoString (","));
-
-    if (keywords.substring (0, 1) == ",")
-        keywords = keywords.substring (1);
-
-    //DBGX (keywords);
-    pTree.setProperty ("allKeywords", keywords, nullptr);
-
-    if (saveProjectAndPopupMessage)
-    {
-        FileTreeContainer::saveProject();
-        SHOW_MESSAGE (TRANS ("All keywords in this project have been rebuilt successfully."));
-    }    
-}
-
-//=================================================================================================
-void TopToolBar::extractKeywords (const ValueTree& tree,
-                                  StringArray& arrayToAdd)
-{
-    const String& keywords (tree.getProperty ("keywords").toString()
-                            .replace (CharPointer_UTF8 ("\xef\xbc\x8c"), ",")); // Chinese ','
-    StringArray thisArray;
-
-    thisArray.addTokens (keywords, ",", String());
-    thisArray.trim();
-    thisArray.removeEmptyStrings();
-    thisArray.removeDuplicates (true);
-    arrayToAdd.addArray (thisArray);
-
-    for (int i = tree.getNumChildren(); --i >= 0; )
-        extractKeywords (tree.getChild (i), arrayToAdd);
-}
 

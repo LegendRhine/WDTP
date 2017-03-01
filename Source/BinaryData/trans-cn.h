@@ -323,5 +323,7 @@ countries: cn
 " time(s)." = "次。"
 "Show Keywords: " = "显示关键词: "
 "All keywords in this project have been rebuilt successfully." = "本项目的关键词表已成功重建。"
-"Reuse from Keywords Table" = "项目关键词表"
 "Feature Word: " = "特征词："
+"Keywords Table" = "关键词表"
+"\'s " = "的"
+"Project " = "项目"

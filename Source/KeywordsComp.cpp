@@ -62,6 +62,9 @@ public:
     ~KeywordsButtons()     {    }
 
     //=================================================================================================
+    const int getKeywordsNumbers() const { return bts.size(); }
+
+    //=================================================================================================
     void resized()
     {
         int x, y;
@@ -87,39 +90,46 @@ public:
         const String& buttonText (bt->getButtonText());
         const String& textWithoutTimes (getTextWithoutTimes (bt));
 
-        bt->setToggleState (!toggled, dontSendNotification);
-        sendActionMessage ((toggled ? "--" : "++") + textWithoutTimes);
-
-        // times - 1
-        if (toggled && buttonText.getLastCharacters (1) == ")")
+        if (displayInEditor)
         {
-            int num = bt->getButtonText().dropLastCharacters (1)
-                .fromLastOccurrenceOf ("(", false, true).getIntValue();
+            bt->setToggleState (!toggled, dontSendNotification);
+            sendActionMessage ((toggled ? "--" : "++") + textWithoutTimes);
 
-            if (2 == num) // no need to display the times when it is the first keyword in table
-                bt->setButtonText (textWithoutTimes);
-            else
-                bt->setButtonText (textWithoutTimes + " (" + String (--num) + ")");
-        } 
+            // times - 1
+            if (toggled && buttonText.getLastCharacters (1) == ")")
+            {
+                int num = bt->getButtonText().dropLastCharacters (1)
+                    .fromLastOccurrenceOf ("(", false, true).getIntValue();
 
-        // times + 1
-        else if (!toggled && buttonText.getLastCharacters (1) == ")")
-        {
-            int num = bt->getButtonText().dropLastCharacters (1)
-                .fromLastOccurrenceOf ("(", false, true).getIntValue();
+                if (2 == num) // no need to display the times when it is the first keyword in table
+                    bt->setButtonText (textWithoutTimes);
+                else
+                    bt->setButtonText (textWithoutTimes + " (" + String (--num) + ")");
+            }
 
-            bt->setButtonText (textWithoutTimes + " (" + String (++num) + ")");
+            // times + 1
+            else if (!toggled && buttonText.getLastCharacters (1) == ")")
+            {
+                int num = bt->getButtonText().dropLastCharacters (1)
+                    .fromLastOccurrenceOf ("(", false, true).getIntValue();
+
+                bt->setButtonText (textWithoutTimes + " (" + String (++num) + ")");
+            }
+
+            // times turned to be '2'
+            else if (!toggled && buttonText.getLastCharacters (1) != ")")
+            {
+                bt->setButtonText (textWithoutTimes + " (2)");
+            }
         }
-
-        // times turned to be '2'
-        else if (!toggled && buttonText.getLastCharacters (1) != ")")
+        else
         {
-            bt->setButtonText (textWithoutTimes + " (2)");
+            sendActionMessage (textWithoutTimes);
         }
     }
 
-    //=================================================================================================
 private:
+    //=================================================================================================
 
     void setToggleIfMatched (TextButton* bt, const StringArray& kwToMatch)
     {
@@ -154,17 +164,21 @@ KeywordsComp::KeywordsComp (const ValueTree& tree,
                             const bool displayInEditor,
                             const StringArray& keywordsToMatch)
 {
-    titleLb.setFont (18.f);
-    titleLb.setJustificationType (Justification::centred);
-    titleLb.setText (TRANS ("Reuse from Keywords Table"), dontSendNotification);
-    addAndMakeVisible (titleLb);
-
     viewport = new Viewport();
     viewport->setScrollBarsShown (true, false);
     viewport->setScrollBarThickness (10);
-    viewport->setViewedComponent (new KeywordsButtons (tree, displayInEditor, keywordsToMatch));
 
+    KeywordsButtons* bts = new KeywordsButtons (tree, displayInEditor, keywordsToMatch);
+    viewport->setViewedComponent (bts);
     addAndMakeVisible (viewport);
+
+    titleLb.setFont (18.f);
+    titleLb.setJustificationType (Justification::centred);
+    titleLb.setText ((displayInEditor ? TRANS ("Project ") : tree.getProperty ("title").toString() + TRANS ("\'s "))
+                     + TRANS ("Keywords Table") + " (" + String (bts->getKeywordsNumbers()) + ")", 
+                     dontSendNotification);
+
+    addAndMakeVisible (titleLb);
     setSize (550, 340);
 }
 
@@ -181,7 +195,7 @@ void KeywordsComp::paint (Graphics& g)
 //=================================================================================================
 void KeywordsComp::resized()
 {
-    titleLb.setBounds (10, 5, getWidth() - 20, 30);
+    titleLb.setBounds (10, 3, getWidth() - 20, 30);
     viewport->setBounds (0, 35, getWidth(), getHeight() - 35);
 }
 

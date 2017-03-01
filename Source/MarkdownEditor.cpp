@@ -42,7 +42,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSeparator();
 
         menu.addItem (addKeywords, TRANS ("Add to Keywords"), getHighlightedText().isNotEmpty());
-        menu.addItem (pickFromAllKeywords, TRANS ("Reuse from Keywords Table") + "...");
+        menu.addItem (pickFromAllKeywords, TRANS ("Keywords Table") + "...");
         menu.addSeparator();
         
         menu.addItem (pickDesc, TRANS ("Pickup as Description"), getHighlightedText().isNotEmpty());

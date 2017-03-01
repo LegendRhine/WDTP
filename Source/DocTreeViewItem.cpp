@@ -307,6 +307,9 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addSeparator();
 
         m.addItem (dataStatis, TRANS ("Statistics..."), exist && onlyOneSelected);
+        m.addItem (keywordsTable, TRANS ("Keywords Table") + "...", exist && onlyOneSelected && !isDoc);
+        m.addSeparator();
+
         m.addItem (getItemPath, TRANS ("Get Path"), exist && onlyOneSelected);
         m.addSeparator();
 
@@ -389,6 +392,8 @@ void DocTreeViewItem::menuPerform (const int index)
         exportAsHtml();
     else if (index == dataStatis)
         statistics();
+    else if (index == keywordsTable)
+        showKeywordsTable();
     else if (index == getItemPath)
         getPath();
     else if (index == replaceIn)
@@ -976,6 +981,41 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
         refreshDisplay();
         treeHasChanged();
         setOpen (true);
+    }
+}
+
+//=================================================================================================
+void DocTreeViewItem::showKeywordsTable()
+{
+    ScopedPointer<KeywordsComp> keywordsComp = new KeywordsComp (tree, false, StringArray());
+
+    if (keywordsComp->getKeywordsPicker() != nullptr)
+        keywordsComp->getKeywordsPicker()->addActionListener (this);
+
+    CallOutBox callOut (*keywordsComp, treeContainer->getScreenBounds(), nullptr);
+    callOut.runModalLoop();
+}
+
+//=================================================================================================
+void DocTreeViewItem::actionListenerCallback (const String& message)
+{
+    treeContainer->getTreeView().clearSelectedItems();
+    selectChildren (this, message);
+}
+
+//=================================================================================================
+void DocTreeViewItem::selectChildren (DocTreeViewItem* currentItem, const String& keyword)
+{
+    if (currentItem->getTree().getProperty ("keywords").toString().contains (keyword))
+    {
+        currentItem->setSelected (true, false);
+        treeContainer->getTreeView().scrollToKeepItemVisible (currentItem);
+    }
+
+    for (int i = currentItem->getNumSubItems(); --i >= 0; )
+    {
+        DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (currentItem->getSubItem (i));
+        selectChildren (item, keyword);
     }
 }
 

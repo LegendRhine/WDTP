@@ -13,7 +13,8 @@
 
 /** Repsent a doc, a dir or the project-root which showed in treeView. */
 class DocTreeViewItem : public TreeViewItem,
-                        private ValueTree::Listener
+                        private ValueTree::Listener,
+                        private ActionListener
 {
 public:
     DocTreeViewItem (const ValueTree& tree,
@@ -87,6 +88,13 @@ public:
 
 private:
     //=========================================================================
+
+    /** for click to search a keyword from keywords-table component.*/
+    virtual void actionListenerCallback (const String& message) override;
+
+    /** select all its chilren doc which include the given skyword */
+    void selectChildren (DocTreeViewItem* currentItem, const String& keyword);
+
     /** for exportAsHtml. Note: the arg item must be a dir. */
     static const bool getDirDocsAndAllMedias (DocTreeViewItem* item,
                                               const File& mdFile,
@@ -105,7 +113,7 @@ private:
         newDir = 1, newDoc, 
         importTextDocs,
         packWholeSite, packHtmls, packMedias,
-        exportTextDoc, exportDocs, dataStatis, getItemPath,
+        exportTextDoc, exportDocs, dataStatis, keywordsTable, getItemPath,
         replaceIn, rename, deleteThis, 
         viewInFinder, openInExEditor, browseInEx
     };
@@ -123,6 +131,7 @@ private:
     void createNewFolder();
     void deleteSelected();
     void statistics();
+    void showKeywordsTable();
     void getPath();
     void replaceContent();
 

@@ -23,7 +23,7 @@ struct HtmlProcessor
     static const File createArticleHtml (ValueTree& docTree, bool saveProjectAfterCreated);
     static const File createIndexHtml (ValueTree& dirTree, bool saveProjectAfterCreated);
 
-    static void rebuildAllKeywords (const bool saveProjectAndPopupMessage);
+    static const String extractItsAllKeywordsr (const ValueTree& dirTree);
 
     //=========================================================================
     /** Use for file/dir list sort. Base on create-date */

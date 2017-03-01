@@ -312,12 +312,12 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
     return indexHtml;
 }
 
-void HtmlProcessor::rebuildAllKeywords (const bool saveProjectAndPopupMessage)
+//=================================================================================================
+const String HtmlProcessor::extractItsAllKeywordsr (const ValueTree& dirTree)
 {
     // extract all keywords of each doc of this project
     StringArray keywordsArray;
-    ValueTree pTree (FileTreeContainer::projectTree);
-    extractKeywords (pTree, keywordsArray);
+    extractKeywords (dirTree, keywordsArray);
 
     keywordsArray.appendNumbersToDuplicates (true, false, CharPointer_UTF8 ("--"), CharPointer_UTF8 (""));
     keywordsArray.sortNatural();
@@ -367,13 +367,7 @@ void HtmlProcessor::rebuildAllKeywords (const bool saveProjectAndPopupMessage)
         keywords = keywords.substring (1);
 
     //DBGX (keywords);
-    pTree.setProperty ("allKeywords", keywords, nullptr);
-
-    if (saveProjectAndPopupMessage)
-    {
-        FileTreeContainer::saveProject();
-        SHOW_MESSAGE (TRANS ("All keywords in this project have been rebuilt successfully."));
-    }
+    return keywords;
 }
 
 //=================================================================================================

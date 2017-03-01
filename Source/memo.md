@@ -57,7 +57,6 @@
     - modifyDate
 	- needCreateHtml
 	- identityOfLastSelectedItem: the last selected item in fileTree. 
-	- allKeywords: all keywords of this project, no duplicates, natural sorting, each keyword separates by ', '
 
 - Properities of Dir
     - name: the name of this dir, it doesn't include any parent's name (path).

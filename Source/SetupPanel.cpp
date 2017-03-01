@@ -341,7 +341,9 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("title", values[projectTitle]->getValue(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[projectKeywords]))
-        currentTree.setProperty ("keywords", values[projectKeywords]->getValue(), nullptr);
+        currentTree.setProperty ("keywords", values[projectKeywords]->getValue().toString()
+                                 .replace (")", String())
+                                 .replace ("(", "_"), nullptr);
 
     else if (value.refersToSameSourceAs (*values[projectDesc]))
         currentTree.setProperty ("description", values[projectDesc]->getValue(), nullptr);
@@ -372,7 +374,9 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("title", values[dirTitle]->getValue(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[dirKeywords]))
-        currentTree.setProperty ("keywords", values[dirKeywords]->getValue(), nullptr);
+        currentTree.setProperty ("keywords", values[dirKeywords]->getValue().toString()
+                                 .replace (")", String())
+                                 .replace ("(", "_"), nullptr);
 
     else if (value.refersToSameSourceAs (*values[dirDesc]))
         currentTree.setProperty ("description", values[dirDesc]->getValue(), nullptr);
@@ -397,7 +401,9 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("title", values[docTitle]->getValue(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[docKeywords]))
-        currentTree.setProperty ("keywords", values[docKeywords]->getValue(), nullptr);
+        currentTree.setProperty ("keywords", values[docKeywords]->getValue().toString()
+                                 .replace (")", String())
+                                 .replace ("(", "_"), nullptr);
 
     else if (value.refersToSameSourceAs (*values[showKeys]))
         currentTree.setProperty ("showKeywords", values[showKeys]->getValue(), nullptr);

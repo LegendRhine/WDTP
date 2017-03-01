@@ -445,7 +445,8 @@ void MarkdownEditor::showAllKeywords()
     kws.trim();
     kws.removeEmptyStrings (true);
 
-    ScopedPointer<KeywordsComp> keywordsComp = new KeywordsComp (true, kws);
+    ScopedPointer<KeywordsComp> keywordsComp = new KeywordsComp (FileTreeContainer::projectTree, 
+                                                                 true, kws);
     
     if (keywordsComp->getKeywordsPicker() != nullptr)
         keywordsComp->getKeywordsPicker()->addActionListener (this);

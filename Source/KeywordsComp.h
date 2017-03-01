@@ -14,7 +14,10 @@
 class KeywordsComp    : public Component
 {
 public:
-    KeywordsComp (const bool displayInEditor, const StringArray& keywordsToMatch);
+    KeywordsComp (const ValueTree& tree, 
+                  const bool displayInEditor, 
+                  const StringArray& keywordsToMatch);
+
     ~KeywordsComp();
 
     void paint (Graphics&) override;

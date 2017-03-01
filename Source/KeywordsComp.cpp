@@ -25,18 +25,13 @@ class KeywordsButtons : public Component,
                         public ActionBroadcaster
 {
 public:
-    KeywordsButtons (const bool showInEditor, 
+    KeywordsButtons (const ValueTree& tree,
+                     const bool showInEditor, 
                      const StringArray& kwToMatch) :
         displayInEditor (showInEditor)
-    {
-        HtmlProcessor::rebuildAllKeywords (false);        
-
-        // get all keywords of this project
-        const ValueTree& ptree (FileTreeContainer::projectTree);
-        const String& allKws (ptree.getProperty ("allKeywords").toString());
-
+    {        
         StringArray keywords;
-        keywords.addTokens (allKws, ",", String());
+        keywords.addTokens (HtmlProcessor::extractItsAllKeywordsr (tree), ",", String());
 
         // add buttons
         for (int i = keywords.size(); --i >= 0; )
@@ -52,15 +47,15 @@ public:
             bt->setColour (TextButton::buttonOnColourId, Colours::lightskyblue);
             bt->setLookAndFeel (&tlf);
 
-            setButtonToggle (bt, kwToMatch);
+            setToggleIfMatched (bt, kwToMatch);
 
             bt->addListener (this);
             addAndMakeVisible (bt);
             bts.insert (0, bt);
         }
 
-        setSize (550, keywords.size() / 5 * 30 + 10/* 
-                 + (keywords.size() % 5 == 0) ? 35 : 0*/);
+        const int btNum = keywords.size();
+        setSize (550, (btNum / 5 * 30) + ((btNum % 5 != 0) ? 40 : 15));
     }
 
     //=================================================================================================
@@ -88,12 +83,45 @@ public:
     //=================================================================================================
     virtual void buttonClicked (Button* bt) override
     {
+        const bool toggled = bt->getToggleState();
+        const String& buttonText (bt->getButtonText());
+        const String& textWithoutTimes (getTextWithoutTimes (bt));
 
+        bt->setToggleState (!toggled, dontSendNotification);
+        sendActionMessage ((toggled ? "--" : "++") + textWithoutTimes);
+
+        // times - 1
+        if (toggled && buttonText.getLastCharacters (1) == ")")
+        {
+            int num = bt->getButtonText().dropLastCharacters (1)
+                .fromLastOccurrenceOf ("(", false, true).getIntValue();
+
+            if (2 == num) // no need to display the times when it is the first keyword in table
+                bt->setButtonText (textWithoutTimes);
+            else
+                bt->setButtonText (textWithoutTimes + " (" + String (--num) + ")");
+        } 
+
+        // times + 1
+        else if (!toggled && buttonText.getLastCharacters (1) == ")")
+        {
+            int num = bt->getButtonText().dropLastCharacters (1)
+                .fromLastOccurrenceOf ("(", false, true).getIntValue();
+
+            bt->setButtonText (textWithoutTimes + " (" + String (++num) + ")");
+        }
+
+        // times turned to be '2'
+        else if (!toggled && buttonText.getLastCharacters (1) != ")")
+        {
+            bt->setButtonText (textWithoutTimes + " (2)");
+        }
     }
 
     //=================================================================================================
 private:
-    void setButtonToggle (TextButton* bt, const StringArray& kwToMatch)
+
+    void setToggleIfMatched (TextButton* bt, const StringArray& kwToMatch)
     {
         const String& text (getTextWithoutTimes (bt));
 
@@ -108,9 +136,9 @@ private:
     }
 
     //=================================================================================================
-    const String getTextWithoutTimes (TextButton* bt)
+    const String getTextWithoutTimes (Button* bt)
     {
-        return bt->getButtonText().upToFirstOccurrenceOf (" (", false, true);
+        return bt->getButtonText().upToFirstOccurrenceOf (" (", false, true).trim();
     }
 
     //=================================================================================================
@@ -122,19 +150,19 @@ private:
 };
 
 //==============================================================================
-KeywordsComp::KeywordsComp (const bool displayInEditor,
+KeywordsComp::KeywordsComp (const ValueTree& tree, 
+                            const bool displayInEditor,
                             const StringArray& keywordsToMatch)
 {
-    titleLb.setFont (17.f);
+    titleLb.setFont (18.f);
     titleLb.setJustificationType (Justification::centred);
-    titleLb.setText (TRANS ("Reuse from Keywords Table") + " - "
-                     + TRANS ("Click to Pick/Nonuse it"), dontSendNotification);
+    titleLb.setText (TRANS ("Reuse from Keywords Table"), dontSendNotification);
     addAndMakeVisible (titleLb);
 
     viewport = new Viewport();
     viewport->setScrollBarsShown (true, false);
     viewport->setScrollBarThickness (10);
-    viewport->setViewedComponent (new KeywordsButtons (displayInEditor, keywordsToMatch));
+    viewport->setViewedComponent (new KeywordsButtons (tree, displayInEditor, keywordsToMatch));
 
     addAndMakeVisible (viewport);
     setSize (550, 340);
@@ -155,4 +183,10 @@ void KeywordsComp::resized()
 {
     titleLb.setBounds (10, 5, getWidth() - 20, 30);
     viewport->setBounds (0, 35, getWidth(), getHeight() - 35);
+}
+
+//=================================================================================================
+ActionBroadcaster* KeywordsComp::getKeywordsPicker()
+{
+    return dynamic_cast<ActionBroadcaster*>(viewport->getViewedComponent());
 }

@@ -1006,10 +1006,20 @@ void DocTreeViewItem::actionListenerCallback (const String& message)
 //=================================================================================================
 void DocTreeViewItem::selectChildren (DocTreeViewItem* currentItem, const String& keyword)
 {
-    if (currentItem->getTree().getProperty ("keywords").toString().contains (keyword))
+    StringArray kws;
+    kws.addTokens (currentItem->getTree().getProperty ("keywords").toString()
+                   .replace (CharPointer_UTF8 ("\xef\xbc\x8c"), ", "), ",", String());
+    kws.trim();
+    kws.removeEmptyStrings (true);
+
+    for (int i = kws.size(); --i >= 0; )
     {
-        currentItem->setSelected (true, false);
-        treeContainer->getTreeView().scrollToKeepItemVisible (currentItem);
+    	if (kws[i] == keyword)
+        {
+            currentItem->setSelected (true, false);
+            treeContainer->getTreeView().scrollToKeepItemVisible (currentItem);
+            break;
+        }
     }
 
     for (int i = currentItem->getNumSubItems(); --i >= 0; )

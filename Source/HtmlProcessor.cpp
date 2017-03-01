@@ -320,10 +320,10 @@ void HtmlProcessor::rebuildAllKeywords (const bool saveProjectAndPopupMessage)
     extractKeywords (pTree, keywordsArray);
 
     keywordsArray.appendNumbersToDuplicates (true, false, CharPointer_UTF8 ("--"), CharPointer_UTF8 (""));
-    keywordsArray.sortNatural ();
+    keywordsArray.sortNatural();
 
     // remove duplicates and remain the last which include "-x (times)"
-    for (int i = keywordsArray.size (); --i >= 1; )
+    for (int i = keywordsArray.size(); --i >= 1; )
     {
         if (keywordsArray[i].upToLastOccurrenceOf ("--", false, true).compareIgnoreCase (
             keywordsArray[i - 1].upToLastOccurrenceOf ("--", false, true)) == 0)
@@ -333,12 +333,12 @@ void HtmlProcessor::rebuildAllKeywords (const bool saveProjectAndPopupMessage)
     }
 
     // sort by duplicate-times
-    for (int i = 0; i < keywordsArray.size (); ++i)
+    for (int i = 0; i < keywordsArray.size(); ++i)
     {
-        for (int j = 0; j < keywordsArray.size () - 1; ++j)
+        for (int j = 0; j < keywordsArray.size() - 1; ++j)
         {
-            if (keywordsArray[j].fromLastOccurrenceOf ("--", false, true).getIntValue () <
-                keywordsArray[j + 1].fromLastOccurrenceOf ("--", false, true).getIntValue ())
+            if (keywordsArray[j].fromLastOccurrenceOf ("--", false, true).getIntValue() <
+                keywordsArray[j + 1].fromLastOccurrenceOf ("--", false, true).getIntValue())
             {
                 const String str (keywordsArray[j]);
                 keywordsArray.getReference (j) = keywordsArray[j + 1];
@@ -350,7 +350,7 @@ void HtmlProcessor::rebuildAllKeywords (const bool saveProjectAndPopupMessage)
     // move the '123XX' to the end
     StringArray tempStrs;
 
-    for (int i = 0; i < keywordsArray.size (); ++i)
+    for (int i = 0; i < keywordsArray.size(); ++i)
     {
         if (!keywordsArray[i].contains ("--"))
         {
@@ -371,7 +371,7 @@ void HtmlProcessor::rebuildAllKeywords (const bool saveProjectAndPopupMessage)
 
     if (saveProjectAndPopupMessage)
     {
-        FileTreeContainer::saveProject ();
+        FileTreeContainer::saveProject();
         SHOW_MESSAGE (TRANS ("All keywords in this project have been rebuilt successfully."));
     }
 }
@@ -380,17 +380,17 @@ void HtmlProcessor::rebuildAllKeywords (const bool saveProjectAndPopupMessage)
 void HtmlProcessor::extractKeywords (const ValueTree& tree,
                                   StringArray& arrayToAdd)
 {
-    const String& keywords (tree.getProperty ("keywords").toString ()
-                            .replace (CharPointer_UTF8 ("\xef\xbc\x8c"), ",")); // Chinese ','
+    const String& keywords (tree.getProperty ("keywords").toString()
+                            .replace (CharPointer_UTF8 ("\xef\xbc\x8c"), ", ")); // Chinese ','
     StringArray thisArray;
 
-    thisArray.addTokens (keywords, ",", String ());
-    thisArray.trim ();
-    thisArray.removeEmptyStrings ();
+    thisArray.addTokens (keywords, ",", String());
+    thisArray.trim();
+    thisArray.removeEmptyStrings();
     thisArray.removeDuplicates (true);
     arrayToAdd.addArray (thisArray);
 
-    for (int i = tree.getNumChildren (); --i >= 0; )
+    for (int i = tree.getNumChildren(); --i >= 0; )
         extractKeywords (tree.getChild (i), arrayToAdd);
 }
 

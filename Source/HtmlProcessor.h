@@ -36,7 +36,7 @@ struct HtmlProcessor
 
 private:
     /** Process tpl-file's tags */
-    static void processTags (const ValueTree& docOrDirTree, const File& htmlFile, String& tplStr);
+    static void processTplTags (const ValueTree& docOrDirTree, const File& htmlFile, String& tplStr);
 
     static const StringArray getBlogList (const ValueTree& dirTree);
     static const String getBookList (const ValueTree& dirTree);

@@ -55,10 +55,10 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
                                  "  <title>");
     }
 
-    processTags (docTree, htmlFile, tplStr);
+    processTplTags (docTree, htmlFile, tplStr);
     const String& siteName (" - " + FileTreeContainer::projectTree.getProperty ("title").toString());
 
-    // generate the html file
+    // process head-tags and generate the html file
     htmlFile.appendText (tplStr.replace ("{{keywords}}", keywords)
                          .replace ("{{author}}", FileTreeContainer::projectTree.getProperty ("owner").toString())
                          .replace ("{{description}}", docTree.getProperty ("description").toString())
@@ -252,7 +252,7 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
                 .replace ("{{keywords}}", indexKeywordsStr)
                 .replace ("{{description}}", indexDescStr);
 
-            processTags (dirTree, indexHtml, tplStr);
+            processTplTags (dirTree, indexHtml, tplStr);
 
             // list for book
             if (tplStr.contains ("{{bookList}}"))
@@ -444,7 +444,7 @@ const int HtmlProcessor::compareElements (const ValueTree& ft, const ValueTree& 
 }
 
 //=================================================================================================
-void HtmlProcessor::processTags (const ValueTree& docOrDirTree,
+void HtmlProcessor::processTplTags (const ValueTree& docOrDirTree,
                                  const File& htmlFile,
                                  String& tplStr)
 {

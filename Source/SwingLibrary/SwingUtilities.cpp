@@ -130,7 +130,7 @@ const ValueTree SwingUtilities::readValueTreeFromFile (const File& fileToReadFro
         }
     }
 
-    return ValueTree::invalid;
+    return ValueTree();
 }
 
 //=================================================================================================
@@ -144,7 +144,7 @@ ValueTree SwingUtilities::getChildInAnyDeep (const ValueTree& parent,
     for (int i = parent.getNumChildren(); --i >= 0; )
         return getChildInAnyDeep (parent.getChild (i), propertyName, propertyValue);
 
-    return ValueTree ();    	
+    return ValueTree();    	
 }
 
 //=================================================================================================

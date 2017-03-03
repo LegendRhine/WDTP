@@ -19,9 +19,6 @@ public:
 
 private:
     //=================================================================================================
-    /** [keywords]: all keywords of the project */
-    static const String keywordsParse (const String& mdString);
-
     // call these methods must according to the below order
 
     /** process table. doesn't support align MD-tag.

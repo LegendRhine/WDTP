@@ -20,7 +20,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
 
     // parse markdown, must followed by these order
     String htmlContent (mdString);
-    htmlContent = keywordsParse (htmlContent);
+
     htmlContent = tableParse (htmlContent);
     htmlContent = identifierParse (htmlContent);
     htmlContent = codeBlockParse (htmlContent);
@@ -667,13 +667,6 @@ const String Md2Html::cnBracketParse (const String& mdString)
 }
 
 //=================================================================================================
-const String Md2Html::keywordsParse (const String& mdString)
-{
-    const String kws (HtmlProcessor::getKeywordsLinksandGenerateAllKeywordsPages());
-    return mdString.replace ("[keywords]", kws);
-}
-
-//=================================================================================================
 const String Md2Html::cleanUp (const String& mdString)
 {
     // transform newLine to <p> and <br>
@@ -753,7 +746,7 @@ const String Md2Html::cleanUp (const String& mdString)
     resultStr = resultStr.replace (String ("\\!["), "![");
     resultStr = resultStr.replace (String ("\\[^"), "[^");
     resultStr = resultStr.replace (String ("\\]"), "]");
-    resultStr = resultStr.replace (String ("<p><br>"), "<p>");
+    resultStr = resultStr.replace (String ("<p><br>"), "<p>"); 
 
     //DBG (resultStr);
     return resultStr;

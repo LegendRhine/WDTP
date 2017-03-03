@@ -22,6 +22,7 @@ struct HtmlProcessor
 
     static const File createArticleHtml (ValueTree& docTree, bool saveProjectAfterCreated);
     static const File createIndexHtml (ValueTree& dirTree, bool saveProjectAfterCreated);
+    static const File createKeywordsHtml();
 
     static const String extractItsAllKeywordsr (const ValueTree& dirTree);
 
@@ -37,10 +38,11 @@ struct HtmlProcessor
 private:
     /** Process tpl-file's tags */
     static void processTplTags (const ValueTree& docOrDirTree, const File& htmlFile, String& tplStr);
+    static void processKeywords (String& tplStr);
 
     static const StringArray getBlogList (const ValueTree& dirTree);
     static const String getBookList (const ValueTree& dirTree);
-    static const String getKeywords ();
+    static const String getKeywords (const int howManyKws, const int columnsPreLine);
 
     /** generate site menu. 2 level dir/doc. that is: 
         if an item is tend for a site menu, it must not too deep. */

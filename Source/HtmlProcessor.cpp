@@ -674,6 +674,14 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
         }
     }
 
+    // add 'index' menu-item
+    if ((bool)pTree.getProperty ("keywordIndex"))
+    {
+        menuHtmlStr.add ("<li><a href=\""
+                         + getRelativePathToRoot (DocTreeViewItem::getHtmlFileOrDir (tree))
+                         + "keywords.html\">" + TRANS ("Index") + "</a></li>");
+    }
+
     menuHtmlStr.add ("</ul></div>");
     return menuHtmlStr.joinIntoString (newLine);
 }

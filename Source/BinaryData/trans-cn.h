@@ -329,3 +329,4 @@ countries: cn
 "Project " = "项目"
 "Keyword Index: " = "关键词索引："
 "Enable" = "启用"
+"Index" = "索引"

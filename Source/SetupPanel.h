@@ -51,7 +51,7 @@ private:
         // project properties' values
         projectTitle = 0, projectKeywords, projectDesc, owner,
         copyrightInfo, projectRenderDir, indexTpl, projectJs, 
-        contact, ad,
+        contact, ad, keywordIndex,
 
         // dir properties' values
         dirName, dirTitle, dirKeywords, dirDesc, 

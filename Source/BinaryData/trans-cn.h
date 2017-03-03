@@ -327,3 +327,5 @@ countries: cn
 "Keywords Table" = "关键词表"
 "\'s " = "的"
 "Project " = "项目"
+"Keyword Index: " = "关键词索引："
+"Enable" = "启用"

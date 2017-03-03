@@ -56,6 +56,7 @@
 	- ad: The form should be: 'Image-file-name (whitespace) Link-address', one for pre line. It matched the {{ad}} tag from within a tpl.
     - modifyDate
 	- needCreateHtml
+	- keywordIndex: wheather generate the keyword-index page and all the keywords result pages
 	- identityOfLastSelectedItem: the last selected item in fileTree. 
 
 - Properities of Dir

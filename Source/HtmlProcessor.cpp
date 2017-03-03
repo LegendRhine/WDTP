@@ -35,15 +35,24 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
         const int insertIndex = mdStrWithoutAbbrev.indexOf (0, "\n");
         mdStrWithoutAbbrev = mdStrWithoutAbbrev.replaceSection (insertIndex, 0, keywordsToInsert);
     }
+    
+    // get the path which relative the site root-dir            
+    const String& rootRelativePath (getRelativePathToRoot (htmlFile));
+    
+    // parse keywords-syntax here. must before md parse
+    int startIndex = mdStrWithoutAbbrev.indexOf ("[keywords]");
+
+    if (startIndex != -1 && mdStrWithoutAbbrev.substring (startIndex - 1, startIndex) != "\\")
+    {
+        const String kws (HtmlProcessor::getKeywordsLinks (rootRelativePath));
+        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replaceSection (startIndex, String ("[keywords]").length (), kws);
+    }
 
     // parse mdString to html string
-    const String htmlContentStr (Md2Html::mdStringToHtml (mdStrWithoutAbbrev));
+    const String& htmlContentStr (Md2Html::mdStringToHtml (mdStrWithoutAbbrev));
 
     if (htmlContentStr.isEmpty())
         return;
-
-    // get the path which relative the site root-dir            
-    const String& rootRelativePath (getRelativePathToRoot (htmlFile));
 
     // process code
     if (htmlContentStr.contains ("<pre><code>"))
@@ -313,9 +322,9 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
 }
 
 //=================================================================================================
-const String HtmlProcessor::extractItsAllKeywordsr (const ValueTree& dirTree)
+const String HtmlProcessor::extractKeywordsOfDocs (const ValueTree& dirTree)
 {
-    // extract all keywords of each doc of this project
+    // extract all keywords of each doc of this dir
     StringArray keywordsArray;
     extractKeywords (dirTree, keywordsArray);
 
@@ -371,21 +380,76 @@ const String HtmlProcessor::extractItsAllKeywordsr (const ValueTree& dirTree)
 }
 
 //=================================================================================================
+const String HtmlProcessor::getKeywordsLinks (const String& rootPath)
+{
+    StringArray kws;
+    kws.addTokens (extractKeywordsOfDocs (FileTreeContainer::projectTree), ",", String());
+
+    for (int i = kws.size(); --i >= 0; )
+    {
+    	if (kws[i].contains ("--"))
+    	{
+            kws.getReference (i) = kws[i].replace ("--", " (");
+            kws.getReference (i) = kws[i] + ")";
+
+            kws.getReference (i) = "<a href=\"" + rootPath + "keywords/"
+                + kws[i].upToFirstOccurrenceOf (" (", false, true) + ".html\">"
+                + kws[i] + "</a>";
+    	}
+        else
+        {
+            ValueTree tree;
+            getDocTreeWithKeyword (FileTreeContainer::projectTree, kws[i], tree);
+            jassert (tree.isValid ());
+
+            String htmlPath (DocTreeViewItem::getHtmlFileOrDir (tree).getFullPathName());
+            htmlPath = htmlPath.replace (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName ()
+                                         + File::separatorString, rootPath);
+
+            htmlPath = htmlPath.replace (File::separatorString, "/");
+            //DBGX (htmlPath);
+
+            kws.getReference (i) = "<a href=\"" + htmlPath + "\">" + kws[i] + "</a>";
+        }        
+    }
+
+    return kws.joinIntoString (newLine);
+}
+
+//=================================================================================================
 void HtmlProcessor::extractKeywords (const ValueTree& tree,
                                   StringArray& arrayToAdd)
 {
-    const String& keywords (tree.getProperty ("keywords").toString()
-                            .replace (CharPointer_UTF8 ("\xef\xbc\x8c"), ", ")); // Chinese ','
-    StringArray thisArray;
+    if (tree.getType().toString() == "doc")
+    {
+        const String& keywords (tree.getProperty ("keywords").toString ()
+                                .replace (CharPointer_UTF8 ("\xef\xbc\x8c"), ", ")); // Chinese ','
+        StringArray thisArray;
 
-    thisArray.addTokens (keywords, ",", String());
-    thisArray.trim();
-    thisArray.removeEmptyStrings();
-    thisArray.removeDuplicates (true);
-    arrayToAdd.addArray (thisArray);
+        thisArray.addTokens (keywords, ",", String ());
+        thisArray.trim();
+        thisArray.removeEmptyStrings ();
+        thisArray.removeDuplicates (true);
+        arrayToAdd.addArray (thisArray);
+    }
 
     for (int i = tree.getNumChildren(); --i >= 0; )
         extractKeywords (tree.getChild (i), arrayToAdd);
+}
+
+//=================================================================================================
+void HtmlProcessor::getDocTreeWithKeyword (const ValueTree& tree, 
+                                           const String& keyword, 
+                                           ValueTree& resultTree)
+{   
+    if (tree.getProperty ("keywords").toString ().containsIgnoreCase (keyword))
+    {
+        resultTree = tree;
+        return;
+    }
+
+    for (int i = tree.getNumChildren (); --i >= 0; )
+        getDocTreeWithKeyword (tree.getChild (i), keyword, resultTree);
 }
 
 //=================================================================================================

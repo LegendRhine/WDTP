@@ -23,8 +23,8 @@ struct HtmlProcessor
     static const File createArticleHtml (ValueTree& docTree, bool saveProjectAfterCreated);
     static const File createIndexHtml (ValueTree& dirTree, bool saveProjectAfterCreated);
 
-    static const String extractItsAllKeywordsr (const ValueTree& dirTree);
-    static const String getKeywordsLinksandGenerateAllKeywordsPages ();
+    static const String extractKeywordsOfDocs (const ValueTree& dirTree);
+    static const String getKeywordsLinks (const String& rootPath);
 
     //=========================================================================
     /** Use for file/dir list sort. Base on create-date */
@@ -102,6 +102,10 @@ private:
     static const String getToTop();
 
     static void extractKeywords (const ValueTree& tree, StringArray& arrayToAddTo);
+
+    static void getDocTreeWithKeyword (const ValueTree& tree, 
+                                       const String& keyword, 
+                                       ValueTree& resultTree);
 
     //=================================================================================================
     bool sortByReverse;

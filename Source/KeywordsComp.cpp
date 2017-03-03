@@ -31,7 +31,7 @@ public:
         displayInEditor (showInEditor)
     {        
         StringArray keywords;
-        keywords.addTokens (HtmlProcessor::extractItsAllKeywordsr (tree), ",", String());
+        keywords.addTokens (HtmlProcessor::extractKeywordsOfDocs (tree), ",", String());
 
         // add buttons
         for (int i = keywords.size(); --i >= 0; )

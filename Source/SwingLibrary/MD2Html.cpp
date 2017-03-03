@@ -20,6 +20,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
 
     // parse markdown, must followed by these order
     String htmlContent (mdString);
+    htmlContent = keywordsParse (htmlContent);
     htmlContent = tableParse (htmlContent);
     htmlContent = identifierParse (htmlContent);
     htmlContent = codeBlockParse (htmlContent);
@@ -663,6 +664,13 @@ const String Md2Html::cnBracketParse (const String& mdString)
     }
     
     return resultStr;
+}
+
+//=================================================================================================
+const String Md2Html::keywordsParse (const String& mdString)
+{
+    const String kws (HtmlProcessor::getKeywordsLinksandGenerateAllKeywordsPages());
+    return mdString.replace ("[keywords]", kws);
 }
 
 //=================================================================================================

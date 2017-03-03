@@ -726,8 +726,6 @@ const File DocTreeViewItem::createDoc (const String& docName, const bool selectA
         docFileName = "docs-1";
     else if (docFileName == "media")
         docFileName = "media-doc";
-    else if (docFileName == "keywords")
-        docFileName = "keyword";
 
     // create this doc on disk
     const File& thisDoc (getMdFileOrDir (tree).getChildFile (docFileName + ".md")

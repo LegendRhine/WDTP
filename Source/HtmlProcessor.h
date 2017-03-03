@@ -24,6 +24,7 @@ struct HtmlProcessor
     static const File createIndexHtml (ValueTree& dirTree, bool saveProjectAfterCreated);
 
     static const String extractItsAllKeywordsr (const ValueTree& dirTree);
+    static const String getKeywordsLinksandGenerateAllKeywordsPages ();
 
     //=========================================================================
     /** Use for file/dir list sort. Base on create-date */

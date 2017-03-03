@@ -121,7 +121,8 @@
 	- {{blogList}}: for 'blog' index.html. Articles list. 10/page.
 	- {{bookList}}: for 'book' index.html, include dir. all in one page.
 
-	- {{keywords_x}}: display all keywords of the project, x column pre line. 1 < x < 10
+	- {{keywords_howMany_column}}: display top 'howMany' keywords of the project, 0 for all.
+								   'column' pre line. 1 < column < 10
 
 ### 3rd Library Hack
 

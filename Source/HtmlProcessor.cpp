@@ -162,7 +162,7 @@ void HtmlProcessor::copyDocMediasToSite (const File& mdFile,
     {
         const String fileName (htmlStr.substring (indexStart + 11, indexEnd));
 
-        if (!fileName.contains (String (File::separator)))
+        if (!fileName.contains (File::separatorString))
         {
             docMedias.add (File (docMediaDirStr + File::separator + fileName));
             htmlMedias.add (File (htmlMediaDirStr + File::separator + fileName));

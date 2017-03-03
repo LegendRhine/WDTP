@@ -556,6 +556,13 @@ void HtmlProcessor::processTplTags (const ValueTree& docOrDirTree,
     {
         tplStr = tplStr.replace ("{{bottomCopyright}}", getCopyrightInfo());
     }
+
+    // keywords
+    if (tplStr.contains ("{{keywords_"))
+    {
+        const int startIndex = tplStr.indexOf (0, "{{keywords_");
+        tplStr = tplStr.replaceSection (startIndex, String ("{{keywords_x}}").length(), getKeywords());
+    }
 }
 
 //=================================================================================================
@@ -1099,6 +1106,12 @@ const String HtmlProcessor::getBookList (const ValueTree& dirTree)
     links.remove (0);  // itself
 
     return "<div class=catalogue>" + links.joinIntoString (newLine) + "</div>";
+}
+
+//=================================================================================================
+const String HtmlProcessor::getKeywords ()
+{
+    return "Keywords...";
 }
 
 //=========================================================================

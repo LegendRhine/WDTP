@@ -40,6 +40,7 @@ private:
 
     static const StringArray getBlogList (const ValueTree& dirTree);
     static const String getBookList (const ValueTree& dirTree);
+    static const String getKeywords ();
 
     /** generate site menu. 2 level dir/doc. that is: 
         if an item is tend for a site menu, it must not too deep. */

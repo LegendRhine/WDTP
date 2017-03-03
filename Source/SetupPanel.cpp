@@ -54,7 +54,6 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     values[projectJs]->setValue (pTree.getProperty ("js"));
     values[ad]->setValue (pTree.getProperty ("ad"));
     values[contact]->setValue (pTree.getProperty ("contact"));
-    values[keywordIndex]->setValue (pTree.getProperty ("keywordIndex"));
 
     Array<PropertyComponent*> projectProperties;
 
@@ -111,7 +110,6 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
     projectProperties.add (new TextPropertyComponent (*values[copyrightInfo], TRANS ("Copyright: "), 0, true));
     projectProperties.add (new TextPropertyComponent (Value (pTree.getProperty ("modifyDate")), 
                                                       TRANS ("Last Modified: "), 0, false));
-    projectProperties.add (new BooleanPropertyComponent (*values[keywordIndex], TRANS ("Keyword Index: "), TRANS ("Enable")));
 
     for (auto p : projectProperties)  
         p->setPreferredHeight (28);
@@ -372,9 +370,6 @@ void SetupPanel::valueChanged (Value& value)
 
     else if (value.refersToSameSourceAs (*values[contact]))
         currentTree.setProperty ("contact", values[contact]->getValue(), nullptr);
-
-    else if (value.refersToSameSourceAs (*values[keywordIndex]))
-        currentTree.setProperty ("keywordIndex", values[keywordIndex]->getValue(), nullptr);
 
     // dir properties
     else if (value.refersToSameSourceAs (*values[dirTitle]))

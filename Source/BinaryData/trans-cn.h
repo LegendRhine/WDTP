@@ -328,6 +328,3 @@ countries: cn
 "\'s " = "的"
 "Project " = "项目"
 "Keyword Index: " = "关键词索引："
-"Enable" = "启用"
-"Index" = "索引"
-"Something wrong during create keywords.html." = "创建关键词索引时出现错误。"

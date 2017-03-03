@@ -56,7 +56,6 @@
 	- ad: The form should be: 'Image-file-name (whitespace) Link-address', one for pre line. It matched the {{ad}} tag from within a tpl.
     - modifyDate
 	- needCreateHtml
-	- keywordIndex: wheather generate the keyword-index page and all the keywords result pages
 	- identityOfLastSelectedItem: the last selected item in fileTree. 
 
 - Properities of Dir
@@ -120,9 +119,6 @@
 	- {{titleOfDir}}
 	- {{blogList}}: for 'blog' index.html. Articles list. 10/page.
 	- {{bookList}}: for 'book' index.html, include dir. all in one page.
-
-	- {{keywords_howMany_column}}: display top 'howMany' keywords of the project, 0 for all.
-								   'column' pre line. 1 < column < 10
 
 ### 3rd Library Hack
 

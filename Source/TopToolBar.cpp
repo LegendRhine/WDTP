@@ -611,10 +611,9 @@ void TopToolBar::generateHtmlFilesIfNeeded (ValueTree tree)
 void TopToolBar::run()
 {
     generateHtmlFiles (FileTreeContainer::projectTree);
-    HtmlProcessor::createKeywordsHtml();
 
     accumulator = 0;
-    progressValue = 0.9999;
+    progressValue = 0.999;
 
     SHOW_MESSAGE (TRANS ("Site clean and regenerate successful!"));
     FileTreeContainer::saveProject();

@@ -313,43 +313,6 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
 }
 
 //=================================================================================================
-const File HtmlProcessor::createKeywordsHtml ()
-{
-    jassert (FileTreeContainer::projectTree.isValid ());
-    const File htmlFile (FileTreeContainer::projectFile.getSiblingFile ("site").getChildFile ("keywords.html"));
-
-    if (htmlFile.deleteFile ())
-    {
-        const String tplPath (FileTreeContainer::projectFile.getSiblingFile ("themes")
-                              .getFullPathName () + File::separator
-                              + FileTreeContainer::projectTree.getProperty ("render").toString ()
-                              + File::separator);
-
-        const File tplFile (tplPath + "keywords.html");
-        String tplStr (tplFile.loadFileAsString());
-        processKeywords (tplStr); // the core
-        processTplTags (ValueTree(), htmlFile, tplStr);
-
-        htmlFile.create ();
-        const String& siteName (" - " + FileTreeContainer::projectTree.getProperty ("title").toString ());
-
-        // process head-tags and generate the html file
-        htmlFile.appendText (tplStr.replace ("{{keywords}}", "keywords" + siteName.replace (" - ", ", "))
-                             .replace ("{{author}}", FileTreeContainer::projectTree.getProperty ("owner").toString ())
-                             .replace ("{{description}}", "keywords" + siteName)
-                             .replace ("{{title}}", "keywords" + siteName)
-                             .replace ("{{siteRelativeRootPath}}", String()));
-
-    }
-    else
-    {
-        SHOW_MESSAGE (TRANS ("Something wrong during create keywords.html."));
-    }
-
-    return htmlFile;
-}
-
-//=================================================================================================
 const String HtmlProcessor::extractItsAllKeywordsr (const ValueTree& dirTree)
 {
     // extract all keywords of each doc of this project
@@ -594,31 +557,6 @@ void HtmlProcessor::processTplTags (const ValueTree& docOrDirTree,
         tplStr = tplStr.replace ("{{bottomCopyright}}", getCopyrightInfo());
     }
 
-    // keywords
-    if (tplStr.contains ("{{keywords_"))
-    {
-        processKeywords (tplStr);
-    }
-}
-
-//=================================================================================================
-void HtmlProcessor::processKeywords (String& tplStr)
-{
-    const int startIndex = tplStr.indexOf (0, "{{keywords_");
-    const int endIndex = tplStr.indexOf (startIndex + 10, "}}");
-
-    if (startIndex != -1 && endIndex != -1)
-    {
-        const int howMany = tplStr.substring (startIndex, endIndex)
-            .fromFirstOccurrenceOf ("_", false, true)
-            .upToLastOccurrenceOf ("_", false, true).getIntValue ();
-
-        const int column = tplStr.substring (startIndex, endIndex)
-            .fromLastOccurrenceOf ("_", false, true).getIntValue ();
-
-        tplStr = tplStr.replaceSection (startIndex, endIndex + 2 - startIndex,
-                                        getKeywords (howMany, column));
-    }
 }
 
 //=================================================================================================
@@ -735,14 +673,6 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
                 menuHtmlStr.add ("</li></ul>");
             }
         }
-    }
-
-    // add 'index' menu-item
-    if ((bool)pTree.getProperty ("keywordIndex"))
-    {
-        menuHtmlStr.add ("<li><a href=\""
-                         + getRelativePathToRoot (DocTreeViewItem::getHtmlFileOrDir (tree))
-                         + "keywords.html\">" + TRANS ("Index") + "</a></li>");
     }
 
     menuHtmlStr.add ("</ul></div>");
@@ -1162,12 +1092,6 @@ const String HtmlProcessor::getBookList (const ValueTree& dirTree)
     links.remove (0);  // itself
 
     return "<div class=catalogue>" + links.joinIntoString (newLine) + "</div>";
-}
-
-//=================================================================================================
-const String HtmlProcessor::getKeywords (const int howManyKws, const int columnsPreLine)
-{
-    return "Keywords...";
 }
 
 //=========================================================================

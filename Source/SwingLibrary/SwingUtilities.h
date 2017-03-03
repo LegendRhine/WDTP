@@ -77,6 +77,13 @@ struct SwingUtilities
         return file.moveFileTo (file.getSiblingFile (newName));
     }
 
+    /** get the child tree in any deep level, which base on its property name and value. 
+        
+        it'll return a invalid ValueTree when nothing could be found. */
+    static ValueTree getChildInAnyDeep (const ValueTree& parent,
+                                        const Identifier& propertyName,
+                                        const var& propertyValue);
+
     //=========================================================================
     /** Return such as "20150610112523"
         (year + month + day + hour + minute + second, without " " and "-") */

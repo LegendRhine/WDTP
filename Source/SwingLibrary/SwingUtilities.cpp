@@ -134,6 +134,20 @@ const ValueTree SwingUtilities::readValueTreeFromFile (const File& fileToReadFro
 }
 
 //=================================================================================================
+ValueTree SwingUtilities::getChildInAnyDeep (const ValueTree& parent, 
+                                             const Identifier& propertyName, 
+                                             const var& propertyValue)
+{
+    if (parent.getProperty (propertyName) == propertyValue)
+        return parent;
+
+    for (int i = parent.getNumChildren(); --i >= 0; )
+        return getChildInAnyDeep (parent.getChild (i), propertyName, propertyValue);
+
+    return ValueTree ();    	
+}
+
+//=================================================================================================
 const String SwingUtilities::getTimeString (const Time& time)
 {
     String s;

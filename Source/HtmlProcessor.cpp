@@ -46,6 +46,12 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
     {
         const String kws (HtmlProcessor::getKeywordsLinks (rootRelativePath));
         mdStrWithoutAbbrev = mdStrWithoutAbbrev.replaceSection (startIndex, String ("[keywords]").length (), kws);
+
+        tplStr = tplStr.replace ("\n  <title>",
+                                 "\n  <style type=\"text/css\">\n"
+                                 "    table {border-collapse:collapse;}\n"
+                                 "    table, td, th {border:0; padding:15px 5px 15px 5px;}\n"
+                                 "  </style>\n  <title>");
     }
 
     // parse mdString to html string
@@ -392,9 +398,9 @@ const String HtmlProcessor::getKeywordsLinks (const String& rootPath)
             kws.getReference (i) = kws[i].replace ("--", " (");
             kws.getReference (i) = kws[i] + ")";
 
-            kws.getReference (i) = "<a href=\"" + rootPath + "keywords/"
+            kws.getReference (i) = "<td align=center><a href=\"" + rootPath + "keywords/"
                 + kws[i].upToFirstOccurrenceOf (" (", false, true) + ".html\">"
-                + kws[i] + "</a>";
+                + kws[i] + "</a></td>";
     	}
         else
         {
@@ -409,9 +415,25 @@ const String HtmlProcessor::getKeywordsLinks (const String& rootPath)
             htmlPath = htmlPath.replace (File::separatorString, "/");
             //DBGX (htmlPath);
 
-            kws.getReference (i) = "<a href=\"" + htmlPath + "\">" + kws[i] + "</a>";
+            kws.getReference (i) = "<td align=center><a href=\"" + htmlPath + "\">" + kws[i] + "</a></td>";
         }        
     }
+
+    // table... column / line
+    kws.getReference (0) = "<tr>" + kws[0];
+    const int columnPreLine = 3;
+
+    for (int i = 1; i < kws.size(); ++i)
+    {
+        if (i % columnPreLine == 0)
+            kws.getReference (i) = "<tr>" + kws[i];
+
+        else if ((i + 1) % columnPreLine == 0)
+            kws.getReference (i) = kws[i] + "</tr>";
+    }
+
+    kws.insert (0, "<table>");
+    kws.add ("</table>");
 
     return kws.joinIntoString (newLine);
 }

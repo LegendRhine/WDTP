@@ -726,6 +726,8 @@ const File DocTreeViewItem::createDoc (const String& docName, const bool selectA
         docFileName = "docs-1";
     else if (docFileName == "media")
         docFileName = "media-doc";
+    else if (docFileName == "keywords")
+        docFileName = "keyword";
 
     // create this doc on disk
     const File& thisDoc (getMdFileOrDir (tree).getChildFile (docFileName + ".md")
@@ -780,7 +782,7 @@ void DocTreeViewItem::createNewFolder()
 
         if (dirName.isEmpty())
             dirName = TRANS ("New folder");
-        else if (dirName == "media" || dirName == "add-in" || dirName == "docs" || dirName == "site")
+        else if (dirName == "media" || dirName == "add-in" || dirName == "docs" || dirName == "site" || dirName == "keywords")
             dirName += "-2";
 
         // create this dir on disk

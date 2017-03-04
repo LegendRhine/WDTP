@@ -8,6 +8,7 @@
   <MAINGROUP id="dEY4lK" name="WDTP">
     <GROUP id="{24163B05-55E9-9D57-4AF2-ACA9BBF8DA1F}" name="Source">
       <GROUP id="{5C5311BB-5266-DB1B-DE96-35AA97A1E8E3}" name="BinaryData">
+        <FILE id="wGvYpj" name="system-r.png" compile="0" resource="1" file="Source/BinaryData/system-r.png"/>
         <FILE id="JcbQHF" name="trans-cn.h" compile="0" resource="1" file="Source/BinaryData/trans-cn.h"/>
         <FILE id="m6TpP7" name="SiteData.zip" compile="0" resource="1" file="Source/BinaryData/SiteData.zip"/>
         <FILE id="m8JFGm" name="width.png" compile="0" resource="1" file="Source/BinaryData/width.png"/>

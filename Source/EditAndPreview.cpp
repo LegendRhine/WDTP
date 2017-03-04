@@ -175,12 +175,21 @@ void EditAndPreview::previewCurrentDoc()
     }
     else  // file doesn't exist
     {
+        const String htmlStr ("<!doctype html>\n"
+                              "<html lang=\"en\">\n"
+                              "  <head>\n"
+                              "    <meta charset=\"UTF-8\">\n"
+                              "  </head>\n"
+                              "  <body bgcolor=\"#dedede\">\n"
+                              "<p>\n &emsp;");
+
         File urlFile (File::getSpecialLocation (File::tempDirectory).getSiblingFile ("404.html"));
 
         if (docOrDirTree.getType().toString() == "doc")
-            urlFile.replaceWithText (TRANS ("The file doesn't exist!"));
+            urlFile.replaceWithText (htmlStr + TRANS ("The file doesn't exist!") + "\n  </body>\n</html>");
+
         else
-            urlFile.replaceWithText (TRANS ("The folder doesn't exist!"));
+            urlFile.replaceWithText (htmlStr + TRANS ("The folder doesn't exist!") + "\n  </body>\n</html>");
 
         webView->goToURL (urlFile.getFullPathName());
     }

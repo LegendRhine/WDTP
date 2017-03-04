@@ -34,6 +34,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     htmlContent = processByLine (htmlContent);
     htmlContent = spaceLinkParse (htmlContent);
     htmlContent = imageParse (htmlContent);
+    htmlContent = audioParse (htmlContent);
     htmlContent = mdLinkParse (htmlContent);
     htmlContent = orderedListParse (htmlContent, true);
     htmlContent = orderedListParse (htmlContent, false);
@@ -508,21 +509,63 @@ const String Md2Html::imageParse (const String& mdString)
 
     while (indexStart != -1)
     {
+        if (resultStr.substring (indexStart - 1, indexStart) == "\\")
+        {
+            indexStart = resultStr.indexOfIgnoreCase (indexStart + 2, "~[");
+            continue;
+        }
+
         // get alt content
         const int altEnd = resultStr.indexOfIgnoreCase (indexStart + 2, "](");
         if (altEnd == -1)            break;
-        const String altContent (resultStr.substring (indexStart + 2, altEnd));
+        const String& altContent (resultStr.substring (indexStart + 2, altEnd));
 
         // get img path
         const int imgEnd = resultStr.indexOfIgnoreCase (altEnd + 2, ")");
         if (imgEnd == -1)            break;
-        const String imgPath (resultStr.substring (altEnd + 2, imgEnd));
+        const String& imgPath (resultStr.substring (altEnd + 2, imgEnd));
 
-        const String imgStr ("<div align=center><img src=\"" + imgPath + "\" title=\""
+        const String& imgStr ("<div align=center><img src=\"" + imgPath + "\" title=\""
                              + altContent + "\" />" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, imgEnd + 1 - indexStart, imgStr);
         indexStart = resultStr.indexOfIgnoreCase (indexStart + imgStr.length(), "![");
+    }
+
+    return resultStr;
+}
+
+//=================================================================================================
+const String Md2Html::audioParse (const String& mdString)
+{
+    /**< ~[](media/xxx.ogg) */
+    String resultStr (mdString);
+    int indexStart = resultStr.indexOfIgnoreCase (0, "~[");
+
+    while (indexStart != -1)
+    {
+        if (resultStr.substring (indexStart - 1, indexStart) == "\\")
+        {
+            indexStart = resultStr.indexOfIgnoreCase (indexStart + 2, "~[");
+            continue;
+        }
+
+        // get alt content
+        const int altEnd = resultStr.indexOfIgnoreCase (indexStart + 2, "](");
+        if (altEnd == -1)            break;
+        const String& altContent (resultStr.substring (indexStart + 2, altEnd));
+
+        // get audio file path
+        const int audioEnd = resultStr.indexOfIgnoreCase (altEnd + 2, ")");
+        if (audioEnd == -1)            break;
+        const String& audioPath (resultStr.substring (altEnd + 2, audioEnd));
+
+        const String& audioStr ("<div align=center><audio src=\"" + audioPath + "\""
+                                + " controls=\"controls\""
+                                + " title=\"" + altContent + "\"/>" + "</div>");
+
+        resultStr = resultStr.replaceSection (indexStart, audioEnd + 1 - indexStart, audioStr);
+        indexStart = resultStr.indexOfIgnoreCase (indexStart + audioStr.length (), "~[");
     }
 
     return resultStr;
@@ -544,7 +587,9 @@ const String Md2Html::mdLinkParse (const String& mdString)
         if (altStart == -1)
             break;
 
-        if (resultStr.substring (altStart - 1, altStart) != "\\")
+        if (resultStr.substring (altStart - 1, altStart) != "\\"
+            && resultStr.substring (altStart - 1, altStart) != "!"
+            && resultStr.substring (altStart - 1, altStart) != "~")
         {
             const String altContent (resultStr.substring (altStart + 1, linkPathStart));
 
@@ -744,6 +789,7 @@ const String Md2Html::cleanUp (const String& mdString)
     resultStr = resultStr.replace (String ("\\#"), "#");
     resultStr = resultStr.replace (String ("\\["), "[");
     resultStr = resultStr.replace (String ("\\!["), "![");
+    resultStr = resultStr.replace (String ("\\~["), "~[");
     resultStr = resultStr.replace (String ("\\[^"), "[^");
     resultStr = resultStr.replace (String ("\\]"), "]");
     resultStr = resultStr.replace (String ("<p><br>"), "<p>"); 

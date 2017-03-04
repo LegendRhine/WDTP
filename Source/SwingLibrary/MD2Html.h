@@ -80,6 +80,7 @@ private:
 
 public:
     static const String imageParse (const String& mdString);  /**< ![](media/xxx.jpg) */
+    static const String audioParse (const String& mdString);  /**< ~[](media/xxx.ogg) */
 
 private:
     //=================================================================================================

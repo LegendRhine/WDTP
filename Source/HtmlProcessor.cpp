@@ -85,12 +85,11 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
 }
 
 //=================================================================================================
-const String HtmlProcessor::getRelativePathToRoot (const File &htmlFile)
+const String HtmlProcessor::getRelativePathToRoot (const File& htmlFile)
 {
     const String htmlFilePath (htmlFile.getFullPathName());
-    const String webRootDirPath (FileTreeContainer::projectFile.getParentDirectory().getFullPathName()
-                                 + File::separator + "site");
-    const String tempStr (htmlFilePath.trimCharactersAtStart (webRootDirPath));
+    const String webRootDirPath (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName());
+    const String tempStr (htmlFilePath.fromFirstOccurrenceOf (webRootDirPath + File::separatorString, false, false));
     String cssRelativePath;
 
     for (int i = tempStr.length(); --i >= 0;)
@@ -230,19 +229,6 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
                                 + File::separator
                                 + dirTree.getProperty ("tplFile").toString());
 
-            // get the path which relative the site root-dir, for css path            
-            const String htmlFilePath (indexHtml.getFullPathName());
-            const String webRootDirPath (FileTreeContainer::projectFile.getParentDirectory().getFullPathName()
-                                         + File::separator + "site");
-            const String tempStr (htmlFilePath.trimCharactersAtStart (webRootDirPath));
-            String cssRelativePath;
-
-            for (int i = tempStr.length(); --i >= 0;)
-            {
-                if (tempStr[i] == File::separator)
-                    cssRelativePath << String ("../");
-            }
-
             String tplStr (tplFile.existsAsFile() ? tplFile.loadFileAsString() : String());
 
             // when missing render dir (no tpl)
@@ -261,7 +247,7 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
             const String siteName (dirTree.getType().toString() == "wdtpProject"
                                    ? String() : " - " + FileTreeContainer::projectTree.getProperty ("title").toString());
 
-            tplStr = tplStr.replace ("{{siteRelativeRootPath}}", cssRelativePath)
+            tplStr = tplStr.replace ("{{siteRelativeRootPath}}", getRelativePathToRoot(indexHtml))
                 .replace ("{{author}}", indexAuthorStr)
                 .replace ("{{title}}", indexTileStr + siteName)
                 .replace ("{{keywords}}", indexKeywordsStr)
@@ -568,7 +554,7 @@ void HtmlProcessor::processTplTags (const ValueTree& docOrDirTree,
                                  String& tplStr)
 {
     const String& rootRelativePath (getRelativePathToRoot (htmlFile));
-
+    
     // title of this index.html
     if (tplStr.contains ("{{titleOfDir}}"))
     {

@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="iAHZG1" name="WDTP" projectType="guiapp" version="0.9.0225"
+<JUCERPROJECT id="iAHZG1" name="WDTP" projectType="guiapp" version="0.9.0305"
               bundleIdentifier="com.yourcompany.WDTP" includeBinaryInAppConfig="1"
               jucerVersion="4.3.1" userNotes="Start:        2016.09.03&#10;0.9 Alpha: 2017.01.31"
               companyName="UnderwaySoft" companyWebsite="http://www.underwaySoft.com"
@@ -67,6 +67,7 @@
       <FILE id="C3qaR2" name="StatisComp.h" compile="0" resource="0" file="Source/StatisComp.h"/>
       <FILE id="pSSMLr" name="TopToolBar.cpp" compile="1" resource="0" file="Source/TopToolBar.cpp"/>
       <FILE id="P6zan5" name="TopToolBar.h" compile="0" resource="0" file="Source/TopToolBar.h"/>
+      <FILE id="C2MhnK" name="version" compile="0" resource="0" file="Source/version"/>
       <FILE id="PqDad8" name="WdtpHeader.h" compile="0" resource="0" file="Source/WdtpHeader.h"/>
     </GROUP>
   </MAINGROUP>

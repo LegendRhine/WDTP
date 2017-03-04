@@ -84,10 +84,18 @@ void FileTreeContainer::openProject (const File& project)
         if (notZip)
             message = TRANS ("Invalid packed project.");
 
-        if (message.isNotEmpty() || notZip)
+        if (message.isNotEmpty () || notZip)
+        {
             SHOW_MESSAGE (TRANS ("Unpack failed:") + newLine + message);
-        else   // the project file after unpacked
-            realProject = unpackDir.getChildFile (project.getFileNameWithoutExtension() + ".wdtp");
+        }
+        else   // find the project file after unpacked
+        {
+            Array<File> pFiles;
+            unpackDir.findChildFiles (pFiles, File::findFiles, false, "*.wdtp");
+            jassert (pFiles.size() > 0);
+
+            realProject = pFiles[0];
+        }
     }
 
     // start a new instance of this app
@@ -103,7 +111,10 @@ void FileTreeContainer::openProject (const File& project)
     // check the file has been gziped or not
     MemoryBlock mb;
     realProject.loadFileAsData (mb);
-    const uint8* const data = (const uint8*)mb.getData();
+
+    /*DBGX (realProject.getFullPathName ());
+    DBGX (mb.getSize ());*/
+    const uint8* const data = (const uint8*)mb.getData ();
     const bool isGzip = ((int)data[0] == 120 && (int)data[1] == 218);
     // should remove above at some point (backward compatibility)
 

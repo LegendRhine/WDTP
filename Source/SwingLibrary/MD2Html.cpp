@@ -518,7 +518,7 @@ const String Md2Html::imageParse (const String& mdString)
         if (imgEnd == -1)            break;
         const String imgPath (resultStr.substring (altEnd + 2, imgEnd));
 
-        const String imgStr ("<div align=center><img src=\"" + imgPath + "\" alt=\""
+        const String imgStr ("<div align=center><img src=\"" + imgPath + "\" title=\""
                              + altContent + "\" />" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, imgEnd + 1 - indexStart, imgStr);

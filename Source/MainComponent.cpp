@@ -14,7 +14,8 @@ extern PropertiesFile* systemFile;
 extern ApplicationCommandManager* cmdManager;
 
 //==============================================================================
-MainContentComponent::MainContentComponent()
+MainContentComponent::MainContentComponent() :
+    Thread ("CheckNewVersion")
 {
     // must be these order...
     addAndMakeVisible (editAndPreview = new EditAndPreview (this));
@@ -34,12 +35,16 @@ MainContentComponent::MainContentComponent()
     layoutManager.setItemLayout (2, -0.7, -1.0, -0.79);     // editAndPreview
 
     setSize (1260, 780);
+    startTimer (2000);  // check new version
 }
 
 //=======================================================================
 MainContentComponent::~MainContentComponent()
 {
+    stopTimer();
 
+    if (isThreadRunning())
+        stopThread (3000);
 }
 //=========================================================================
 void MainContentComponent::paint (Graphics& g)
@@ -84,6 +89,41 @@ void MainContentComponent::reloadCurrentDoc()
 const bool MainContentComponent::selectItemFromHtmlFile (const File& html)
 {
     return fileTree->selectItemFromHtmlFile (html);
+}
+
+//=================================================================================================
+void MainContentComponent::timerCallback()
+{
+    stopTimer();
+    startThread();  // to connect internet must using background thread on Android
+}
+
+//=================================================================================================
+void MainContentComponent::run()
+{
+    // check new version
+    URL url ("https://raw.githubusercontent.com/LegendRhine/WDTP/master/Source/version");
+    const String& urlContent = url.readEntireTextStream().trim();
+
+    if (urlContent.isEmpty()
+        || urlContent.length() > 10
+        || urlContent.length() < 8  // 1.0.0101 ~ 99.99.1231
+        || urlContent.containsAnyOf ("abcdefghijklmnopqrstuvwxyz"
+                                     "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                     "<>/\\+-*!@#$%^&*()_=-`~[]{}"))
+    {
+        return;
+    }
+
+    const String& currentVersion ("1" + String (ProjectInfo::versionString).replace (".", String()));
+    const String& urlVersion ("1" + urlContent.replace (".", String()));
+    //DBGX (currentVersion << " - " << urlVersion);
+
+    if (currentVersion.getIntValue() < urlVersion.getIntValue())
+    {
+        const MessageManagerLock mmLock;
+        toolBar->hasNewVersion();
+    }    
 }
 
 //=================================================================================================

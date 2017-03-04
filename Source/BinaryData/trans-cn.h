@@ -175,7 +175,7 @@ countries: cn
 "Set UI Color..." = "设置界面背景色..."
 "UI Color" = "界面颜色"
 "Getting Started..." = "快速上手..."
-"Check New Version..." = "检查新版本..."
+"Download New Version..." = "下载新版本..."
 "About..." = "关于..."
 "Write Down, Then Publish" = "Write Down, Then Publish"
 "This project already exists, want to overwrite it?" = "此项目已经存在，是否覆盖?"
@@ -328,3 +328,4 @@ countries: cn
 "\'s " = "的"
 "Project " = "项目"
 "Keyword Index: " = "关键词索引："
+"Feedback/Discuss/Interflow..." = "反馈意见/讨论交流..."

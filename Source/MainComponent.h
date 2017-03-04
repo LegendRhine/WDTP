@@ -16,7 +16,9 @@ class FileTreeContainer;
 class EditAndPreview;
 
 //==============================================================================
-class MainContentComponent : public Component
+class MainContentComponent : public Component,
+                             public Thread,
+                             private Timer
 {
 public:
     //==============================================================================
@@ -38,6 +40,10 @@ public:
 
     /** transfer method */
     const bool selectItemFromHtmlFile (const File& htmlFile);
+
+    /** these 2 for check the new version */
+    virtual void timerCallback() override;
+    virtual void run() override;
 
 private:
     //=========================================================================

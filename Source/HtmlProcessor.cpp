@@ -49,8 +49,8 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
 
         tplStr = tplStr.replace ("\n  <title>",
                                  "\n  <style type=\"text/css\">\n"
-                                 "    table {border-collapse:collapse;}\n"
-                                 "    table, td, th {border:0; padding:15px 5px 15px 5px;}\n"
+                                 "    table {width:100%; border-collapse:collapse;}\n"
+                                 "    table, td, th {border:0; padding:6px 5px 6px 5px;}\n"
                                  "  </style>\n  <title>");
     }
 
@@ -391,32 +391,52 @@ const String HtmlProcessor::getKeywordsLinks (const String& rootPath)
     StringArray kws;
     kws.addTokens (extractKeywordsOfDocs (FileTreeContainer::projectTree), ",", String());
 
-    for (int i = kws.size(); --i >= 0; )
+    for (int i = kws.size (); --i >= 0; )
     {
-    	if (kws[i].contains ("--"))
-    	{
-            kws.getReference (i) = kws[i].replace ("--", " (");
-            kws.getReference (i) = kws[i] + ")";
+        if (kws[i].contains ("--"))
+            kws.getReference (i) = kws[i].upToFirstOccurrenceOf ("--", false, true);
 
-            kws.getReference (i) = "<td align=center><a href=\"" + rootPath + "keywords/"
-                + kws[i].upToFirstOccurrenceOf (" (", false, true) + ".html\">"
-                + kws[i] + "</a></td>";
-    	}
-        else
+        kws.getReference (i) = kws[i].replace (CharPointer_UTF8 ("\xef\xbc\x88"), " (")
+            .replace (CharPointer_UTF8 ("\xef\xbc\x89"), ")");
+        
+        Array<ValueTree> trees;
+        getDocTreeWithKeyword (FileTreeContainer::projectTree, kws[i], trees);        
+
+        if (trees.size() == 1)
         {
-            ValueTree tree;
-            getDocTreeWithKeyword (FileTreeContainer::projectTree, kws[i], tree);
-            jassert (tree.isValid ());
-
-            String htmlPath (DocTreeViewItem::getHtmlFileOrDir (tree).getFullPathName());
+            String htmlPath (DocTreeViewItem::getHtmlFileOrDir (trees[0]).getFullPathName ());
             htmlPath = htmlPath.replace (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName ()
                                          + File::separatorString, rootPath);
-
             htmlPath = htmlPath.replace (File::separatorString, "/");
-            //DBGX (htmlPath);
 
-            kws.getReference (i) = "<td align=center><a href=\"" + htmlPath + "\">" + kws[i] + "</a></td>";
-        }        
+            kws.getReference (i) = "<li><a href=\"" + htmlPath + "\" title=\""
+                + trees[0].getProperty ("title").toString () + "\">"
+                + kws[i]
+                + "</a></li>";
+
+            kws.getReference (i) = "<td align=center><ul>" + kws[i] + "</ul></td>";
+        }
+        else
+        {
+            kws.getReference (i) = "<td align=center><ul><li><a>" + kws[i] + "</a><ul>";
+
+            for (int j = trees.size (); --j >= 0; )
+            {
+                String htmlPath (DocTreeViewItem::getHtmlFileOrDir (trees[j]).getFullPathName ());
+                htmlPath = htmlPath.replace (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName ()
+                                             + File::separatorString, rootPath);
+
+                htmlPath = htmlPath.replace (File::separatorString, "/");
+
+                kws.getReference (i) = kws[i] +
+                    "<li><a href=\"" + htmlPath + "\">"
+                    + trees[j].getProperty ("title").toString ()
+                    + "</a></li>";
+            }
+
+            kws.getReference (i) = kws[i] + "</ul></li></ul></td>";
+        }
+
     }
 
     // table... column / line
@@ -432,8 +452,9 @@ const String HtmlProcessor::getKeywordsLinks (const String& rootPath)
             kws.getReference (i) = kws[i] + "</tr>";
     }
 
-    kws.insert (0, "<table>");
-    kws.add ("</table>");
+    kws.insert (0, "<div class=keywordsMenu>");
+    kws.insert (1, "<table>");
+    kws.add ("</table></div>");
 
     return kws.joinIntoString (newLine);
 }
@@ -462,16 +483,16 @@ void HtmlProcessor::extractKeywords (const ValueTree& tree,
 //=================================================================================================
 void HtmlProcessor::getDocTreeWithKeyword (const ValueTree& tree, 
                                            const String& keyword, 
-                                           ValueTree& resultTree)
+                                           Array<ValueTree>& result)
 {   
-    if (tree.getProperty ("keywords").toString ().containsIgnoreCase (keyword))
+    if (tree.getType ().toString () == "doc" && 
+        tree.getProperty ("keywords").toString ().containsIgnoreCase (keyword))
     {
-        resultTree = tree;
-        return;
+        result.add (tree);
     }
 
     for (int i = tree.getNumChildren (); --i >= 0; )
-        getDocTreeWithKeyword (tree.getChild (i), keyword, resultTree);
+        getDocTreeWithKeyword (tree.getChild (i), keyword, result);
 }
 
 //=================================================================================================

@@ -105,7 +105,7 @@ private:
 
     static void getDocTreeWithKeyword (const ValueTree& tree, 
                                        const String& keyword, 
-                                       ValueTree& resultTree);
+                                       Array<ValueTree>& result);
 
     //=================================================================================================
     bool sortByReverse;

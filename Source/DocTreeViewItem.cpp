@@ -780,7 +780,7 @@ void DocTreeViewItem::createNewFolder()
 
         if (dirName.isEmpty())
             dirName = TRANS ("New folder");
-        else if (dirName == "media" || dirName == "add-in" || dirName == "docs" || dirName == "site" || dirName == "keywords")
+        else if (dirName == "media" || dirName == "add-in" || dirName == "docs" || dirName == "site")
             dirName += "-2";
 
         // create this dir on disk

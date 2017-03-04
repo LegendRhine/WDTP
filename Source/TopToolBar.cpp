@@ -21,7 +21,8 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
     : Thread ("forGenerateHtmls"),
     fileTreeContainer (f),
     editAndPreview (e),
-    progressBar (progressValue)
+    progressBar (progressValue),
+    newVersionIsReady (false)
 {
     jassert (fileTreeContainer != nullptr);
     jassert (editAndPreview != nullptr);
@@ -383,8 +384,12 @@ void TopToolBar::popupSystemMenu()
     m.addSeparator();
 
     m.addItem (gettingStarted, TRANS ("Getting Started..."), true);
-    m.addItem (checkNewVersion, TRANS ("Check New Version..."), true);
-    m.addItem (showAbout, TRANS ("About..."), true);
+
+    if (newVersionIsReady)
+        m.addItem (checkNewVersion, TRANS ("Download New Version..."), true);
+
+    m.addItem (feedback, TRANS ("Feedback/Discuss/Interflow..."), true);
+    m.addItem (showAboutDialog, TRANS ("About..."), true);
 
     // display the menu
     const int index = m.show();
@@ -413,7 +418,8 @@ void TopToolBar::menuPerform (const int index)
     else if (index == resetUiColor)     resetUiColour();
     else if (index == gettingStarted)   URL ("http://underwaysoft.com/works/wdtp/gettingStarted.html").launchInDefaultBrowser();
     else if (index == checkNewVersion)  URL ("http://underwaySoft.com/works/wdtp/download.html").launchInDefaultBrowser();
-    else if (index == showAbout)        SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2017");
+    else if (index == feedback)         URL ("http://underwaysoft.com/guestBook.html").launchInDefaultBrowser();
+    else if (index == showAboutDialog)  SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2017");
 
     // switch ui-language in realtime
     else if (index == uiEnglish)
@@ -605,6 +611,19 @@ void TopToolBar::generateHtmlFilesIfNeeded (ValueTree tree)
                 generateHtmlFilesIfNeeded (tree.getChild (i));
         }
     }    
+}
+
+//=================================================================================================
+void TopToolBar::hasNewVersion()
+{
+    newVersionIsReady = true;
+
+    bts[system]->setImages (false, true, true,
+                            ImageCache::getFromMemory (BinaryData::systemr_png,
+                                                       BinaryData::systemr_pngSize),
+                            imageTrans, Colour (0x00),
+                            Image::null, 1.000f, Colours::darkcyan,
+                            Image::null, 1.000f, Colours::darkcyan);
 }
 
 //=================================================================================================

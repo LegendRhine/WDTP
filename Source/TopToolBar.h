@@ -45,6 +45,8 @@ public:
 
     static void generateHtmlFilesIfNeeded (ValueTree tree);
 
+    void hasNewVersion();
+
 private:
     //==========================================================================
     /** for progressBar when generate all */
@@ -101,7 +103,7 @@ private:
         generateCurrent, generateNeeded, generateWhole, cleanUpLocal,
         exportTpl, importTpl, releaseSystemTpl, /*rebuildKeywords,*/
         uiEnglish, uiChinese,
-        setUiColor, resetUiColor, gettingStarted, checkNewVersion, showAbout,
+        setUiColor, resetUiColor, gettingStarted, checkNewVersion, feedback, showAboutDialog,
         switchEdit, switchWidth, activeSearch
     };
 
@@ -136,6 +138,7 @@ private:
     ScopedPointer<ColourSelectorWithPreset> bgColourSelector;
     String languageStr;
     ProgressBar progressBar;
+    bool newVersionIsReady;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TopToolBar)
 };

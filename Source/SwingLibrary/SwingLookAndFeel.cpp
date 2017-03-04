@@ -13,7 +13,7 @@
 #include "SwingLookAndFeel.h"
 
 //=================================================================================================
-SwingLookAndFeel::SwingLookAndFeel ()
+SwingLookAndFeel::SwingLookAndFeel()
 {
     setDefaultSansSerifTypefaceName (SwingUtilities::getFontName());
 }
@@ -21,7 +21,7 @@ SwingLookAndFeel::SwingLookAndFeel ()
 //=================================================================================================
 TextLayout SwingLookAndFeel::layoutTooltipText (const String& text, Colour colour) noexcept
 {
-    const float tooltipFontSize = SwingUtilities::getFontSize () - 3.0f;
+    const float tooltipFontSize = SwingUtilities::getFontSize() - 3.0f;
     const int maxToolTipWidth = 500;
 
     AttributedString s;
@@ -38,12 +38,12 @@ Rectangle<int> SwingLookAndFeel::getTooltipBounds (const String& tipText, Point<
 {
     const TextLayout tl (layoutTooltipText (tipText, Colours::black));
 
-    const int w = (int) (tl.getWidth () + 20.0f);
-    const int h = (int) (tl.getHeight () + 10.0f);
+    const int w = (int) (tl.getWidth() + 20.0f);
+    const int h = (int) (tl.getHeight() + 10.0f);
 
-    return Rectangle<int> (screenPos.x > parentArea.getCentreX () ?
+    return Rectangle<int> (screenPos.x > parentArea.getCentreX() ?
                            screenPos.x - (w + 12) : screenPos.x + 24,
-                           screenPos.y > parentArea.getCentreY () ?
+                           screenPos.y > parentArea.getCentreY() ?
                            screenPos.y - (h + 6) : screenPos.y + 6,
                            w, h).constrainedWithin (parentArea);
 }

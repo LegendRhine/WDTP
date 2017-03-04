@@ -14,8 +14,8 @@
 class SwingLookAndFeel : public LookAndFeel_V3
 {
 public:
-    SwingLookAndFeel ();
-    ~SwingLookAndFeel ()    { }    
+    SwingLookAndFeel();
+    ~SwingLookAndFeel()    { }    
 
     /** Tooltip... */
     static TextLayout layoutTooltipText (const String& text, Colour colour) noexcept;

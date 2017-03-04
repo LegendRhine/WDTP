@@ -56,6 +56,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 #endif
 
         insertMenu.addItem (insertImage, TRANS ("Iamge(s)...") + ctrlStr + "M)");
+        insertMenu.addItem (insertAudio, TRANS ("Audio(s)..."));
         insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink...") + ctrlStr + "H)");
         insertMenu.addItem (insertTable, TRANS ("Table (4 x 3)") + ctrlStr + "T)");
         insertMenu.addItem (insertQuota, TRANS ("Quotation"));
@@ -148,6 +149,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (searchPrev == index)           searchBySelectPrev();
     else if (searchNext == index)           searchBySelectNext();
     else if (insertImage == index)          insertImages();
+    else if (insertAudio == index)          insertAudioFiles();
     else if (insertHyperlink == index)      hyperlinkInsert();
     else if (insertTable == index)          tableInsert();
     else if (insertQuota == index)          quotaInsert();
@@ -530,6 +532,52 @@ void MarkdownEditor::insertImages (const Array<File>& imageFiles)
 }
 
 //=================================================================================================
+void MarkdownEditor::insertAudioFiles()
+{
+    FileChooser fc (TRANS ("Select Audio Files..."), File::nonexistent,
+                    "*.ogg;*.m4a;*.mp3;*.aac;*.flac;*.ape;*.wma;*.asf;*.mid", true);
+
+    if (!fc.browseForMultipleFilesToOpen())
+        return;
+
+    Array<File> files (fc.getResults());
+
+    for (int i = files.size(); --i >= 0; )
+    {
+        if (!files[i].hasFileExtension ("ogg;m4a;mp3;aac;flac;ape;wma;asf;mid"))
+            files.remove (i);
+    }
+
+    // doesn't import project-internal audios
+    const File& projectDir (FileTreeContainer::projectFile.getParentDirectory());
+
+    if (files[0].getFullPathName().contains (projectDir.getFullPathName()))
+    {
+        SHOW_MESSAGE (TRANS ("Can't import audio(s) inside the current project!"));
+        return;
+    }
+
+    // copy and insert audio-syntax
+    ValueTree& docTree (parent->getCurrentTree());
+    const File mediaPath (DocTreeViewItem::getMdFileOrDir (docTree).getSiblingFile ("media"));
+    String content;
+
+    for (auto f : files)
+    {
+        const File targetFile (mediaPath.getChildFile (f.getFileName()).getNonexistentSibling (false));
+        targetFile.create();
+
+        if (f.copyFileTo (targetFile))
+            content << newLine << "~[ ](media/" << targetFile.getFileName() << ")" << newLine
+            << "^^ " << TRANS ("Audio: ") << newLine;
+        else
+            SHOW_MESSAGE (TRANS ("Can't insert this Audio: ") + newLine + f.getFullPathName());
+    }
+
+    insertTextAtCaret (content);
+}
+
+//=================================================================================================
 void MarkdownEditor::autoWrapSelected (const KeyPress& key)
 {
     const String& content (getHighlightedText());
@@ -711,16 +759,25 @@ void MarkdownEditor::pasteForCtrlV()
     if (content.substring (0, 4) == "http")
     {
         // image
-        if (content.getLastCharacters (3) == "jpg"
-            || content.getLastCharacters (3) == "JPG"
-            || content.getLastCharacters (3) == "png"
-            || content.getLastCharacters (3) == "PNG"
-            || content.getLastCharacters (3) == "gif"
-            || content.getLastCharacters (3) == "GIF"
-            || content.getLastCharacters (4) == "jpeg"
-            || content.getLastCharacters (4) == "JPEG")
+        if (content.getLastCharacters (3).toLowerCase() == "jpg"
+            || content.getLastCharacters (3).toLowerCase() == "png"
+            || content.getLastCharacters (3).toLowerCase() == "gif"
+            || content.getLastCharacters (4).toLowerCase() == "jpeg")
         {
             insertTextAtCaret ("![](" + content + ")");
+        }
+        // audio
+        else if (content.getLastCharacters (3).toLowerCase() == "mp3"
+                 || content.getLastCharacters (3).toLowerCase() == "ogg"
+                 || content.getLastCharacters (3).toLowerCase() == "wma"
+                 || content.getLastCharacters (3).toLowerCase() == "m4a"
+                 || content.getLastCharacters (3).toLowerCase() == "mid"
+                 || content.getLastCharacters (3).toLowerCase() == "asf"
+                 || content.getLastCharacters (3).toLowerCase() == "aac"
+                 || content.getLastCharacters (3).toLowerCase() == "ape"
+                 || content.getLastCharacters (4).toLowerCase() == "flac")
+        {
+            insertTextAtCaret ("~[](" + content + ")");
         }
         else     // url
         {

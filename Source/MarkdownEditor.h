@@ -52,7 +52,7 @@ private:
     enum MenuIndex
     {
         pickTitle = 1, addKeywords, pickFromAllKeywords, pickDesc,
-        insertImage, insertHyperlink, insertTable, insertQuota,
+        insertImage, insertAudio, insertHyperlink, insertTable, insertQuota,
         insertAlignCenter, insertAlignRight, insertUnoerderList, insertOrderList,
         insertFirstTitle, insertSecondTitle, insertThirdTitle, insertToc, insertEndnote,
         insertIdentifier,
@@ -70,6 +70,7 @@ private:
 
     void hyperlinkInsert();
     void insertImages();
+    void insertAudioFiles();
 
     void tableInsert();
     void quotaInsert();

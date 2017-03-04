@@ -329,3 +329,8 @@ countries: cn
 "Project " = "项目"
 "Keyword Index: " = "关键词索引："
 "Feedback/Discuss/Interflow..." = "反馈意见/讨论交流..."
+"Audio(s)..." = "音频..."
+"Select Audio Files..." = "选择音频文件..."
+"Can't import audio(s) inside the current project!" = "无法导入项目内部的音频文件！"
+"Audio: " = "音频："
+"Can't insert this Audio: " = "无法插入此音频："

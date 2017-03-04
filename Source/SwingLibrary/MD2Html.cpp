@@ -565,7 +565,7 @@ const String Md2Html::audioParse (const String& mdString)
                                 + " title=\"" + altContent + "\"/>" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, audioEnd + 1 - indexStart, audioStr);
-        indexStart = resultStr.indexOfIgnoreCase (indexStart + audioStr.length (), "~[");
+        indexStart = resultStr.indexOfIgnoreCase (indexStart + audioStr.length(), "~[");
     }
 
     return resultStr;

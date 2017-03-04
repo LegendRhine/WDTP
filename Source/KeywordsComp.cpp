@@ -65,7 +65,7 @@ public:
     const int getKeywordsNumbers() const { return bts.size(); }
 
     //=================================================================================================
-    void resized()
+    void resized() override
     {
         int x, y;
         x = y = 0;

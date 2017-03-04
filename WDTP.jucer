@@ -97,9 +97,9 @@
                extraLinkerFlags="">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/Debug"
-                       osxSDK="default" osxCompatibility="10.8 SDK" osxArchitecture="default"/>
+                       osxSDK="default" osxCompatibility="10.9 SDK" osxArchitecture="default"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="wdtp"
-                       binaryPath="Application/Release" osxSDK="default" osxCompatibility="10.8 SDK"
+                       binaryPath="Application/Release" osxSDK="default" osxCompatibility="10.9 SDK"
                        osxArchitecture="default"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

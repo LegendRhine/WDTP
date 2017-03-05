@@ -787,9 +787,6 @@ void TopToolBar::resetUiColour()
 //=================================================================================================
 void TopToolBar::setupAudioDevice()
 {
-    // stop recording first
-    //controller->stopPlaying();
-
     AudioDeviceSelectorComponent deviceComp (*deviceManager, 0, 255, 2, 255, false, false, false, false);
     OptionalScopedPointer<Component> deviceEditor (&deviceComp, false);
     deviceEditor->setSize (500, 320);

@@ -36,7 +36,7 @@ AudioRecorder::AudioRecorder (AudioDeviceManager& dm,
 }
 
 //=================================================================================================
-AudioRecorder::~AudioRecorder ()
+AudioRecorder::~AudioRecorder()
 {
     deviceManager.removeAudioCallback (this);
     stop();
@@ -44,7 +44,7 @@ AudioRecorder::~AudioRecorder ()
 }
 
 //=================================================================================================
-void AudioRecorder::startRecording ()
+void AudioRecorder::startRecording()
 {
     stop();
 
@@ -82,7 +82,7 @@ void AudioRecorder::startRecording ()
 }
 
 //=================================================================================================
-void AudioRecorder::stop ()
+void AudioRecorder::stop()
 {
     {
         const ScopedLock sl (writerLock);
@@ -127,7 +127,7 @@ const bool AudioRecorder::saveToFile (File& file) const
 }
 
 //=================================================================================================
-RecordingThumbnail::RecordingThumbnail () : 
+RecordingThumbnail::RecordingThumbnail() : 
                             thumbnailCache (3),
                             thumbnail (512, *formatManager, thumbnailCache),
                             thumbColour (Colours::green),

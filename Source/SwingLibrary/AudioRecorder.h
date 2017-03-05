@@ -40,7 +40,7 @@ public:
         如要保留上次录音，则调用此函数之前，先将临时文件另存。
         当然，创建本类对象后，第一次调用此函数之前，无需另存临时文件。
     */
-    void startRecording ();
+    void startRecording();
 
     /** 停止录音。 */
     void stop();

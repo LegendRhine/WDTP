@@ -38,7 +38,7 @@ public:
 
     //=================================================================================================
     /** 播放当前所加载的音频数据。*/
-    void start ();
+    void start();
 
     /** 暂停播放。暂停后，当前播放位置停留在该处，不做任何设置和假设。 */
     void stop();
@@ -46,7 +46,7 @@ public:
     /** 返回当前语句是否处于播放状态。*/
     const bool isPlaying() const                    { return audioTransportSource.isPlaying(); }
 
-    AudioFormatReader* getReaderOfCuurentHold ()    { return reader; }
+    AudioFormatReader* getReaderOfCuurentHold()    { return reader; }
 
     //=================================================================================================
     /** 设置播放位置（秒数）。*/
@@ -73,7 +73,7 @@ public:
     //=================================================================================================
     void addListener (Listener* listener)           { listeners.add (listener); }
     void removeListener (Listener* listener)        { listeners.remove (listener); }
-	void removeAllListeners ()                      { listeners.clear(); }
+	void removeAllListeners()                      { listeners.clear(); }
     
 private:	
     //=================================================================================================

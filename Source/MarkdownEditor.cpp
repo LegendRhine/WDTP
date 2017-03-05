@@ -807,7 +807,7 @@ void MarkdownEditor::pasteForCtrlV()
 }
 
 //=================================================================================================
-void MarkdownEditor::recordAudio ()
+void MarkdownEditor::recordAudio()
 {
     NEED_TO_DO ("Audio Record...");
 }

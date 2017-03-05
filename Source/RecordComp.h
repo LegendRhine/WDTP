@@ -17,6 +17,7 @@ class RecordingThumbnail;
 /** Usage: whenever use this class, create object for each time! then setVisible()!
 */
 class RecordComp : public Component,
+                   public ActionBroadcaster,
                    public ButtonListener,
                    private AudioDataPlayer::Listener,
                    private Timer
@@ -56,13 +57,15 @@ private:
     virtual void playerStopped (AudioDataPlayer* player) override;
 
     /** Writes an AudioFormatReader as ogg file to the current doc's media dir. */
-    static void writeOggAudioToMediaDir (AudioFormatReader* reader, const File& mediaDir);
+    static void writeOggAudioToMediaDir (AudioFormatReader* reader, 
+                                         const File& mediaDir, 
+                                         const String& fileName);
 
     //=========================================================================
     double currentSeconds, totalSeconds;
     uint32 baseTime;
     bool needSaveToMediaDir;
-    const File& mediaDir;
+    const File mediaDir;
 
     AudioRecorder* recorder;
     AudioDataPlayer* player;

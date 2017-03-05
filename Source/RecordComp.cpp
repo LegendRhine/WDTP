@@ -79,7 +79,7 @@ RecordComp::RecordComp (const File& docFile) :
     addAndMakeVisible (currentPositionMarker);
     recordThumbnail->setInterceptsMouseClicks (false, false);
 
-    setSize (460, 350);
+    setSize (580, 350);
 
     player->addListener (this);
     startRecord();
@@ -102,10 +102,10 @@ void RecordComp::paint (Graphics& g)
 {
     g.fillAll();
 
-    const int labelHeight = (getHeight() - 40 )/ 4;
+    const int labelHeight = (getHeight() - 40 )/ 6;
     g.setColour (Colours::grey.withAlpha (0.80f));
     g.drawHorizontalLine (labelHeight, 1.0f, getWidth() - 2.0f);
-    g.drawHorizontalLine (labelHeight * 2, 1.0f, getWidth() - 2.0f);
+    g.drawHorizontalLine (labelHeight * 3, 1.0f, getWidth() - 2.0f);
     g.drawHorizontalLine (getHeight() - 40 - labelHeight, 1.0f, getWidth() - 2.0f);
 
     g.setColour (Colours::darkgrey.darker());
@@ -114,17 +114,17 @@ void RecordComp::paint (Graphics& g)
 //=========================================================================
 void RecordComp::resized()
 {
-    const int labelHeight = (getHeight() - 40) / 4;
-    const int thumbHeight = labelHeight * 2;
+    const int labelHeight = (getHeight() - 40) / 6;
+    const int thumbHeight = labelHeight * 4;
 
-    currentTimeLabel->setFont (labelHeight / 2.0f);
-    totalTimeLabel->setFont (labelHeight / 2.0f);
+    currentTimeLabel->setFont (labelHeight / 1.5f);
+    totalTimeLabel->setFont (labelHeight / 1.5f);
 
     totalTimeLabel->setBounds (0, 5, getWidth(), labelHeight - 10);
     recordThumbnail->setBounds (1, (getHeight() - 40 - thumbHeight) / 2, getWidth() - 2, thumbHeight);
-    currentTimeLabel->setBounds (0, recordThumbnail->getBottom() + 5, getWidth(), labelHeight - 10);
+    currentTimeLabel->setBounds (0, getHeight() - 37 - labelHeight, getWidth(), labelHeight - 10);
 
-    const int centerX = (getWidth() - 32) / 2;
+    const int centerX = (getWidth() - 90) / 2;
     buttons[playBt]->setBounds (centerX, getHeight() - 40, 32, 32);
     buttons[recBt]->setBounds (buttons[playBt]->getX() - 57, buttons[playBt]->getY(), 32, 32);
     buttons[delBt]->setBounds (buttons[playBt]->getRight() + 25, buttons[playBt]->getY(), 32, 32);
@@ -177,12 +177,17 @@ void RecordComp::buttonClicked (Button* button)
 
         if (needSaveToMediaDir && audioReader != nullptr)
         {
-            writeOggAudioToMediaDir(audioReader, mediaDir);
-            needSaveToMediaDir = false;
-            
+            const String& audioName (SwingUtilities::getCurrentTimeString() + ".ogg");
+            writeOggAudioToMediaDir (audioReader, mediaDir, audioName);
+            needSaveToMediaDir = false;  
+
+            sendActionMessage (audioName);
         }
 
-        setVisible (false);
+        DialogWindow* dialog = findParentComponentOfClass<DialogWindow>();
+
+        if (dialog != nullptr)
+            dialog->exitModalState (0);
     }
 }
 //=================================================================================================
@@ -262,10 +267,10 @@ void RecordComp::playerStopped (AudioDataPlayer* /*player*/)
 
 //=================================================================================================
 void RecordComp::writeOggAudioToMediaDir (AudioFormatReader* audioReader, 
-                                          const File& mediaDir)
+                                          const File& mediaDir,
+                                          const String& fileName)
 {
-    const String audioName (SwingUtilities::getCurrentTimeString() + ".ogg");
-    File audioFile (mediaDir.getChildFile (audioName).getNonexistentSibling (false));
+    File audioFile (mediaDir.getChildFile (fileName).getNonexistentSibling (false));
     audioFile.create();
 
     OggVorbisAudioFormat oggFormat;
@@ -294,11 +299,12 @@ void RecordComp::timerCallback()
         const double currentSeconds_ = player->getCurrentPosition();
         currentTimeLabel->setText (SwingUtilities::doubleToString (currentSeconds_), dontSendNotification);
 
-        const float labelHeight = (getHeight() - 40) / 4.0f;
+        const float labelHeight = (getHeight() - 40) / 6.0f;
+
         currentPositionMarker.setRectangle (Rectangle<float> (
             timeToX - 0.75f, 
-            labelHeight + 5.0f,
-            1.5f, labelHeight * 2.0f - 8.0f));
+            labelHeight + 2.0f,
+            1.5f, labelHeight * 4.0f - 2.0f));
     }    
 }
 
@@ -382,6 +388,7 @@ void RecordComp::stopRecord()
     recorder->stop();
     audioReader = formatManager->createReaderFor (recorder->getTempFile());
     player->setAudioSource (audioReader);
+
     recordThumbnail->setDisplayFullThumbnail (true);
     totalTimeLabel->setText (SwingUtilities::doubleToString (player->getLengthInSeconds()), dontSendNotification);
     needSaveToMediaDir = true;

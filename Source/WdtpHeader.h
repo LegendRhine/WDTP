@@ -15,6 +15,8 @@
 #include "SwingLibrary/SwingUtilities.h"
 #include "SwingLibrary/SwingLookAndFeel.h"
 #include "SwingLibrary/MD2Html.h"
+#include "SwingLibrary/AudioDataPlayer.h"
+#include "SwingLibrary/AudioRecorder.h"
 #include "MainComponent.h"
 #include "TopToolBar.h"
 #include "MarkdownEditor.h"

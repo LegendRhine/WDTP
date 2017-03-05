@@ -20,6 +20,13 @@
         <FILE id="S5pEoV" name="icon.png" compile="0" resource="1" file="Source/BinaryData/icon.png"/>
       </GROUP>
       <GROUP id="{83694581-DB15-8946-3B2A-EBBCEDD57AAD}" name="SwingLibrary">
+        <FILE id="oAlcpd" name="AudioDataPlayer.cpp" compile="1" resource="0"
+              file="Source/SwingLibrary/AudioDataPlayer.cpp"/>
+        <FILE id="bKjBlL" name="AudioDataPlayer.h" compile="0" resource="0"
+              file="Source/SwingLibrary/AudioDataPlayer.h"/>
+        <FILE id="ukLKVK" name="AudioRecorder.cpp" compile="1" resource="0"
+              file="Source/SwingLibrary/AudioRecorder.cpp"/>
+        <FILE id="ColgX8" name="AudioRecorder.h" compile="0" resource="0" file="Source/SwingLibrary/AudioRecorder.h"/>
         <FILE id="mijKP1" name="MD2Html.cpp" compile="1" resource="0" file="Source/SwingLibrary/MD2Html.cpp"/>
         <FILE id="snx2Eb" name="MD2Html.h" compile="0" resource="0" file="Source/SwingLibrary/MD2Html.h"/>
         <FILE id="xPreeF" name="SwingLookAndFeel.cpp" compile="1" resource="0"

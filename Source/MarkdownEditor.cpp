@@ -100,6 +100,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
 
         menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile());
+        menu.addItem (audioRecord, TRANS ("Audio Record..."));
         menu.addSeparator();
 
         menu.addItem (searchNext, TRANS ("Search Next Selection") + "  F3", getHighlightedText().isNotEmpty());
@@ -172,6 +173,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (formatHighlight == index)      inlineFormat (highlight);
     else if (inlineCode == index)           inlineFormat (codeOfinline);
     else if (codeBlock == index)            codeBlockFormat();
+    else if (audioRecord == index)          recordAudio();
     else if (fontSize == index)             setFontSize();
     else if (fontColor == index)            setFontColour();
     else if (setBackground == index)        setBackgroundColour();
@@ -802,6 +804,12 @@ void MarkdownEditor::pasteForCtrlV()
     // select 'Click here' when paste an url and selected nothing before
     if (needSelectLinkText)  
         setHighlightedRegion (Range<int> (position + 1, position + linkText.length() + 1));
+}
+
+//=================================================================================================
+void MarkdownEditor::recordAudio ()
+{
+    NEED_TO_DO ("Audio Record...");
 }
 
 //=================================================================================================

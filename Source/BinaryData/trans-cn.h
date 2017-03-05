@@ -363,3 +363,5 @@ countries: cn
 "Couldn\'t start the output device!" = "无法启动输出驱动！"
 "Plays a test tone" = "测试音频播放"
 "Setup audio devices" = "设置音频驱动"
+"Author" = "作者"
+"Audio Record..." = "录音..."

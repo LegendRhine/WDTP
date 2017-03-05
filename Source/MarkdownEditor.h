@@ -57,8 +57,8 @@ private:
         insertFirstTitle, insertSecondTitle, insertThirdTitle, insertToc, insertEndnote,
         insertIdentifier,
         insertCaption, insertSeparator, insertAuthor, insertInterLink,
-        formatBold, formatItalic, formatBoldAndItalic, formatHighlight,
-        codeBlock, inlineCode,
+        formatBold, formatItalic, formatBoldAndItalic, formatHighlight,        
+        codeBlock, inlineCode, audioRecord,
         searchNext, searchPrev,
         fontSize, fontColor, setBackground, resetDefault
     };
@@ -94,6 +94,7 @@ private:
     void shiftTabInput();
     void returnKeyInput();
     void pasteForCtrlV();
+    void recordAudio();
 
     void searchBySelectPrev();
     void searchBySelectNext();

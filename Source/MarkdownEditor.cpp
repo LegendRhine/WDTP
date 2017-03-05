@@ -100,7 +100,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
 
         menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile());
-        menu.addItem (audioRecord, TRANS ("Audio Record..."));
+        menu.addItem (audioRecord, TRANS ("Audio Record") + "...");
         menu.addSeparator();
 
         menu.addItem (searchNext, TRANS ("Search Next Selection") + "  F3", getHighlightedText().isNotEmpty());
@@ -809,7 +809,17 @@ void MarkdownEditor::pasteForCtrlV()
 //=================================================================================================
 void MarkdownEditor::recordAudio()
 {
-    NEED_TO_DO ("Audio Record...");
+    RecordComp recordComp (parent->getCurrentDocFile());
+    recordComp.addActionListener (this);
+    OptionalScopedPointer<Component> recorder (&recordComp, false);
+
+    DialogWindow::LaunchOptions dialog;
+    dialog.dialogTitle = TRANS ("Audio Record");
+    dialog.escapeKeyTriggersCloseButton = false;
+    dialog.resizable = false;
+    dialog.content = recorder;
+
+    dialog.runModal();
 }
 
 //=================================================================================================
@@ -1129,13 +1139,23 @@ void MarkdownEditor::timerCallback()
 void MarkdownEditor::actionListenerCallback (const String& message)
 {
     const String& prefix (message.substring (0, 2));
+    const String& postfix (message.fromLastOccurrenceOf (".", false, true));
 
     if (prefix == "++")
+    {
         addSelectedToKeywords (message.substring (2));
+        parent->getSetupPanel()->updateDocPanel();
+    }
     else if (prefix == "--")
+    {
         subtractFromKeywords (message.substring (2));
+        parent->getSetupPanel()->updateDocPanel();
+    }
+    else if (postfix == "ogg")
+    {
+        insertTextAtCaret (newLine + "~[](media/" + message + ")" + newLine + "^^ ");
+    }
 
-    parent->getSetupPanel()->updateDocPanel();
     DocTreeViewItem::needCreate (parent->getCurrentTree());
 }
 

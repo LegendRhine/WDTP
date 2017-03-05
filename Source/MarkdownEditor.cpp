@@ -100,7 +100,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
 
         menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile());
-        menu.addItem (audioRecord, TRANS ("Audio Record") + "...");
+        menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)");
         menu.addSeparator();
 
         menu.addItem (searchNext, TRANS ("Search Next Selection") + "  F3", getHighlightedText().isNotEmpty());
@@ -967,6 +967,10 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     // insert author and date
     else if (key == KeyPress ('o', ModifierKeys::commandModifier, 0))
         authorInsert();
+
+    // audio record
+    else if (key == KeyPress ('w', ModifierKeys::commandModifier, 0))
+        recordAudio();
 
     // auto-wrap the selected (when input '`, *, **, ~~' whilst some text was selected)
     else if (getHighlightedText().isNotEmpty() && (key == KeyPress('`')

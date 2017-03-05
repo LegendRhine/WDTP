@@ -250,6 +250,16 @@ const String SwingUtilities::getValidFileName (const String& originalStr)
         .replaceCharacter ('\\', '-').replaceCharacter ('\'', '-');
 }
 
+//=================================================================================================
+const String SwingUtilities::doubleToString (const double& seconds)
+{
+    const int cs = roundDoubleToInt (seconds * 10.0);
+
+    return String (cs / 600).paddedLeft ('0', 2) + ":" +
+        String (cs / 10 % 60).paddedLeft ('0', 2) + "." +
+        String (cs % 10);
+}
+
 //==============================================================================
 SwingDialog::SwingDialog (const String& description) :
     logo (ImageCache::getFromMemory (BinaryData::logo_png, BinaryData::logo_pngSize))

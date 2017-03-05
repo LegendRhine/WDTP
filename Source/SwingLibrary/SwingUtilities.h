@@ -124,6 +124,9 @@ struct SwingUtilities
         then return an valid file/dir name string. */
     static const String getValidFileName (const String& originalStr);
 
+    /** provide 00:00.0 (min:sec:x) base on double seconds */
+    static const String doubleToString (const double& seconds);
+
 };
 
 //=========================================================================

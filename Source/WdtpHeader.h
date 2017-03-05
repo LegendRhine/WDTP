@@ -28,6 +28,7 @@
 #include "ReplaceComponent.h"
 #include "StatisComp.h"
 #include "KeywordsComp.h"
+#include "RecordComp.h"
 
 
 #endif  // HEADERGUA

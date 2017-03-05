@@ -365,3 +365,4 @@ countries: cn
 "Setup audio devices" = "设置音频驱动"
 "Author" = "作者"
 "Audio Record..." = "录音..."
+"Can't save this audio." = "无法保存此音频。"

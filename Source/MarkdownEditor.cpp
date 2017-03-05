@@ -537,7 +537,7 @@ void MarkdownEditor::insertImages (const Array<File>& imageFiles)
 void MarkdownEditor::insertAudioFiles()
 {
     FileChooser fc (TRANS ("Select Audio Files..."), File::nonexistent,
-                    "*.ogg;*.m4a;*.mp3;*.aac;*.flac;*.ape;*.wma;*.asf;*.mid", true);
+                    "*.ogg;*.mp3;*.mid", true);
 
     if (!fc.browseForMultipleFilesToOpen())
         return;
@@ -546,7 +546,7 @@ void MarkdownEditor::insertAudioFiles()
 
     for (int i = files.size(); --i >= 0; )
     {
-        if (!files[i].hasFileExtension ("ogg;m4a;mp3;aac;flac;ape;wma;asf;mid"))
+        if (!files[i].hasFileExtension ("ogg;mp3;mid"))
             files.remove (i);
     }
 
@@ -570,7 +570,7 @@ void MarkdownEditor::insertAudioFiles()
         targetFile.create();
 
         if (f.copyFileTo (targetFile))
-            content << newLine << "~[ ](media/" << targetFile.getFileName() << ")" << newLine
+            content << newLine << "~[](media/" << targetFile.getFileName() << ")" << newLine
             << "^^ " << TRANS ("Audio: ") << newLine;
         else
             SHOW_MESSAGE (TRANS ("Can't insert this Audio: ") + newLine + f.getFullPathName());
@@ -771,13 +771,7 @@ void MarkdownEditor::pasteForCtrlV()
         // audio
         else if (content.getLastCharacters (3).toLowerCase() == "mp3"
                  || content.getLastCharacters (3).toLowerCase() == "ogg"
-                 || content.getLastCharacters (3).toLowerCase() == "wma"
-                 || content.getLastCharacters (3).toLowerCase() == "m4a"
-                 || content.getLastCharacters (3).toLowerCase() == "mid"
-                 || content.getLastCharacters (3).toLowerCase() == "asf"
-                 || content.getLastCharacters (3).toLowerCase() == "aac"
-                 || content.getLastCharacters (3).toLowerCase() == "ape"
-                 || content.getLastCharacters (4).toLowerCase() == "flac")
+                 || content.getLastCharacters (3).toLowerCase() == "mid")
         {
             insertTextAtCaret ("~[](" + content + ")");
         }

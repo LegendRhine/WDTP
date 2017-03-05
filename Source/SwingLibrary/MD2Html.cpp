@@ -540,32 +540,29 @@ const String Md2Html::audioParse (const String& mdString)
 {
     /**< ~[](media/xxx.ogg) */
     String resultStr (mdString);
-    int indexStart = resultStr.indexOfIgnoreCase (0, "~[");
+    int indexStart = resultStr.indexOfIgnoreCase (0, "~[](");
 
     while (indexStart != -1)
     {
         if (resultStr.substring (indexStart - 1, indexStart) == "\\")
         {
-            indexStart = resultStr.indexOfIgnoreCase (indexStart + 2, "~[");
+            indexStart = resultStr.indexOfIgnoreCase (indexStart + 4, "~[](");
             continue;
         }
-
-        // get alt content
-        const int altEnd = resultStr.indexOfIgnoreCase (indexStart + 2, "](");
-        if (altEnd == -1)            break;
-        const String& altContent (resultStr.substring (indexStart + 2, altEnd));
-
+                
         // get audio file path
-        const int audioEnd = resultStr.indexOfIgnoreCase (altEnd + 2, ")");
-        if (audioEnd == -1)            break;
-        const String& audioPath (resultStr.substring (altEnd + 2, audioEnd));
+        const int audioEnd = resultStr.indexOfIgnoreCase (indexStart + 3, ")");
+
+        if (audioEnd == -1)
+            break;
+
+        const String& audioPath (resultStr.substring (indexStart + 4, audioEnd));
 
         const String& audioStr ("<div align=center><audio src=\"" + audioPath + "\""
-                                + " controls=\"controls\""
-                                + " title=\"" + altContent + "\"/>" + "</div>");
+                                + " preload=\"auto\" controls></audio>" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, audioEnd + 1 - indexStart, audioStr);
-        indexStart = resultStr.indexOfIgnoreCase (indexStart + audioStr.length(), "~[");
+        indexStart = resultStr.indexOfIgnoreCase (indexStart + audioStr.length(), "~[](");
     }
 
     return resultStr;

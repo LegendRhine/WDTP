@@ -11,8 +11,9 @@
 #include "WdtpHeader.h"
 
 // global objects which be managed in mainApplication class 
-PropertiesFile* systemFile = nullptr;
-ApplicationCommandManager* cmdManager = nullptr;
+PropertiesFile* systemFile              = nullptr;
+ApplicationCommandManager* cmdManager   = nullptr;
+AudioDeviceManager* deviceManager       = nullptr;
 
 //==============================================================================
 class WDTPApplication : public JUCEApplication
@@ -54,6 +55,11 @@ public:
 
         // command manager
         cmdManager = new ApplicationCommandManager();
+        deviceManager = new AudioDeviceManager();
+
+        // initial audio device
+        ScopedPointer<XmlElement> audioState (systemFile->getXmlValue ("audioState"));
+        deviceManager->initialise (2, 2, audioState, true);
 
         // initial application's GUI
         LookAndFeel::setDefaultLookAndFeel (lnf = new SwingLookAndFeel());
@@ -85,6 +91,7 @@ public:
         systemFile->saveIfNeeded();
         deleteAndZero (systemFile);
         deleteAndZero (cmdManager);
+        deleteAndZero (deviceManager);
     }
 
     //=========================================================================

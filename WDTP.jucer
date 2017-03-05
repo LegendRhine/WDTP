@@ -79,10 +79,10 @@
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/Debug"
-                       headerPath="" libraryPath="" useRuntimeLibDLL="1"/>
+                       headerPath="C:\Develop\SDK\Include\asio" libraryPath="" useRuntimeLibDLL="1"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="0" optimisation="3" targetName="wdtp" binaryPath="Application/Release"
-                       libraryPath="" useRuntimeLibDLL="1"/>
+                       libraryPath="" useRuntimeLibDLL="1" headerPath="C:\Develop\SDK\Include\asio"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_core" path="../../JUCE/modules"/>
@@ -91,6 +91,11 @@
         <MODULEPATH id="juce_data_structures" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_basics" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_gui_extra" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
     <XCODE_MAC targetFolder="Builds/MacOSX" smallIcon="S5pEoV" bigIcon="S5pEoV"
@@ -109,19 +114,28 @@
         <MODULEPATH id="juce_events" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_data_structures" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_core" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
     <VS2012 targetFolder="Builds/VisualStudio2012" smallIcon="S5pEoV" bigIcon="S5pEoV"
             toolset="v110_xp" extraDefs="" extraCompilerFlags="">
       <CONFIGURATIONS>
         <CONFIGURATION name="w32-Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/w32-Debug"/>
+                       isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/w32-Debug"
+                       headerPath="C:\Develop\SDK\Include\asio"/>
         <CONFIGURATION name="w32-Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="0" optimisation="3" targetName="wdtp" binaryPath="Application/w32-Release"/>
+                       isDebug="0" optimisation="3" targetName="wdtp" binaryPath="Application/w32-Release"
+                       headerPath="C:\Develop\SDK\Include\asio"/>
         <CONFIGURATION name="x64-Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/x64-Debug"/>
+                       isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/x64-Debug"
+                       headerPath="C:\Develop\SDK\Include\asio"/>
         <CONFIGURATION name="x64-Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="wdtp" binaryPath="Application/x64-Release"/>
+                       isDebug="0" optimisation="3" targetName="wdtp" binaryPath="Application/x64-Release"
+                       headerPath="C:\Develop\SDK\Include\asio"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../JUCE/modules"/>
@@ -130,10 +144,20 @@
         <MODULEPATH id="juce_events" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_data_structures" path="../../JUCE/modules"/>
         <MODULEPATH id="juce_core" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_basics" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </VS2012>
   </EXPORTFORMATS>
   <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_core" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_events" showAllCode="1" useLocalCopy="0"/>
@@ -141,7 +165,8 @@
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_USE_DIRECTWRITE="disabled"/>
+  <JUCEOPTIONS JUCE_USE_DIRECTWRITE="disabled" JUCE_ASIO="enabled" JUCE_USE_OGGVORBIS="enabled"
+               JUCE_USE_CDREADER="disabled" JUCE_USE_CDBURNER="disabled"/>
   <LIVE_SETTINGS>
     <WINDOWS/>
   </LIVE_SETTINGS>

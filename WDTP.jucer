@@ -8,16 +8,21 @@
   <MAINGROUP id="dEY4lK" name="WDTP">
     <GROUP id="{24163B05-55E9-9D57-4AF2-ACA9BBF8DA1F}" name="Source">
       <GROUP id="{5C5311BB-5266-DB1B-DE96-35AA97A1E8E3}" name="BinaryData">
-        <FILE id="wGvYpj" name="system-r.png" compile="0" resource="1" file="Source/BinaryData/system-r.png"/>
-        <FILE id="JcbQHF" name="trans-cn.h" compile="0" resource="1" file="Source/BinaryData/trans-cn.h"/>
-        <FILE id="m6TpP7" name="SiteData.zip" compile="0" resource="1" file="Source/BinaryData/SiteData.zip"/>
-        <FILE id="m8JFGm" name="width.png" compile="0" resource="1" file="Source/BinaryData/width.png"/>
-        <FILE id="y5tJ2y" name="next.png" compile="0" resource="1" file="Source/BinaryData/next.png"/>
-        <FILE id="GoyUvi" name="prev.png" compile="0" resource="1" file="Source/BinaryData/prev.png"/>
-        <FILE id="Q51HWs" name="system.png" compile="0" resource="1" file="Source/BinaryData/system.png"/>
-        <FILE id="zOvGNz" name="view.png" compile="0" resource="1" file="Source/BinaryData/view.png"/>
-        <FILE id="UJVgtK" name="logo.png" compile="0" resource="1" file="Source/BinaryData/logo.png"/>
+        <FILE id="m7JCCc" name="close.png" compile="0" resource="1" file="Source/BinaryData/close.png"/>
         <FILE id="S5pEoV" name="icon.png" compile="0" resource="1" file="Source/BinaryData/icon.png"/>
+        <FILE id="UJVgtK" name="logo.png" compile="0" resource="1" file="Source/BinaryData/logo.png"/>
+        <FILE id="BxDKu0" name="mic.png" compile="0" resource="1" file="Source/BinaryData/mic.png"/>
+        <FILE id="y5tJ2y" name="next.png" compile="0" resource="1" file="Source/BinaryData/next.png"/>
+        <FILE id="hOG5Wa" name="ok.png" compile="0" resource="1" file="Source/BinaryData/ok.png"/>
+        <FILE id="wpAdI3" name="play.png" compile="0" resource="1" file="Source/BinaryData/play.png"/>
+        <FILE id="GoyUvi" name="prev.png" compile="0" resource="1" file="Source/BinaryData/prev.png"/>
+        <FILE id="m6TpP7" name="SiteData.zip" compile="0" resource="1" file="Source/BinaryData/SiteData.zip"/>
+        <FILE id="GphwE5" name="stop.png" compile="0" resource="1" file="Source/BinaryData/stop.png"/>
+        <FILE id="wGvYpj" name="system-r.png" compile="0" resource="1" file="Source/BinaryData/system-r.png"/>
+        <FILE id="Q51HWs" name="system.png" compile="0" resource="1" file="Source/BinaryData/system.png"/>
+        <FILE id="JcbQHF" name="trans-cn.h" compile="0" resource="1" file="Source/BinaryData/trans-cn.h"/>
+        <FILE id="zOvGNz" name="view.png" compile="0" resource="1" file="Source/BinaryData/view.png"/>
+        <FILE id="m8JFGm" name="width.png" compile="0" resource="1" file="Source/BinaryData/width.png"/>
       </GROUP>
       <GROUP id="{83694581-DB15-8946-3B2A-EBBCEDD57AAD}" name="SwingLibrary">
         <FILE id="oAlcpd" name="AudioDataPlayer.cpp" compile="1" resource="0"
@@ -65,6 +70,8 @@
       <FILE id="L8tT3N" name="MarkdownEditor.h" compile="0" resource="0"
             file="Source/MarkdownEditor.h"/>
       <FILE id="hzPDBZ" name="memo.md" compile="0" resource="0" file="Source/memo.md"/>
+      <FILE id="JPvW00" name="RecordComp.cpp" compile="1" resource="0" file="Source/RecordComp.cpp"/>
+      <FILE id="Nkkczk" name="RecordComp.h" compile="0" resource="0" file="Source/RecordComp.h"/>
       <FILE id="YEZNXG" name="ReplaceComponent.cpp" compile="1" resource="0"
             file="Source/ReplaceComponent.cpp"/>
       <FILE id="F3e7ZZ" name="ReplaceComponent.h" compile="0" resource="0"

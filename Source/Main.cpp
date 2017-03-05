@@ -13,7 +13,9 @@
 // global objects which be managed in mainApplication class 
 PropertiesFile* systemFile              = nullptr;
 ApplicationCommandManager* cmdManager   = nullptr;
-AudioDeviceManager* deviceManager       = nullptr;
+
+AudioFormatManager* formatManager = nullptr;
+AudioDeviceManager* deviceManager = nullptr;
 
 //==============================================================================
 class WDTPApplication : public JUCEApplication
@@ -53,11 +55,13 @@ public:
             systemFile->save();
         }
 
-        // command manager
-        cmdManager = new ApplicationCommandManager();
-        deviceManager = new AudioDeviceManager();
+        // command manager and audio format
+        cmdManager = new ApplicationCommandManager();        
+        formatManager = new AudioFormatManager();
+        formatManager->registerBasicFormats();
 
         // initial audio device
+        deviceManager = new AudioDeviceManager();
         ScopedPointer<XmlElement> audioState (systemFile->getXmlValue ("audioState"));
         deviceManager->initialise (2, 2, audioState, true);
 
@@ -87,11 +91,16 @@ public:
     {
         // must destroy all guis first since they're using the systemFile object
         mainWindow = nullptr;
-
         systemFile->saveIfNeeded();
+
         deleteAndZero (systemFile);
         deleteAndZero (cmdManager);
+        deleteAndZero (formatManager);
         deleteAndZero (deviceManager);
+
+        // delete all desktop when one of them is showing while exit the application
+        for (int i = Component::getNumCurrentlyModalComponents(); --i >= 0; )
+            delete (Component::getCurrentlyModalComponent (i));
     }
 
     //=========================================================================

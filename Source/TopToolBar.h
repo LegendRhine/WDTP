@@ -79,6 +79,7 @@ private:
 
     void setUiColour();
     void resetUiColour();
+    void setupAudioDevice();
 
     /** the pack file's extension must be ".wpck" */
     static void packProject();  
@@ -102,7 +103,7 @@ private:
         newPjt = 1, openPjt, closePjt, packPjt, unpackPjt,
         generateCurrent, generateNeeded, generateWhole, cleanUpLocal,
         exportTpl, importTpl, releaseSystemTpl, /*rebuildKeywords,*/
-        uiEnglish, uiChinese,
+        uiEnglish, uiChinese, setupAudio,
         setUiColor, resetUiColor, gettingStarted, checkNewVersion, feedback, showAboutDialog,
         switchEdit, switchWidth, activeSearch
     };

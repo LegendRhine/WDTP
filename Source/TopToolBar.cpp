@@ -12,6 +12,7 @@
 
 extern PropertiesFile* systemFile;
 extern ApplicationCommandManager* cmdManager;
+extern AudioDeviceManager* deviceManager;
 
 const float imageTrans = 1.f;
 
@@ -381,6 +382,7 @@ void TopToolBar::popupSystemMenu()
     uiMenu.addItem (setUiColor, TRANS ("Set UI Color..."));
     uiMenu.addItem (resetUiColor, TRANS ("Reset to Default"));
     m.addSubMenu (TRANS ("UI Color"), uiMenu);
+    m.addItem (setupAudio, TRANS ("Setup Audio Device..."));
     m.addSeparator();
 
     m.addItem (gettingStarted, TRANS ("Getting Started..."), true);
@@ -416,6 +418,7 @@ void TopToolBar::menuPerform (const int index)
     else if (index == releaseSystemTpl) releaseSystemTpls (FileTreeContainer::projectFile, true);
     else if (index == setUiColor)       setUiColour();
     else if (index == resetUiColor)     resetUiColour();
+    else if (index == setupAudio)       setupAudioDevice();
     else if (index == gettingStarted)   URL ("http://underwaysoft.com/works/wdtp/gettingStarted.html").launchInDefaultBrowser();
     else if (index == checkNewVersion)  URL ("http://underwaySoft.com/works/wdtp/download.html").launchInDefaultBrowser();
     else if (index == feedback)         URL ("http://underwaysoft.com/guestBook.html").launchInDefaultBrowser();
@@ -779,6 +782,28 @@ void TopToolBar::resetUiColour()
 
         systemFile->saveIfNeeded();
     }
+}
+
+//=================================================================================================
+void TopToolBar::setupAudioDevice()
+{
+    // stop recording first
+    //controller->stopPlaying();
+
+    AudioDeviceSelectorComponent deviceComp (*deviceManager, 0, 255, 2, 255, false, false, false, false);
+    OptionalScopedPointer<Component> deviceEditor (&deviceComp, false);
+    deviceEditor->setSize (500, 320);
+
+    DialogWindow::LaunchOptions dialog;
+    dialog.dialogTitle = TRANS ("Setup audio devices");
+    dialog.content = deviceEditor;
+
+    dialog.runModal();
+
+    // save it
+    ScopedPointer<XmlElement> audioSetup (deviceManager->createStateXml());
+    systemFile->setValue ("audioState", audioSetup);
+    systemFile->saveIfNeeded();
 }
 
 //=================================================================================================

@@ -369,3 +369,4 @@ countries: cn
 "Record/Stop" = "录音/停止"
 "Play/Pause" = "播放/暂停"
 "Done" = "完成"
+"Cannot find the audio encoder." = "无法找到音频编码器。"

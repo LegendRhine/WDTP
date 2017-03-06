@@ -12,6 +12,7 @@
 
 extern AudioDeviceManager* deviceManager;
 extern AudioFormatManager* formatManager;
+extern File lameEncoder;
 const float transValue = 0.65f;
 
 //==============================================================================
@@ -180,8 +181,6 @@ void RecordComp::buttonClicked (Button* button)
             const String& audioName (SwingUtilities::getCurrentTimeString() + ".mp3");
             writeMp3AudioToMediaDir (audioName);
             needSaveToMediaDir = false;  
-
-            sendActionMessage (audioName);
         }
 
         DialogWindow* dialog = findParentComponentOfClass<DialogWindow>();
@@ -271,21 +270,22 @@ void RecordComp::writeMp3AudioToMediaDir (const String& fileName)
     File audioFile (mediaDir.getChildFile (fileName).getNonexistentSibling (false));
     audioFile.create();
 
-    String lameAppName ("lame.exe");
+    if (!lameEncoder.existsAsFile())
+    {
+        SHOW_MESSAGE (TRANS ("Cannot find the audio encoder."));
+        return;
+    }
 
-#if JUCE_MAC
-    lameAppName = "lame";
-#endif
-
-    LAMEEncoderAudioFormat mp3Format (File::getSpecialLocation (File::currentApplicationFile).getSiblingFile (lameAppName));
-
+    LAMEEncoderAudioFormat mp3Format (lameEncoder);
     FileOutputStream* outputStream (audioFile.createOutputStream());
     ScopedPointer<AudioFormatWriter> writer = mp3Format.createWriterFor (outputStream,
                                 audioReader->sampleRate, 1, 16, StringPairArray(), 6);
 
     jassert (writer != nullptr);
 
-    if (!writer->writeFromAudioReader (*audioReader, 0, -1))
+    if (writer->writeFromAudioReader (*audioReader, 0, -1))
+        sendActionMessage (fileName);
+    else
         SHOW_MESSAGE (TRANS ("Can't save this audio."));
 }
 

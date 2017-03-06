@@ -179,8 +179,9 @@
     <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0"/>
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
-  <JUCEOPTIONS JUCE_USE_DIRECTWRITE="disabled" JUCE_ASIO="enabled" JUCE_USE_OGGVORBIS="enabled"
-               JUCE_USE_CDREADER="disabled" JUCE_USE_CDBURNER="disabled"/>
+  <JUCEOPTIONS JUCE_USE_DIRECTWRITE="disabled" JUCE_ASIO="enabled" JUCE_USE_CDREADER="disabled"
+               JUCE_USE_CDBURNER="disabled" JUCE_USE_MP3AUDIOFORMAT="enabled"
+               JUCE_USE_LAME_AUDIO_FORMAT="enabled"/>
   <LIVE_SETTINGS>
     <WINDOWS/>
   </LIVE_SETTINGS>

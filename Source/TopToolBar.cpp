@@ -989,8 +989,10 @@ void TopToolBar::releaseSystemTpls (const File& projectFile, const bool askAndSh
 
     // release logo image to "site/add-in"
     const File imgFile (projectFile.getSiblingFile ("site/add-in").getChildFile ("logo.png"));
-    Image logoImg (ImageCache::getFromMemory (BinaryData::logo_png, BinaryData::logo_pngSize));
+    imgFile.deleteFile();
+    imgFile.create();
 
+    Image logoImg (ImageCache::getFromMemory (BinaryData::logo_png, BinaryData::logo_pngSize));
     PNGImageFormat pngFormat;
     ScopedPointer<FileOutputStream> imgOutStram (imgFile.createOutputStream());
 

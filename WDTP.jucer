@@ -10,6 +10,7 @@
       <GROUP id="{5C5311BB-5266-DB1B-DE96-35AA97A1E8E3}" name="BinaryData">
         <FILE id="m7JCCc" name="close.png" compile="0" resource="1" file="Source/BinaryData/close.png"/>
         <FILE id="S5pEoV" name="icon.png" compile="0" resource="1" file="Source/BinaryData/icon.png"/>
+        <FILE id="JCZ2pK" name="lame.zip" compile="0" resource="1" file="Source/BinaryData/lame.zip"/>
         <FILE id="UJVgtK" name="logo.png" compile="0" resource="1" file="Source/BinaryData/logo.png"/>
         <FILE id="BxDKu0" name="mic.png" compile="0" resource="1" file="Source/BinaryData/mic.png"/>
         <FILE id="y5tJ2y" name="next.png" compile="0" resource="1" file="Source/BinaryData/next.png"/>
@@ -180,8 +181,7 @@
     <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0"/>
   </MODULES>
   <JUCEOPTIONS JUCE_USE_DIRECTWRITE="disabled" JUCE_ASIO="enabled" JUCE_USE_CDREADER="disabled"
-               JUCE_USE_CDBURNER="disabled" JUCE_USE_MP3AUDIOFORMAT="enabled"
-               JUCE_USE_LAME_AUDIO_FORMAT="enabled"/>
+               JUCE_USE_CDBURNER="disabled" JUCE_USE_LAME_AUDIO_FORMAT="enabled"/>
   <LIVE_SETTINGS>
     <WINDOWS/>
   </LIVE_SETTINGS>

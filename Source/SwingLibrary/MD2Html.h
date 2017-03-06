@@ -79,8 +79,8 @@ private:
     static const String spaceLinkParse (const String& mdString);
 
 public:
-    static const String imageParse (const String& mdString);  /**< ![](media/xxx.jpg) */
-    static const String audioParse (const String& mdString);  /**< ~[](media/xxx.mp3) */
+    static const String imageParse (const String& mdString);  /**< ![](media/xx.jpg) support 'title' */
+    static const String audioParse (const String& mdString);  /**< ~[](media/xx.mp3) doesn't support 'title' */
 
 private:
     //=================================================================================================

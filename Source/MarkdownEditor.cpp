@@ -537,7 +537,7 @@ void MarkdownEditor::insertImages (const Array<File>& imageFiles)
 void MarkdownEditor::insertAudioFiles()
 {
     FileChooser fc (TRANS ("Select Audio Files..."), File::nonexistent,
-                    "*.ogg;*.mp3;*.mid", true);
+                    "*.mp3", true);
 
     if (!fc.browseForMultipleFilesToOpen())
         return;
@@ -546,7 +546,7 @@ void MarkdownEditor::insertAudioFiles()
 
     for (int i = files.size(); --i >= 0; )
     {
-        if (!files[i].hasFileExtension ("ogg;mp3;mid"))
+        if (!files[i].hasFileExtension ("mp3"))
             files.remove (i);
     }
 
@@ -769,9 +769,7 @@ void MarkdownEditor::pasteForCtrlV()
             insertTextAtCaret ("![](" + content + ")");
         }
         // audio
-        else if (content.getLastCharacters (3).toLowerCase() == "mp3"
-                 || content.getLastCharacters (3).toLowerCase() == "ogg"
-                 || content.getLastCharacters (3).toLowerCase() == "mid")
+        else if (content.getLastCharacters (3).toLowerCase() == "mp3")
         {
             insertTextAtCaret ("~[](" + content + ")");
         }
@@ -1149,7 +1147,7 @@ void MarkdownEditor::actionListenerCallback (const String& message)
         subtractFromKeywords (message.substring (2));
         parent->getSetupPanel()->updateDocPanel();
     }
-    else if (postfix == "ogg")
+    else if (postfix == "mp3")
     {
         insertTextAtCaret (newLine + "~[](media/" + message + ")" + newLine + "^^ ");
     }

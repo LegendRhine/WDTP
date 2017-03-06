@@ -174,7 +174,8 @@ const int DocTreeViewItem::getMdMediaFiles (const File& doc, Array<File>& files)
     if (doc.isDirectory() || !doc.getSiblingFile ("media").exists())
         return 0;
 
-    const String htmlStr = Md2Html::imageParse (doc.loadFileAsString());
+    String htmlStr = Md2Html::imageParse (doc.loadFileAsString());
+    htmlStr = Md2Html::audioParse (htmlStr);
 
     if (htmlStr.trim().isEmpty())
         return 0;

@@ -559,7 +559,7 @@ const String Md2Html::audioParse (const String& mdString)
         const String& audioPath (resultStr.substring (indexStart + 4, audioEnd));
 
         const String& audioStr ("<div align=center><audio src=\"" + audioPath + "\""
-                                + " preload=\"auto\" controls></audio>" + "</div>");
+                                + " preload=\"auto\" controls />" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, audioEnd + 1 - indexStart, audioStr);
         indexStart = resultStr.indexOfIgnoreCase (indexStart + audioStr.length(), "~[](");

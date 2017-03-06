@@ -11,18 +11,22 @@
 #ifndef AUDIORECORDER_H_INCLUDED
 #define AUDIORECORDER_H_INCLUDED
 
-/** 录制Ogg格式的音频数据（采样率为当前用户声卡的采样率、声道数1、压缩品质6, 位率16 bit）。
+/** 录制wav音频数据（采样率为当前用户声卡的采样率、声道数1、位率16 bit）。
     可将录音结果保存为所指定的磁盘文件。录音时，本类可实时更新 AudioThumbnail 对象所要绘制的音频数据。
 
-    每次录音时，内部将录音数据保存到一个临时文件中，该文件位于系统临时目录下(C:/Users/mit2000/AppData/Local/Temp，文件名以temp开头，扩展名为：“*.ogg”)，销毁本类时一并删除该临时文件。可返回该临时文件供播放器所用，以便试听本次录音结果。
+    每次录音时，内部将录音数据保存到一个临时文件中，该文件位于系统临时目录下(C:/Users/mit2000/AppData/Local/Temp，
+    文件名以temp开头，扩展名为：“*.wav”)，销毁本类时一并删除该临时文件。可返回该临时文件供播放器所用，以便试听本次录音结果。
 
     用法：
     - 创建对象，构造参数应为全局性 AudioDeviceManager。
     - 调用 startRecording() 开始录音。
     - 调用 stop() 停止录音。
     - 调用 getTempFile() 可返回本次录音的临时文件。
-    - 调用 saveToFile() 可将本次录音保存为指定的磁盘文件。
+    - 调用 saveToFile() 可将本次录音保存为指定的磁盘文件(mp3)。
     - 判断当前是否处于录音状态，可调用 isRecording() 函数。
+
+    注意：
+    - lame可执行文件需与本程序的可执行文件在一个目录下
 */
 class AudioRecorder : public AudioIODeviceCallback
 {
@@ -52,7 +56,7 @@ public:
     /** 返回尚未另存的临时录音文件。此函数可供播放器使用，以便试听本次录音。 */
     const File& getTempFile() const                         { return tempFile; }
 
-    /** 将本次录音保存为给定的文件。该文件中已有的数据将全部被覆盖。保存后，原来的临时录音文件依然存在，但已无任何数据。
+    /** 将本次录音保存为给定的文件(wav)。该文件中已有的数据将全部被覆盖。保存后，原来的临时录音文件依然存在，但已无任何数据。
     
         @return    保存成功则返回true。否则返回false。*/
     const bool saveToFile (File& file) const;

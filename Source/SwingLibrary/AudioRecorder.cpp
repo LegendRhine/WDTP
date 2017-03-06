@@ -26,9 +26,9 @@ AudioRecorder::AudioRecorder (AudioDeviceManager& dm,
 {
 #if (JUCE_ANDROID || JUCE_IOS)
     tempFile = File::getSpecialLocation (File::userDocumentsDirectory)
-                                        .getNonexistentChildFile ("MyBioTempRecord", ".ogg");
+                                        .getNonexistentChildFile ("MyBioTempRecord", ".wav");
 #else
-    tempFile = File::createTempFile ("ogg");
+    tempFile = File::createTempFile ("wav");
 #endif
     
     backgroundThread.startThread();
@@ -60,12 +60,8 @@ void AudioRecorder::startRecording()
     if (outputStream == nullptr || sampleRate <= 0)
         return;
 
-    OggVorbisAudioFormat oggFormat;
-
-    // createWriterFor()最后一个参数目前设置为6（192 kbps）。可采用其他设置：
-    // 2: 96 kbps。 3: 112 kbps。4: 128 kbps。5: 160 kbps。
-    // 6: 192 kbps。7: 224 kbps。8: 256 kbps。9: 320 kbps。
-    AudioFormatWriter* writer = oggFormat.createWriterFor (outputStream, sampleRate, 1, 16, StringPairArray(), 6);
+    WavAudioFormat wavFormat;    
+    AudioFormatWriter* writer = wavFormat.createWriterFor (outputStream, sampleRate, 1, 16, StringPairArray(), 0);
 
     if (writer == nullptr)
         return;

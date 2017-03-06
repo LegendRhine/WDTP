@@ -177,8 +177,8 @@ void RecordComp::buttonClicked (Button* button)
 
         if (needSaveToMediaDir && audioReader != nullptr)
         {
-            const String& audioName (SwingUtilities::getCurrentTimeString() + ".ogg");
-            writeOggAudioToMediaDir (audioReader, mediaDir, audioName);
+            const String& audioName (SwingUtilities::getCurrentTimeString() + ".mp3");
+            writeMp3AudioToMediaDir (audioName);
             needSaveToMediaDir = false;  
 
             sendActionMessage (audioName);
@@ -266,16 +266,21 @@ void RecordComp::playerStopped (AudioDataPlayer* /*player*/)
 }
 
 //=================================================================================================
-void RecordComp::writeOggAudioToMediaDir (AudioFormatReader* audioReader, 
-                                          const File& mediaDir,
-                                          const String& fileName)
+void RecordComp::writeMp3AudioToMediaDir (const String& fileName)
 {
     File audioFile (mediaDir.getChildFile (fileName).getNonexistentSibling (false));
     audioFile.create();
 
-    OggVorbisAudioFormat oggFormat;
+    String lameAppName ("lame.exe");
+
+#if JUCE_MAC
+    lameAppName = "lame";
+#endif
+
+    LAMEEncoderAudioFormat mp3Format (File::getSpecialLocation (File::currentApplicationFile).getSiblingFile (lameAppName));
+
     FileOutputStream* outputStream (audioFile.createOutputStream());
-    ScopedPointer<AudioFormatWriter> writer = oggFormat.createWriterFor (outputStream, 
+    ScopedPointer<AudioFormatWriter> writer = mp3Format.createWriterFor (outputStream,
                                 audioReader->sampleRate, 1, 16, StringPairArray(), 6);
 
     jassert (writer != nullptr);

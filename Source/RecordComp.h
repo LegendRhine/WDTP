@@ -56,10 +56,7 @@ private:
     virtual void playerStarted (AudioDataPlayer* player) override;
     virtual void playerStopped (AudioDataPlayer* player) override;
 
-    /** Writes an AudioFormatReader as ogg file to the current doc's media dir. */
-    static void writeOggAudioToMediaDir (AudioFormatReader* reader, 
-                                         const File& mediaDir, 
-                                         const String& fileName);
+    void writeMp3AudioToMediaDir (const String& fileName);
 
     //=========================================================================
     double currentSeconds, totalSeconds;

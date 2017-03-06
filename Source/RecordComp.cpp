@@ -12,7 +12,7 @@
 
 extern AudioDeviceManager* deviceManager;
 extern AudioFormatManager* formatManager;
-extern File lameEncoder;
+
 const float transValue = 0.65f;
 
 //==============================================================================
@@ -267,14 +267,23 @@ void RecordComp::playerStopped (AudioDataPlayer* /*player*/)
 //=================================================================================================
 void RecordComp::writeMp3AudioToMediaDir (const String& fileName)
 {
-    File audioFile (mediaDir.getChildFile (fileName).getNonexistentSibling (false));
-    audioFile.create();
+
+#if JUCE_WINDOWS
+    const File lameEncoder = File::getSpecialLocation (File::userDocumentsDirectory).getChildFile ("lame.exe");
+#elif JUCE_MAC
+    const File lameEncoder = File::getSpecialLocation (File::userDocumentsDirectory).getChildFile ("lame");
+#endif
 
     if (!lameEncoder.existsAsFile())
     {
-        SHOW_MESSAGE (TRANS ("Cannot find the audio encoder."));
+        SHOW_MESSAGE (TRANS ("Cannot find Lame encoder.") + newLine + newLine
+        + TRANS ("Please download the encoder and put it into OS 'Documents' directory."));
+
         return;
     }
+
+    File audioFile (mediaDir.getChildFile (fileName).getNonexistentSibling (false));
+    audioFile.create();    
 
     LAMEEncoderAudioFormat mp3Format (lameEncoder);
     FileOutputStream* outputStream (audioFile.createOutputStream());

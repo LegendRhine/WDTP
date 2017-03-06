@@ -538,7 +538,7 @@ const String Md2Html::imageParse (const String& mdString)
 //=================================================================================================
 const String Md2Html::audioParse (const String& mdString)
 {
-    /**< ~[](media/xxx.ogg) */
+    /**< ~[](media/xxx.mp3) */
     String resultStr (mdString);
     int indexStart = resultStr.indexOfIgnoreCase (0, "~[](");
 

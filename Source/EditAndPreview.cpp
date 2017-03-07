@@ -89,7 +89,7 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
     {
         editor->removeListener (this);
         docOrDirTree = newDocTree;
-        docOrDirFile = DocTreeViewItem::getMdFileOrDir (newDocTree);
+        docOrDirFile = DocTreeViewItem::getMdFileOrDir (docOrDirTree);
 
         if (docOrDirFile.existsAsFile())
         {
@@ -108,6 +108,24 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
     // word count doesn't include the ' ' and newLine of current content 
     setupPanel->updateWordCount (currentContent.removeCharacters (" ")
                                  .removeCharacters (newLine).length());
+}
+
+//=================================================================================================
+void EditAndPreview::updateEditorContent()
+{
+    editor->removeListener (this);
+    docOrDirFile = DocTreeViewItem::getMdFileOrDir (docOrDirTree);
+
+    if (docOrDirFile.existsAsFile())
+    {
+        editor->setText (docOrDirFile.loadFileAsString(), false);
+        currentContent = editor->getText();
+        editor->addListener (this);
+
+        // update web page
+        switchMode (false);
+        docOrDirTree.setProperty ("needCreateHtml", true, nullptr);
+    }
 }
 
 //=================================================================================================

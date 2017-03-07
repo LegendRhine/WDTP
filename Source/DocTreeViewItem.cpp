@@ -690,13 +690,15 @@ void DocTreeViewItem::createNewDocument()
     if (0 == dialog.runModalLoop())
     {
         const String& docName (SwingUtilities::getValidFileName (dialog.getTextEditor ("name")->getText()));
-        createDoc (docName, true);
+        createDoc (docName, "# ", true);
         FileTreeContainer::saveProject();
     }
 }
 
 //=================================================================================================
-const File DocTreeViewItem::createDoc (const String& docName, const bool selectAfterCreated)
+const File DocTreeViewItem::createDoc (const String& docName, 
+                                       const String& content, 
+                                       const bool selectAfterCreated)
 {
     String docFileName (docName);
 
@@ -715,7 +717,7 @@ const File DocTreeViewItem::createDoc (const String& docName, const bool selectA
     const File& thisDoc (getMdFileOrDir (tree).getChildFile (docFileName + ".md")
                          .getNonexistentSibling (false));
     thisDoc.create();
-    thisDoc.appendText ("# ");
+    thisDoc.appendText (content);
 
     // valueTree of this doc
     ValueTree docTree ("doc");
@@ -902,10 +904,6 @@ void DocTreeViewItem::getPath()
     SystemClipboard::copyTextToClipboard ("*_wdtpGetPath_*" + tree.getProperty ("title").toString()
                                           + "@_=#_itemPath_#=_@" 
                                           + getHtmlFileOrDir (tree).getFullPathName());
-
-    /*SHOW_MESSAGE (TRANS ("This item's path has been copied.\n\n"
-                         "You could use it for internal link by right click in editor\n"
-                         "and select \"Insert - Internal Link\"."));*/
 }
 
 //=================================================================================================
@@ -971,10 +969,22 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
 //=================================================================================================
 void DocTreeViewItem::crossProjectCopy()
 {
+    // copy its properties
     const DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (getOwnerView()->getSelectedItem (0));
     ValueTree docTree (item->tree.createCopy());
     docTree.setProperty ("fileFullPath", getMdFileOrDir (item->tree).getFullPathName(), nullptr);
 
+    // copy its media files' path
+    Array<File> medias;
+
+    for (int i = getMdMediaFiles (getMdFileOrDir (item->tree), medias); --i >= 0; )
+    {
+        ValueTree mediaTree ("media");
+        mediaTree.setProperty ("mediaFullPath", medias[i].getFullPathName(), nullptr);
+        docTree.addChild (mediaTree, 0, nullptr);
+    }
+
+    // write docTree to temp file
     const File crossCopyFile (File::getSpecialLocation (File::tempDirectory).getChildFile ("wdtpCrossCopy"));
     crossCopyFile.deleteFile();
     crossCopyFile.create();
@@ -993,12 +1003,43 @@ void DocTreeViewItem::crossProjectPaste()
 
     if (importExternalDocs (files, true))
     {
-        // change its properties
-        DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (getOwnerView ()->getSelectedItem (0));
+        DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (getOwnerView()->getSelectedItem (0));
+
+        // copy its medias
+        files.clear();
+
+        for (int i = docTree.getNumChildren(); --i >= 0; )
+            files.add (File (docTree.getChild (i).getProperty ("mediaFullPath").toString()));
+
+        for (int i = files.size(); --i >= 0; )
+        {
+            const File& targetFile (getMdFileOrDir (tree).getChildFile ("media")
+                                    .getChildFile (files[i].getFileName())
+                                    .getNonexistentSibling (false));
+            targetFile.create();
+            files[i].copyFileTo (targetFile);
+
+            // here must replace the doc's media name if there's alreay one
+            if (targetFile.getFileName() != files[i].getFileName())
+            {
+                const File& pastedFile (getMdFileOrDir (item->tree));
+                pastedFile.replaceWithText (pastedFile.loadFileAsString()
+                                            .replace (files[i].getFileName(), targetFile.getFileName()));
+            }
+        }
+
+        // change its properties after paste (import)
         docTree.removeProperty ("fileFullPath", nullptr);
+        docTree.removeAllChildren (nullptr);
+
+        // here must reset the 'name' since it may rename when the same name file exists
+        docTree.setProperty ("name", item->tree.getProperty ("name").toString(), nullptr);
         item->tree.copyPropertiesFrom (docTree, nullptr);
 
-        treeContainer->getEditAndPreview ()->setProjectProperties (item->tree);
+        treeContainer->getEditAndPreview()->setDocProperties (item->tree);
+        treeContainer->getEditAndPreview()->updateEditorContent();
+
+        crossCopyFile.deleteFile();
     }
 }
 
@@ -1085,8 +1126,8 @@ const bool DocTreeViewItem::importExternalDocs (const Array<File>& docs,
 
             if (content.length() > 4)
             {
-                File thisDoc (createDoc (docs[i].getFileNameWithoutExtension(), selectOneByOneAfterImport));
-                needSaveProject = thisDoc.appendText (content);
+                createDoc (docs[i].getFileNameWithoutExtension(), content, selectOneByOneAfterImport);
+                needSaveProject = true;
             }
             else
             {

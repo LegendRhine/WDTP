@@ -126,7 +126,7 @@ private:
     void exportAsHtml(); 
     void renameSelectedItem();
     void createNewDocument();
-    const File createDoc (const String &docName, const bool selectAfterCreated);
+    const File createDoc (const String &docName, const String& content, const bool selectAfterCreated);
 
     void createNewFolder();
     void deleteSelected();

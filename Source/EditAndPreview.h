@@ -27,6 +27,7 @@ public:
     ~EditAndPreview();
 
     void startWork (ValueTree& newDocTree);
+    void updateEditorContent();
 
     /** false for switch to edit mode. true is preview mode */
     void switchMode (const bool switchToPreview);

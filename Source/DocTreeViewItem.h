@@ -110,10 +110,10 @@ private:
     //=========================================================================
     enum MenuIndex
     {
-        newDir = 1, newDoc, 
-        importTextDocs,
+        newDir = 1, newDoc, importTextDocs,
         packWholeSite, packHtmls, packMedias,
         exportTextDoc, exportDocs, dataStatis, keywordsTable, getItemPath,
+        copyForAnotherProject, pasteFromAnotherProject,
         replaceIn, rename, deleteThis, 
         viewInFinder, openInExEditor, browseInEx
     };

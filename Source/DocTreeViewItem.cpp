@@ -274,6 +274,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
     const bool isDoc = (tree.getType().toString() == "doc");
     const bool isRoot = (tree.getType().toString() == "wdtpProject");
     const bool onlyOneSelected = getOwnerView()->getNumSelectedItems() == 1;
+    const bool isCrossPaste = (SystemClipboard::getTextFromClipboard().substring (0, 16) == "@@forCrossCopy@@");
 
     jassert (sorter != nullptr);
 
@@ -312,6 +313,8 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addSeparator();
 
         m.addItem (getItemPath, TRANS ("Get Path"), exist && onlyOneSelected);
+        m.addItem (copyForAnotherProject, TRANS ("Copy For Another Project"));
+        m.addItem (pasteFromAnotherProject, TRANS ("Paste From Another Project"), !isDoc && onlyOneSelected && isCrossPaste);
         m.addSeparator();
 
         PopupMenu sortMenu;

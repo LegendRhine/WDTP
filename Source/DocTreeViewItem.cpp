@@ -274,7 +274,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
     const bool isDoc = (tree.getType().toString() == "doc");
     const bool isRoot = (tree.getType().toString() == "wdtpProject");
     const bool onlyOneSelected = getOwnerView()->getNumSelectedItems() == 1;
-    const bool isCrossPaste = (SystemClipboard::getTextFromClipboard().substring (0, 16) == "@@forCrossCopy@@");
+    const bool isCrossPaste = File::getSpecialLocation (File::tempDirectory).getChildFile ("wdtpCrossCopy").existsAsFile();
 
     jassert (sorter != nullptr);
 
@@ -313,7 +313,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addSeparator();
 
         m.addItem (getItemPath, TRANS ("Get Path"), exist && onlyOneSelected);
-        m.addItem (copyForAnotherProject, TRANS ("Copy For Another Project"));
+        m.addItem (copyForAnotherProject, TRANS ("Copy For Another Project"), isDoc && onlyOneSelected);
         m.addItem (pasteFromAnotherProject, TRANS ("Paste From Another Project"), !isDoc && onlyOneSelected && isCrossPaste);
         m.addSeparator();
 
@@ -969,13 +969,37 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
 }
 
 //=================================================================================================
-void DocTreeViewItem::crossProjectCopy ()
+void DocTreeViewItem::crossProjectCopy()
 {
+    const DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (getOwnerView()->getSelectedItem (0));
+    ValueTree docTree (item->tree.createCopy());
+    docTree.setProperty ("fileFullPath", getMdFileOrDir (item->tree).getFullPathName(), nullptr);
+
+    const File crossCopyFile (File::getSpecialLocation (File::tempDirectory).getChildFile ("wdtpCrossCopy"));
+    crossCopyFile.deleteFile();
+    crossCopyFile.create();
+    SwingUtilities::writeValueTreeToFile (docTree, crossCopyFile);
 }
 
 //=================================================================================================
-void DocTreeViewItem::crossProjectPaste ()
-{
+void DocTreeViewItem::crossProjectPaste()
+{    
+    const File crossCopyFile (File::getSpecialLocation (File::tempDirectory).getChildFile ("wdtpCrossCopy"));
+    ValueTree docTree (SwingUtilities::readValueTreeFromFile (crossCopyFile));
+    const File docFile (docTree.getProperty ("fileFullPath").toString());
+
+    Array<File> files;
+    files.add (docFile);
+
+    if (importExternalDocs (files, true))
+    {
+        // change its properties
+        DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (getOwnerView ()->getSelectedItem (0));
+        docTree.removeProperty ("fileFullPath", nullptr);
+        item->tree.copyPropertiesFrom (docTree, nullptr);
+
+        treeContainer->getEditAndPreview ()->setProjectProperties (item->tree);
+    }
 }
 
 //=================================================================================================
@@ -1030,11 +1054,12 @@ void DocTreeViewItem::importExternalDocs()
                     "*.txt;*.md;*.html;*.htm;*.markdown;*.mkd;*.ini", true);
 
     if (fc.browseForMultipleFilesToOpen())
-        importExternalDocs (fc.getResults());
+        importExternalDocs (fc.getResults(), false);
 }
 
 //=================================================================================================
-void DocTreeViewItem::importExternalDocs (const Array<File>& docs)
+const bool DocTreeViewItem::importExternalDocs (const Array<File>& docs,
+                                          const bool selectOneByOneAfterImport)
 {
     // can't import docs under a doc!
     jassert (tree.getType().toString() != "doc");
@@ -1045,7 +1070,7 @@ void DocTreeViewItem::importExternalDocs (const Array<File>& docs)
     if (docs[0].getFullPathName().contains (projectDir.getFullPathName()))
     {
         SHOW_MESSAGE (TRANS ("Can't import doc(s) inside the current project!"));
-        return;
+        return false;
     }
 
     // import...
@@ -1060,7 +1085,7 @@ void DocTreeViewItem::importExternalDocs (const Array<File>& docs)
 
             if (content.length() > 4)
             {
-                File thisDoc (createDoc (docs[i].getFileNameWithoutExtension(), false));
+                File thisDoc (createDoc (docs[i].getFileNameWithoutExtension(), selectOneByOneAfterImport));
                 needSaveProject = thisDoc.appendText (content);
             }
             else
@@ -1077,7 +1102,9 @@ void DocTreeViewItem::importExternalDocs (const Array<File>& docs)
     }
 
     if (needSaveProject)
-        FileTreeContainer::saveProject();
+        return FileTreeContainer::saveProject();
+
+    return needSaveProject;
 }
 
 //=================================================================================================
@@ -1242,11 +1269,11 @@ void DocTreeViewItem::filesDropped (const StringArray& pathes, int /*insertIndex
         DocTreeViewItem* dirItem = static_cast<DocTreeViewItem*> (getParentItem());
 
         if (dirItem != nullptr)
-            dirItem->importExternalDocs (files);
+            dirItem->importExternalDocs (files, false);
     }
     else
     {
-        importExternalDocs (files);
+        importExternalDocs (files, false);
     }
 }
 

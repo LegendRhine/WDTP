@@ -79,7 +79,7 @@ public:
     virtual bool isInterestedInFileDrag (const StringArray&	files) override;
     virtual void filesDropped (const StringArray& files, int insertIndex) override;
 
-    void importExternalDocs (const Array<File>& docs);
+    const bool importExternalDocs (const Array<File>& docs, const bool selectOneByOneAfterImport);
 
     /** draw lines from within the file-tree panel.. */
     virtual void paintHorizontalConnectingLine (Graphics&, const Line<float>& line) override;
@@ -135,7 +135,7 @@ private:
     void getPath();
     void replaceContent();
 
-    void crossProjectCopy();
+    void crossProjectCopy();  // only for single doc
     void crossProjectPaste();
 
     //=========================================================================

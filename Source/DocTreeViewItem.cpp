@@ -378,56 +378,32 @@ void DocTreeViewItem::menuPerform (const int index)
 {
     jassert (sorter != nullptr);
 
-    if (index == newDir)
-        createNewFolder();
-    else if (index == newDoc)
-        createNewDocument();
-    else if (index == importTextDocs)
-        importExternalDocs();
-    else if (index == packHtmls)
-        packSiteData (true, false);
-    else if (index == packMedias)
-        packSiteData (false, true);
-    else if (index == packWholeSite)
-        packSiteData (true, true);
-    else if (index == exportTextDoc)
-        exportAsTextDoc();
-    else if (index == exportDocs)
-        exportAsHtml();
-    else if (index == dataStatis)
-        statistics();
-    else if (index == keywordsTable)
-        showKeywordsTable();
-    else if (index == getItemPath)
-        getPath();
-    else if (index == copyForAnotherProject)
-        crossProjectCopy();
-    else if (index == pasteFromAnotherProject)
-        crossProjectPaste();
-    else if (index == replaceIn)
-        replaceContent();
-    else if (index == rename)
-        renameSelectedItem();
-    else if (index == deleteThis)
-        deleteSelected();
-    else if (index == viewInFinder)
-        getMdFileOrDir (tree).revealToUser();
-    else if (index == openInExEditor)
-        getMdFileOrDir (tree).startAsProcess();
-    else if (index == browseInEx)
-        getHtmlFileOrDir (tree).startAsProcess();
+         if (index == newDir)                   createNewFolder();
+    else if (index == newDoc)                   createNewDocument();
+    else if (index == importTextDocs)           importExternalDocs();
+    else if (index == packHtmls)                packSiteData (true, false);
+    else if (index == packMedias)               packSiteData (false, true);
+    else if (index == packWholeSite)            packSiteData (true, true);
+    else if (index == exportTextDoc)            exportAsTextDoc();
+    else if (index == exportDocs)               exportAsHtml();
+    else if (index == dataStatis)               statistics();
+    else if (index == keywordsTable)            showKeywordsTable();
+    else if (index == getItemPath)              getPath();
+    else if (index == copyForAnotherProject)    crossProjectCopy();
+    else if (index == pasteFromAnotherProject)  crossProjectPaste();
+    else if (index == replaceIn)                replaceContent();
+    else if (index == rename)                   renameSelectedItem();
+    else if (index == deleteThis)               deleteSelected();
+    else if (index == viewInFinder)             getMdFileOrDir (tree).revealToUser();
+    else if (index == openInExEditor)           getMdFileOrDir (tree).startAsProcess();
+    else if (index == browseInEx)               getHtmlFileOrDir (tree).startAsProcess();
 
     // sort and show what...
-    else if (index >= 100 && index <= 105)
-        sorter->setOrder (index - 100);
-    else if (index == 106)
-        sorter->setAscending ((sorter->getAscending() == 0) ? 1 : 0);
-    else if (index == 107)
-        sorter->setWhichFirst ((sorter->getWhichFirst() == 0) ? 1 : 0);
-    else if (index >= 200 && index <= 202)
-        sorter->setShowWhat (index - 200);
-    else if (index >= 300 && index <= 303)
-        sorter->setTooltipToShow (index - 300);
+    else if (index >= 100 && index <= 105)  sorter->setOrder (index - 100);
+    else if (index == 106)                  sorter->setAscending ((sorter->getAscending() == 0) ? 1 : 0);
+    else if (index == 107)                  sorter->setWhichFirst ((sorter->getWhichFirst() == 0) ? 1 : 0);
+    else if (index >= 200 && index <= 202)  sorter->setShowWhat (index - 200);
+    else if (index >= 300 && index <= 303)  sorter->setTooltipToShow (index - 300);
 }
 
 //=================================================================================================
@@ -995,13 +971,11 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
 //=================================================================================================
 void DocTreeViewItem::crossProjectCopy ()
 {
-    throw std::logic_error ("The method or operation is not implemented.");
 }
 
 //=================================================================================================
 void DocTreeViewItem::crossProjectPaste ()
 {
-    throw std::logic_error ("The method or operation is not implemented.");
 }
 
 //=================================================================================================

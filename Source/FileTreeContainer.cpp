@@ -149,8 +149,8 @@ void FileTreeContainer::openProject (const File& project)
     MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent());
     jassert (mainWindow != nullptr);
 
-    mainWindow->setName (JUCEApplication::getInstance()->getApplicationName() + " - " +
-                         realProject.getFileNameWithoutExtension());
+    mainWindow->setName (realProject.getFileNameWithoutExtension() + " - " 
+                         + JUCEApplication::getInstance()->getApplicationName());
 
     // set the main-window's size and position
     const String& sizeAndPostion (projectTree.getProperty ("mainWindowSizeAndPosition").toString());

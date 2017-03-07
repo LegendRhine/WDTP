@@ -341,7 +341,7 @@ const String Md2Html::highlightParse (const String& mdString)
             && resultStr.substring (index + 2, index + 3) != "~")
         {
             if (i % 2 == 1)
-                resultStr = resultStr.replaceSection (index, 2, "<span style=\"background: #bbdddd\">");
+                resultStr = resultStr.replaceSection (index, 2, "<span style=\"background: #CCFF66\">");
             else
                 resultStr = resultStr.replaceSection (index, 2, "</span>");
         }

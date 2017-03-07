@@ -51,7 +51,7 @@ void AudioRecorder::startRecording()
     if (! tempFile.deleteFile())
     {
         AlertWindow::showMessageBoxAsync (AlertWindow::InfoIcon, TRANS("Can't start recording"),
-                                     TRANS("Temp file maybe using now or missing."));
+                                          TRANS("Temp file maybe using now or missing."));
         return;
     }
 

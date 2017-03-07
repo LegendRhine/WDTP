@@ -46,7 +46,7 @@ public:
     /** 返回当前语句是否处于播放状态。*/
     const bool isPlaying() const                    { return audioTransportSource.isPlaying(); }
 
-    AudioFormatReader* getReaderOfCuurentHold()    { return reader; }
+    AudioFormatReader* getReaderOfCuurentHold()     { return reader; }
 
     //=================================================================================================
     /** 设置播放位置（秒数）。*/
@@ -65,7 +65,7 @@ public:
     public:
         virtual ~Listener() {}
 		
-        virtual void playFinished (AudioDataPlayer* player) = 0;
+        virtual void playFinished (AudioDataPlayer* player)  = 0;
         virtual void playerStarted (AudioDataPlayer* player) = 0;
         virtual void playerStopped (AudioDataPlayer* player) = 0;
     };
@@ -73,7 +73,7 @@ public:
     //=================================================================================================
     void addListener (Listener* listener)           { listeners.add (listener); }
     void removeListener (Listener* listener)        { listeners.remove (listener); }
-	void removeAllListeners()                      { listeners.clear(); }
+    void removeAllListeners()                       { listeners.clear(); }
     
 private:	
     //=================================================================================================
@@ -83,14 +83,14 @@ private:
     //=================================================================================================
     AudioTransportSource audioTransportSource;
     AudioSourcePlayer sourcePlayer;
-	TimeSliceThread timeSliceThread;
+    TimeSliceThread timeSliceThread;
     AudioFormatReader* reader;
 
     ScopedPointer<AudioFormatReaderSource> audioSource;
     ListenerList<Listener> listeners;
         
     //=================================================================================================
-	JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioDataPlayer);
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (AudioDataPlayer);
     
 };
 

@@ -24,9 +24,6 @@
     - 调用 getTempFile() 可返回本次录音的临时文件。
     - 调用 saveToFile() 可将本次录音保存为指定的磁盘文件(mp3)。
     - 判断当前是否处于录音状态，可调用 isRecording() 函数。
-
-    注意：
-    - lame可执行文件需与本程序的可执行文件在一个目录下
 */
 class AudioRecorder : public AudioIODeviceCallback
 {
@@ -117,16 +114,16 @@ public:
     void setDisplayFullThumbnail (bool displayFull);
 
     /** 设置本类所需绘制的音频数据来源。如需实时显示录音波形，则无需调用此函数。 */
-    void setAudioSource (InputSource* source)         { thumbnail.setSource (source); }
+    void setAudioSource (InputSource* source)     { thumbnail.setSource (source); }
 
     void setReader (AudioFormatReader* reader)    { thumbnail.setReader (reader, Time::getCurrentTime().toMilliseconds()); }
 
     /** 返回本类创建并持有的 AudioThumbnail 对象。 */
-    AudioThumbnail& getAudioThumbnail()                 { return thumbnail; }
+    AudioThumbnail& getAudioThumbnail()           { return thumbnail; }
 
     //=================================================================================================
     /** 本类所绘制的波形缩略图的颜色。 */
-    void setThumbColour (const Colour& colour)          { thumbColour = colour; }
+    void setThumbColour (const Colour& colour)    { thumbColour = colour; }
 
     /** 在此绘制音频波形缩略图。 */
     void paint (Graphics& g) override;

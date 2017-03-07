@@ -57,7 +57,7 @@ struct SwingUtilities
         By default, JUCE using IE-7 web-core which cannot load any js script when
         using WebBroswerComponent to display a html-page.
 
-        After called, it will change the web-core to IE-11 on Windows (write to user's Windows register).
+        After called, it will change the web-core to IE-10 on Windows (write to user's Windows register).
         This method should be called when the app is about to start (eg. first run it). */
     static void fixWindowsRegistry();
 
@@ -65,11 +65,11 @@ struct SwingUtilities
     /** Write an ValueTree to a file. */
     static const bool writeValueTreeToFile (const ValueTree& treeToWrite,
                                             const File& fileToWriteTo,
-                                            const bool usingGZipCompresData = false);
+                                            const bool usingGZipCompressData = false);
 
     /** Reads an ValueTree from the given file which was written by writeValueTreeToFile(). */
     static const ValueTree readValueTreeFromFile (const File& fileToReadFrom,
-                                                  const bool usingGZipCompresData = false);
+                                                  const bool usingGZipCompressData = false);
 
     /** rename a file or dir */
     static bool renameFile (const File& file, const String& newName)
@@ -173,7 +173,7 @@ private:
     and must set its size first when add a custom component.
 */
 class SwingDialog : public Component,
-    private Button::Listener
+                    private Button::Listener
 {
 public:
     SwingDialog (const String& dialogTitle);
@@ -267,8 +267,8 @@ class ColourSelectorWithPreset : public ColourSelector
 public:
     ColourSelectorWithPreset();
 
-    int getNumSwatches() const override { return colours.size(); }
-    Colour getSwatchColour (int index) const override { return colours[index]; }
+    int getNumSwatches() const override                 { return colours.size(); }
+    Colour getSwatchColour (int index) const override   { return colours[index]; }
 
     void setSwatchColour (int index, const Colour& newColour) const override;
 

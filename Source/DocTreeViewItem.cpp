@@ -731,6 +731,9 @@ const File DocTreeViewItem::createDoc (const String& docName,
     docTree.setProperty ("createDate",
                          SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), true),
                          nullptr);
+    docTree.setProperty ("reviewDate",
+                         SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (2), true),
+                         nullptr);
 
     // must update this tree before show this new item
     tree.removeListener (this);

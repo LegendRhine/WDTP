@@ -216,6 +216,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     values[thumb]->setValue (currentTree.getProperty ("thumb"));
     values[thumbName]->setValue (currentTree.getProperty ("thumbName"));
     values[docAbbrev]->setValue (currentTree.getProperty ("abbrev"));
+    values[docReviewDate]->setValue (currentTree.getProperty ("reviewDate"));
 
     Array<PropertyComponent*> docProperties;
     docProperties.add (new TextPropertyComponent (*values[docName], TRANS ("Name: "), 0, false));
@@ -278,6 +279,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     docProperties.add (new ChoicePropertyComponent (*values[thumbName], TRANS ("Image File: "),
                                                     imgFileSa, imgFileVar));
     docProperties.add (new TextPropertyComponent (*values[docAbbrev], TRANS ("Abbrev: "), 0, true));
+    docProperties.add (new TextPropertyComponent (*values[docReviewDate], TRANS ("Remind Date: "), 0, false));
 
 
     // set height
@@ -293,8 +295,8 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
                                   currentTree.getParent().getParent().getType().toString() == "wdtpProject");
 
     docProperties[4]->setPreferredHeight (28 * 5);
-    docProperties[6]->setPreferredHeight (28 * 5);
-    docProperties[13]->setPreferredHeight (28 * 5);
+    docProperties[6]->setPreferredHeight (28 * 4);
+    docProperties[13]->setPreferredHeight (28 * 4);
 
     panel->addSection (TRANS ("Document Setup"), docProperties);
     valuesAddListener();
@@ -438,9 +440,13 @@ void SetupPanel::valueChanged (Value& value)
     else if (value.refersToSameSourceAs (*values[docAbbrev]))
         currentTree.setProperty ("abbrev", values[docAbbrev]->getValue(), nullptr);
 
+    else if (value.refersToSameSourceAs (*values[docReviewDate]))
+        currentTree.setProperty ("reviewDate", values[docReviewDate]->getValue(), nullptr);
+
     DocTreeViewItem::needCreate (currentTree);
     projectHasChanged = true;
 
+    // regenarate the current page
     if (editor->getCureentState())
         cmdManager->invokeDirectly (TopToolBar::generateCurrent, true);
 

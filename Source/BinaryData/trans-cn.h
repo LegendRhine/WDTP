@@ -373,3 +373,4 @@ countries: cn
 "Please download the encoder and put it into OS 'Documents' directory." = "请下载该编码器并复制到操作系统‘文档’目录下。"
 "Copy For Another Project" = "跨项目复制"
 "Paste From Another Project" = "跨项目粘贴"
+"Remind Date: " = "提醒日期："

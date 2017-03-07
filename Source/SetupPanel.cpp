@@ -11,6 +11,7 @@
 #include "WdtpHeader.h"
 
 extern PropertiesFile* systemFile;
+extern ApplicationCommandManager* cmdManager;
 
 //==============================================================================
 SetupPanel::SetupPanel (EditAndPreview* ed) 
@@ -439,7 +440,12 @@ void SetupPanel::valueChanged (Value& value)
 
     DocTreeViewItem::needCreate (currentTree);
     projectHasChanged = true;
+
+    if (editor->getCureentState())
+        cmdManager->invokeDirectly (TopToolBar::generateCurrent, true);
+
     startTimer (200);
+
 }
 
 //=================================================================================================

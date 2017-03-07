@@ -98,6 +98,7 @@ private:
         view, system, width, totalBts
     };
 
+public:
     enum MenuAndCmdIndex 
     {
         newPjt = 1, openPjt, closePjt, packPjt, unpackPjt,
@@ -107,6 +108,8 @@ private:
         setUiColor, resetUiColor, gettingStarted, checkNewVersion, feedback, showAboutDialog,
         switchEdit, switchWidth, activeSearch
     };
+
+private:
 
     //=====================================================================================
     /** When mouse enter the button, the cursor will change to a finger */

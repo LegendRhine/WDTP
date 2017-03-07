@@ -524,7 +524,7 @@ void MarkdownEditor::insertImages (const Array<File>& imageFiles)
         targetFile.create();
 
         if (f.copyFileTo (targetFile))
-            content << newLine << "![ ](media/" << targetFile.getFileName() << ")" << newLine
+            content << newLine << "![](media/" << targetFile.getFileName() << ")" << newLine
             << "^^ " << TRANS ("Image: ") << newLine;
         else
             SHOW_MESSAGE (TRANS ("Can't insert this image: ") + newLine + f.getFullPathName());

@@ -135,6 +135,9 @@ private:
     void getPath();
     void replaceContent();
 
+    void crossProjectCopy();
+    void crossProjectPaste();
+
     //=========================================================================
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
     void valueTreeChildAdded (ValueTree& parentTree, ValueTree&) override;
@@ -149,6 +152,7 @@ private:
     ItemSorter* sorter;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DocTreeViewItem)
+
 };
 
 

@@ -400,6 +400,10 @@ void DocTreeViewItem::menuPerform (const int index)
         showKeywordsTable();
     else if (index == getItemPath)
         getPath();
+    else if (index == copyForAnotherProject)
+        crossProjectCopy();
+    else if (index == pasteFromAnotherProject)
+        crossProjectPaste();
     else if (index == replaceIn)
         replaceContent();
     else if (index == rename)
@@ -986,6 +990,18 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
         treeHasChanged();
         setOpen (true);
     }
+}
+
+//=================================================================================================
+void DocTreeViewItem::crossProjectCopy ()
+{
+    throw std::logic_error ("The method or operation is not implemented.");
+}
+
+//=================================================================================================
+void DocTreeViewItem::crossProjectPaste ()
+{
+    throw std::logic_error ("The method or operation is not implemented.");
 }
 
 //=================================================================================================

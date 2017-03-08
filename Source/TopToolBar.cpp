@@ -681,7 +681,7 @@ void TopToolBar::changeListenerCallback (ChangeBroadcaster* source)
 
         // treeView
         if (bgColourSelector->getCurrentColour().getBrightness() >= 0.70f)
-            systemFile->setValue ("uiTextColour", Colour (0xff303030).toString());
+            systemFile->setValue ("uiTextColour", Colour (0xff181818).toString());
         else
             systemFile->setValue ("uiTextColour", Colour (0xffe9e9e9).toString());
 
@@ -773,7 +773,7 @@ void TopToolBar::resetUiColour()
         systemFile->setValue ("uiBackground", Colour (0xffdcdbdb).toString());
         getParentComponent()->repaint();
 
-        systemFile->setValue ("uiTextColour", Colour (0xff303030).toString());
+        systemFile->setValue ("uiTextColour", Colour (0xff181818).toString());
 
         // treeView
         TreeViewItem* projectTreeItem = fileTreeContainer->getTreeView().getRootItem();

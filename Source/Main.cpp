@@ -47,10 +47,10 @@ public:
         {
             systemFile->setValue ("language", 0);  // 0 for English
             systemFile->setValue ("uiBackground", Colour (0xffdcdbdb).toString());
-            systemFile->setValue ("uiTextColour", Colour (0xff303030).toString());
-            systemFile->setValue ("editorFontColour", Colour (0xff303030).toString());
+            systemFile->setValue ("uiTextColour", Colour (0xff181818).toString());
+            systemFile->setValue ("editorFontColour", Colour (0xff181818).toString());
             systemFile->setValue ("editorBackground", Colour (0xffdedede).toString());
-            systemFile->setValue ("fontSize", SwingUtilities::getFontSize());
+            systemFile->setValue ("fontSize", 21.f);
 
             systemFile->save();
         }

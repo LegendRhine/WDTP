@@ -64,7 +64,20 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
     Colour c (Colour::fromString (systemFile->getValue ("uiTextColour")));
 
     if (!getMdFileOrDir (tree).exists())
+    {
         c = Colours::red;
+    }
+    else  // remind date due
+    {
+        const String& remindDate (tree.getProperty ("reviewDate").toString()
+                                  .replace (".", String())
+                                  .replace (":", String())
+                                  .replace (" ", String()).trim());
+
+        if (SwingUtilities::earlyThanCurrentTime (remindDate))
+            c = (c.getBrightness() > 0.5f) ? Colours::yellow
+                                           : Colours::maroon;
+    }
 
     g.setColour (c);
 

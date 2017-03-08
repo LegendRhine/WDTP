@@ -223,7 +223,7 @@ const Time SwingUtilities::getTimeFromString (const String& dateAndTimeString)
 //=================================================================================================
 const bool SwingUtilities::isTimeStringValid (const String& dateAndTimeString)
 {
-    return (dateAndTimeString.length() == 14 &&
+    return (dateAndTimeString.length() == 14 &&  // 2017 0308 0755 23
             dateAndTimeString.substring (0, 4).getIntValue() >= 2000 &&
             dateAndTimeString.substring (0, 4).getIntValue() <= 2100 &&
             dateAndTimeString.substring (4, 6).getIntValue() >= 1 &&

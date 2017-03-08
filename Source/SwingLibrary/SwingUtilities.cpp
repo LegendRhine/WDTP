@@ -12,6 +12,18 @@
 #include "SwingUtilities.h"
 
 //=================================================================================================
+const String SwingUtilities::getFontName()
+{
+#if JUCE_WINDOWS
+    return "Microsoft YaHei";
+#elif JUCE_MAC
+    return "Hiragino Sans GB";
+#else
+    jassertfalse;
+#endif
+}
+
+//=================================================================================================
 void SwingUtilities::showAbout (const String& shortDescription,
                                 const String& copyrightYear)
 {

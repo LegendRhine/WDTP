@@ -75,8 +75,7 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
                                   .replace (" ", String()).trim());
 
         if (SwingUtilities::earlyThanCurrentTime (remindDate))
-            c = (c.getBrightness() > 0.5f) ? Colours::yellow
-                                           : Colours::maroon;
+            c = (c.getBrightness() > 0.5f) ? Colours::yellow : Colours::maroon;
     }
 
     g.setColour (c);

@@ -14,26 +14,28 @@
 //=================================================================================================
 const float SwingUtilities::getFontSize()
 {
-#if JUCE_WINDOWS
+/*#if JUCE_WINDOWS
     return 20.f;
 #elif JUCE_MAC
-    return 18.f;
+    return 16.f;
 #else
     jassertfalse;
-#endif
-    return 18.f;
+#endif */
+    return 20.f;
 }
 
 //=================================================================================================
 const String SwingUtilities::getFontName()
 {
-#if JUCE_WINDOWS
+/*#if JUCE_WINDOWS
     return "Microsoft YaHei";
 #elif JUCE_MAC
     return "Hiragino Sans GB";
 #else
     jassertfalse;
-#endif
+#endif */
+    
+    return "Microsoft YaHei";
 }
 
 //=================================================================================================

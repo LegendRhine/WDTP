@@ -314,7 +314,10 @@ void TopToolBar::buttonClicked (Button* bt)
     if (bt == bts[view])
     {
         bts[view]->setToggleState (!bts[view]->getToggleState(), dontSendNotification);
-        editAndPreview->startWork (editAndPreview->getCurrentTree());
+        editAndPreview->saveCurrentDocIfChanged();
+        editAndPreview->switchMode (bts[view]->getToggleState());
+
+        //editAndPreview->startWork (editAndPreview->getCurrentTree());
     }
     else if (bt == bts[width])
     {

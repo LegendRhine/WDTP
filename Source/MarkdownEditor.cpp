@@ -191,16 +191,16 @@ void MarkdownEditor::resetToDefault()
                                              "text color and background to the default?")))
     {
 
-        systemFile->setValue ("fontSize", 21.f);
+        systemFile->setValue ("fontSize", SwingUtilities::getFontSize() + 1.f);
         systemFile->setValue ("editorFontColour", Colour (0xff181818).toString());
         systemFile->setValue ("editorBackground", Colour (0xffdedede).toString());
 
         parent->getEditor()->setColour (TextEditor::textColourId, Colour (0xff181818));
         parent->getEditor()->setColour (CaretComponent::caretColourId, Colour (0xff181818).withAlpha (0.6f));
         parent->getEditor()->setColour (TextEditor::backgroundColourId, Colour (0xffdedede));
-        parent->getEditor()->setFont (21.f);
+        parent->getEditor()->setFont (SwingUtilities::getFontSize() + 1.f);
 
-        parent->getEditor()->applyFontToAllText (21.f);
+        parent->getEditor()->applyFontToAllText (SwingUtilities::getFontSize() + 1.f);
         systemFile->saveIfNeeded();
     }
 }

@@ -50,7 +50,7 @@ public:
             systemFile->setValue ("uiTextColour", Colour (0xff181818).toString());
             systemFile->setValue ("editorFontColour", Colour (0xff181818).toString());
             systemFile->setValue ("editorBackground", Colour (0xffdedede).toString());
-            systemFile->setValue ("fontSize", 21.f);
+            systemFile->setValue ("fontSize", SwingUtilities::getFontSize() + 1.f);
 
             systemFile->save();
         }

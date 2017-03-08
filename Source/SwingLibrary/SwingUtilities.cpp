@@ -12,7 +12,7 @@
 #include "SwingUtilities.h"
 
 //=================================================================================================
-const float SwingUtilities::getFontSize ()
+const float SwingUtilities::getFontSize()
 {
 #if JUCE_WINDOWS
     return 20.f;

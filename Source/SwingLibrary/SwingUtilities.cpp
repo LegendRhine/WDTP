@@ -12,6 +12,19 @@
 #include "SwingUtilities.h"
 
 //=================================================================================================
+const float SwingUtilities::getFontSize ()
+{
+#if JUCE_WINDOWS
+    return 20.f;
+#elif JUCE_MAC
+    return 18.f;
+#else
+    jassertfalse;
+#endif
+    return 18.f;
+}
+
+//=================================================================================================
 const String SwingUtilities::getFontName()
 {
 #if JUCE_WINDOWS

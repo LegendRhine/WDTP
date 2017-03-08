@@ -41,7 +41,7 @@
 struct SwingUtilities
 {
     /** Return the platform-special font size */
-    static const float getFontSize() { return 20.f; }
+    static const float getFontSize();
 
     /** Return the platform-special font name */
     static const String getFontName();

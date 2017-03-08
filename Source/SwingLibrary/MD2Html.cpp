@@ -36,8 +36,8 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     htmlContent = imageParse (htmlContent);
     htmlContent = audioParse (htmlContent);
     htmlContent = mdLinkParse (htmlContent);
-    htmlContent = orderedListParse (htmlContent, true);
-    htmlContent = orderedListParse (htmlContent, false);
+    htmlContent = listParse (htmlContent, true);
+    htmlContent = listParse (htmlContent, false);
     htmlContent = cnBracketParse (htmlContent);
     htmlContent = cleanUp (htmlContent);
 
@@ -620,7 +620,7 @@ const String Md2Html::mdLinkParse (const String& mdString)
 }
 
 //=================================================================================================
-const String Md2Html::orderedListParse (const String& mdString, const bool isOrdered)
+const String Md2Html::listParse (const String& mdString, const bool isOrdered)
 {
     StringArray contentByLine;
     contentByLine.addLines (mdString);

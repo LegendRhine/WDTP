@@ -217,6 +217,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
     values[thumbName]->setValue (currentTree.getProperty ("thumbName"));
     values[docAbbrev]->setValue (currentTree.getProperty ("abbrev"));
     values[docReviewDate]->setValue (currentTree.getProperty ("reviewDate"));
+    values[featured]->setValue (currentTree.getProperty ("featured"));
 
     Array<PropertyComponent*> docProperties;
     docProperties.add (new TextPropertyComponent (*values[docName], TRANS ("Name: "), 0, false));
@@ -280,7 +281,7 @@ void SetupPanel::showDocProperties (ValueTree& dTree)
                                                     imgFileSa, imgFileVar));
     docProperties.add (new TextPropertyComponent (*values[docAbbrev], TRANS ("Abbrev: "), 0, true));
     docProperties.add (new TextPropertyComponent (*values[docReviewDate], TRANS ("Remind Date: "), 0, false));
-
+    docProperties.add (new BooleanPropertyComponent (*values[featured], TRANS ("Featured: "), TRANS ("Yes")));
 
     // set height
     for (auto p : docProperties)
@@ -443,6 +444,9 @@ void SetupPanel::valueChanged (Value& value)
     else if (value.refersToSameSourceAs (*values[docReviewDate]))
         currentTree.setProperty ("reviewDate", values[docReviewDate]->getValue(), nullptr);
 
+    else if (value.refersToSameSourceAs (*values[featured]))
+        currentTree.setProperty ("featured", values[featured]->getValue(), nullptr);
+
     DocTreeViewItem::needCreate (currentTree);
     projectHasChanged = true;
 
@@ -451,7 +455,6 @@ void SetupPanel::valueChanged (Value& value)
         cmdManager->invokeDirectly (TopToolBar::generateCurrent, true);
 
     startTimer (200);
-
 }
 
 //=================================================================================================

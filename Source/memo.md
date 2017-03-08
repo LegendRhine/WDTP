@@ -86,6 +86,7 @@
 	- needCreateHtml
 	- abbrev: form: (abbrev-name)(space)(original content), 1 per line
 	- reviewDate
+	- featured
 
 ### Tags (for developer. These tags could be placed in < head >)
     - {{siteRelativeRootPath}} relative root-path of a page. eg. the page is 'site/dir/subDir/00.html', 

@@ -98,7 +98,8 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
                                     ? "\xe2\x97\x8f " : "\xe2\x96\xa0 ");
     else
         markStr = CharPointer_UTF8 (needGenerate ? "* " :
-        (tree.getType().toString() == "doc") ? "\xe2\x97\x8f " : "\xe2\x96\xa0 ");
+        (tree.getType().toString() == "doc") ? (((bool)tree.getProperty ("featured")) ? "\xe2\x98\x85 " : "\xe2\x97\x8f ")
+                                    : "\xe2\x96\xa0 ");
 
     g.drawText (markStr + itemName, leftGap, 0, width - 4, height, Justification::centredLeft, true);
 }

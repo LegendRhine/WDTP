@@ -21,7 +21,7 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
     // md to html
     const File mdDoc (DocTreeViewItem::getMdFileOrDir (docTree));
 
-    if (!mdDoc.existsAsFile())
+    if (!mdDoc.existsAsFile() || mdDoc.loadFileAsString().isEmpty())
         return;
 
     String mdStrWithoutAbbrev (processAbbrev (docTree, mdDoc.loadFileAsString()));
@@ -38,27 +38,12 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
     
     // get the path which relative the site root-dir            
     const String& rootRelativePath (getRelativePathToRoot (htmlFile));
-    
-    // parse keywords-syntax here. must before md parse
-    int startIndex = mdStrWithoutAbbrev.indexOf ("[keywords]");
 
-    if (startIndex != -1 && mdStrWithoutAbbrev.substring (startIndex - 1, startIndex) != "\\")
-    {
-        const String kws (HtmlProcessor::getKeywordsLinks (rootRelativePath));
-        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replaceSection (startIndex, String ("[keywords]").length(), kws);
-
-        tplStr = tplStr.replace ("\n  <title>",
-                                 "\n  <style type=\"text/css\">\n"
-                                 "    table {width:100%; border-collapse:collapse;}\n"
-                                 "    table, td, th {border:0; padding:6px 5px 6px 5px;}\n"
-                                 "  </style>\n  <title>");
-    }
+    // here must parse the extra extension md-mark before parse original md-mark
+    parseExMdMark (docTree, rootRelativePath, mdStrWithoutAbbrev, tplStr);
 
     // parse mdString to html string
     const String& htmlContentStr (Md2Html::mdStringToHtml (mdStrWithoutAbbrev));
-
-    if (htmlContentStr.isEmpty())
-        return;
 
     // process code
     if (htmlContentStr.contains ("<pre><code>"))
@@ -85,20 +70,54 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
 }
 
 //=================================================================================================
+void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
+                                   const String& rootRelativePath, 
+                                   String &mdStrWithoutAbbrev, 
+                                   String &tplStr)
+{
+    // [keywords]
+    int startIndex = mdStrWithoutAbbrev.indexOf ("[keywords]");
+
+    if (startIndex != -1 && mdStrWithoutAbbrev.substring (startIndex - 1, startIndex) != "\\")
+    {
+        const String kws (getKeywordsLinks (rootRelativePath));
+        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replaceSection (startIndex, String ("[keywords]").length(), kws);
+
+        // give 'all-keywords' some css control, doesn't display border-line, etc.
+        tplStr = tplStr.replace ("\n  <title>",
+                                 "\n  <style type=\"text/css\">\n"
+                                 "    table {width:100%; border-collapse:collapse;}\n"
+                                 "    table, td, th {border:0; padding:6px 5px 6px 5px;}\n"
+                                 "  </style>\n  <title>");
+    }
+
+    // [latestPublish]
+
+
+    // [latestModify]
+
+
+    // [featuredArticle]
+
+
+
+}
+
+//=================================================================================================
 const String HtmlProcessor::getRelativePathToRoot (const File& htmlFile)
 {
     const String htmlFilePath (htmlFile.getFullPathName());
     const String webRootDirPath (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName());
     const String tempStr (htmlFilePath.fromFirstOccurrenceOf (webRootDirPath + File::separatorString, false, false));
-    String cssRelativePath;
+    String rootRelativePath;
 
     for (int i = tempStr.length(); --i >= 0;)
     {
         if (tempStr[i] == File::separator)
-            cssRelativePath << String ("../");
+            rootRelativePath << String ("../");
     }
 
-    return cssRelativePath;
+    return rootRelativePath;
 }
 
 //=================================================================================================
@@ -719,6 +738,33 @@ const String HtmlProcessor::processAbbrev (const ValueTree& docTree, const Strin
 }
 
 //=================================================================================================
+void HtmlProcessor::getAllArticleLinksOfGivenTree (const ValueTree& tree, 
+                                                   const String& rootRelativePath, 
+                                                   const ExtrcatType& extractType, 
+                                                   StringArray& links)
+{
+    if (tree.getType().toString() == "doc")
+    {
+        const String& dateStr ((extractType == publishDate) ? tree.getProperty ("createDate").toString()
+                               : tree.getProperty ("modifyDate").toString());
+        const String& title (tree.getProperty ("title").toString());
+        const String& rootFullPath (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName());
+        const String& docFullPath (DocTreeViewItem::getHtmlFileOrDir (tree).getFullPathName());
+        const String& relativePath (rootRelativePath + 
+                                    docFullPath.fromFirstOccurrenceOf (rootFullPath, false, false)
+                                    .substring (1).replace ("\\", "/"));
+
+        const String& linkStr ("<a href=\"" + relativePath + "\">" + title + "</a>");
+        links.add (dateStr + "@@extractAllArticles@@" + linkStr);
+    }
+    else
+    {
+        for (int i = tree.getNumChildren(); --i >= 0; )
+            getAllArticleLinksOfGivenTree (tree.getChild (i), rootRelativePath, extractType, links);
+    }
+}
+
+//=================================================================================================
 const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
 {
     ValueTree pTree (FileTreeContainer::projectTree.createCopy());
@@ -881,10 +927,7 @@ const String HtmlProcessor::getRandomArticels (const ValueTree& notIncludeThisTr
     StringArray randomLinks;
 
     for (int i = 0; i < randoms.size(); ++i)
-    {
-        const int order = randoms[i];
-        randomLinks.add (links[order]);
-    }
+        randomLinks.add (links[randoms[i]]);
 
     randomLinks.removeEmptyStrings (true);
 

@@ -28,7 +28,7 @@ public:
 
     void startWork (ValueTree& newDocTree);
     void updateEditorContent();
-    const bool isTheSamePage ()                { return samePage; }
+    const bool isTheSamePage()                { return samePage; }
 
     /** false for switch to edit mode. true is preview mode */
     void switchMode (const bool switchToPreview);

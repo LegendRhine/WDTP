@@ -15,10 +15,16 @@ struct HtmlProcessor
 {
     HtmlProcessor (const bool sortByReverse_) : sortByReverse (sortByReverse_) { }
 
-    /* let the arg-1 write to the arg-2, then generate arg-3 */
+    /** let the arg-1 write to the arg-2, then generate arg-3 */
     static void renderHtmlContent (const ValueTree& docTree,
                                    const File& tplFile,
                                    const File& htmlFile);
+
+    /** [keywords], etc. */
+    static void parseExMdMark (const ValueTree& docTree, 
+                               const String& rootRelativePath,
+                               String &mdStrWithoutAbbrev, 
+                               String &tplStr);
 
     static const File createArticleHtml (ValueTree& docTree, bool saveProjectAfterCreated);
     static const File createIndexHtml (ValueTree& dirTree, bool saveProjectAfterCreated);
@@ -33,14 +39,26 @@ struct HtmlProcessor
     static void getDocNumbersOfTheDir (const ValueTree& dirTree, int& num);
 
     /** process the arg-string if it includes any abbrev */
-    static const String processAbbrev (const ValueTree& docTree, const String& originalStr);
+    static const String processAbbrev (const ValueTree& docTree, 
+                                       const String& originalStr);
 
 private:
     /** Process tpl-file's tags */
-    static void processTplTags (const ValueTree& docOrDirTree, const File& htmlFile, String& tplStr);
+    static void processTplTags (const ValueTree& docOrDirTree, 
+                                const File& htmlFile, 
+                                String& tplStr);
 
     static const StringArray getBlogList (const ValueTree& dirTree);
     static const String getBookList (const ValueTree& dirTree);
+
+    enum ExtrcatType { publishDate, ModifiedDate, featuredArticle };
+
+    /** it'll extract modified date when extract featured articles         
+        this method will extract all articles and pages. */
+    static void getAllArticleLinksOfGivenTree (const ValueTree& tree,
+                                               const String& rootRelativePath,
+                                               const ExtrcatType& extractType,
+                                               StringArray& links);
 
     /** generate site menu. 2 level dir/doc. that is: 
         if an item is tend for a site menu, it must not too deep. */

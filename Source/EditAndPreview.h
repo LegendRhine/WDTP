@@ -28,6 +28,7 @@ public:
 
     void startWork (ValueTree& newDocTree);
     void updateEditorContent();
+    const bool isTheSamePage ()                { return samePage; }
 
     /** false for switch to edit mode. true is preview mode */
     void switchMode (const bool switchToPreview);
@@ -77,6 +78,7 @@ private:
 
     StretchableLayoutManager layoutManager;
     ScopedPointer<StrechableBar> layoutBar;
+    bool samePage;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditAndPreview)
 };

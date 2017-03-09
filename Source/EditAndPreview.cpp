@@ -15,7 +15,8 @@ extern PropertiesFile* systemFile;
 //==============================================================================
 EditAndPreview::EditAndPreview (MainContentComponent* mainComp_) 
     : docHasChanged (false),
-      mainComp (mainComp_)
+    mainComp (mainComp_),
+    samePage (true)
 {
     addAndMakeVisible (webView = new WebBrowserComp (this));
     webView->setWantsKeyboardFocus (false);
@@ -90,6 +91,7 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
         editor->removeListener (this);
         docOrDirTree = newDocTree;
         docOrDirFile = DocTreeViewItem::getMdFileOrDir (docOrDirTree);
+        samePage = false;
 
         if (docOrDirFile.existsAsFile())
         {
@@ -148,6 +150,7 @@ void EditAndPreview::switchMode (const bool switchToPreview)
     else
     {
         editCurrentDoc();
+        samePage = true;
         toolBar->enableEditPreviewBt (true, false);
     }
 }
@@ -237,6 +240,7 @@ void EditAndPreview::projectClosed()
     docOrDirTree = ValueTree::invalid;
     docHasChanged = false;
     currentContent.clear();
+    samePage = true;
 
     resized();
 }
@@ -354,6 +358,9 @@ void WebBrowserComp::openUrlInNewWindow (const String& newURL)
 //=================================================================================================
 bool WebBrowserComp::pageAboutToLoad (const String& newURL)
 {
+    if (parent->isTheSamePage())
+        return true;
+
     String urlStr (newURL);
 
 #if JUCE_WINDOWS

@@ -72,9 +72,11 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
 //=================================================================================================
 void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
                                    const String& rootRelativePath, 
-                                   String &mdStrWithoutAbbrev, 
-                                   String &tplStr)
+                                   String& mdStrWithoutAbbrev, 
+                                   String& tplStr)
 {
+    jassert (docTree.getType().toString() == "doc");
+
     // [keywords]
     int startIndex = mdStrWithoutAbbrev.indexOf ("[keywords]");
 
@@ -92,7 +94,28 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
     }
 
     // [latestPublish]
+    startIndex = mdStrWithoutAbbrev.indexOf ("[latestPublish]");
 
+    if (startIndex != -1 && mdStrWithoutAbbrev.substring (startIndex - 1, startIndex) != "\\")
+    {
+        StringArray latests;
+        getAllArticleLinksOfGivenTree (docTree.getParent(), rootRelativePath, publishDate, latests);
+
+        latests.sort (true);
+        latests.removeRange (5, latests.size() - 5);
+
+        for (int i = latests.size(); --i >= 0; )
+        {
+            latests.getReference (i) = "<li>"
+                + latests[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false)
+                + "</li>";
+        }
+
+        latests.insert (0, "<ul>");
+        latests.add ("</ul>");
+
+        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[latestPublish]", latests.joinIntoString (newLine));
+    }
 
     // [latestModify]
 
@@ -745,6 +768,9 @@ void HtmlProcessor::getAllArticleLinksOfGivenTree (const ValueTree& tree,
 {
     if (tree.getType().toString() == "doc")
     {
+        if ((extractType == featuredArticle) && !(bool)tree.getProperty ("featured"))
+            return;
+
         const String& dateStr ((extractType == publishDate) ? tree.getProperty ("createDate").toString()
                                : tree.getProperty ("modifyDate").toString());
         const String& title (tree.getProperty ("title").toString());

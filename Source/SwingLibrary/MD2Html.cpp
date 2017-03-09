@@ -68,7 +68,7 @@ const String Md2Html::tableParse (const String& mdString)
             prevLine = "<table>";
 
             currentLine = "<tr><th>" + currentLine.replace (" | ", "</th><th>") + "</th></tr>";
-            nextLine = "<tr><td align=\"right\">" + nextLine.replace (" | ", "</td><td>") + "</td></tr>";
+            nextLine = "<tr><td>" + nextLine.replace (" | ", "</td><td>") + "</td></tr>";
 
             int rowNums = i + 1;
 
@@ -78,7 +78,7 @@ const String Md2Html::tableParse (const String& mdString)
 
                 if (thisLine.contains (" | "))
                 {
-                    thisLine = "<tr><td align=\"right\">" + thisLine.replace (" | ", "</td><td>") + "</td></tr>";
+                    thisLine = "<tr><td>" + thisLine.replace (" | ", "</td><td>") + "</td></tr>";
                 }
                 else
                 {

@@ -181,6 +181,10 @@ void FileTreeContainer::closeProject()
         const String& sizeAndPosition (mainWindow->getWindowStateAsString());
         projectTree.setProperty ("mainWindowSizeAndPosition", sizeAndPosition, nullptr);
 
+        // store the last select item
+        if (fileTree.getSelectedItem (0) != nullptr)
+            setIdentityOfLastSelectedItem (fileTree.getSelectedItem (0)->getItemIdentifierString());
+        
         if (saveDocAndProject())
         {
             fileTree.setRootItem (nullptr);
@@ -202,7 +206,12 @@ const bool FileTreeContainer::saveDocAndProject()
     // Here must check to prevent invalid assert 
     // eg. when quit this application after closed project..
     if (projectTree.isValid())
+    {
+        if (fileTree.getSelectedItem (0) != nullptr)
+            setIdentityOfLastSelectedItem (fileTree.getSelectedItem (0)->getItemIdentifierString());
+        
         return editAndPreview->saveCurrentDocIfChanged() && saveProject();
+    }
 
     return true;
 }

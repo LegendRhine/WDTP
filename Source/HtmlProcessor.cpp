@@ -219,6 +219,19 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
     const File& indexHtml (DocTreeViewItem::getHtmlFileOrDir (dirTree));
     jassert (indexHtml.getFileName() == "index.html");
 
+    // if there is a doc named 'index', then using it as the dir's index.html
+    for (int i = dirTree.getNumChildren(); --i >= 0; )
+    {
+        if (dirTree.getChild (i).getProperty ("name").toString() == "index")
+        {
+            dirTree.setProperty ("needCreateHtml", false, nullptr);
+            ValueTree isDocTree (dirTree.getChild (i));
+
+            return createArticleHtml (isDocTree, saveProject);
+        }
+    }
+
+    // normal generate index.html and index-x.html if there's no any doc named 'index'
     if ((bool)dirTree.getProperty ("needCreateHtml") || !indexHtml.existsAsFile())
     {
         if (indexHtml.deleteFile())

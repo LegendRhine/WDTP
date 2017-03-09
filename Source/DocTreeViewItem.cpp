@@ -542,8 +542,11 @@ void DocTreeViewItem::renameSelectedItem()
 
         if (newName.isEmpty())
             newName = TRANS ("Untitled");
-        else if (newName == "index" || newName == "media"
-                 || newName == "add-in" || newName == "docs" || newName == "site")
+
+        else if (newName == "media"
+                 || newName == "add-in" 
+                 || newName == "docs" 
+                 || newName == "site")
             newName += "-2";
 
         File newDocFile (docFileOrDir.getSiblingFile (newName + (docFileOrDir.isDirectory() ? String() : ".md")));
@@ -714,9 +717,7 @@ const File DocTreeViewItem::createDoc (const String& docName,
     String docFileName (docName);
 
     if (docFileName.isEmpty())
-        docFileName = TRANS ("Untitled");
-    else if (docFileName == "index")
-        docFileName = "index-2";
+        docFileName = TRANS ("Untitled");    
     else if (docFileName == "site")
         docFileName = "site-doc";
     else if (docFileName == "docs")

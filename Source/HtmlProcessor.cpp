@@ -99,22 +99,25 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
     if (startIndex != -1 && mdStrWithoutAbbrev.substring (startIndex - 1, startIndex) != "\\")
     {
         StringArray latests;
-        getAllArticleLinksOfGivenTree (docTree.getParent(), rootRelativePath, publishDate, latests);
+        getAllArticleLinksOfGivenTree (docTree.getParent(), rootRelativePath, publishDate, latests, docTree);
 
         latests.sort (true);
-        latests.removeRange (5, latests.size() - 5);
+        latests.removeEmptyStrings (true);
+        DBGX (latests.joinIntoString (newLine));
+
+        latests.removeRange (0, latests.size() - 5);
+        StringArray orderedLatests;
 
         for (int i = latests.size(); --i >= 0; )
         {
-            latests.getReference (i) = "<li>"
-                + latests[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false)
-                + "</li>";
+            orderedLatests.add ("<li>" 
+                + latests[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false) + "</li>");
         }
 
-        latests.insert (0, "<ul>");
-        latests.add ("</ul>");
+        orderedLatests.insert (0, "<ul>");
+        orderedLatests.add ("</ul>");
 
-        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[latestPublish]", latests.joinIntoString (newLine));
+        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[latestPublish]", orderedLatests.joinIntoString (newLine));
     }
 
     // [latestModify]
@@ -764,8 +767,12 @@ const String HtmlProcessor::processAbbrev (const ValueTree& docTree, const Strin
 void HtmlProcessor::getAllArticleLinksOfGivenTree (const ValueTree& tree, 
                                                    const String& rootRelativePath, 
                                                    const ExtrcatType& extractType, 
-                                                   StringArray& links)
+                                                   StringArray& links,
+                                                   const ValueTree& doesntIncludeThisTree)
 {
+    if (tree == doesntIncludeThisTree)
+        return;
+
     if (tree.getType().toString() == "doc")
     {
         if ((extractType == featuredArticle) && !(bool)tree.getProperty ("featured"))
@@ -774,19 +781,26 @@ void HtmlProcessor::getAllArticleLinksOfGivenTree (const ValueTree& tree,
         const String& dateStr ((extractType == publishDate) ? tree.getProperty ("createDate").toString()
                                : tree.getProperty ("modifyDate").toString());
         const String& title (tree.getProperty ("title").toString());
-        const String& rootFullPath (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName());
-        const String& docFullPath (DocTreeViewItem::getHtmlFileOrDir (tree).getFullPathName());
+
+        const String rootFullPath (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName());
+        const String docFullPath (DocTreeViewItem::getHtmlFileOrDir (tree).getFullPathName());
         const String& relativePath (rootRelativePath + 
                                     docFullPath.fromFirstOccurrenceOf (rootFullPath, false, false)
                                     .substring (1).replace ("\\", "/"));
-
+        
         const String& linkStr ("<a href=\"" + relativePath + "\">" + title + "</a>");
         links.add (dateStr + "@@extractAllArticles@@" + linkStr);
     }
     else
     {
         for (int i = tree.getNumChildren(); --i >= 0; )
-            getAllArticleLinksOfGivenTree (tree.getChild (i), rootRelativePath, extractType, links);
+        {
+            getAllArticleLinksOfGivenTree (tree.getChild (i),
+                                           rootRelativePath,
+                                           extractType,
+                                           links,
+                                           doesntIncludeThisTree);
+        }
     }
 }
 

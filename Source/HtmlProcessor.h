@@ -62,7 +62,8 @@ private:
     static void getAllArticleLinksOfGivenTree (const ValueTree& tree,
                                                const String& rootRelativePath,
                                                const ExtrcatType& extractType,
-                                               StringArray& links);
+                                               StringArray& links,
+                                               const ValueTree& doesntIncludeThisTree);
 
     /** generate site menu. 2 level dir/doc. that is: 
         if an item is tend for a site menu, it must not too deep. */

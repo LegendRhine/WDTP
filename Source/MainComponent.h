@@ -32,13 +32,9 @@ public:
     TopToolBar* getToolbar() const                 { return toolBar; }
     EditAndPreview* getEditAndPreview() const      { return editAndPreview; }
 
-    /** transfer method */
+    /** 3 transfer methods */
     const bool aDocSelectedCurrently() const;
-
-    /** transfer method */
     void reloadCurrentDoc();
-
-    /** transfer method */
     const bool selectItemFromHtmlFile (const File& htmlFile);
 
     /** these 2 for check the new version */

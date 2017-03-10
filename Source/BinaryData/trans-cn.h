@@ -293,7 +293,6 @@ countries: cn
 "Pack Project" = "项目打包"
 "Invalid packed project." = "无效的打包项目."
 "Unpack failed: " = "打包项目解包失败："
-"This item's path has been copied.\n\nYou could use it for internal link by right click in editor\nand select \"Insert - Internal Link\"." = "此条目的路径已被复制.\n\n可在编辑器中点击鼠标右键，弹出的菜单中选择“插入-内部链接”，\n从而实现内链功能。"
 "Internal Link" = "粘贴内部链接"
 "Click here" = "点此访问"
 "Abbrev: " = "缩略语: "

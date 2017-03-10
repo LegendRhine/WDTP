@@ -93,11 +93,17 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
                                  "  </style>\n  <title>");
     }
 
+    // prevent repeat when using all below marks (or 2 of them) 
+    bool hasLatestPublish, hasLatestModify, hasFeatured;
+    hasLatestPublish = hasLatestModify = hasFeatured = false;
+
     // [latestPublish]
     startIndex = mdStrWithoutAbbrev.indexOf ("[latestPublish]");
 
     if (startIndex != -1 && mdStrWithoutAbbrev.substring (startIndex - 1, startIndex) != "\\")
     {
+        hasLatestPublish = true;
+
         StringArray latests;
         getAllArticleLinksOfGivenTree (docTree.getParent(), rootRelativePath, publishDate, latests, docTree);
 
@@ -124,36 +130,45 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
 
     if (startIndex != -1 && mdStrWithoutAbbrev.substring (startIndex - 1, startIndex) != "\\")
     {
-        // it shouldn't include the latest create (publish) docs
-        StringArray latests;
-        getAllArticleLinksOfGivenTree (docTree.getParent(), 
-                                       rootRelativePath, publishDate, latests, docTree);
-        latests.sort (true);
-        latests.removeRange (0, latests.size() - 5);
-        
+        hasLatestModify = true;
+
         // get the latest modified..
         StringArray latestModified;
-        getAllArticleLinksOfGivenTree (docTree.getParent(), 
+        getAllArticleLinksOfGivenTree (docTree.getParent(),
                                        rootRelativePath, ModifiedDate, latestModified, docTree);
         latestModified.sort (true);
 
         // no need change all of it
         const int num = latestModified.size();
 
-        for (int i = num; --i >= num - jmin (10, num); )
-        	latestModified.getReference (i) = latestModified[i]
+        for (int i = num; --i >= num - (num >= 20 ? 10 : num); )
+            latestModified.getReference (i) = latestModified[i]
             .fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false);
 
-        // remove the latest create
-        for (int i = latests.size(); --i >= 0; )
+        // it shouldn't include the latest create (publish) docs if the doc has that mark
+        if (hasLatestPublish)
         {
-            latests.getReference (i) = latests[i]
-                .fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false);
-            latestModified.removeString (latests[i]);
-        }
+            StringArray latests;
+            getAllArticleLinksOfGivenTree (docTree.getParent(),
+                                           rootRelativePath, publishDate, latests, docTree);
+            latests.sort (true);
+            latests.removeRange (0, latests.size() - 5);
 
-        // remain 5 docs
-        latestModified.removeRange (0, latestModified.size() - 5);
+            // remove the latest create
+            for (int i = latests.size(); --i >= 0; )
+            {
+                if (latestModified.size() <= 5)
+                    break;
+
+                latests.getReference (i) = latests[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false);
+                latestModified.removeString (latests[i]);
+            }
+        }        
+
+        // remain 5 docs if its enough
+        if (latestModified.size() > 5)
+            latestModified.removeRange (0, latestModified.size() - 5);
+
         StringArray orderedLatests;
 
         for (int i = latestModified.size(); --i >= 0; )
@@ -171,38 +186,47 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
 
     if (startIndex != -1 && mdStrWithoutAbbrev.substring (startIndex - 1, startIndex) != "\\")
     {
-        // it shouldn't include the latest modified docs
-        StringArray latests;
-        getAllArticleLinksOfGivenTree (docTree.getParent(), 
-                                       rootRelativePath, ModifiedDate, 
-                                       latests, docTree);
-        latests.sort (true);
-        latests.removeRange (0, latests.size() - 5);
+        hasFeatured = true;
 
-        // get the latest modified..
+        // get the latest featured..
         StringArray modifiedFeatured;
-        getAllArticleLinksOfGivenTree (docTree.getParent(), 
-                                       rootRelativePath, featuredArticle, 
+        getAllArticleLinksOfGivenTree (docTree.getParent(),
+                                       rootRelativePath, featuredArticle,
                                        modifiedFeatured, docTree);
         modifiedFeatured.sort (true);
 
         // no need change all of it
         const int num = modifiedFeatured.size();
 
-        for (int i = num; --i >= num - jmin (10, num); )
+        for (int i = num; --i >= num - (num >= 20 ? 10 : num); )
             modifiedFeatured.getReference (i) = modifiedFeatured[i]
             .fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false);
 
-        // remove the latest create
-        for (int i = latests.size(); --i >= 0; )
+        // it shouldn't include the latest modified docs
+        if (hasLatestModify)
         {
-            latests.getReference (i) = latests[i]
-                .fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false);
-            modifiedFeatured.removeString (latests[i]);
+            StringArray latests;
+            getAllArticleLinksOfGivenTree (docTree.getParent(),
+                                           rootRelativePath, ModifiedDate,
+                                           latests, docTree);
+            latests.sort (true);
+            latests.removeRange (0, latests.size() - 5);
+
+            // remove the latest modified
+            for (int i = latests.size(); --i >= 0; )
+            {
+                if (modifiedFeatured.size() <= 5)
+                    break;
+
+                latests.getReference (i) = latests[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false);
+                modifiedFeatured.removeString (latests[i]);                
+            }
         }
 
-        // remain 5 docs
-        modifiedFeatured.removeRange (0, modifiedFeatured.size() - 5);
+        // remain 5 featured docs
+        if (modifiedFeatured.size() > 5)
+            modifiedFeatured.removeRange (0, modifiedFeatured.size() - 5);
+
         StringArray orderedLatests;
 
         for (int i = modifiedFeatured.size(); --i >= 0; )

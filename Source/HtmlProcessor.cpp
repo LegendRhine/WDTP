@@ -115,7 +115,7 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
         orderedLatests.insert (0, "<ul>");
         orderedLatests.add ("</ul>");
 
-        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[latestPublish]", orderedLatests.joinIntoString (newLine));
+        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[latestPublish]", orderedLatests.joinIntoString ("<br>"));
     }
 
     // [latestModify]
@@ -154,7 +154,7 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
         orderedLatests.insert (0, "<ul>");
         orderedLatests.add ("</ul>");
 
-        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[latestModify]", orderedLatests.joinIntoString (newLine));
+        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[latestModify]", orderedLatests.joinIntoString ("<br>"));
     }
 
     // [featuredArticle]

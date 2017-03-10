@@ -115,7 +115,8 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
         orderedLatests.insert (0, "<ul>");
         orderedLatests.add ("</ul>");
 
-        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[latestPublish]", orderedLatests.joinIntoString ("<br>"));
+        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[latestPublish]", 
+                                                         orderedLatests.joinIntoString ("<br>"));
     }
 
     // [latestModify]
@@ -125,22 +126,29 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
     {
         // it shouldn't include the latest create (publish) docs
         StringArray latests;
-        getAllArticleLinksOfGivenTree (docTree.getParent(), rootRelativePath, publishDate, latests, docTree);
+        getAllArticleLinksOfGivenTree (docTree.getParent(), 
+                                       rootRelativePath, publishDate, latests, docTree);
         latests.sort (true);
         latests.removeRange (0, latests.size() - 5);
         
         // get the latest modified..
         StringArray latestModified;
-        getAllArticleLinksOfGivenTree (docTree.getParent(), rootRelativePath, ModifiedDate, latestModified, docTree);
+        getAllArticleLinksOfGivenTree (docTree.getParent(), 
+                                       rootRelativePath, ModifiedDate, latestModified, docTree);
         latestModified.sort (true);
 
-        for (int i = latestModified.size(); --i >= latestModified.size() - 10; ) // here no need change all of it
-        	latestModified.getReference (i) = latestModified[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false);
+        // no need change all of it
+        const int num = latestModified.size();
+
+        for (int i = num; --i >= num - jmin (10, num); )
+        	latestModified.getReference (i) = latestModified[i]
+            .fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false);
 
         // remove the latest create
         for (int i = latests.size(); --i >= 0; )
         {
-            latests.getReference (i) = latests[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false);
+            latests.getReference (i) = latests[i]
+                .fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false);
             latestModified.removeString (latests[i]);
         }
 
@@ -154,12 +162,58 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
         orderedLatests.insert (0, "<ul>");
         orderedLatests.add ("</ul>");
 
-        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[latestModify]", orderedLatests.joinIntoString ("<br>"));
+        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[latestModify]", 
+                                                         orderedLatests.joinIntoString ("<br>"));
     }
 
     // [featuredArticle]
+    startIndex = mdStrWithoutAbbrev.indexOf ("[featuredArticle]");
 
+    if (startIndex != -1 && mdStrWithoutAbbrev.substring (startIndex - 1, startIndex) != "\\")
+    {
+        // it shouldn't include the latest modified docs
+        StringArray latests;
+        getAllArticleLinksOfGivenTree (docTree.getParent(), 
+                                       rootRelativePath, ModifiedDate, 
+                                       latests, docTree);
+        latests.sort (true);
+        latests.removeRange (0, latests.size() - 5);
 
+        // get the latest modified..
+        StringArray modifiedFeatured;
+        getAllArticleLinksOfGivenTree (docTree.getParent(), 
+                                       rootRelativePath, featuredArticle, 
+                                       modifiedFeatured, docTree);
+        modifiedFeatured.sort (true);
+
+        // no need change all of it
+        const int num = modifiedFeatured.size();
+
+        for (int i = num; --i >= num - jmin (10, num); )
+            modifiedFeatured.getReference (i) = modifiedFeatured[i]
+            .fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false);
+
+        // remove the latest create
+        for (int i = latests.size(); --i >= 0; )
+        {
+            latests.getReference (i) = latests[i]
+                .fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false);
+            modifiedFeatured.removeString (latests[i]);
+        }
+
+        // remain 5 docs
+        modifiedFeatured.removeRange (0, modifiedFeatured.size() - 5);
+        StringArray orderedLatests;
+
+        for (int i = modifiedFeatured.size(); --i >= 0; )
+            orderedLatests.add ("<li>" + modifiedFeatured[i] + "</li>");
+
+        orderedLatests.insert (0, "<ul>");
+        orderedLatests.add ("</ul>");
+
+        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[featuredArticle]", 
+                                                         orderedLatests.joinIntoString ("<br>"));
+    }
 
 }
 

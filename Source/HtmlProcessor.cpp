@@ -103,7 +103,6 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
 
         latests.sort (true);
         latests.removeEmptyStrings (true);
-        DBGX (latests.joinIntoString (newLine));
 
         latests.removeRange (0, latests.size() - 5);
         StringArray orderedLatests;
@@ -121,7 +120,30 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
     }
 
     // [latestModify]
+    startIndex = mdStrWithoutAbbrev.indexOf ("[latestModify]");
 
+    if (startIndex != -1 && mdStrWithoutAbbrev.substring (startIndex - 1, startIndex) != "\\")
+    {
+        StringArray latests;
+        getAllArticleLinksOfGivenTree (docTree.getParent(), rootRelativePath, ModifiedDate, latests, docTree);
+
+        latests.sort (true);
+        latests.removeEmptyStrings (true);
+
+        latests.removeRange (0, latests.size() - 5);
+        StringArray orderedLatests;
+
+        for (int i = latests.size(); --i >= 0; )
+        {
+            orderedLatests.add ("<li>"
+                                + latests[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false) + "</li>");
+        }
+
+        orderedLatests.insert (0, "<ul>");
+        orderedLatests.add ("</ul>");
+
+        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[latestModify]", orderedLatests.joinIntoString (newLine));
+    }
 
     // [featuredArticle]
 

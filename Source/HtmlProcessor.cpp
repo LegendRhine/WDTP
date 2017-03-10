@@ -102,9 +102,8 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
         getAllArticleLinksOfGivenTree (docTree.getParent(), rootRelativePath, publishDate, latests, docTree);
 
         latests.sort (true);
-        latests.removeEmptyStrings (true);
-
         latests.removeRange (0, latests.size() - 5);
+
         StringArray orderedLatests;
 
         for (int i = latests.size(); --i >= 0; )
@@ -124,20 +123,33 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
 
     if (startIndex != -1 && mdStrWithoutAbbrev.substring (startIndex - 1, startIndex) != "\\")
     {
+        // it shouldn't include the latest create (publish) docs
         StringArray latests;
-        getAllArticleLinksOfGivenTree (docTree.getParent(), rootRelativePath, ModifiedDate, latests, docTree);
-
+        getAllArticleLinksOfGivenTree (docTree.getParent(), rootRelativePath, publishDate, latests, docTree);
         latests.sort (true);
-        latests.removeEmptyStrings (true);
-
         latests.removeRange (0, latests.size() - 5);
-        StringArray orderedLatests;
+        
+        // get the latest modified..
+        StringArray latestModified;
+        getAllArticleLinksOfGivenTree (docTree.getParent(), rootRelativePath, ModifiedDate, latestModified, docTree);
+        latestModified.sort (true);
 
+        for (int i = latestModified.size(); --i >= latestModified.size() - 10; ) // here no need change all of it
+        	latestModified.getReference (i) = latestModified[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false);
+
+        // remove the latest create
         for (int i = latests.size(); --i >= 0; )
         {
-            orderedLatests.add ("<li>"
-                                + latests[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false) + "</li>");
+            latests.getReference (i) = latests[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false);
+            latestModified.removeString (latests[i]);
         }
+
+        // remain 5 docs
+        latestModified.removeRange (0, latestModified.size() - 5);
+        StringArray orderedLatests;
+
+        for (int i = latestModified.size(); --i >= 0; )
+            orderedLatests.add ("<li>" + latestModified[i] + "</li>");
 
         orderedLatests.insert (0, "<ul>");
         orderedLatests.add ("</ul>");

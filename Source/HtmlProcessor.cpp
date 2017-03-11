@@ -239,6 +239,19 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
                                                          orderedLatests.joinIntoString ("<br>"));
     }
 
+    // [randomArticle]
+    startIndex = mdStrWithoutAbbrev.indexOf ("[randomArticle]");
+
+    if (startIndex != -1 && mdStrWithoutAbbrev.substring (startIndex - 1, startIndex) != "\\")
+    {
+        const String& randoms (getRandomArticels (docTree, 5)
+                               .replace ("<div class=randomArticels>", String())
+                               .replace ("<strong>" + TRANS ("Random Posts:") + "</strong>", String())
+                               .replace ("</div>", String()).replace (newLine, "<br>"));
+
+        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[randomArticle]", randoms);
+    }
+
 }
 
 //=================================================================================================

@@ -24,6 +24,7 @@ struct HtmlProcessor
         [latestPublish]: top 5 latest created doc
         [latestModify]: top 5 latest modified doc, non-include the lastest top 5 created
         [featuredArticle]: top 5 lastest modified featured doc.
+        [randomArticle]
     */
     static void parseExMdMark (const ValueTree& docTree, 
                                const String& rootRelativePath,

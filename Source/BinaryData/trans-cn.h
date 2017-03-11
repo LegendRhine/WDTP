@@ -373,4 +373,4 @@ countries: cn
 "Copy For Another Project" = "跨项目复制"
 "Paste From Another Project" = "跨项目粘贴"
 "Remind Date: " = "提醒日期："
-"Featured: " = "精华推荐："
+"Featured: " = "精华文章："

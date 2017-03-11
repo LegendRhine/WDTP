@@ -21,6 +21,7 @@ struct HtmlProcessor
                                    const File& htmlFile);
 
     /** [keywords]
+        [allPublish]: all tarticles, base on create date
         [latestPublish]: top 5 latest created doc
         [latestModify]: top 5 latest modified doc, non-include the lastest top 5 created
         [featuredArticle]: top 5 lastest modified featured doc.
@@ -59,7 +60,8 @@ private:
     enum ExtrcatType { publishDate, ModifiedDate, featuredArticle };
 
     /** it'll extract modified date when extract featured articles         
-        this method will extract all articles and pages. */
+        this method will extract all articles and pages except 'index' and menu-page.
+        also, not include the arg-5 doc. */
     static void getAllArticleLinksOfGivenTree (const ValueTree& tree,
                                                const String& rootRelativePath,
                                                const ExtrcatType& extractType,

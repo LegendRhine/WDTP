@@ -25,7 +25,7 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
         return;
 
     String mdStrWithoutAbbrev (processAbbrev (docTree, mdDoc.loadFileAsString()));
-    const String& keywords (docTree.getProperty ("keywords").toString());
+    const String& keywords (docTree.getProperty ("keywords").toString().trim());
 
     // here need insert this doc's keywords below the title, 
     // this setp bases on this doc's property 'showKeywords'
@@ -56,13 +56,13 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
     }
 
     processTplTags (docTree, htmlFile, tplStr);
-    const String& siteName (" - " + FileTreeContainer::projectTree.getProperty ("title").toString());
+    const String& siteName (" - " + FileTreeContainer::projectTree.getProperty ("title").toString().trim());
 
     // process head-tags and generate the html file
     htmlFile.appendText (tplStr.replace ("{{keywords}}", keywords)
-                         .replace ("{{author}}", FileTreeContainer::projectTree.getProperty ("owner").toString())
-                         .replace ("{{description}}", docTree.getProperty ("description").toString())
-                         .replace ("{{title}}", docTree.getProperty ("title").toString() + siteName)
+                         .replace ("{{author}}", FileTreeContainer::projectTree.getProperty ("owner").toString().trim())
+                         .replace ("{{description}}", docTree.getProperty ("description").toString().trim())
+                         .replace ("{{title}}", docTree.getProperty ("title").toString().trim() + siteName)
                          .replace ("{{siteRelativeRootPath}}", rootRelativePath)
                          .replace ("{{content}}", htmlContentStr));
 
@@ -77,7 +77,7 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
 {
     jassert (docTree.getType().toString() == "doc");
 
-    // [keywords]
+    // [keywords]: all of the project's
     int startIndex = mdStrWithoutAbbrev.indexOf ("[keywords]");
 
     if (startIndex != -1 && mdStrWithoutAbbrev.substring (startIndex - 1, startIndex) != "\\")
@@ -91,6 +91,34 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
                                  "    table {width:100%; border-collapse:collapse;}\n"
                                  "    table, td, th {border:0; padding:6px 5px 6px 5px;}\n"
                                  "  </style>\n  <title>");
+    }
+        
+    // [allPublish]
+    startIndex = mdStrWithoutAbbrev.indexOf ("[allPublish]");
+
+    if (startIndex != -1 && mdStrWithoutAbbrev.substring (startIndex - 1, startIndex) != "\\")
+    {
+        StringArray latests;
+        getAllArticleLinksOfGivenTree (FileTreeContainer::projectTree, rootRelativePath, publishDate, latests, docTree);
+        latests.sort (true);
+
+        StringArray orderedLatests;
+
+        for (int i = latests.size(); --i >= 0; )
+        {
+            orderedLatests.add ("<li>"
+                                + latests[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false) 
+                                + " - <span style=\"color: #009933\">"
+                                + latests[i].upToFirstOccurrenceOf ("@@extractAllArticles@@", false, false)
+                                  .dropLastCharacters (9)
+                                + "</span></li>");
+        }
+
+        orderedLatests.insert (0, "<ul>");
+        orderedLatests.add ("</ul>");
+
+        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[allPublish]",
+                                                         orderedLatests.joinIntoString ("<br>"));
     }
 
     // prevent repeat when using all below marks (or 2 of them) 
@@ -275,7 +303,7 @@ const String HtmlProcessor::getRelativePathToRoot (const File& htmlFile)
 const String HtmlProcessor::getSiteLink (const File &htmlFile)
 {
     const String& rootPathLink (getRelativePathToRoot (htmlFile) + "index.html");
-    const String& siteTitle (FileTreeContainer::projectTree.getProperty ("title").toString());
+    const String& siteTitle (FileTreeContainer::projectTree.getProperty ("title").toString().trim());
 
     return "<a href=\"" + rootPathLink + "\">" + siteTitle.upToFirstOccurrenceOf (" ", false, true) + "</a>";
 }
@@ -306,10 +334,10 @@ const File HtmlProcessor::createArticleHtml (ValueTree& docTree, bool saveProjec
         {
             const String tplPath (FileTreeContainer::projectFile.getSiblingFile ("themes")
                                   .getFullPathName() + File::separator
-                                  + FileTreeContainer::projectTree.getProperty ("render").toString()
+                                  + FileTreeContainer::projectTree.getProperty ("render").toString().trim()
                                   + File::separator);
 
-            const File tplFile (tplPath + docTree.getProperty ("tplFile").toString());
+            const File tplFile (tplPath + docTree.getProperty ("tplFile").toString().trim());
 
             // generate the doc's html
             htmlFile.create();
@@ -392,7 +420,7 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
     // if there is a doc named 'index', then using it as the dir's index.html
     for (int i = dirTree.getNumChildren(); --i >= 0; )
     {
-        if (dirTree.getChild (i).getProperty ("name").toString() == "index")
+        if (dirTree.getChild (i).getProperty ("name").toString().trim() == "index")
         {
             dirTree.setProperty ("needCreateHtml", false, nullptr);
             ValueTree isDocTree (dirTree.getChild (i));
@@ -408,9 +436,9 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
         {
             const File tplFile (FileTreeContainer::projectFile.getSiblingFile ("themes")
                                 .getFullPathName() + File::separator
-                                + FileTreeContainer::projectTree.getProperty ("render").toString()
+                                + FileTreeContainer::projectTree.getProperty ("render").toString().trim()
                                 + File::separator
-                                + dirTree.getProperty ("tplFile").toString());
+                                + dirTree.getProperty ("tplFile").toString().trim());
 
             String tplStr (tplFile.existsAsFile() ? tplFile.loadFileAsString() : String());
 
@@ -423,12 +451,13 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
                 return indexHtml;
             }
 
-            const String indexTileStr (dirTree.getProperty ("title").toString());
-            const String indexAuthorStr (FileTreeContainer::projectTree.getProperty ("owner").toString());            
-            const String indexKeywordsStr (dirTree.getProperty ("keywords").toString());
-            const String indexDescStr (dirTree.getProperty ("description").toString());
+            const String indexTileStr (dirTree.getProperty ("title").toString().trim());
+            const String indexAuthorStr (FileTreeContainer::projectTree.getProperty ("owner").toString().trim());
+            const String indexKeywordsStr (dirTree.getProperty ("keywords").toString().trim());
+            const String indexDescStr (dirTree.getProperty ("description").toString().trim());
             const String siteName (dirTree.getType().toString() == "wdtpProject"
-                                   ? String() : " - " + FileTreeContainer::projectTree.getProperty ("title").toString());
+                                   ? String() 
+                                   : " - " + FileTreeContainer::projectTree.getProperty ("title").toString().trim());
 
             tplStr = tplStr.replace ("{{siteRelativeRootPath}}", getRelativePathToRoot(indexHtml))
                 .replace ("{{author}}", indexAuthorStr)
@@ -579,7 +608,7 @@ const String HtmlProcessor::getKeywordsLinks (const String& rootPath)
             htmlPath = htmlPath.replace (File::separatorString, "/");
 
             kws.getReference (i) = "<li><a href=\"" + htmlPath + "\" title=\""
-                + trees[0].getProperty ("title").toString().replace (CharPointer_UTF8 ("\xef\xbc\x88"), " (")
+                + trees[0].getProperty ("title").toString().trim().replace (CharPointer_UTF8 ("\xef\xbc\x88"), " (")
                 .replace (CharPointer_UTF8 ("\xef\xbc\x89"), ")") + "\">"
                 + kws[i]
                 + "</a></li>";
@@ -601,7 +630,7 @@ const String HtmlProcessor::getKeywordsLinks (const String& rootPath)
 
                 kws.getReference (i) = kws[i] +
                     "<li><a href=\"" + htmlPath + "\">"
-                    + trees[j].getProperty ("title").toString()
+                    + trees[j].getProperty ("title").toString().trim()
                     + "</a></li>";
             }
 
@@ -636,7 +665,7 @@ void HtmlProcessor::extractKeywords (const ValueTree& tree,
 {
     if (tree.getType().toString() == "doc")
     {
-        const String& keywords (tree.getProperty ("keywords").toString()
+        const String& keywords (tree.getProperty ("keywords").toString().trim()
                                 .replace (CharPointer_UTF8 ("\xef\xbc\x8c"), ", ")); // Chinese ','
         StringArray thisArray;
 
@@ -659,7 +688,7 @@ void HtmlProcessor::getDocTreeWithKeyword (const ValueTree& tree,
     if (tree.getType().toString() == "doc")
     {
         StringArray kws;
-        const String keys (tree.getProperty ("keywords").toString()
+        const String keys (tree.getProperty ("keywords").toString().trim()
                            .replace (CharPointer_UTF8 ("\xef\xbc\x8c"), ",")); // chinese ','
 
         kws.addTokens (keys, ",", String());
@@ -725,9 +754,11 @@ const int HtmlProcessor::compareElements (const ValueTree& ft, const ValueTree& 
     else  // doc vs doc and dir vs dir..
     {
         if (sortByReverse)
-            return ft.getProperty ("createDate").toString().compareIgnoreCase (st.getProperty ("createDate").toString());
+            return ft.getProperty ("createDate").toString().trim()
+            .compareIgnoreCase (st.getProperty ("createDate").toString().trim());
         else
-            return st.getProperty ("createDate").toString().compareIgnoreCase (ft.getProperty ("createDate").toString());
+            return st.getProperty ("createDate").toString().trim()
+            .compareIgnoreCase (ft.getProperty ("createDate").toString().trim());
     }
 }
 
@@ -742,7 +773,7 @@ void HtmlProcessor::processTplTags (const ValueTree& docOrDirTree,
     if (tplStr.contains ("{{titleOfDir}}"))
     {
         tplStr = tplStr.replace ("{{titleOfDir}}", "<div align=center><h1>"
-                                 + docOrDirTree.getProperty ("title").toString()
+                                 + docOrDirTree.getProperty ("title").toString().trim()
                                  + "</h1></div>" + newLine);
     }
 
@@ -798,7 +829,7 @@ void HtmlProcessor::processTplTags (const ValueTree& docOrDirTree,
     // content decription
     if (tplStr.contains ("{{contentDesc}}"))
     {
-        String descStr (docOrDirTree.getProperty ("description").toString());
+        String descStr (docOrDirTree.getProperty ("description").toString().trim());
         descStr = "<div  align=\"center\"><blockquote>" + descStr + "</blockquote></div>";
         tplStr = tplStr.replace ("{{contentDesc}}", descStr);
     }
@@ -818,7 +849,9 @@ void HtmlProcessor::processTplTags (const ValueTree& docOrDirTree,
     // ad
     if (tplStr.contains ("{{ad}}"))
     {
-        tplStr = tplStr.replace ("{{ad}}", getAdStr (FileTreeContainer::projectTree.getProperty ("ad").toString(), htmlFile));
+        tplStr = tplStr.replace ("{{ad}}", 
+                                 getAdStr (FileTreeContainer::projectTree.getProperty ("ad").toString().trim(), 
+                                           htmlFile));
     }
 
     // random 5
@@ -898,14 +931,16 @@ void HtmlProcessor::getAllArticleLinksOfGivenTree (const ValueTree& tree,
     if (tree == doesntIncludeThisTree)
         return;
 
-    if (tree.getType().toString() == "doc")
+    if (tree.getType().toString() == "doc" 
+        && tree.getProperty ("name").toString().trim() != "index"
+        && !(bool)tree.getProperty ("isMenu"))
     {
         if ((extractType == featuredArticle) && !(bool)tree.getProperty ("featured"))
             return;
 
-        const String& dateStr ((extractType == publishDate) ? tree.getProperty ("createDate").toString()
-                               : tree.getProperty ("modifyDate").toString());
-        const String& title (tree.getProperty ("title").toString());
+        const String& dateStr ((extractType == publishDate) ? tree.getProperty ("createDate").toString().trim()
+                               : tree.getProperty ("modifyDate").toString().trim());
+        const String& title (tree.getProperty ("title").toString().trim());
 
         const String rootFullPath (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName());
         const String docFullPath (DocTreeViewItem::getHtmlFileOrDir (tree).getFullPathName());
@@ -950,13 +985,13 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
         if ((bool)fd.getProperty ("isMenu") && DocTreeViewItem::getMdFileOrDir (fd).exists())
         {
             const File& dirIndex (DocTreeViewItem::getHtmlFileOrDir (fd));
-            const String& menuName (fd.getProperty ("title").toString());
+            const String& menuName (fd.getProperty ("title").toString().trim());
             String path;
 
             if (fd.getType().toString() == "doc")
             {
                 path = getRelativePathToRoot (DocTreeViewItem::getHtmlFileOrDir (tree))
-                    + fd.getProperty ("name").toString() + ".html";
+                    + fd.getProperty ("name").toString().trim() + ".html";
             }
             else
             {
@@ -986,7 +1021,7 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
                         {
                             sPath = getRelativePathToRoot (DocTreeViewItem::getHtmlFileOrDir (tree))
                                 + dirIndex.getParentDirectory().getFileName() + "/"
-                                + sd.getProperty ("name").toString() + ".html";
+                                + sd.getProperty ("name").toString().trim() + ".html";
                         }
                         else
                         {
@@ -1017,7 +1052,7 @@ const String HtmlProcessor::getSiteNavi (const ValueTree& docTree)
 
     while (parent.isValid())
     {
-        String text (parent.getProperty ("title").toString());
+        String text (parent.getProperty ("title").toString().trim());
 
         if (parent.getType().toString() == "wdtpProject")
             text = text.upToFirstOccurrenceOf (" ", false, true);
@@ -1034,14 +1069,16 @@ const String HtmlProcessor::getSiteNavi (const ValueTree& docTree)
 //=================================================================================================
 const String HtmlProcessor::getContentTitle (const ValueTree& tree)
 {
-    return tree.getProperty ("title").toString();
+    return tree.getProperty ("title").toString().trim();
 }
 
 //=================================================================================================
 const String HtmlProcessor::getCreateAndModifyTime (const ValueTree& tree)
 {
-    const String& createStr (TRANS ("Create Time: ") + tree.getProperty ("createDate").toString().dropLastCharacters (3));
-    const String& modifyStr (TRANS ("Last Modified: ") + tree.getProperty ("modifyDate").toString().dropLastCharacters (3));
+    const String& createStr (TRANS ("Create Time: ") 
+                             + tree.getProperty ("createDate").toString().trim().dropLastCharacters (3));
+    const String& modifyStr (TRANS ("Last Modified: ") 
+                             + tree.getProperty ("modifyDate").toString().trim().dropLastCharacters (3));
 
     return "<div class=timeStr>" + createStr + "<br>" + modifyStr + "</div>";
 }
@@ -1053,7 +1090,7 @@ const String HtmlProcessor::getPrevAndNextArticel (const ValueTree& tree)
 
     ValueTree prevTree ("doc");
     getPreviousTree (FileTreeContainer::projectTree, tree, prevTree);
-    const String prevName = prevTree.getProperty ("title").toString();
+    const String prevName = prevTree.getProperty ("title").toString().trim();
 
     if (prevName.isNotEmpty())
     {
@@ -1066,7 +1103,7 @@ const String HtmlProcessor::getPrevAndNextArticel (const ValueTree& tree)
 
     ValueTree nextTree ("doc");
     getNextTree (FileTreeContainer::projectTree, tree, nextTree);
-    const String nextName = nextTree.getProperty ("title").toString();
+    const String nextName = nextTree.getProperty ("title").toString().trim();
 
     if (nextName.isNotEmpty())
     {
@@ -1115,13 +1152,13 @@ void HtmlProcessor::getPreviousTree (const ValueTree& oTree,
                                      ValueTree& result)
 {
     // prevent createDate is empty
-    if (result.getProperty ("createDate").toString() == String())
+    if (result.getProperty ("createDate").toString().trim() == String())
         result.setProperty ("createDate", 1, nullptr);
 
     if (oTree.getType().toString() == "doc" && !(bool)oTree.getProperty ("isMenu"))
     {
-        if ((oTree.getProperty ("createDate").toString() < tree.getProperty ("createDate").toString())
-            && (oTree.getProperty ("createDate").toString() > result.getProperty ("createDate").toString()))
+        if ((oTree.getProperty ("createDate").toString().trim() < tree.getProperty ("createDate").toString().trim())
+            && (oTree.getProperty ("createDate").toString().trim() > result.getProperty ("createDate").toString().trim()))
             result = oTree;
     }
 
@@ -1135,13 +1172,13 @@ void HtmlProcessor::getNextTree (const ValueTree& oTree,
                                  ValueTree& result)
 {
     // prevent createDate is empty
-    if (result.getProperty ("createDate").toString() == String())
+    if (result.getProperty ("createDate").toString().trim() == String())
         result.setProperty ("createDate", 3, nullptr);
 
     if (oTree.getType().toString() == "doc" && !(bool)oTree.getProperty ("isMenu"))
     {
-        if ((oTree.getProperty ("createDate").toString() > tree.getProperty ("createDate").toString())
-            && (oTree.getProperty ("createDate").toString() < result.getProperty ("createDate").toString()))
+        if ((oTree.getProperty ("createDate").toString().trim() > tree.getProperty ("createDate").toString().trim())
+            && (oTree.getProperty ("createDate").toString().trim() < result.getProperty ("createDate").toString().trim()))
             result = oTree;
     }
 
@@ -1220,9 +1257,9 @@ void HtmlProcessor::getLinkStrOfAlllDocTrees (const ValueTree& fromThisTree,
     if (fromThisTree.getType().toString() == "doc" && fromThisTree != baseOnThisTree)
     {
         if (!(bool)fromThisTree.getProperty ("isMenu")
-            && fromThisTree.getProperty ("name").toString() != "index")
+            && fromThisTree.getProperty ("name").toString().trim() != "index")
         {
-            const String text = fromThisTree.getProperty ("title").toString();
+            const String text = fromThisTree.getProperty ("title").toString().trim();
 
             String path = DocTreeViewItem::getHtmlFileOrDir (fromThisTree).getFullPathName();
             path = path.replace (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName(), String());
@@ -1254,7 +1291,7 @@ void HtmlProcessor::getBookListLinks (const ValueTree& tree,
 
     //DBGX(path);
 
-    String text (tree.getProperty ("title").toString());
+    String text (tree.getProperty ("title").toString().trim());
 
     if (tree.getType().toString() != "doc")
         text = "<b>" + text + "</b> ";
@@ -1285,19 +1322,19 @@ void HtmlProcessor::getBlogListHtmlStr (const ValueTree& tree,
     {
         if (!(bool)tree.getProperty ("isMenu"))
         {
-            const String& text (tree.getProperty ("title").toString());
-            const String& imgName (tree.getProperty ("thumbName").toString());
+            const String& text (tree.getProperty ("title").toString().trim());
+            const String& imgName (tree.getProperty ("thumbName").toString().trim());
 
             String str (tree.getType().toString() == "doc" ? "doc" : "dir");
 
             // create and last modified date
             str += "@_^_#_%_@<img src=" + rootPath
                 + "add-in/createDate.png style=\"vertical-align:middle; display:inline-block\"> "
-                + tree.getProperty ("createDate").toString().dropLastCharacters (3) // drop seconds
+                + tree.getProperty ("createDate").toString().trim().dropLastCharacters (3) // drop seconds
                 + " &nbsp;&nbsp;<img src=" + rootPath
                 + "add-in/modifiedDate.png style=\"vertical-align:middle; display:inline-block\"> " +
                 // + " - " +
-                tree.getProperty ("modifyDate").toString().dropLastCharacters (3); // drop seconds 
+                tree.getProperty ("modifyDate").toString().trim().dropLastCharacters (3); // drop seconds 
 
             // 2 level dir and their link
             const ValueTree parentTree (tree.getParent());
@@ -1317,14 +1354,14 @@ void HtmlProcessor::getBlogListHtmlStr (const ValueTree& tree,
                                          .upToLastOccurrenceOf ("/", true, false) + "index.html");
 
                 str += "<a href=\"" + parentPath + "\">" +
-                    grandTree.getProperty ("title").toString() + "</a>/";
+                    grandTree.getProperty ("title").toString().trim() + "</a>/";
             }
 
             if (parentTree.isValid() && parentTree.getType().toString() != "wdtpProject")
             {
                 const String parentPath (path.upToLastOccurrenceOf ("/", true, false) + "index.html");
                 str += "<a href=\"" + parentPath + "\">" +
-                    parentTree.getProperty ("title").toString() + "</a>";
+                    parentTree.getProperty ("title").toString().trim() + "</a>";
             }
 
             // title and its link
@@ -1338,7 +1375,7 @@ void HtmlProcessor::getBlogListHtmlStr (const ValueTree& tree,
             }
 
             // description
-            str += tree.getProperty ("description").toString() + "<div class=readMore align=right>"
+            str += tree.getProperty ("description").toString().trim() + "<div class=readMore align=right>"
                 + "<a href=\"" + path + "\">" + TRANS ("Read More") + "</a></div>";
 
             linkStr.add (str);
@@ -1405,7 +1442,8 @@ const String HtmlProcessor::getBookList (const ValueTree& dirTree)
             else if (ft.getType().toString() == "doc" && st.getType().toString() == "dir")
                 return 1;
             else  // doc vs doc and dir vs dir..
-                return st.getProperty ("createDate").toString().compareIgnoreCase (ft.getProperty ("createDate").toString());
+                return st.getProperty ("createDate").toString().trim()
+                .compareIgnoreCase (ft.getProperty ("createDate").toString().trim());
         }
     };
 
@@ -1425,7 +1463,7 @@ const String HtmlProcessor::getCopyrightInfo()
 {
     return "<p><hr>\n"
         "<table id=\"copyright\"><tr><td id=\"copyright\">" +
-        FileTreeContainer::projectTree.getProperty ("copyright").toString() +
+        FileTreeContainer::projectTree.getProperty ("copyright").toString().trim() +
         "</td><td id=\"copyright\" align=\"right\">Powered by "
         "<a href=\"http://underwaySoft.com/works/wdtp/index.html\""
         " target=\"_blank\">WDTP</a> </td></tr></table>";
@@ -1434,7 +1472,7 @@ const String HtmlProcessor::getCopyrightInfo()
 //=================================================================================================
 const String HtmlProcessor::getContactInfo()
 {
-    const String& contactStr (FileTreeContainer::projectTree.getProperty ("contact").toString());
+    const String& contactStr (FileTreeContainer::projectTree.getProperty ("contact").toString().trim());
     return "<div class=contact>" + contactStr + "</div>";
 }
 

@@ -324,6 +324,89 @@ void SetupPanel::valuesAddListener()
 //=================================================================================================
 void SetupPanel::valuesRemoveListener()
 {
+    /* prevent doesn't save the modified text when switch item in fileTree
+    
+       note: here set value of currentTree doesn't save the project actually,
+       somehow, after switched the new tree will send message about values[xxx] was changed,
+       then it'll save the projectTree immediately.
+       it's a bit of unclear in meaning, but it works well...
+    */
+    if (currentTree.isValid())
+    {
+        if (values[itsTitle]->getValue() != currentTree.getProperty ("title"))
+        {
+            currentTree.setProperty ("title", values[itsTitle]->getValue(), nullptr);
+            DocTreeViewItem::needCreate (currentTree);
+        }
+
+        else if (values[keywords]->getValue() != currentTree.getProperty ("keywords"))
+        {
+            currentTree.setProperty ("keywords", values[keywords]->getValue(), nullptr);
+            DocTreeViewItem::needCreate (currentTree);
+        }
+
+        else if (values[desc]->getValue() != currentTree.getProperty ("description"))
+        {
+            currentTree.setProperty ("description", values[desc]->getValue(), nullptr);
+            DocTreeViewItem::needCreate (currentTree);
+        }
+
+        else if (values[jsCode]->getValue() != currentTree.getProperty ("js"))
+        {
+            currentTree.setProperty ("js", values[jsCode]->getValue(), nullptr);
+            DocTreeViewItem::needCreate (currentTree);
+        }
+
+        else if (currentTree.getType().toString() == "wdtpProject"
+                 && values[projectOwner]->getValue() != currentTree.getProperty ("owner"))
+        {
+            currentTree.setProperty ("owner", values[projectOwner]->getValue(), nullptr);
+            DocTreeViewItem::needCreate (currentTree);
+        }
+
+        else if (currentTree.getType().toString() == "wdtpProject"
+                 && values[copyrightInfo]->getValue() != currentTree.getProperty ("copyright"))
+        {
+            currentTree.setProperty ("copyright", values[copyrightInfo]->getValue(), nullptr);
+            DocTreeViewItem::needCreate (currentTree);
+        }
+
+        else if (currentTree.getType().toString() == "wdtpProject"
+                 && values[contact]->getValue() != currentTree.getProperty ("contact"))
+        {
+            currentTree.setProperty ("contact", values[contact]->getValue(), nullptr);
+            DocTreeViewItem::needCreate (currentTree);
+        }
+
+        else if (currentTree.getType().toString() == "wdtpProject"
+                 && values[ad]->getValue() != currentTree.getProperty ("ad"))
+        {
+            currentTree.setProperty ("ad", values[ad]->getValue(), nullptr);
+            DocTreeViewItem::needCreate (currentTree);
+        }
+
+        else if (currentTree.getType().toString() != "wdtpProject"
+                 && values[createDate]->getValue() != currentTree.getProperty ("createDate"))
+        {
+            currentTree.setProperty ("createDate", values[createDate]->getValue(), nullptr);
+            DocTreeViewItem::needCreate (currentTree);
+        }
+
+        else if (currentTree.getType().toString() == "doc"
+                 && values[abbrev]->getValue() != currentTree.getProperty ("abbrev"))
+        {
+            currentTree.setProperty ("abbrev", values[abbrev]->getValue(), nullptr);
+            DocTreeViewItem::needCreate (currentTree);
+        }
+
+        else if (currentTree.getType().toString() == "doc"
+                 && values[reviewDate]->getValue() != currentTree.getProperty ("reviewDate"))
+        {
+            currentTree.setProperty ("reviewDate", values[reviewDate]->getValue(), nullptr);
+            DocTreeViewItem::needCreate (currentTree);
+        }
+    }
+
     for (auto v : values)
         v->removeListener (this);
 

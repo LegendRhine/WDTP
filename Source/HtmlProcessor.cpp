@@ -108,7 +108,7 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
         {
             orderedLatests.add ("<li>"
                                 + latests[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false) 
-                                + " - <span style=\"color: #009933\">"
+                                + " - <span style=\"color: #009900\">"
                                 + latests[i].upToFirstOccurrenceOf ("@@extractAllArticles@@", false, false)
                                   .dropLastCharacters (9)
                                 + "</span></li>");
@@ -118,6 +118,34 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
         orderedLatests.add ("</ul>");
 
         mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[allPublish]",
+                                                         orderedLatests.joinIntoString ("<br>"));
+    }
+
+    // [allModify]
+    startIndex = mdStrWithoutAbbrev.indexOf ("[allModify]");
+
+    if (startIndex != -1 && mdStrWithoutAbbrev.substring (startIndex - 1, startIndex) != "\\")
+    {
+        StringArray latests;
+        getAllArticleLinksOfGivenTree (FileTreeContainer::projectTree, rootRelativePath, ModifiedDate, latests, docTree);
+        latests.sort (true);
+
+        StringArray orderedLatests;
+
+        for (int i = latests.size(); --i >= 0; )
+        {
+            orderedLatests.add ("<li>"
+                                + latests[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false)
+                                + " - <span style=\"color: #3333CC\">"
+                                + latests[i].upToFirstOccurrenceOf ("@@extractAllArticles@@", false, false)
+                                .dropLastCharacters (9)
+                                + "</span></li>");
+        }
+
+        orderedLatests.insert (0, "<ul>");
+        orderedLatests.add ("</ul>");
+
+        mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[allModify]",
                                                          orderedLatests.joinIntoString ("<br>"));
     }
 

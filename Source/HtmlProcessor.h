@@ -20,12 +20,18 @@ struct HtmlProcessor
                                    const File& tplFile,
                                    const File& htmlFile);
 
-    /** [keywords]
-        [allPublish]: all tarticles, base on create date
-        [latestPublish]: top 5 latest created doc
-        [latestModify]: top 5 latest modified doc, non-include the lastest top 5 created
-        [featuredArticle]: top 5 lastest modified featured doc.
-        [randomArticle]
+    /** [keywords]: extract and display all keywords of the project.
+
+        [allPublish]: extract and display all articles, base on created date.
+        [allModify]: all articles, base on modified date.
+
+        [latestPublish]: top 5 latest created docs which inside the docTree's parent.
+        [latestModify]: top 5 latest modified docs which inside the docTree's parent, 
+                        not include the lastest top 5 created.
+        [featuredArticle]: top 5 lastest modified featured doc which inside the docTree's parent.
+                        not include the latest modified docs.
+
+        [randomArticle]: 5 random docs from all articles.
     */
     static void parseExMdMark (const ValueTree& docTree, 
                                const String& rootRelativePath,

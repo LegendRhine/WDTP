@@ -1219,7 +1219,8 @@ void HtmlProcessor::getLinkStrOfAlllDocTrees (const ValueTree& fromThisTree,
 {
     if (fromThisTree.getType().toString() == "doc" && fromThisTree != baseOnThisTree)
     {
-        if (!(bool)fromThisTree.getProperty ("isMenu"))
+        if (!(bool)fromThisTree.getProperty ("isMenu")
+            && fromThisTree.getProperty ("name").toString() != "index")
         {
             const String text = fromThisTree.getProperty ("title").toString();
 

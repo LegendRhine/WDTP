@@ -328,6 +328,8 @@ void SetupPanel::valuesRemoveListener()
 {
     for (auto v : values)
         v->removeListener (this);
+
+    projectHasChanged = false;
 }
 
 //=========================================================================
@@ -342,21 +344,21 @@ void SetupPanel::resized()
 void SetupPanel::valueChanged (Value& value)
 {
     if (value.refersToSameSourceAs (*values[itsTitle]))
-        currentTree.setProperty ("title", values[itsTitle]->getValue(), nullptr);
+        currentTree.setProperty ("title", values[itsTitle]->getValue().toString().trim(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[keywords]))
-        currentTree.setProperty ("keywords", values[keywords]->getValue().toString()
-                                 .replace (")", String())
-                                 .replace ("(", "_"), nullptr);
+        currentTree.setProperty ("keywords", values[keywords]->getValue().toString().trim()
+                                 .replace (")", String()).replace ("(", "_")
+                                 .replace (CharPointer_UTF8 ("\xef\xbc\x8c"), ", "), nullptr);  // Chinese ','
 
     else if (value.refersToSameSourceAs (*values[desc]))
-        currentTree.setProperty ("description", values[desc]->getValue(), nullptr);
+        currentTree.setProperty ("description", values[desc]->getValue().toString().trim(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[projectOwner]))
-        currentTree.setProperty ("owner", values[projectOwner]->getValue(), nullptr);
+        currentTree.setProperty ("owner", values[projectOwner]->getValue().toString().trim(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[copyrightInfo]))
-        currentTree.setProperty ("copyright", values[copyrightInfo]->getValue(), nullptr);
+        currentTree.setProperty ("copyright", values[copyrightInfo]->getValue().toString().trim(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[renderDir]))
         currentTree.setProperty ("render", values[renderDir]->getValue(), nullptr);
@@ -365,19 +367,19 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("tplFile", values[tplFile]->getValue(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[jsCode]))
-        currentTree.setProperty ("js", values[jsCode]->getValue(), nullptr);
+        currentTree.setProperty ("js", values[jsCode]->getValue().toString().trim(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[ad]))
-        currentTree.setProperty ("ad", values[ad]->getValue(), nullptr);
+        currentTree.setProperty ("ad", values[ad]->getValue().toString().trim(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[contact]))
-        currentTree.setProperty ("contact", values[contact]->getValue(), nullptr);
+        currentTree.setProperty ("contact", values[contact]->getValue().toString().trim(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[isMenu]))
         currentTree.setProperty ("isMenu", values[isMenu]->getValue(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[createDate]))
-        currentTree.setProperty ("createDate", values[createDate]->getValue(), nullptr);
+        currentTree.setProperty ("createDate", values[createDate]->getValue().toString().trim(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[showKeys]))
         currentTree.setProperty ("showKeywords", values[showKeys]->getValue(), nullptr);
@@ -389,10 +391,10 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("thumbName", values[thumbName]->getValue(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[abbrev]))
-        currentTree.setProperty ("abbrev", values[abbrev]->getValue(), nullptr);
+        currentTree.setProperty ("abbrev", values[abbrev]->getValue().toString().trim(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[reviewDate]))
-        currentTree.setProperty ("reviewDate", values[reviewDate]->getValue(), nullptr);
+        currentTree.setProperty ("reviewDate", values[reviewDate]->getValue().toString().trim(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[featured]))
         currentTree.setProperty ("featured", values[featured]->getValue(), nullptr);

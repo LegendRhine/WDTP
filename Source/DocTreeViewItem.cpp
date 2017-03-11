@@ -256,16 +256,9 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
         EditAndPreview* editArea = treeContainer->getEditAndPreview();
 
         // set properties on the right side
-        if (tree.getType().toString() == "doc")
-            editArea->setDocProperties (tree);
+        editArea->setTreeProperties (tree);
 
-        else if (tree.getType().toString() == "dir")
-            editArea->setDirProperties (tree);
-
-        else // root
-            editArea->setProjectProperties (tree);
-
-        // this must after setXxxProperties() since
+        // this must after setTreeProperties() since
         // startWork() will update the word count of this doc to setup-panel
         editArea->startWork (tree);
         
@@ -1051,7 +1044,7 @@ void DocTreeViewItem::crossProjectPaste()
         docTree.setProperty ("name", item->tree.getProperty ("name").toString(), nullptr);
         item->tree.copyPropertiesFrom (docTree, nullptr);
 
-        treeContainer->getEditAndPreview()->setDocProperties (item->tree);
+        treeContainer->getEditAndPreview()->setTreeProperties (item->tree);
         treeContainer->getEditAndPreview()->updateEditorContent();
 
         crossCopyFile.deleteFile();

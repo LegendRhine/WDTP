@@ -34,7 +34,7 @@ SetupPanel::~SetupPanel()
 }
 
 //=================================================================================================
-void SetupPanel::showProjectProperties (ValueTree& pTree)
+void SetupPanel::showProjectProperties (const ValueTree& pTree)
 {
     valuesRemoveListener();
 
@@ -124,7 +124,7 @@ void SetupPanel::showProjectProperties (ValueTree& pTree)
 }
 
 //=================================================================================================
-void SetupPanel::showDirProperties (ValueTree& dTree)
+void SetupPanel::showDirProperties (const ValueTree& dTree)
 {
     valuesRemoveListener();
 
@@ -191,7 +191,7 @@ void SetupPanel::showDirProperties (ValueTree& dTree)
 }
 
 //=================================================================================================
-void SetupPanel::showDocProperties (ValueTree& dTree)
+void SetupPanel::showDocProperties (const ValueTree& dTree)
 {
     valuesRemoveListener();
 

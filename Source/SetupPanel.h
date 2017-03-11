@@ -30,16 +30,16 @@ public:
     void updateWordCount (const int wordsNum)  { values[wordCount]->setValue (wordsNum); }
     void updateDocPanel()                      { showDocProperties (currentTree); }
 
-    void showProjectProperties (ValueTree& projectTree);
-    void showDirProperties (ValueTree& dirTree);
-    void showDocProperties (ValueTree& docTree);
+    void showProjectProperties (const ValueTree& projectTree);
+    void showDirProperties (const ValueTree& dirTree);
+    void showDocProperties (const ValueTree& docTree);
 
 private:
     //=========================================================================    
     void valuesAddListener();
     void valuesRemoveListener();
 
-    virtual void valueChanged (Value & value) override;
+    virtual void valueChanged (Value& value) override;
 
     // for save the systemFile and project
     virtual void timerCallback() override;  

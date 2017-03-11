@@ -246,21 +246,16 @@ void EditAndPreview::projectClosed()
 }
 
 //=================================================================================================
-void EditAndPreview::setProjectProperties (ValueTree& projectTree)
+void EditAndPreview::setTreeProperties (const ValueTree& tree)
 {
-    setupPanel->showProjectProperties (projectTree);
-}
+    if (tree.getType().toString() == "doc")
+        setupPanel->showDocProperties (tree);
 
-//=================================================================================================
-void EditAndPreview::setDirProperties (ValueTree& dirTree)
-{
-    setupPanel->showDirProperties (dirTree);
-}
+    else if (tree.getType().toString() == "dir")
+        setupPanel->showDirProperties (tree);
 
-//=================================================================================================
-void EditAndPreview::setDocProperties (ValueTree& docTree_)
-{
-    setupPanel->showDocProperties (docTree_);
+    else // root
+        setupPanel->showProjectProperties (tree);
 }
 
 //=================================================================================================

@@ -1084,14 +1084,13 @@ const String HtmlProcessor::getRandomArticels (const ValueTree& notIncludeThisTr
     randomLinks.removeEmptyStrings (true);
 
     if (randomLinks.size() > howMany)
-        randomLinks.remove (0);  // remove the newest one
+        randomLinks.remove (0);  // remove the newest one    
 
-    randomLinks.insert (0, "<div class=randomArticels><ul>");
-    randomLinks.insert (0, "<b>" + TRANS ("Random Posts:") + "</b>");
-
-    for (int j = randomLinks.size(); --j >= 2; )
+    for (int j = randomLinks.size(); --j >= 0; )
         randomLinks.getReference (j) = "<li>" + randomLinks[j] + "</li>";
 
+    randomLinks.insert (0, "<div class=randomArticels><ul>");
+    randomLinks.insert (0, "<strong>" + TRANS ("Random Posts:") + "</strong>");
     randomLinks.add ("</ul></div>");
 
     return randomLinks.joinIntoString (newLine);

@@ -722,7 +722,7 @@ const String Md2Html::cleanUp (const String& mdString)
 
     while (indexBr != -1)
     {
-        if (resultStr.substring (indexBr - 1, indexBr).contains (">"))
+        if (resultStr.substring (indexBr - 1, indexBr) == ">")
             resultStr = resultStr.replaceSection (indexBr, 4, newLine);
 
         indexBr = resultStr.indexOfIgnoreCase (indexBr + 4, "<br>");

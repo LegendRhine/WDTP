@@ -47,21 +47,12 @@ private:
 
     //=========================================================================
     enum
-    {
-        // project properties' values
-        projectTitle = 0, projectKeywords, projectDesc, owner,
-        copyrightInfo, projectRenderDir, indexTpl, projectJs, 
-        contact, ad, 
-
-        // dir properties' values
-        dirName, dirTitle, dirKeywords, dirDesc, 
-        dirIsMenu, dirTpl, dirJs,
-        dirCreateDate, /*dirModifyDate,*/
-
-        // doc properties' values
-        docName, docTitle, docKeywords, showKeys, docDesc, 
-        docIsMenu, docTpl, docCreateDate, /*docModifyDate,*/ 
-        docJs, wordCount, thumb, thumbName, docAbbrev, docReviewDate, featured, 
+    {        
+        itsName = 0, itsTitle, keywords, desc, projectOwner,
+        copyrightInfo, renderDir, tplFile, jsCode, 
+        contact, ad, isMenu, createDate, modifyDate,
+        showKeys, wordCount, thumb, thumbName, 
+        abbrev, reviewDate, featured, 
 
         totalValues
     };

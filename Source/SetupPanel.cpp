@@ -10,7 +10,6 @@
 
 #include "WdtpHeader.h"
 
-extern PropertiesFile* systemFile;
 extern ApplicationCommandManager* cmdManager;
 
 //==============================================================================
@@ -18,8 +17,6 @@ SetupPanel::SetupPanel (EditAndPreview* ed)
     : editor (ed),
 	projectHasChanged (false)
 {
-    jassert (systemFile != nullptr);
-
     for (int i = totalValues; --i >= 0; )
         values.add (new Value());
 
@@ -321,6 +318,7 @@ void SetupPanel::valuesAddListener()
 
     values[wordCount]->removeListener (this);
     values[itsName]->removeListener (this);
+    values[modifyDate]->removeListener (this);
 }
 
 //=================================================================================================
@@ -420,9 +418,6 @@ void SetupPanel::timerCallback()
 //=================================================================================================
 void SetupPanel::savePropertiesIfNeeded()
 {
-    if (systemFile != nullptr)
-        systemFile->saveIfNeeded();
-
     if (projectHasChanged && currentTree.isValid() &&
         FileTreeContainer::projectFile.existsAsFile())
     {

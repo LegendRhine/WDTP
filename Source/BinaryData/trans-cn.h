@@ -370,6 +370,8 @@ countries: cn
 "Done" = "完成"
 "Cannot find MP3 encoder." = "无法找到MP3音频编码器。"
 "Please connect internet and restart the app." = "请确保本机已联网而后重启本程序。"
+"The MP3 encoder 'lame-osx.zip' has been downloaded." = "MP3音频编码器已自动下载。"
+"Please double click the zip file to release it." = "请双击'lame-osx.zip'解压该编码器。"
 "Copy For Another Project" = "跨项目复制"
 "Paste From Another Project" = "跨项目粘贴"
 "Remind Date: " = "提醒日期："

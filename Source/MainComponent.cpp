@@ -134,7 +134,7 @@ void MainContentComponent::run()
     url = URL::createWithoutParsing ("https://github.com/LegendRhine/gitBackup/raw/master/applications/lame-win.zip");
 #elif JUCE_MAC
     lameEncoder = File::getSpecialLocation (File::userDocumentsDirectory).getChildFile ("lame.app");
-    url = URL::createWithoutParsing ("https://github.com/LegendRhine/gitBackup/raw/master/applications/lame.app");
+    url = URL::createWithoutParsing ("https://github.com/LegendRhine/gitBackup/raw/master/applications/lame-osx.zip");
 #endif
 
     if (!lameEncoder.existsAsFile())
@@ -149,10 +149,23 @@ void MainContentComponent::run()
             ZipFile zip (inputSteam);
             zip.uncompressEntry (0, File::getSpecialLocation (File::userDocumentsDirectory));
 #elif JUCE_MAC
-            lameEncoder.create();
+            //lameEncoder.create();
 
-            if (!lameEncoder.replaceWithData (mb.getData(), mb.getSize()))
-                lameEncoder.deleteFile();
+            const File lameZip (lameEncoder.getSiblingFile("lame-osx.zip"));
+            lameZip.deleteFile();
+            lameZip.create();
+            
+            if (!lameZip.replaceWithData (mb.getData(), mb.getSize()))
+            {
+                lameZip.deleteFile();
+            }
+            else
+            {
+                SHOW_MESSAGE (TRANS ("The MP3 encoder 'lame-osx.zip' has been downloaded.")
+                                     + newLine
+                                     + TRANS ("Please double click the zip file to release it."));
+                lameZip.revealToUser();
+            }
 #endif
         }
     }

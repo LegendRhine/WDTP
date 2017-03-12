@@ -90,6 +90,7 @@ public:
     void shutdown() override
     {
         // must destroy all guis first since they're using the systemFile object
+        PopupMenu::dismissAllActiveMenus();
         mainWindow = nullptr;
         systemFile->saveIfNeeded();
 

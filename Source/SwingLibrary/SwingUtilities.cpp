@@ -63,7 +63,7 @@ void SwingUtilities::showAbout (const String& shortDescription,
     linkButton->setSize (150, 25);
     window->addCustomComponent (linkButton);
 
-    window->setSize (400, 150);
+    window->setSize (420, 160);
     window->showDialog (TRANS ("About ") + ProjectInfo::projectName + " "
                         + String (ProjectInfo::versionString));
 }
@@ -323,7 +323,7 @@ void SwingDialog::resized()
     // text blocks
     for (int i = 0; i < blocks.size(); ++i)
     {
-        blocks[i]->setBounds (20, h, getWidth() - 40, jmin (200, blocks[i]->getTextHeight() + 10));
+        blocks[i]->setBounds (20, h, getWidth() - 40, jmin (210, blocks[i]->getTextHeight() + 15));
         //DBG (blocks[i]->getTextHeight());
         h += blocks[i]->getHeight();
     }
@@ -365,7 +365,7 @@ void SwingDialog::resized()
         h += 35;
     }
 
-    setSize (getWidth(), h + 10);
+    setSize (getWidth(), h + 15);
 }
 //=================================================================================================
 void SwingDialog::addButton (const String& btName, const KeyPress& shortKey)

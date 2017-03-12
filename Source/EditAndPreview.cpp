@@ -15,8 +15,7 @@ extern PropertiesFile* systemFile;
 //==============================================================================
 EditAndPreview::EditAndPreview (MainContentComponent* mainComp_) 
     : docHasChanged (false),
-    mainComp (mainComp_),
-    samePage (true)
+    mainComp (mainComp_)
 {
     addAndMakeVisible (webView = new WebBrowserComp (this));
     webView->setWantsKeyboardFocus (false);
@@ -69,7 +68,6 @@ void EditAndPreview::resized()
         layoutBar->setVisible (true);
 
         Component* comps[] = { wordArea, layoutBar, setupPanel };
-
         layoutManager.layOutComponents (comps, 3, 0, 0, getWidth(), getHeight(), false, true);
     }
     else  // silent-mode (only makes the editor visable)
@@ -91,7 +89,6 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
         editor->removeListener (this);
         docOrDirTree = newDocTree;
         docOrDirFile = DocTreeViewItem::getMdFileOrDir (docOrDirTree);
-        samePage = false;
 
         if (docOrDirFile.existsAsFile())
         {
@@ -150,7 +147,6 @@ void EditAndPreview::switchMode (const bool switchToPreview)
     else
     {
         editCurrentDoc();
-        samePage = true;
         toolBar->enableEditPreviewBt (true, false);
     }
 }
@@ -185,6 +181,12 @@ void EditAndPreview::previewCurrentDoc()
         // after load a page every time. it's very annoying..
         if (urlStr != currentUrl)
         {
+            // somehow, Safari will load page twice and the second is the previous one 
+            // when preview the doc after created or edited it. 
+#if JUCE_MAC
+            webView = nullptr;
+            addAndMakeVisible (webView = new WebBrowserComp (this));
+#endif
             webView->goToURL (urlStr);
             currentUrl = urlStr;
         }
@@ -240,7 +242,6 @@ void EditAndPreview::projectClosed()
     docOrDirTree = ValueTree::invalid;
     docHasChanged = false;
     currentContent.clear();
-    samePage = true;
 
     resized();
 }
@@ -353,9 +354,6 @@ void WebBrowserComp::openUrlInNewWindow (const String& newURL)
 //=================================================================================================
 bool WebBrowserComp::pageAboutToLoad (const String& newURL)
 {
-    if (parent->isTheSamePage())
-        return true;
-
     String urlStr (newURL);
 
 #if JUCE_WINDOWS

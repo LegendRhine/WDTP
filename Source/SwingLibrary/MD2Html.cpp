@@ -434,28 +434,40 @@ const String Md2Html::processByLine (const String& mdString)
         else if (currentLine.trimStart().substring (0, 2) == "> ")
             currentLine = "<blockquote>" + currentLine.trimStart().substring (2) + "</blockquote>";
 
-        // <h6> ~ <h1>
-        else if (currentLine.trimStart().substring (0, 7) == "###### ")
+        // <h6> ~ <h1>, also parse Chinese '#'
+        else if (currentLine.trimStart().substring (0, 7) == "###### "
+                 || currentLine.trimStart().substring (0, 7) == 
+                 CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83 "))
             currentLine = "<h6>" + currentLine.trimStart().substring (7) + "</h6>";
 
-        else if (currentLine.trimStart().substring (0, 6) == "##### ")
+        else if (currentLine.trimStart().substring (0, 6) == "##### "
+                 || currentLine.trimStart().substring (0, 6) == 
+                 CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83 "))
             currentLine = "<h5>" + currentLine.trimStart().substring (6) + "</h5>";
 
-        else if (currentLine.trimStart().substring (0, 5) == "#### ")
+        else if (currentLine.trimStart().substring (0, 5) == "#### "
+                 || currentLine.trimStart().substring (0, 5) == 
+                 CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83 "))
             currentLine = "<h4>" + currentLine.trimStart().substring (5) + "</h4>";
 
         // <h3> anchor
-        else if (currentLine.trimStart().substring (0, 4) == "### ")
+        else if (currentLine.trimStart().substring (0, 4) == "### "
+                 || currentLine.trimStart().substring (0, 4) == 
+                 CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83 "))
             currentLine = "<h3 id=\"" + currentLine.trimStart().substring (4) + "\">"
             + currentLine.trimStart().substring (4) + "</h3>";
 
         // <h2> anchor
-        else if (currentLine.trimStart().substring (0, 3) == "## ")
+        else if (currentLine.trimStart().substring (0, 3) == "## "
+                 || currentLine.trimStart().substring (0, 3) == 
+                 CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83 "))
             currentLine = "<h2 id=\"" + currentLine.trimStart().substring (3) + "\">" 
             + currentLine.trimStart().substring (3) + "</h2>";
 
         // <h1> anchor
-        else if (currentLine.trimStart().substring (0, 2) == "# ")
+        else if (currentLine.trimStart().substring (0, 2) == "# "
+                 || currentLine.trimStart().substring (0, 2) == 
+                 CharPointer_UTF8 ("\xef\xbc\x83 "))
             currentLine = "<h1 id=\"" + currentLine.trimStart().substring (2) + "\">" 
             + currentLine.trimStart().substring (2) + "</h1>";
 

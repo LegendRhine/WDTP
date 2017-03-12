@@ -30,7 +30,7 @@ const String SwingUtilities::getFontName()
 /*#if JUCE_WINDOWS
     return "Microsoft YaHei";
 #elif JUCE_MAC
-    return "Hiragino Sans GB";
+    return "Hiragino Sans GB";  // STHeitiSC-Light, STXihei
 #else
     jassertfalse;
 #endif */

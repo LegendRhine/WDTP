@@ -54,15 +54,16 @@ private:
     /** ~~text~~: change the traditional delete-line */
     static const String highlightParse (const String& mdString);  
 
-    /** [TOC]: process anchors. this method must called before processByLine() 
-        only 1 level deep (h2 and h3) */
+    /** [TOC]: process anchors-link. this method must called before processByLine() 
+        only 1 level deep (h2 and h3) for doc parse
+        2 level deep (h1~h3) for integration (single big-html) */
     static const String tocParse (const String& mdString);
 
     /** This method will process: <hr>, <blockquote>, <h1> ~ <h6>, <align>.
         All of these Markdown-character(s) must at the first of a line.
 
-        <hr>: "---", must at least 3 "-" and place in a single line.
-        otherwise, all of the characters after it will be replaced to "<hr>".
+        <hr>: "---", at least 3 "-" and place in a single line.
+        all of the characters after it will be replaced to "<hr>".
 
         <blockquote>: "> "
         <h1>: "# " will auto place in center.

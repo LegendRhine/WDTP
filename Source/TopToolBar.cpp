@@ -652,7 +652,16 @@ void TopToolBar::run()
 //=================================================================================================
 void TopToolBar::generateCurrentPage()
 {
-    editAndPreview->getCurrentTree().setProperty ("needCreateHtml", true, nullptr);
+    ValueTree tree (editAndPreview->getCurrentTree());
+    tree.setProperty ("needCreateHtml", true, nullptr);
+
+    // link the index doc if this is a dir
+    ValueTree indexTree (tree.getChildWithProperty ("name", var ("index")));
+
+    if (indexTree.isValid())
+        indexTree.setProperty ("needCreateHtml", true, nullptr);
+
+    // then let the workarea show it
     editAndPreview->switchMode (true);
 }
 

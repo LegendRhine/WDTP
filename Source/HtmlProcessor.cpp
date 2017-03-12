@@ -373,6 +373,9 @@ const File HtmlProcessor::createArticleHtml (ValueTree& docTree, bool saveProjec
 
             docTree.setProperty ("needCreateHtml", false, nullptr);
 
+            if (docTree.getProperty ("name").toString() == "index")
+                docTree.getParent().setProperty ("needCreateHtml", false, nullptr);
+
             if (saveProject)
                 FileTreeContainer::saveProject();
         }
@@ -446,15 +449,12 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
     jassert (indexHtml.getFileName() == "index.html");
 
     // if there is a doc named 'index', then using it as the dir's index.html
-    for (int i = dirTree.getNumChildren(); --i >= 0; )
-    {
-        if (dirTree.getChild (i).getProperty ("name").toString() == "index")
-        {
-            dirTree.setProperty ("needCreateHtml", false, nullptr);
-            ValueTree isDocTree (dirTree.getChild (i));
+    ValueTree indexTree (dirTree.getChildWithProperty ("name", var ("index")));
 
-            return createArticleHtml (isDocTree, saveProject);
-        }
+    if (indexTree.isValid())
+    {
+        dirTree.setProperty ("needCreateHtml", false, nullptr);
+        return createArticleHtml (indexTree, saveProject);
     }
 
     // normal generate index.html and index-x.html if there's no any doc named 'index'
@@ -607,7 +607,7 @@ const String HtmlProcessor::extractKeywordsOfDocs (const ValueTree& dirTree)
     if (keywords.substring (0, 1) == ",")
         keywords = keywords.substring (1);
 
-    DBGX (keywords);
+    //DBGX (keywords);
     return keywords;
 }
 

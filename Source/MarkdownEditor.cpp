@@ -142,7 +142,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     {
         parent->getCurrentTree().setProperty ("description", getHighlightedText(), nullptr);
         parent->getSetupPanel()->showDocProperties (false, parent->getCurrentTree());
-        DocTreeViewItem::needCreate (parent->getCurrentTree ());
+        DocTreeViewItem::needCreate (parent->getCurrentTree());
     }
 
     else if (insertSeparator == index)      insertTextAtCaret (newLine + "---" + newLine);

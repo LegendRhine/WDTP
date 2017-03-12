@@ -231,6 +231,14 @@ void DocTreeViewItem::needCreate (ValueTree tree)
         parentTree = parentTree.getParent();
         parentTree.setProperty ("needCreateHtml", true, nullptr);
         parentTree.setProperty ("modifyDate", modifyDate, nullptr);
+
+        ValueTree indexTree (parentTree.getChildWithProperty ("name", var ("index")));
+
+        if (indexTree.isValid())
+        {
+            indexTree.setProperty ("needCreateHtml", true, nullptr);
+            indexTree.setProperty ("modifyDate", modifyDate, nullptr);
+        }
     }
 
     allChildrenNeedCreate (tree);

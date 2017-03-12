@@ -620,14 +620,14 @@ const String HtmlProcessor::getKeywordsLinks (const String& rootPath)
     // prevent crash when there is no any keyword in this project
     if (kws.size() < 1)
         return String();
-
+    
     for (int i = kws.size(); --i >= 0; )
     {
         if (kws[i].contains ("--"))
             kws.getReference (i) = kws[i].upToFirstOccurrenceOf ("--", false, true);
 
         kws.getReference (i) = kws[i].replace (CharPointer_UTF8 ("\xef\xbc\x88"), " (")
-            .replace (CharPointer_UTF8 ("\xef\xbc\x89"), ")");
+            .replace (CharPointer_UTF8 ("\xef\xbc\x89"), ")");  // Chinese '(' and ')'
         
         Array<ValueTree> trees;
         getDocTreeWithKeyword (FileTreeContainer::projectTree, kws[i], trees);        
@@ -640,8 +640,9 @@ const String HtmlProcessor::getKeywordsLinks (const String& rootPath)
             htmlPath = htmlPath.replace (File::separatorString, "/");
 
             kws.getReference (i) = "<li><a href=\"" + htmlPath + "\" title=\""
-                + trees[0].getProperty ("title").toString().replace (CharPointer_UTF8 ("\xef\xbc\x88"), " (")
-                .replace (CharPointer_UTF8 ("\xef\xbc\x89"), ")") + "\">"
+                + trees[0].getProperty ("title").toString()
+                .replace (CharPointer_UTF8 ("\xef\xbc\x88"), " (")
+                .replace (CharPointer_UTF8 ("\xef\xbc\x89"), ")") + "\">"  // Chinese '(' and ')'
                 + kws[i]
                 + "</a></li>";
 
@@ -721,6 +722,7 @@ void HtmlProcessor::getDocTreeWithKeyword (const ValueTree& tree,
         const String keys (tree.getProperty ("keywords").toString());
 
         kws.addTokens (keys, ",", String());
+        kws.trim();
 
         for (int i = kws.size(); --i >= 0; )
         {

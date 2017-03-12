@@ -181,12 +181,6 @@ void EditAndPreview::previewCurrentDoc()
         // after load a page every time. it's very annoying..
         if (urlStr != currentUrl)
         {
-            // somehow, Safari will load page twice and the second is the previous one 
-            // when preview the doc after created or edited it. 
-#if JUCE_MAC
-            webView = nullptr;
-            addAndMakeVisible (webView = new WebBrowserComp (this));
-#endif
             webView->goToURL (urlStr);
             currentUrl = urlStr;
         }

@@ -1223,16 +1223,17 @@ void MarkdownEditor::subtractFromKeywords (const String& keyword)
 {
     ValueTree& docTree (parent->getCurrentTree());
     String currentKeyWords (docTree.getProperty ("keywords").toString().trim());
-    currentKeyWords.replace (CharPointer_UTF8 ("\xef\xbc\x8c"), ", "); // Chinese ','
 
     // how could to remove a keyword that hasn't been there already?!?
     jassert (currentKeyWords.contains (keyword));
 
-    currentKeyWords = currentKeyWords.replace (", " + keyword, String(), true)
-        .replace (keyword + ", ", String(), true)
-        .replace (keyword, String(), true);
+    StringArray kws;
+    kws.addTokens (currentKeyWords, ",", String());
+    kws.trim();
+    kws.removeEmptyStrings (true);
+    kws.removeString (keyword);
 
-    docTree.setProperty ("keywords", currentKeyWords, nullptr);
+    docTree.setProperty ("keywords", kws.joinIntoString (", "), nullptr);
 }
 
 //=================================================================================================

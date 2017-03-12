@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="iAHZG1" name="WDTP" projectType="guiapp" version="0.9.0305"
+<JUCERPROJECT id="iAHZG1" name="WDTP" projectType="guiapp" version="0.9.0312"
               bundleIdentifier="com.yourcompany.WDTP" includeBinaryInAppConfig="1"
               jucerVersion="4.3.1" userNotes="Start:        2016.09.03&#10;0.9 Alpha: 2017.01.31"
               companyName="UnderwaySoft" companyWebsite="http://www.underwaySoft.com"

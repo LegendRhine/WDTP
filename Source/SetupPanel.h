@@ -37,7 +37,7 @@ public:
 private:
     //=========================================================================    
     void valuesAddListener();
-    void valuesRemoveListener();
+    void valuesRemoveListener (const bool addValues = true);
 
     virtual void valueChanged (Value& value) override;
 

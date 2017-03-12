@@ -17,9 +17,6 @@ SetupPanel::SetupPanel (EditAndPreview* ed)
     : editor (ed),
 	projectHasChanged (false)
 {
-    for (int i = totalValues; --i >= 0; )
-        values.add (new Value());
-
     addAndMakeVisible (panel = new PropertyPanel());
     panel->setMessageWhenEmpty (String());
     panel->getViewport().setScrollBarThickness (10);
@@ -28,7 +25,7 @@ SetupPanel::SetupPanel (EditAndPreview* ed)
 //=========================================================================
 SetupPanel::~SetupPanel()
 {
-    valuesRemoveListener();
+    valuesRemoveListener (false);
     stopTimer();
     savePropertiesIfNeeded();
 }
@@ -322,7 +319,7 @@ void SetupPanel::valuesAddListener()
 }
 
 //=================================================================================================
-void SetupPanel::valuesRemoveListener()
+void SetupPanel::valuesRemoveListener (const bool addValues/* = true*/)
 {
     /* prevent doesn't save the modified text when switch item in fileTree
     
@@ -331,30 +328,34 @@ void SetupPanel::valuesRemoveListener()
        then it'll save the projectTree immediately.
        it's a bit of unclear in meaning, but it works well...
     */
-    if (currentTree.isValid())
+    if (currentTree.isValid() && values.size() > 0)
     {
         if (values[itsTitle]->getValue() != currentTree.getProperty ("title"))
         {
             currentTree.setProperty ("title", values[itsTitle]->getValue(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
+            FileTreeContainer::saveProject();
         }
 
         else if (values[keywords]->getValue() != currentTree.getProperty ("keywords"))
         {
             currentTree.setProperty ("keywords", values[keywords]->getValue(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
+            FileTreeContainer::saveProject();
         }
 
         else if (values[desc]->getValue() != currentTree.getProperty ("description"))
         {
             currentTree.setProperty ("description", values[desc]->getValue(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
+            FileTreeContainer::saveProject();
         }
 
         else if (values[jsCode]->getValue() != currentTree.getProperty ("js"))
         {
             currentTree.setProperty ("js", values[jsCode]->getValue(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
+            FileTreeContainer::saveProject();
         }
 
         else if (currentTree.getType().toString() == "wdtpProject"
@@ -362,6 +363,7 @@ void SetupPanel::valuesRemoveListener()
         {
             currentTree.setProperty ("owner", values[projectOwner]->getValue(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
+            FileTreeContainer::saveProject();
         }
 
         else if (currentTree.getType().toString() == "wdtpProject"
@@ -369,6 +371,7 @@ void SetupPanel::valuesRemoveListener()
         {
             currentTree.setProperty ("copyright", values[copyrightInfo]->getValue(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
+            FileTreeContainer::saveProject();
         }
 
         else if (currentTree.getType().toString() == "wdtpProject"
@@ -376,6 +379,7 @@ void SetupPanel::valuesRemoveListener()
         {
             currentTree.setProperty ("contact", values[contact]->getValue(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
+            FileTreeContainer::saveProject();
         }
 
         else if (currentTree.getType().toString() == "wdtpProject"
@@ -383,6 +387,7 @@ void SetupPanel::valuesRemoveListener()
         {
             currentTree.setProperty ("ad", values[ad]->getValue(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
+            FileTreeContainer::saveProject();
         }
 
         else if (currentTree.getType().toString() != "wdtpProject"
@@ -390,6 +395,7 @@ void SetupPanel::valuesRemoveListener()
         {
             currentTree.setProperty ("createDate", values[createDate]->getValue(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
+            FileTreeContainer::saveProject();
         }
 
         else if (currentTree.getType().toString() == "doc"
@@ -397,6 +403,7 @@ void SetupPanel::valuesRemoveListener()
         {
             currentTree.setProperty ("abbrev", values[abbrev]->getValue(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
+            FileTreeContainer::saveProject();
         }
 
         else if (currentTree.getType().toString() == "doc"
@@ -404,13 +411,18 @@ void SetupPanel::valuesRemoveListener()
         {
             currentTree.setProperty ("reviewDate", values[reviewDate]->getValue(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
+            FileTreeContainer::saveProject();
         }
     }
-
-    for (auto v : values)
-        v->removeListener (this);
-
+    
+    values.clear();
     projectHasChanged = false;
+
+    if (addValues)
+    {
+        for (int i = totalValues; --i >= 0; )
+            values.add (new Value());
+    }
 }
 
 //=========================================================================

@@ -25,7 +25,7 @@ SetupPanel::SetupPanel (EditAndPreview* ed)
 //=========================================================================
 SetupPanel::~SetupPanel()
 {
-    valuesRemoveListener (false);
+    initialValues (true, false);
     stopTimer();
     savePropertiesIfNeeded();
 }
@@ -33,7 +33,7 @@ SetupPanel::~SetupPanel()
 //=================================================================================================
 void SetupPanel::showProjectProperties (const ValueTree& pTree)
 {
-    valuesRemoveListener();
+    initialValues (true, true);
 
     currentTree = pTree;
     panel->clear();
@@ -123,7 +123,7 @@ void SetupPanel::showProjectProperties (const ValueTree& pTree)
 //=================================================================================================
 void SetupPanel::showDirProperties (const ValueTree& dTree)
 {
-    valuesRemoveListener();
+    initialValues (true, true);
 
     panel->clear();
     currentTree = dTree;
@@ -188,9 +188,10 @@ void SetupPanel::showDirProperties (const ValueTree& dTree)
 }
 
 //=================================================================================================
-void SetupPanel::showDocProperties (const ValueTree& dTree)
+void SetupPanel::showDocProperties (const bool currentValuesUpdateTree,
+                                    const ValueTree& dTree)
 {
-    valuesRemoveListener();
+    initialValues (currentValuesUpdateTree, true);
 
     panel->clear();
     currentTree = dTree;
@@ -300,7 +301,7 @@ void SetupPanel::projectClosed()
 {
     stopTimer();
     savePropertiesIfNeeded();
-    valuesRemoveListener();
+    initialValues (true, false);
 
     currentTree = ValueTree::invalid;
     projectHasChanged = false;
@@ -319,7 +320,8 @@ void SetupPanel::valuesAddListener()
 }
 
 //=================================================================================================
-void SetupPanel::valuesRemoveListener (const bool addValues/* = true*/)
+void SetupPanel::initialValues (const bool currentValuesUpdateTree,
+                                const bool addValues)
 {
     /* prevent doesn't save the modified text when switch item in fileTree
     
@@ -328,7 +330,7 @@ void SetupPanel::valuesRemoveListener (const bool addValues/* = true*/)
        then it'll save the projectTree immediately.
        it's a bit of unclear in meaning, but it works well...
     */
-    if (currentTree.isValid() && values.size() > 0)
+    if (currentTree.isValid() && currentValuesUpdateTree && values.size() > 0)
     {
         if (values[itsTitle]->getValue() != currentTree.getProperty ("title"))
         {

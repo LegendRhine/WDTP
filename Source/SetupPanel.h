@@ -28,16 +28,15 @@ public:
 
     void showNothing()                         { panel->clear(); }
     void updateWordCount (const int wordsNum)  { values[wordCount]->setValue (wordsNum); }
-    void updateDocPanel()                      { showDocProperties (currentTree); }
 
     void showProjectProperties (const ValueTree& projectTree);
     void showDirProperties (const ValueTree& dirTree);
-    void showDocProperties (const ValueTree& docTree);
+    void showDocProperties (const bool currentValuesUpdateTree, const ValueTree& docTree);
 
 private:
     //=========================================================================    
     void valuesAddListener();
-    void valuesRemoveListener (const bool addValues = true);
+    void initialValues (const bool currentValuesUpdateTree, const bool addValues);
 
     virtual void valueChanged (Value& value) override;
 

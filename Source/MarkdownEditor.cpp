@@ -127,22 +127,22 @@ void MarkdownEditor::performPopupMenuAction (int index)
     if (addKeywords == index)
     {
         addSelectedToKeywords (getHighlightedText());
-        parent->getSetupPanel()->updateDocPanel();
+        parent->getSetupPanel()->showDocProperties (false, parent->getCurrentTree());
         DocTreeViewItem::needCreate (parent->getCurrentTree());
     }
 
     else if (pickTitle == index)
     {
         parent->getCurrentTree().setProperty ("title", getHighlightedText(), nullptr);
-        parent->getSetupPanel()->updateDocPanel();
+        parent->getSetupPanel()->showDocProperties (false, parent->getCurrentTree());
         DocTreeViewItem::needCreate (parent->getCurrentTree());
     }
 
     else if (pickDesc == index)
     {
         parent->getCurrentTree().setProperty ("description", getHighlightedText(), nullptr);
-        parent->getSetupPanel()->updateDocPanel();
-        DocTreeViewItem::needCreate (parent->getCurrentTree());
+        parent->getSetupPanel()->showDocProperties (false, parent->getCurrentTree());
+        DocTreeViewItem::needCreate (parent->getCurrentTree ());
     }
 
     else if (insertSeparator == index)      insertTextAtCaret (newLine + "---" + newLine);
@@ -1140,12 +1140,12 @@ void MarkdownEditor::actionListenerCallback (const String& message)
     if (prefix == "++")
     {
         addSelectedToKeywords (message.substring (2));
-        parent->getSetupPanel()->updateDocPanel();
+        parent->getSetupPanel()->showDocProperties (false, parent->getCurrentTree());
     }
     else if (prefix == "--")
     {
         subtractFromKeywords (message.substring (2));
-        parent->getSetupPanel()->updateDocPanel();
+        parent->getSetupPanel()->showDocProperties (false, parent->getCurrentTree());
     }
     else if (postfix == "mp3")
     {

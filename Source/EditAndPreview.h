@@ -48,7 +48,7 @@ public:
 
     void projectClosed();
     const bool saveCurrentDocIfChanged();
-    void setTreeProperties (const ValueTree& tree);
+    void showProperties (const ValueTree& tree);
     
     /** a transfer method */
     const bool selectItemFromHtmlFile (const File& htmlFile);

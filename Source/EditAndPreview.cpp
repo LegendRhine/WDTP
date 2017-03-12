@@ -246,10 +246,10 @@ void EditAndPreview::projectClosed()
 }
 
 //=================================================================================================
-void EditAndPreview::setTreeProperties (const ValueTree& tree)
+void EditAndPreview::showProperties (const ValueTree& tree)
 {
     if (tree.getType().toString() == "doc")
-        setupPanel->showDocProperties (tree);
+        setupPanel->showDocProperties (true, tree);
 
     else if (tree.getType().toString() == "dir")
         setupPanel->showDirProperties (tree);
@@ -299,7 +299,7 @@ const bool EditAndPreview::saveCurrentDocIfChanged()
         if (tempFile.overwriteTargetFileWithTemporary())
         {
             docHasChanged = false;
-            setupPanel->showDocProperties (docOrDirTree);
+            setupPanel->showDocProperties (false, docOrDirTree);
             returnValue = FileTreeContainer::saveProject();
         }
         else

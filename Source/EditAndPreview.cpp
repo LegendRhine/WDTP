@@ -158,6 +158,16 @@ void EditAndPreview::editCurrentDoc()
     editor->setEnabled (true);
     editor->grabKeyboardFocus();
     
+    // here must goto the html url of the doc on osx, although the broswer doesn't visible.
+    // otherwise, it'll load the previous page when switch to preview another doc,
+    // especially after created a doc, edited then preview it.
+    const String urlStr ((docOrDirFile.existsAsFile()) ?
+                         HtmlProcessor::createArticleHtml (docOrDirTree, true).getFullPathName() :
+                         HtmlProcessor::createIndexHtml (docOrDirTree, true).getFullPathName());
+    
+    webView->goToURL (urlStr);
+    currentUrl = urlStr;
+    
     resized();
 }
 

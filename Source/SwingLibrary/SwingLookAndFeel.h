@@ -35,6 +35,11 @@ public:
     /** popup menu */
     virtual Font getPopupMenuFont() override;
     
+    /** alertWindow and textButton */
+    virtual Font getAlertWindowTitleFont() override;
+    virtual Font getAlertWindowMessageFont() override;
+    virtual Font getTextButtonFont (TextButton& bt, int buttonHeight) override;
+    
 };
 
 #endif  // SWINGLOOKANDFEEL_H_INCLUDED

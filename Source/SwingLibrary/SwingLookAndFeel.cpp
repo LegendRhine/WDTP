@@ -91,3 +91,32 @@ Font SwingLookAndFeel::getPopupMenuFont()
     return SwingUtilities::getFontSize() - decreaseSize;
 }
 
+//=================================================================================================
+Font SwingLookAndFeel::getAlertWindowTitleFont()
+{
+#if JUCE_MAC
+    return LookAndFeel_V3::getAlertWindowTitleFont().getHeight() + 2.f;
+#elif JUCE_WINDOWS
+    return LookAndFeel_V3::getAlertWindowTitleFont();
+#endif
+}
+
+//=================================================================================================
+Font SwingLookAndFeel::getAlertWindowMessageFont()
+{
+#if JUCE_MAC
+    return LookAndFeel_V3::getAlertWindowMessageFont().getHeight() + 3.f;
+#elif JUCE_WINDOWS
+    return LookAndFeel_V3::getAlertWindowMessageFont();
+#endif
+}
+
+//=================================================================================================
+Font SwingLookAndFeel::getTextButtonFont (TextButton& bt, int buttonHeight)
+{
+#if JUCE_MAC
+    return LookAndFeel_V3::getTextButtonFont (bt, buttonHeight).getHeight() + 2.f;
+#elif JUCE_WINDOWS
+    return LookAndFeel_V3::getTextButtonFont (bt, buttonHeight);
+#endif
+}

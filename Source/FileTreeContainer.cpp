@@ -405,6 +405,7 @@ const bool FileTreeContainer::selectItemFromHtmlFile (const File& htmlFile)
     if (htmlPath.isEmpty())  // root
     {
         fileTree.getItemOnRow (0)->setSelected (true, true);
+        fileTree.scrollToKeepItemVisible (fileTree.getSelectedItem (0));
         return true;
     }
 

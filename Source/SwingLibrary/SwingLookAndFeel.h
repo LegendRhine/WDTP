@@ -33,10 +33,7 @@ public:
                                           bool isOpen, int width, int height) override;
     
     /** popup menu */
-    virtual Font getPopupMenuFont() override
-    {
-        return SwingUtilities::getFontSize() - 2.f;
-    }
+    virtual Font getPopupMenuFont() override;
     
 };
 

@@ -151,13 +151,7 @@ void FileTreeContainer::openProject (const File& project)
 
     mainWindow->setName (realProject.getFileNameWithoutExtension() + " - " 
                          + JUCEApplication::getInstance()->getApplicationName());
-
-    // set the main-window's size and position
-    const String& sizeAndPostion (projectTree.getProperty ("mainWindowSizeAndPosition").toString());
-
-    if (sizeAndPostion.isNotEmpty())
-        mainWindow->restoreWindowStateFromString (sizeAndPostion);
-
+    
     // add the project to recent opened file list
     RecentlyOpenedFilesList  recentFiles;
     recentFiles.setMaxNumberOfItems (10);
@@ -206,10 +200,7 @@ const bool FileTreeContainer::saveDocAndProject()
     // Here must check to prevent invalid assert 
     // eg. when quit this application after closed project..
     if (projectTree.isValid())
-    {
-        if (fileTree.getSelectedItem (0) != nullptr)
-            setIdentityOfLastSelectedItem (fileTree.getSelectedItem (0)->getItemIdentifierString());
-        
+    {        
         return editAndPreview->saveCurrentDocIfChanged() && saveProject();
     }
 

@@ -25,7 +25,6 @@
 		- doc
 
 - wdtpProject: root valueTree, also represents the Project Properties.
-    - mainWindowSizeAndPosition
     - name: it should be 'site' always.
     - tile
 	- keywords: keywords of its own (means: keywords of this dir, not all the keywords of this project)

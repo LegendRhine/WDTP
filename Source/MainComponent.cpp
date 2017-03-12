@@ -134,7 +134,7 @@ void MainContentComponent::run()
     url = URL::createWithoutParsing ("https://github.com/LegendRhine/gitBackup/raw/master/applications/lame-win.zip");
 #elif JUCE_MAC
     lameEncoder = File::getSpecialLocation (File::userDocumentsDirectory).getChildFile ("lame.app");
-    url = URL::createWithoutParsing ("https://github.com/LegendRhine/gitBackup/raw/master/applications/lame-osx.zip");
+    url = URL::createWithoutParsing ("https://github.com/LegendRhine/gitBackup/raw/master/applications/lame.app");
 #endif
 
     if (!lameEncoder.existsAsFile())
@@ -144,10 +144,17 @@ void MainContentComponent::run()
         // put it in userDocumentsDirectory
         if (url.readEntireBinaryStream (mb))
         {
+#if JUCE_WINDOWS
             MemoryInputStream inputSteam (mb, false);
             ZipFile zip (inputSteam);
             zip.uncompressEntry (0, File::getSpecialLocation (File::userDocumentsDirectory));
-        }        
+#elif JUCE_MAC
+            lameEncoder.create();
+
+            if (!lameEncoder.replaceWithData (mb.getData(), mb.getSize()))
+                lameEncoder.deleteFile();
+#endif
+        }
     }
 }
 

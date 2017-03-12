@@ -617,6 +617,10 @@ const String HtmlProcessor::getKeywordsLinks (const String& rootPath)
     StringArray kws;
     kws.addTokens (extractKeywordsOfDocs (FileTreeContainer::projectTree), ",", String());
 
+    // prevent crash when there is no any keyword in this project
+    if (kws.size() < 1)
+        return String();
+
     for (int i = kws.size(); --i >= 0; )
     {
         if (kws[i].contains ("--"))
@@ -664,7 +668,6 @@ const String HtmlProcessor::getKeywordsLinks (const String& rootPath)
 
             kws.getReference (i) = kws[i] + "</ul></li></ul></td>";
         }
-
     }
 
     // table... column / line

@@ -334,28 +334,31 @@ void SetupPanel::initialValues (const bool currentValuesUpdateTree,
     {
         if (values[itsTitle]->getValue() != currentTree.getProperty ("title"))
         {
-            currentTree.setProperty ("title", values[itsTitle]->getValue(), nullptr);
+            currentTree.setProperty ("title", values[itsTitle]->getValue().toString().trim(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
             FileTreeContainer::saveProject();
         }
 
         else if (values[keywords]->getValue() != currentTree.getProperty ("keywords"))
         {
-            currentTree.setProperty ("keywords", values[keywords]->getValue(), nullptr);
+            currentTree.setProperty ("keywords", values[keywords]->getValue().toString()
+                                     .trim().replace (")", String()).replace ("(", "_")  // Chinese ','
+                                     .replace (CharPointer_UTF8 ("\xef\xbc\x8c"), ", "), nullptr);
+
             DocTreeViewItem::needCreate (currentTree);
             FileTreeContainer::saveProject();
         }
 
         else if (values[desc]->getValue() != currentTree.getProperty ("description"))
         {
-            currentTree.setProperty ("description", values[desc]->getValue(), nullptr);
+            currentTree.setProperty ("description", values[desc]->getValue().toString().trim(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
             FileTreeContainer::saveProject();
         }
 
         else if (values[jsCode]->getValue() != currentTree.getProperty ("js"))
         {
-            currentTree.setProperty ("js", values[jsCode]->getValue(), nullptr);
+            currentTree.setProperty ("js", values[jsCode]->getValue().toString().trim(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
             FileTreeContainer::saveProject();
         }
@@ -363,7 +366,7 @@ void SetupPanel::initialValues (const bool currentValuesUpdateTree,
         else if (currentTree.getType().toString() == "wdtpProject"
                  && values[projectOwner]->getValue() != currentTree.getProperty ("owner"))
         {
-            currentTree.setProperty ("owner", values[projectOwner]->getValue(), nullptr);
+            currentTree.setProperty ("owner", values[projectOwner]->getValue().toString().trim(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
             FileTreeContainer::saveProject();
         }
@@ -371,7 +374,7 @@ void SetupPanel::initialValues (const bool currentValuesUpdateTree,
         else if (currentTree.getType().toString() == "wdtpProject"
                  && values[copyrightInfo]->getValue() != currentTree.getProperty ("copyright"))
         {
-            currentTree.setProperty ("copyright", values[copyrightInfo]->getValue(), nullptr);
+            currentTree.setProperty ("copyright", values[copyrightInfo]->getValue().toString().trim(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
             FileTreeContainer::saveProject();
         }
@@ -379,7 +382,7 @@ void SetupPanel::initialValues (const bool currentValuesUpdateTree,
         else if (currentTree.getType().toString() == "wdtpProject"
                  && values[contact]->getValue() != currentTree.getProperty ("contact"))
         {
-            currentTree.setProperty ("contact", values[contact]->getValue(), nullptr);
+            currentTree.setProperty ("contact", values[contact]->getValue().toString().trim(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
             FileTreeContainer::saveProject();
         }
@@ -387,7 +390,7 @@ void SetupPanel::initialValues (const bool currentValuesUpdateTree,
         else if (currentTree.getType().toString() == "wdtpProject"
                  && values[ad]->getValue() != currentTree.getProperty ("ad"))
         {
-            currentTree.setProperty ("ad", values[ad]->getValue(), nullptr);
+            currentTree.setProperty ("ad", values[ad]->getValue().toString().trim(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
             FileTreeContainer::saveProject();
         }
@@ -395,7 +398,7 @@ void SetupPanel::initialValues (const bool currentValuesUpdateTree,
         else if (currentTree.getType().toString() != "wdtpProject"
                  && values[createDate]->getValue() != currentTree.getProperty ("createDate"))
         {
-            currentTree.setProperty ("createDate", values[createDate]->getValue(), nullptr);
+            currentTree.setProperty ("createDate", values[createDate]->getValue().toString().trim(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
             FileTreeContainer::saveProject();
         }
@@ -403,7 +406,7 @@ void SetupPanel::initialValues (const bool currentValuesUpdateTree,
         else if (currentTree.getType().toString() == "doc"
                  && values[abbrev]->getValue() != currentTree.getProperty ("abbrev"))
         {
-            currentTree.setProperty ("abbrev", values[abbrev]->getValue(), nullptr);
+            currentTree.setProperty ("abbrev", values[abbrev]->getValue().toString().trim(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
             FileTreeContainer::saveProject();
         }
@@ -411,7 +414,7 @@ void SetupPanel::initialValues (const bool currentValuesUpdateTree,
         else if (currentTree.getType().toString() == "doc"
                  && values[reviewDate]->getValue() != currentTree.getProperty ("reviewDate"))
         {
-            currentTree.setProperty ("reviewDate", values[reviewDate]->getValue(), nullptr);
+            currentTree.setProperty ("reviewDate", values[reviewDate]->getValue().toString().trim(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
             FileTreeContainer::saveProject();
         }
@@ -502,6 +505,14 @@ void SetupPanel::valueChanged (Value& value)
     // regenarate the current page
     if (editor->getCureentState())
         cmdManager->invokeDirectly (TopToolBar::generateCurrent, true);
+
+    // update the panel
+    if (currentTree.getType().toString() == "wdtpProject")
+        showProjectProperties (currentTree);
+    else if (currentTree.getType().toString() == "dir")
+        showDirProperties (currentTree);
+    else if (currentTree.getType().toString() == "doc")
+        showDocProperties (false, currentTree);
 
     startTimer (200);
 }

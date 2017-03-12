@@ -39,13 +39,11 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
     if (e->mods.isPopupMenu())
     {
         menu.addItem (pickTitle, TRANS ("Pickup as Title"), getHighlightedText().isNotEmpty());
+        menu.addItem (pickDesc, TRANS ("Pickup as Description"), getHighlightedText().isNotEmpty());
         menu.addSeparator();
 
         menu.addItem (addKeywords, TRANS ("Add to Keywords"), getHighlightedText().isNotEmpty());
         menu.addItem (pickFromAllKeywords, TRANS ("Keywords Table") + "...");
-        menu.addSeparator();
-        
-        menu.addItem (pickDesc, TRANS ("Pickup as Description"), getHighlightedText().isNotEmpty());
         menu.addSeparator();
 
         PopupMenu insertMenu;

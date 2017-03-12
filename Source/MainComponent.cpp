@@ -12,6 +12,7 @@
 
 extern PropertiesFile* systemFile;
 extern ApplicationCommandManager* cmdManager;
+File lameEncoder;
 
 //==============================================================================
 MainContentComponent::MainContentComponent() :
@@ -35,7 +36,9 @@ MainContentComponent::MainContentComponent() :
     layoutManager.setItemLayout (2, -0.7, -1.0, -0.79);     // editAndPreview
 
     setSize (1260, 780);
-    startTimer (2000);  // check new version
+
+    // check new version and download mp3-encoder if it's not there
+    startTimer (2000);
 }
 
 //=======================================================================
@@ -123,7 +126,29 @@ void MainContentComponent::run()
     {
         const MessageManagerLock mmLock;
         toolBar->hasNewVersion();
-    }    
+    }
+
+    // download mp3 encoder if it's not there
+#if JUCE_WINDOWS
+    lameEncoder = File::getSpecialLocation (File::userDocumentsDirectory).getChildFile ("lame.exe");
+    url = URL::createWithoutParsing ("https://github.com/LegendRhine/gitBackup/raw/master/applications/lame-win.zip");
+#elif JUCE_MAC
+    lameEncoder = File::getSpecialLocation (File::userDocumentsDirectory).getChildFile ("lame.app");
+    url = URL::createWithoutParsing ("https://github.com/LegendRhine/gitBackup/raw/master/applications/lame-osx.zip");
+#endif
+
+    if (!lameEncoder.existsAsFile())
+    {
+        MemoryBlock mb;
+        
+        // put it in userDocumentsDirectory
+        if (url.readEntireBinaryStream (mb))
+        {
+            MemoryInputStream inputSteam (mb, false);
+            ZipFile zip (inputSteam);
+            zip.uncompressEntry (0, File::getSpecialLocation (File::userDocumentsDirectory));
+        }        
+    }
 }
 
 //=================================================================================================
@@ -141,7 +166,7 @@ MainWindow::MainWindow (const String& name) :
     setResizeLimits (640, 480, 3200, 2400);
     setUsingNativeTitleBar (true);
 
-    centreWithSize (getWidth(), getHeight());
+    setFullScreen (true);
     setVisible (true);
 
     mainComp->grabKeyboardFocus();
@@ -156,15 +181,8 @@ MainWindow::~MainWindow()
 //=================================================================================================
 void MainWindow::closeButtonPressed()
 {
-    // store the main-window's size and position
-    if (FileTreeContainer::projectTree.isValid())
-    {
-        FileTreeContainer::projectTree.setProperty ("mainWindowSizeAndPosition",
-                                                    getWindowStateAsString(), nullptr);
-    }
-
     // save and exit
-    if (mainComp->getFileTree()->saveDocAndProject())
+    if (mainComp->getEditAndPreview()->saveCurrentDocIfChanged())
     {
         JUCEApplication::getInstance()->systemRequestedQuit();
     }

@@ -16,7 +16,6 @@ ApplicationCommandManager* cmdManager   = nullptr;
 
 AudioFormatManager* formatManager = nullptr;
 AudioDeviceManager* deviceManager = nullptr;
-File lameEncoder;
 
 //==============================================================================
 class WDTPApplication : public JUCEApplication
@@ -65,24 +64,6 @@ public:
         deviceManager = new AudioDeviceManager();
         ScopedPointer<XmlElement> audioState (systemFile->getXmlValue ("audioState"));
         deviceManager->initialise (2, 2, audioState, true);
-
-        // initial lame encoder file
-        int lameZipFileIndex = 0;
-
-#if JUCE_WINDOWS
-        lameEncoder = File::getSpecialLocation (File::userDocumentsDirectory).getChildFile ("lame.exe");
-#elif JUCE_MAC
-        + lameEncoder = File::getSpecialLocation (File::userDocumentsDirectory).getChildFile ("lame.app");
-        lameZipFileIndex = 1;
-#endif
-
-        if (!lameEncoder.existsAsFile())
-        {
-            // release lame encoder in userDocumentsDirectory
-            MemoryInputStream inputSteam (BinaryData::encoder_zip, BinaryData::encoder_zipSize, false);
-            ZipFile zip (inputSteam);
-            zip.uncompressEntry (lameZipFileIndex, File::getSpecialLocation (File::userDocumentsDirectory));
-        }
 
         // initial application's GUI
         LookAndFeel::setDefaultLookAndFeel (lnf = new SwingLookAndFeel());

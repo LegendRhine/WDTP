@@ -37,7 +37,7 @@ public:
     void reloadCurrentDoc();
     const bool selectItemFromHtmlFile (const File& htmlFile);
 
-    /** these 2 for check the new version */
+    /** these 2 for check the new version and download mp3-encoder if it's not there. */
     virtual void timerCallback() override;
     virtual void run() override;
 

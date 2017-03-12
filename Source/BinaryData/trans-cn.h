@@ -368,7 +368,7 @@ countries: cn
 "Record/Stop" = "录音/停止"
 "Play/Pause" = "播放/暂停"
 "Done" = "完成"
-"Cannot find Lame encoder." = "无法找到 Lame 音频编码器。"
+"Cannot find Lame-Encoder." = "无法找到 Lame 音频编码器。"
 "Please download the encoder and put it into OS 'Documents' directory." = "请下载该编码器并复制到操作系统‘文档’目录下。"
 "Copy For Another Project" = "跨项目复制"
 "Paste From Another Project" = "跨项目粘贴"

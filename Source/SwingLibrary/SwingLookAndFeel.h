@@ -28,6 +28,4 @@ public:
     
 };
 
-
-
 #endif  // SWINGLOOKANDFEEL_H_INCLUDED

@@ -66,7 +66,7 @@ void SwingLookAndFeel::drawTooltip (Graphics& g, const String& text, int width, 
 void SwingLookAndFeel::drawPropertyPanelSectionHeader (Graphics& g, const String& name,
                                      bool isOpen, int width, int height)
 {
-    const float buttonSize = height * 0.75f;
+    const float buttonSize = height * 0.8f;
     const float buttonIndent = (height - buttonSize) * 0.5f;
     
     drawTreeviewPlusMinusBox (g, Rectangle<float> (buttonIndent, buttonIndent, buttonSize, buttonSize), Colours::white, isOpen, false);
@@ -74,7 +74,7 @@ void SwingLookAndFeel::drawPropertyPanelSectionHeader (Graphics& g, const String
     const int textX = (int) (buttonIndent * 2.0f + buttonSize + 2.0f);
     
     g.setColour (Colour (0xff999999));
-    g.setFont (Font (height * 0.7f, Font::bold));
+    g.setFont (Font (height * 0.75f, Font::bold));
     g.drawText (name, textX, 0, width - textX - 4, height, Justification::centredLeft, true);
 
 }

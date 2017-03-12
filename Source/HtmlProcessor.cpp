@@ -607,7 +607,7 @@ const String HtmlProcessor::extractKeywordsOfDocs (const ValueTree& dirTree)
     if (keywords.substring (0, 1) == ",")
         keywords = keywords.substring (1);
 
-    //DBGX (keywords);
+    DBGX (keywords);
     return keywords;
 }
 
@@ -697,6 +697,7 @@ void HtmlProcessor::extractKeywords (const ValueTree& tree,
         StringArray thisArray;
 
         thisArray.addTokens (keywords, ",", String());
+        thisArray.trim();
         thisArray.removeEmptyStrings();
         thisArray.removeDuplicates (true);
         arrayToAdd.addArray (thisArray);

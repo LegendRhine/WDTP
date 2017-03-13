@@ -251,10 +251,10 @@ void EditAndPreview::projectClosed()
 }
 
 //=================================================================================================
-void EditAndPreview::showProperties (const ValueTree& tree)
+void EditAndPreview::showProperties (const bool saveCurrentValues, const ValueTree& tree)
 {
     if (tree.getType().toString() == "doc")
-        setupPanel->showDocProperties (true, tree);
+        setupPanel->showDocProperties (saveCurrentValues, tree);
 
     else if (tree.getType().toString() == "dir")
         setupPanel->showDirProperties (tree);

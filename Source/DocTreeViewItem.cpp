@@ -278,7 +278,7 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
         EditAndPreview* editArea = treeContainer->getEditAndPreview();
 
         // set properties on the right side
-        editArea->showProperties (tree);
+        editArea->showProperties (true, tree);
 
         // this must after setTreeProperties() since
         // startWork() will update the word count of this doc to setup-panel
@@ -1002,14 +1002,16 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
 void DocTreeViewItem::crossProjectCopy()
 {
     // copy its properties
-    const DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (getOwnerView()->getSelectedItem (0));
-    ValueTree docTree (item->tree.createCopy());
-    docTree.setProperty ("fileFullPath", getMdFileOrDir (item->tree).getFullPathName(), nullptr);
+    jassert (isSelected());
+
+    //const DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (getOwnerView()->getSelectedItem (0));
+    ValueTree docTree (/*item->*/tree.createCopy());
+    docTree.setProperty ("fileFullPath", getMdFileOrDir (/*item->*/tree).getFullPathName(), nullptr);
 
     // copy its media files' path
     Array<File> medias;
 
-    for (int i = getMdMediaFiles (getMdFileOrDir (item->tree), medias); --i >= 0; )
+    for (int i = getMdMediaFiles (getMdFileOrDir (/*item->*/tree), medias); --i >= 0; )
     {
         ValueTree mediaTree ("media");
         mediaTree.setProperty ("mediaFullPath", medias[i].getFullPathName(), nullptr);
@@ -1068,7 +1070,8 @@ void DocTreeViewItem::crossProjectPaste()
         docTree.setProperty ("name", item->tree.getProperty ("name").toString(), nullptr);
         item->tree.copyPropertiesFrom (docTree, nullptr);
 
-        treeContainer->getEditAndPreview()->showProperties (item->tree);
+        DBGX (item->tree.getProperty ("title").toString ());
+        treeContainer->getEditAndPreview()->showProperties (false, item->tree);
         treeContainer->getEditAndPreview()->updateEditorContent();
 
         crossCopyFile.deleteFile();

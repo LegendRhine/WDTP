@@ -48,6 +48,7 @@ struct HtmlProcessor
     /** Use for file/dir list sort. Base on create-date */
     const int compareElements (const ValueTree& ft, const ValueTree& st);
 
+    /** the result will include 'hide' doc(s). */
     static void getDocNumbersOfTheDir (const ValueTree& dirTree, int& num);
 
     /** process the arg-string if it includes any abbrev */

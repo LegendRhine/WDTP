@@ -341,7 +341,8 @@ const bool HtmlProcessor::atLeastHasOneMenu (const ValueTree& tree)
 {
     for (int i = tree.getNumChildren(); --i >= 0; )
     {
-        if ((bool)tree.getChild (i).getProperty ("isMenu"))
+        if ((bool)tree.getChild (i).getProperty ("isMenu")
+            && !(bool)tree.getProperty ("hide"))
             return true;
     }
 
@@ -693,9 +694,10 @@ const String HtmlProcessor::getKeywordsLinks (const String& rootPath)
 
 //=================================================================================================
 void HtmlProcessor::extractKeywords (const ValueTree& tree,
-                                  StringArray& arrayToAdd)
+                                     StringArray& arrayToAdd)
 {
-    if (tree.getType().toString() == "doc")
+    if (tree.getType().toString() == "doc" 
+        && !(bool)tree.getProperty ("hide"))
     {
         const String& keywords (tree.getProperty ("keywords").toString());
         StringArray thisArray;
@@ -716,7 +718,8 @@ void HtmlProcessor::getDocTreeWithKeyword (const ValueTree& tree,
                                            const String& keyword, 
                                            Array<ValueTree>& result)
 {   
-    if (tree.getType().toString() == "doc")
+    if (tree.getType().toString() == "doc"
+        && !(bool)tree.getProperty ("hide"))
     {
         StringArray kws;
         const String keys (tree.getProperty ("keywords").toString());
@@ -963,7 +966,8 @@ void HtmlProcessor::getAllArticleLinksOfGivenTree (const ValueTree& tree,
 
     if (tree.getType().toString() == "doc" 
         && tree.getProperty ("name").toString() != "index"
-        && !(bool)tree.getProperty ("isMenu"))
+        && !(bool)tree.getProperty ("isMenu")
+        && !(bool)tree.getProperty ("hide"))
     {
         if ((extractType == featuredArticle) && !(bool)tree.getProperty ("featured"))
             return;
@@ -1012,7 +1016,9 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
     {
         ValueTree fd (pTree.getChild (i));
 
-        if ((bool)fd.getProperty ("isMenu") && DocTreeViewItem::getMdFileOrDir (fd).exists())
+        if ((bool)fd.getProperty ("isMenu") 
+            && DocTreeViewItem::getMdFileOrDir (fd).exists()
+            && !(bool)fd.getProperty ("hide"))
         {
             const File& dirIndex (DocTreeViewItem::getHtmlFileOrDir (fd));
             const String& menuName (fd.getProperty ("title").toString());
@@ -1041,7 +1047,8 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
                     const ValueTree& sd (fd.getChild (j));
 
                     if (DocTreeViewItem::getMdFileOrDir (sd).exists()
-                        && (bool)sd.getProperty ("isMenu"))
+                        && (bool)sd.getProperty ("isMenu")
+                        && !(bool)sd.getProperty ("hide"))
                     {
                         const File& sDirIndex (DocTreeViewItem::getHtmlFileOrDir (sd));
                         const String& sMenuName (sd.getProperty ("title").toString());
@@ -1188,7 +1195,8 @@ void HtmlProcessor::getPreviousTree (const ValueTree& oTree,
     if (oTree.getType().toString() == "doc" && !(bool)oTree.getProperty ("isMenu"))
     {
         if ((oTree.getProperty ("createDate").toString() < tree.getProperty ("createDate").toString())
-            && (oTree.getProperty ("createDate").toString() > result.getProperty ("createDate").toString()))
+            && (oTree.getProperty ("createDate").toString() > result.getProperty ("createDate").toString())
+            && !(bool)oTree.getProperty ("hide"))
             result = oTree;
     }
 
@@ -1208,7 +1216,8 @@ void HtmlProcessor::getNextTree (const ValueTree& oTree,
     if (oTree.getType().toString() == "doc" && !(bool)oTree.getProperty ("isMenu"))
     {
         if ((oTree.getProperty ("createDate").toString() > tree.getProperty ("createDate").toString())
-            && (oTree.getProperty ("createDate").toString() < result.getProperty ("createDate").toString()))
+            && (oTree.getProperty ("createDate").toString() < result.getProperty ("createDate").toString())
+            && !(bool)oTree.getProperty ("hide"))
             result = oTree;
     }
 
@@ -1284,10 +1293,12 @@ void HtmlProcessor::getLinkStrOfAlllDocTrees (const ValueTree& fromThisTree,
                                               const ValueTree& baseOnThisTree,
                                               StringArray& linkStr)
 {
-    if (fromThisTree.getType().toString() == "doc" && fromThisTree != baseOnThisTree)
+    if (fromThisTree.getType().toString() == "doc")
     {
-        if (!(bool)fromThisTree.getProperty ("isMenu")
-            && fromThisTree.getProperty ("name").toString() != "index")
+        if (fromThisTree != baseOnThisTree
+            && !(bool)fromThisTree.getProperty ("isMenu")
+            && fromThisTree.getProperty ("name").toString() != "index"
+            && !(bool)fromThisTree.getProperty ("hide"))
         {
             const String text = fromThisTree.getProperty ("title").toString();
 
@@ -1311,6 +1322,9 @@ void HtmlProcessor::getBookListLinks (const ValueTree& tree,
                                       const bool isRootTree,
                                       StringArray& linkStr)
 {
+    if ((bool)tree.getProperty ("hide"))
+        return;
+
     const String filePath (DocTreeViewItem::getHtmlFileOrDir (tree).getFullPathName());
     const String rootPath (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName());
     String path (filePath.fromFirstOccurrenceOf (rootPath, false, false).substring (1));
@@ -1350,7 +1364,7 @@ void HtmlProcessor::getBlogListHtmlStr (const ValueTree& tree,
 
     if (DocTreeViewItem::getHtmlFileOrDir (tree) != baseOnthisFile)
     {
-        if (!(bool)tree.getProperty ("isMenu"))
+        if (!(bool)tree.getProperty ("isMenu") && !(bool)tree.getProperty ("hide"))
         {
             const String& text (tree.getProperty ("title").toString());
             const String& imgName (tree.getProperty ("thumbName").toString());

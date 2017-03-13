@@ -18,7 +18,8 @@ DocTreeViewItem::DocTreeViewItem (const ValueTree& tree_,
                                   ItemSorter* itemSorter) :
     tree (tree_),
     treeContainer (container),
-    sorter (itemSorter)
+    sorter (itemSorter),
+    selectTime (0)
 {
     jassert (treeContainer != nullptr);
 
@@ -291,6 +292,7 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
         editArea->getEditor()->setTemporaryUnderlining ((nonUnderline));
 
         treeContainer->setIdentityOfLastSelectedItem (getItemIdentifierString());
+        selectTime = Time::getMillisecondCounter();
     }
 }
 
@@ -306,7 +308,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
     jassert (sorter != nullptr);
 
-    // right click
+    // right click for edit-menu
     if (e.mods.isPopupMenu())
     {
         PopupMenu m;
@@ -385,6 +387,50 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
         menuPerform (m.show());
     }
+
+    // left-click for doc-outline
+    else if (exist && onlyOneSelected && isDoc && e.mods.isLeftButtonDown())
+    {
+        if (Time::getMillisecondCounter() - selectTime < 200)
+            return;
+
+        TextEditor* editor = treeContainer->getEditAndPreview()->getEditor();
+        const String& content (treeContainer->getEditAndPreview()->getCurrentContent());
+
+        StringArray sentences;
+        sentences.addTokens (content, newLine, String());
+        sentences.trim();
+        sentences.removeEmptyStrings (true);
+                
+        // only remain the sencond and third title
+        for (int i = sentences.size(); --i >= 0; )
+        {
+            if (sentences[i].substring (0, 3) == "## "
+                || sentences[i].substring (0, 3) == CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83 "))
+                sentences.getReference (i) = ". " + sentences[i].substring (3);
+
+            else if (sentences[i].substring (0, 4) == "### "
+                     || sentences[i].substring (0, 4) == CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83 "))
+                sentences.getReference (i) = ".     " + sentences[i].substring (4);
+
+            else
+                sentences.remove (i);
+        }
+
+        if (sentences.size() < 1)
+            return;
+
+        // add menu-item from the stringArray
+        PopupMenu outlineMenu;
+        outlineMenu.addItem (100, "--- " + TRANS ("Beginning") + " ---");
+
+        for (int i = 0; i < sentences.size(); ++i)
+            outlineMenu.addItem (i + 101, sentences[i], true, false);
+
+        outlineMenu.addItem (101 + sentences.size(), "--- " + TRANS ("End") + " ---");
+        outlineMenu.show();
+
+    }
 }
 
 //=================================================================================================
@@ -392,12 +438,10 @@ void DocTreeViewItem::itemDoubleClicked (const MouseEvent& e)
 {
     if (e.mods.isLeftButtonDown())
     {
-        if (tree.getType().toString() == "doc")
-            renameSelectedItem();
+        if (tree.getType().toString() == "wdtpProject")
+            createNewFolder();
         else if (tree.getType().toString() == "dir")
             createNewDocument();
-        else
-            createNewFolder();
     }
 }
 

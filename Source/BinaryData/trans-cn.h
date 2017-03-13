@@ -377,3 +377,5 @@ countries: cn
 "Remind Date: " = "提醒日期："
 "Featured: " = "精华文章："
 "Hide: " = "隐身模式："
+"Beginning" = "文章开头"
+"End" = "文章末尾"

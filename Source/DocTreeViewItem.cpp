@@ -89,18 +89,32 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
     else if (sorter->getShowWhat() == 1 || tree.getType().toString() == "wdtpProject") // title or intro
         itemName = tree.getProperty ("title").toString();
 
-    // mark of doc and dir item
+    // (at the begin) mark of doc and dir item
     String markStr;
-    const bool needGenerate = (bool)tree.getProperty ("needCreateHtml");
-
-    if (!getMdFileOrDir (tree).exists())
-        markStr = CharPointer_UTF8 (tree.getType().toString() == "doc"
-                                    ? "\xe2\x97\x8f " : "\xe2\x96\xa0 ");
+        
+    if ((bool)tree.getProperty ("needCreateHtml"))
+    {
+        markStr = "*";
+    }
     else
-        markStr = CharPointer_UTF8 (needGenerate ? "* " :
-        (tree.getType().toString() == "doc") ? (((bool)tree.getProperty ("featured")) ? "\xe2\x98\x85 " : "\xe2\x97\x8f ")
-                                    : "\xe2\x96\xa0 ");
+    {
+        if (tree.getType().toString() == "doc")
+        {
+            if ((bool)tree.getProperty ("hide"))
+                markStr = CharPointer_UTF8 ("\xe2\x97\x8b"); // circular dot
 
+            else if ((bool)tree.getProperty ("featured"))
+                markStr = CharPointer_UTF8 ("\xe2\x98\x85");  // pentagon
+            else
+                markStr = CharPointer_UTF8 ("\xe2\x97\x8f"); // solid dot
+        }
+        else  // dir and poroject: solid block
+        {
+            markStr = CharPointer_UTF8 ("\xe2\x96\xa0");
+        }
+    }
+
+    markStr += " ";
     g.drawText (markStr + itemName, leftGap, 0, width - 4, height, Justification::centredLeft, true);
 }
 
@@ -1002,7 +1016,7 @@ void DocTreeViewItem::crossProjectCopy()
         docTree.addChild (mediaTree, 0, nullptr);
     }
 
-    // write docTree to temp file
+    // write docTree to temp file for exchange when cross-paste
     const File crossCopyFile (File::getSpecialLocation (File::tempDirectory).getChildFile ("wdtpCrossCopy"));
     crossCopyFile.deleteFile();
     crossCopyFile.create();

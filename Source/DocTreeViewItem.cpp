@@ -1212,7 +1212,9 @@ const bool DocTreeViewItem::getDirDocsAndAllMedias (DocTreeViewItem* item,
     {
         const File& currentFile (getMdFileOrDir (item->getTree()));
 
-        if (currentFile.existsAsFile() && currentFile.getSize() > 0)
+        if (!(bool)item->getTree().getProperty ("hide")
+            && currentFile.existsAsFile() 
+            && currentFile.getSize() > 0)
         {
             getMdMediaFiles (currentFile, medias);
             String mdStr (HtmlProcessor::processAbbrev (item->getTree(),

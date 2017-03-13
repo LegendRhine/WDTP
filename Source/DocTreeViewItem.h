@@ -95,7 +95,8 @@ private:
     /** select all its chilren doc which include the given skyword */
     void selectChildren (DocTreeViewItem* currentItem, const String& keyword);
 
-    /** for exportAsHtml. Note: the arg item must be a dir. */
+    /** for exportAsHtml. Note: the arg item must be a dir. 
+        Note: 'hide' doc will be excluded.  */
     static const bool getDirDocsAndAllMedias (DocTreeViewItem* item,
                                               const File& mdFile,
                                               Array<File>& medias);

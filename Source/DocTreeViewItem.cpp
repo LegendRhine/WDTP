@@ -1004,14 +1004,13 @@ void DocTreeViewItem::crossProjectCopy()
     // copy its properties
     jassert (isSelected());
 
-    //const DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (getOwnerView()->getSelectedItem (0));
-    ValueTree docTree (/*item->*/tree.createCopy());
-    docTree.setProperty ("fileFullPath", getMdFileOrDir (/*item->*/tree).getFullPathName(), nullptr);
+    ValueTree docTree (tree.createCopy());
+    docTree.setProperty ("fileFullPath", getMdFileOrDir (tree).getFullPathName(), nullptr);
 
     // copy its media files' path
     Array<File> medias;
 
-    for (int i = getMdMediaFiles (getMdFileOrDir (/*item->*/tree), medias); --i >= 0; )
+    for (int i = getMdMediaFiles (getMdFileOrDir (tree), medias); --i >= 0; )
     {
         ValueTree mediaTree ("media");
         mediaTree.setProperty ("mediaFullPath", medias[i].getFullPathName(), nullptr);
@@ -1070,7 +1069,6 @@ void DocTreeViewItem::crossProjectPaste()
         docTree.setProperty ("name", item->tree.getProperty ("name").toString(), nullptr);
         item->tree.copyPropertiesFrom (docTree, nullptr);
 
-        DBGX (item->tree.getProperty ("title").toString ());
         treeContainer->getEditAndPreview()->showProperties (false, item->tree);
         treeContainer->getEditAndPreview()->updateEditorContent();
 

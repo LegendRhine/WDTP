@@ -61,6 +61,7 @@ private:
                                 const File& htmlFile, 
                                 String& tplStr);
 
+    /** these 2 non-include 'hide' docs */
     static const StringArray getBlogList (const ValueTree& dirTree);
     static const String getBookList (const ValueTree& dirTree);
 

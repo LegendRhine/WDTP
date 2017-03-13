@@ -376,4 +376,4 @@ countries: cn
 "Paste From Another Project" = "跨项目粘贴"
 "Remind Date: " = "提醒日期："
 "Featured: " = "精华文章："
-"Hide: " = "隐藏模式："
+"Hide: " = "隐身模式："

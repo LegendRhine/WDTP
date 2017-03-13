@@ -51,7 +51,7 @@ private:
         copyrightInfo, renderDir, tplFile, jsCode, 
         contact, ad, isMenu, createDate, modifyDate,
         showKeys, wordCount, thumb, thumbName, 
-        abbrev, reviewDate, featured, 
+        abbrev, reviewDate, featured, hideMode,
 
         totalValues
     };

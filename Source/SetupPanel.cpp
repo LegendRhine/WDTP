@@ -212,6 +212,7 @@ void SetupPanel::showDocProperties (const bool currentValuesUpdateTree,
     values[abbrev]->setValue (currentTree.getProperty ("abbrev"));
     values[reviewDate]->setValue (currentTree.getProperty ("reviewDate"));
     values[featured]->setValue (currentTree.getProperty ("featured"));
+    values[hideMode]->setValue (currentTree.getProperty ("hide"));
 
     Array<PropertyComponent*> docProperties;
     docProperties.add (new TextPropertyComponent (*values[itsName], TRANS ("Name: "), 0, false));
@@ -275,6 +276,7 @@ void SetupPanel::showDocProperties (const bool currentValuesUpdateTree,
     docProperties.add (new TextPropertyComponent (*values[abbrev], TRANS ("Abbrev: "), 0, true));
     docProperties.add (new TextPropertyComponent (*values[reviewDate], TRANS ("Remind Date: "), 0, false));
     docProperties.add (new BooleanPropertyComponent (*values[featured], TRANS ("Featured: "), TRANS ("Yes")));
+    docProperties.add (new BooleanPropertyComponent (*values[hideMode], TRANS ("Hide: "), TRANS ("Yes")));
 
     // set height
     for (auto p : docProperties)
@@ -496,6 +498,9 @@ void SetupPanel::valueChanged (Value& value)
 
     else if (value.refersToSameSourceAs (*values[featured]))
         currentTree.setProperty ("featured", values[featured]->getValue(), nullptr);
+
+    else if (value.refersToSameSourceAs (*values[hideMode]))
+        currentTree.setProperty ("hide", values[hideMode]->getValue(), nullptr);
 
     values[modifyDate]->setValue (SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), true));
 

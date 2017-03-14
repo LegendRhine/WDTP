@@ -36,6 +36,7 @@ public:
     void resized() override;
 
     TextEditor* getEditor() const              { return editor; }
+    WebBrowserComponent* getWebBrowser() const { return webView; }
     const File& getCurrentDocFile() const      { return docOrDirFile; }
     const String& getCurrentContent() const    { return currentContent; }
 
@@ -69,7 +70,7 @@ private:
     MainContentComponent* mainComp;
 
     ScopedPointer<TextEditor> editor;
-    ScopedPointer<WebBrowserComp> webView;
+    ScopedPointer<WebBrowserComponent> webView;
     ScopedPointer<SetupPanel> setupPanel;
 
     StretchableLayoutManager layoutManager;

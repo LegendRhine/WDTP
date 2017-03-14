@@ -165,8 +165,11 @@ void EditAndPreview::editCurrentDoc()
                          HtmlProcessor::createArticleHtml (docOrDirTree, true).getFullPathName() :
                          HtmlProcessor::createIndexHtml (docOrDirTree, true).getFullPathName());
     
-    webView->goToURL (urlStr);
-    currentUrl = urlStr;
+    if (urlStr != currentUrl)
+    {
+        webView->goToURL (urlStr);
+        currentUrl = urlStr;
+    }
     
     resized();
 }

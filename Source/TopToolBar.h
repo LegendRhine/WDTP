@@ -105,7 +105,9 @@ public:
         generateCurrent, generateNeeded, generateWhole, cleanUpLocal,
         exportTpl, importTpl, releaseSystemTpl, /*rebuildKeywords,*/
         uiEnglish, uiChinese, setupAudio,
-        setUiColor, resetUiColor, gettingStarted, checkNewVersion, feedback, showAboutDialog,
+        setUiColor, resetUiColor, checkNewVersion, 
+        gettingStarted, syntax, demoPage, faq, feedback, 
+        showAboutDialog,
         switchEdit, switchWidth, activeSearch
     };
 

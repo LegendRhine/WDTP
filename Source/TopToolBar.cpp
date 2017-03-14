@@ -367,9 +367,6 @@ void TopToolBar::popupSystemMenu()
     m.addItem (cleanUpLocal, TRANS ("Cleanup Local Medias"), fileTreeContainer->hasLoadedProject());
     m.addSeparator();
 
-    /*m.addItem (rebuildKeywords, TRANS ("Rebuild Keywords Table"), fileTreeContainer->hasLoadedProject());
-    m.addSeparator();*/
-
     m.addItem (exportTpl, TRANS ("Export Current Templates"), fileTreeContainer->hasLoadedProject());
     m.addItem (importTpl, TRANS ("Import External Templates..."), fileTreeContainer->hasLoadedProject());
     m.addItem (releaseSystemTpl, TRANS ("Reset/Repair Default Templates"), fileTreeContainer->hasLoadedProject());
@@ -388,12 +385,18 @@ void TopToolBar::popupSystemMenu()
     m.addItem (setupAudio, TRANS ("Setup Audio Device..."));
     m.addSeparator();
 
-    m.addItem (gettingStarted, TRANS ("Getting Started..."), true);
-
     if (newVersionIsReady)
         m.addItem (checkNewVersion, TRANS ("Download New Version..."), true);
 
-    m.addItem (feedback, TRANS ("Feedback/Discuss/Interflow..."), true);
+    // site url..
+    PopupMenu siteUrls;
+    siteUrls.addItem (gettingStarted, TRANS ("Getting Started..."), true);
+    siteUrls.addItem (syntax, TRANS ("WDTP Text Mark Syntax..."), true);
+    siteUrls.addItem (demoPage, TRANS ("WDTP Demo Page..."), true);
+    siteUrls.addItem (faq, TRANS ("FAQ..."), true);
+    siteUrls.addItem (feedback, TRANS ("Feedback/Discuss/Interflow..."), true);
+
+    m.addSubMenu (TRANS ("Help"), siteUrls);
     m.addItem (showAboutDialog, TRANS ("About..."), true);
 
     // display the menu
@@ -415,15 +418,17 @@ void TopToolBar::menuPerform (const int index)
     else if (index == openPjt)          openProject();
     else if (index == generateWhole)    cleanAndGenerateAll();
     else if (index == cleanUpLocal)     cleanLocalMedias();
-    /*else if (index == rebuildKeywords)  rebuildAllKeywords (true);*/
     else if (index == exportTpl)        exportCurrentTpls();
     else if (index == importTpl)        importExternalTpls();
     else if (index == releaseSystemTpl) releaseSystemTpls (FileTreeContainer::projectFile, true);
     else if (index == setUiColor)       setUiColour();
     else if (index == resetUiColor)     resetUiColour();
     else if (index == setupAudio)       setupAudioDevice();
-    else if (index == gettingStarted)   URL ("http://underwaysoft.com/works/wdtp/gettingStarted.html").launchInDefaultBrowser();
     else if (index == checkNewVersion)  URL ("http://underwaySoft.com/works/wdtp/download.html").launchInDefaultBrowser();
+    else if (index == gettingStarted)   URL ("http://underwaysoft.com/works/wdtp/gettingStarted.html").launchInDefaultBrowser();
+    else if (index == syntax)           URL ("http://underwaysoft.com/works/wdtp/syntaxMark.html").launchInDefaultBrowser();
+    else if (index == demoPage)         URL ("http://underwaysoft.com/works/wdtp/mdDemo.html").launchInDefaultBrowser();
+    else if (index == faq)              URL ("http://underwaysoft.com/works/wdtp/faq.html").launchInDefaultBrowser();
     else if (index == feedback)         URL ("http://underwaysoft.com/guestBook.html").launchInDefaultBrowser();
     else if (index == showAboutDialog)  SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2017");
 

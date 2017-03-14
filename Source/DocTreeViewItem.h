@@ -152,6 +152,7 @@ private:
     FileTreeContainer* treeContainer;
     ItemSorter* sorter;
     uint32 selectTime;  // for left click to popup outline menu
+    bool allowShowMenu;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DocTreeViewItem)
 

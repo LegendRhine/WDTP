@@ -19,7 +19,8 @@ DocTreeViewItem::DocTreeViewItem (const ValueTree& tree_,
     tree (tree_),
     treeContainer (container),
     sorter (itemSorter),
-    selectTime (0)
+    selectTime (0),
+    allowShowMenu (true)
 {
     jassert (treeContainer != nullptr);
 
@@ -293,6 +294,7 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
 
         treeContainer->setIdentityOfLastSelectedItem (getItemIdentifierString());
         selectTime = Time::getMillisecondCounter();
+        allowShowMenu = true;
     }
 }
 
@@ -391,8 +393,11 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
     // left-click for doc-outline
     else if (exist && onlyOneSelected && isDoc && e.mods.isLeftButtonDown())
     {
-        if (Time::getMillisecondCounter() - selectTime < 200)
+        if (!allowShowMenu || Time::getMillisecondCounter() - selectTime < 200)
+        {
+            allowShowMenu = true;  // allow next to show menu
             return;
+        }
 
         const String& content (treeContainer->getEditAndPreview()->getCurrentContent());
 
@@ -426,6 +431,11 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         for (int i = 0; i < sentences.size(); ++i)
             outlineMenu.addItem (i + 1, sentences[i], true, false);
 
+        // here must set false to prevent popup this menu continuously 
+        // when user doesn't select any menu-item and then click the doc-item 
+        // after the menu has been displayed the first time
+        allowShowMenu = false; 
+
         const int menuItemIndex = outlineMenu.show();
         sentences.insert (0, "tempForMatchMenuSelectIndex");
 
@@ -437,12 +447,16 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         {
             editor->moveCaretToTop (false);
             browser->goToURL (currentUrl + "#top");
+            allowShowMenu = true;
         }
         else if (menuItemIndex == outlineMenu.getNumItems())
         {
             editor->moveCaretToEnd (false);
             browser->goToURL (currentUrl + "#wdtpPageBottom");
+            allowShowMenu = true;
         }
+
+
     }
 }
 

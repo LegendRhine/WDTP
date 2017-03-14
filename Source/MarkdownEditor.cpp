@@ -160,6 +160,8 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         editorSetup.addItem (resetDefault, TRANS ("Reset to Default"));
 
         menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docFile.existsAsFile());
+
+        menu.addSeparator();
         menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)");
     }
 }
@@ -193,7 +195,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
         parent->saveCurrentDocIfChanged();
         HtmlProcessor::createArticleHtml (parent->getCurrentTree(), true);
 
-        popupOutlineMenu (parent, getText());
+        popupOutlineMenu (parent, getText().replace (CharPointer_UTF8 ("\xef\xbc\x83"), "#"));
     }
 
     else if (insertSeparator == index)      insertTextAtCaret (newLine + "---" + newLine);
@@ -1107,7 +1109,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         parent->saveCurrentDocIfChanged();
         HtmlProcessor::createArticleHtml (parent->getCurrentTree(), true);
 
-        popupOutlineMenu (parent, getText());
+        popupOutlineMenu (parent, getText().replace (CharPointer_UTF8 ("\xef\xbc\x83"), "#"));
         return true;
     }
 

@@ -394,7 +394,6 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         if (Time::getMillisecondCounter() - selectTime < 200)
             return;
 
-        TextEditor* editor = treeContainer->getEditAndPreview()->getEditor();
         const String& content (treeContainer->getEditAndPreview()->getCurrentContent());
 
         StringArray sentences;
@@ -406,12 +405,10 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         for (int i = sentences.size(); --i >= 0; )
         {
             if (sentences[i].substring (0, 3) == "## "
-                || sentences[i].substring (0, 3) == CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83 "))
-                sentences.getReference (i) = ". " + sentences[i].substring (3);
-
-            else if (sentences[i].substring (0, 4) == "### "
-                     || sentences[i].substring (0, 4) == CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83 "))
-                sentences.getReference (i) = ".     " + sentences[i].substring (4);
+                || sentences[i].substring (0, 3) == CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83 ")
+                || sentences[i].substring (0, 4) == "### "
+                || sentences[i].substring (0, 4) == CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83 "))
+                continue;
 
             else
                 sentences.remove (i);
@@ -419,17 +416,33 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
         if (sentences.size() < 1)
             return;
+        
+        sentences.insert (0, "---- " + TRANS ("Beginning") + " ----");
+        sentences.add ("---- " + TRANS ("End") + " ----");
 
         // add menu-item from the stringArray
         PopupMenu outlineMenu;
-        outlineMenu.addItem (100, "--- " + TRANS ("Beginning") + " ---");
 
         for (int i = 0; i < sentences.size(); ++i)
-            outlineMenu.addItem (i + 101, sentences[i], true, false);
+            outlineMenu.addItem (i + 1, sentences[i], true, false);
 
-        outlineMenu.addItem (101 + sentences.size(), "--- " + TRANS ("End") + " ---");
-        outlineMenu.show();
+        const int menuItemIndex = outlineMenu.show();
+        sentences.insert (0, "tempForMatchMenuSelectIndex");
 
+        TextEditor* editor = treeContainer->getEditAndPreview()->getEditor();
+        WebBrowserComponent* browser = treeContainer->getEditAndPreview()->getWebBrowser();
+        const String& currentUrl (treeContainer->getEditAndPreview()->getCurrentUrl());
+
+        if (menuItemIndex == 1)
+        {
+            editor->moveCaretToTop (false);
+            browser->goToURL (currentUrl + "#top");
+        }
+        else if (menuItemIndex == outlineMenu.getNumItems())
+        {
+            editor->moveCaretToEnd (false);
+            browser->goToURL (currentUrl + "#wdtpPageBottom");
+        }
     }
 }
 

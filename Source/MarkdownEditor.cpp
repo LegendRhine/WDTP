@@ -822,7 +822,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         return true;
     }
 
-    // shift + tab
+    // shift + tab (anti-indent)
     else if (key == KeyPress (KeyPress::tabKey, ModifierKeys::shiftModifier, 0))
     {
         shiftTabInput();

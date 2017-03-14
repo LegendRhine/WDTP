@@ -138,7 +138,43 @@
     g.fillRoundedRectangle (startX - 1.f, baselineY - lineHeight + 10.5f, endX - startX + 2.f, lineHeight - 2.5f, 5.f);
     drawSelectedText (g, underline, colour);
 ```
-	
+
+### Shortcut Assign
+
+- F3: select next selection
+- Shift + F3: select previous selection
+- F5: regenerate the current page and refresh it
+- F6: regenarate all the changed docs and dirs (not the whole site)
+
+- Ctrl + A: select all content (text mark syntax)
+- Ctrl + B: bold (text mark syntax)
+- Ctrl + C: copy 
+- Ctrl + D: switch width
+- Ctrl + E: 
+- Ctrl + F: active search
+- Ctrl + G: 
+- Ctrl + H: insert text hyper link (text mark syntax)
+- Ctrl + I: italic (text mark syntax)
+- Ctrl + J: 
+- Ctrl + K: insert code block (text mark syntax)
+- Ctrl + L: insert inline code (text mark syntax)
+- Ctrl + M: insert images (text mark syntax)
+- Ctrl + N: align center (text mark syntax)
+- Ctrl + O: insert author (text mark syntax)
+- Ctrl + P: insert caption (text mark syntax)
+- Ctrl + Q: 
+- Ctrl + R: align right (text mark syntax)
+- Ctrl + S: switch edit/preview 
+- Ctrl + T: insert table (text mark syntax)
+- Ctrl + U: highlight text (text mark syntax)
+- Ctrl + V: intelligent paste
+- Ctrl + W: audio record (text mark syntax)
+- Ctrl + X: cut
+- Ctrl + Y: redo
+- Ctrl + Z: undo
+
+- Punctuation Matching...
+
 ### About Compile
 
 On Windows, it should using VS2015 to open and compile the VS2012-project, which exported by Projucer.

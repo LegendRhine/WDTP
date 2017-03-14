@@ -200,8 +200,8 @@ void MarkdownEditor::performPopupMenuAction (int index)
 
     else if (insertSeparator == index)      insertTextAtCaret (newLine + "---" + newLine);
     else if (pickFromAllKeywords == index)  showAllKeywords();
-    else if (searchPrev == index)           searchBySelectPrev();
-    else if (searchNext == index)           searchBySelectNext();
+    else if (searchPrev == index)           searchPrevious();
+    else if (searchNext == index)           searchForNext();
     else if (insertImage == index)          insertImages();
     else if (insertAudio == index)          insertAudioFiles();
     else if (insertHyperlink == index)      hyperlinkInsert();
@@ -870,9 +870,6 @@ void MarkdownEditor::recordAudio()
 //=================================================================================================
 bool MarkdownEditor::keyPressed (const KeyPress& key)
 {
-    /*if (!isEnabled() || !parent->getCurrentDocFile().existsAsFile())
-        return true;*/
-
     // tab
     if (key == KeyPress (KeyPress::tabKey))
     {
@@ -890,14 +887,14 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     // F3 for search the next of current selection
     else if (key == KeyPress (KeyPress::F3Key))
     {
-        searchBySelectNext();
+        searchForNext();
         return true;
     }
 
     // Shift + F3 for search the previous of current selection
     else if (key == KeyPress (KeyPress::F3Key, ModifierKeys::shiftModifier, 0))
     {
-        searchBySelectPrev();
+        searchPrevious();
         return true;
     }
 
@@ -1303,46 +1300,49 @@ void MarkdownEditor::subtractFromKeywords (const String& keyword)
 }
 
 //=================================================================================================
-void MarkdownEditor::searchBySelectPrev()
+void MarkdownEditor::searchPrevious()
 {
-    const String& selected (getHighlightedText());
+    // make sure continue to search when modified the previous search result
+    if (getHighlightedText().isNotEmpty())
+        SystemClipboard::copyTextToClipboard (getHighlightedText());
+    
+    const String& searchFor (SystemClipboard::getTextFromClipboard());
 
-    if (selected.isNotEmpty())
+    if (searchFor.isNotEmpty())
     {
-        const int startIndex = getText().substring (0, getCaretPosition() - 1).lastIndexOfIgnoreCase (selected);
+        const int startIndex = getText().substring (0, getCaretPosition() - 1).lastIndexOfIgnoreCase (searchFor);
 
         if (startIndex != -1)
         {
-            //Array<Range<int>> rangeArray;
-            //rangeArray.add (Range<int> (startIndex, startIndex + selected.length()));
-            //setTemporaryUnderlining (rangeArray);
-            setHighlightedRegion (Range<int> (startIndex, startIndex + selected.length()));
+            setHighlightedRegion (Range<int> (startIndex, startIndex + searchFor.length()));
             return;
         }
+
+        SHOW_MESSAGE (TRANS ("Nothing could be found."));
     }
- 
-    SHOW_MESSAGE (TRANS ("Nothing could be found."));
+
 }
 
 //=================================================================================================
-void MarkdownEditor::searchBySelectNext()
+void MarkdownEditor::searchForNext()
 {
-    const String& selected (getHighlightedText());
+    // make sure continue to search when modified the previous search result
+    if (getHighlightedText().isNotEmpty())
+        SystemClipboard::copyTextToClipboard (getHighlightedText());
 
-    if (selected.isNotEmpty())
+    const String& searchFor (SystemClipboard::getTextFromClipboard());
+
+    if (searchFor.isNotEmpty())
     {
-        const int startIndex = getText().indexOfIgnoreCase (getCaretPosition() + selected.length(), selected);
+        const int startIndex = getText().indexOfIgnoreCase (getCaretPosition() + searchFor.length(), searchFor);
 
         if (startIndex != -1)
         {
-            //Array<Range<int>> rangeArray;
-            //rangeArray.add (Range<int> (startIndex, startIndex + selected.length()));
-            //setTemporaryUnderlining (rangeArray);
-            setHighlightedRegion (Range<int> (startIndex, startIndex + selected.length()));
+            setHighlightedRegion (Range<int> (startIndex, startIndex + searchFor.length()));
             return;
         }
-    }
      
-    SHOW_MESSAGE (TRANS ("Nothing could be found."));
+        SHOW_MESSAGE (TRANS ("Nothing could be found."));
+    }     
 }
 

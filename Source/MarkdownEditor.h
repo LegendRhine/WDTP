@@ -100,8 +100,8 @@ private:
     void pasteForCtrlV();
     void recordAudio();
 
-    void searchBySelectPrev();
-    void searchBySelectNext();
+    void searchPrevious();
+    void searchForNext();
 
     void setFontSize();
     void setFontColour();

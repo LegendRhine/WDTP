@@ -103,6 +103,8 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
 
     if (currentContent.length() < 3)
         editor->moveCaretToEnd (false);
+    else
+        editor->moveCaretToTop (false);
 
     // word count doesn't include the ' ' and newLine of current content 
     setupPanel->updateWordCount (currentContent.removeCharacters (" ")

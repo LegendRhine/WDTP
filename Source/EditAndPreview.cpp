@@ -46,6 +46,7 @@ EditAndPreview::EditAndPreview (MainContentComponent* mainComp_)
     editor->setIndents (10, 10);
     editor->setEnabled (false);
     editor->setBorder (BorderSize<int> (1, 1, 1, 1));
+    editor->setPopupMenuEnabled (false);
 }
 
 //=========================================================================
@@ -159,7 +160,8 @@ void EditAndPreview::editCurrentDoc()
     webView->setVisible (false);
     editor->setEnabled (true);
     editor->grabKeyboardFocus();
-    
+    editor->setPopupMenuEnabled (true);
+
     // here must goto the html url of the doc on osx, although the broswer doesn't visible.
     // otherwise, it'll load the previous page when switch to preview another doc,
     // especially after created a doc, edited then preview it.
@@ -280,6 +282,7 @@ void EditAndPreview::projectClosed()
     editor->setText (String(), false);
     editor->setVisible (true);
     editor->setEnabled (false);
+    editor->setPopupMenuEnabled (false);
 
     docOrDirFile = File::nonexistent;
     docOrDirTree = ValueTree::invalid;

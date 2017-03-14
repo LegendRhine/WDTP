@@ -87,7 +87,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSeparator();
 
         menu.addItem (addKeywords, TRANS ("Add to Keywords"), getHighlightedText().isNotEmpty());
-        menu.addItem (pickFromAllKeywords, TRANS ("Keywords Table") + "...");
+        menu.addItem (pickFromAllKeywords, TRANS ("Keywords Table") + "...", docFile.existsAsFile());
         menu.addSeparator();
 
         PopupMenu insertMenu;
@@ -142,7 +142,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
 
         menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile());
-        menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)");
+        menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)", docFile.existsAsFile());
         menu.addSeparator();
 
         menu.addItem (searchNext, TRANS ("Search Next Selection") + "  F3", getHighlightedText().isNotEmpty());
@@ -162,7 +162,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docFile.existsAsFile());
 
         menu.addSeparator();
-        menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)");
+        menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)", docFile.existsAsFile());
     }
 }
 
@@ -870,6 +870,9 @@ void MarkdownEditor::recordAudio()
 //=================================================================================================
 bool MarkdownEditor::keyPressed (const KeyPress& key)
 {
+    /*if (!isEnabled() || !parent->getCurrentDocFile().existsAsFile())
+        return true;*/
+
     // tab
     if (key == KeyPress (KeyPress::tabKey))
     {

@@ -1253,7 +1253,7 @@ void MarkdownEditor::searchBySelectPrev()
         }
     }
  
-    LookAndFeel::getDefaultLookAndFeel().playAlertSound();
+    SHOW_MESSAGE (TRANS ("Nothing could be found."));
 }
 
 //=================================================================================================
@@ -1275,6 +1275,6 @@ void MarkdownEditor::searchBySelectNext()
         }
     }
      
-    LookAndFeel::getDefaultLookAndFeel().playAlertSound();
+    SHOW_MESSAGE (TRANS ("Nothing could be found."));
 }
 

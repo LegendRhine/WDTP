@@ -310,7 +310,7 @@ countries: cn
 "Total replaced: " = "共替换了: "
 " matched in " = "处, 修改了"
 " file(s)." = " 个文件."
-"Nothing could be found." = "没找到需要替换的内容."
+"Nothing could be found." = "没找到所需的内容."
 "Using" = "使用"
 "Close" = "关闭"
 "Analyse" = "分析"

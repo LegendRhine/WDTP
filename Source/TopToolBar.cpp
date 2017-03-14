@@ -268,7 +268,7 @@ void TopToolBar::findInProject (const bool next)
         }
     }
 
-    LookAndFeel::getDefaultLookAndFeel().playAlertSound();
+    SHOW_MESSAGE (TRANS ("Nothing could be found."));
 }
 
 //=================================================================================================
@@ -304,7 +304,7 @@ void TopToolBar::findInDoc (const bool next)
     }
     else
     {
-        LookAndFeel::getDefaultLookAndFeel().playAlertSound();
+        SHOW_MESSAGE (TRANS ("Nothing could be found."));
     }
 }
 

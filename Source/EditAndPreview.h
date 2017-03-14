@@ -35,13 +35,15 @@ public:
     void paint (Graphics&) override {}
     void resized() override;
 
-    TextEditor* getEditor() const              { return editor; }
-    WebBrowserComponent* getWebBrowser() const { return webView; }
-    const File& getCurrentDocFile() const      { return docOrDirFile; }
-    const String& getCurrentContent() const    { return currentContent; }
+    TextEditor* getEditor() const               { return editor; }
+    WebBrowserComponent* getWebBrowser() const  { return webView; }
+    const String& getCurrentUrl() const         { return currentUrl; }
 
-    ValueTree& getCurrentTree()                { return docOrDirTree; }
-    SetupPanel* getSetupPanel() const          { return setupPanel; }
+    const File& getCurrentDocFile() const       { return docOrDirFile; }
+    const String& getCurrentContent() const     { return currentContent; }
+
+    ValueTree& getCurrentTree()                 { return docOrDirTree; }
+    SetupPanel* getSetupPanel() const           { return setupPanel; }
 
     /** return true if preview state at the present, flase for edit state. */
     const bool getCureentState() const;

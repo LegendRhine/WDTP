@@ -236,6 +236,21 @@ const bool EditAndPreview::getCureentState() const
 }
 
 //=================================================================================================
+void EditAndPreview::outlineGoto (const StringArray& titleStrs, const int itemIndex)
+{
+    if (itemIndex == 1)
+    {
+        editor->moveCaretToTop (false);
+        webView->goToURL (currentUrl + "#top");
+    }
+    else if (itemIndex == titleStrs.size() - 1)
+    {
+        editor->moveCaretToEnd (false);
+        webView->goToURL (currentUrl + "#wdtpPageBottom");
+    }
+}
+
+//=================================================================================================
 void EditAndPreview::projectClosed()
 {
     saveCurrentDocIfChanged();

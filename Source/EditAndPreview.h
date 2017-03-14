@@ -48,6 +48,9 @@ public:
     /** return true if preview state at the present, flase for edit state. */
     const bool getCureentState() const;
 
+    /** see DocTreeViewItem::itemClicked() left-click */
+    void outlineGoto (const StringArray& titleStrs, const int itemIndex);
+
     void projectClosed();
     const bool saveCurrentDocIfChanged();
     void showProperties (const bool saveCurrentValues, const ValueTree& tree);

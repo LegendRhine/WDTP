@@ -435,27 +435,12 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         for (int i = 0; i < sentences.size(); ++i)
             outlineMenu.addItem (i + 1, sentences[i], true, false);
 
-        const int menuItemIndex = outlineMenu.show();
         sentences.insert (0, "tempForMatchMenuSelectIndex");
+        const int menuItemIndex = outlineMenu.show();  // show it here
 
-        TextEditor* editor = treeContainer->getEditAndPreview()->getEditor();
-        WebBrowserComponent* browser = treeContainer->getEditAndPreview()->getWebBrowser();
-        const String& currentUrl (treeContainer->getEditAndPreview()->getCurrentUrl());
-
-        if (menuItemIndex == 1)
-        {
-            editor->moveCaretToTop (false);
-            browser->goToURL (currentUrl + "#top");
-            allowShowMenu = true;
-        }
-        else if (menuItemIndex == outlineMenu.getNumItems())
-        {
-            editor->moveCaretToEnd (false);
-            browser->goToURL (currentUrl + "#wdtpPageBottom");
-            allowShowMenu = true;
-        }
-
-
+        // here need set to true no matter user click a menu-item or not
+        allowShowMenu = true;  
+        treeContainer->getEditAndPreview()->outlineGoto (sentences, menuItemIndex);
     }
 }
 

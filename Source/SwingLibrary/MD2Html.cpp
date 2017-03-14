@@ -803,6 +803,9 @@ const String Md2Html::cleanUp (const String& mdString)
     resultStr = resultStr.replace (String ("\\]"), "]");
     resultStr = resultStr.replace (String ("<p><br>"), "<p>"); 
 
+    // for scroll to bottom
+    resultStr += newLine + "<span id=\"wdtpPageBottom\"></span>";
+
     //DBG (resultStr);
     return resultStr;
 }

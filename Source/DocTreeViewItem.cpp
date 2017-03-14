@@ -399,6 +399,10 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
             return;
         }
 
+        // here must set false to prevent popup this menu continuously 
+        // when user doesn't select any menu-item and then click the doc-item 
+        // after the menu has been displayed the first time
+        allowShowMenu = false;
         const String& content (treeContainer->getEditAndPreview()->getCurrentContent());
 
         StringArray sentences;
@@ -430,11 +434,6 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
         for (int i = 0; i < sentences.size(); ++i)
             outlineMenu.addItem (i + 1, sentences[i], true, false);
-
-        // here must set false to prevent popup this menu continuously 
-        // when user doesn't select any menu-item and then click the doc-item 
-        // after the menu has been displayed the first time
-        allowShowMenu = false; 
 
         const int menuItemIndex = outlineMenu.show();
         sentences.insert (0, "tempForMatchMenuSelectIndex");

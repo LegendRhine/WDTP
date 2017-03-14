@@ -399,8 +399,9 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
             return;
         }
 
-        treeContainer->getEditAndPreview()->saveCurrentDocIfChanged();
-        HtmlProcessor::createArticleHtml (treeContainer->getEditAndPreview()->getCurrentTree(), true);
+        EditAndPreview* editPreview = treeContainer->getEditAndPreview();
+        editPreview->saveCurrentDocIfChanged();
+        HtmlProcessor::createArticleHtml (editPreview->getCurrentTree(), true);
 
         // here must set false to prevent popup this menu continuously 
         // when user doesn't select any menu-item and then click the doc-item 
@@ -408,49 +409,11 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         allowShowMenu = false;
 
         // replace Chinese '#' temporaily instead of change it in reality
-        const String& content (treeContainer->getEditAndPreview()->getCurrentContent()
-                               .replace (CharPointer_UTF8 ("\xef\xbc\x83"), "#"));
-
-        StringArray sentences;
-        sentences.addTokens (content, newLine, String());
-        sentences.removeEmptyStrings (true);
-                
-        // only remain the sencond and third title
-        for (int i = sentences.size(); --i >= 0; )
-        {
-            if (sentences[i].trimStart().substring (0, 3) == "## "
-                || sentences[i].trimStart().substring (0, 4) == "### ")
-                continue;
-
-            else
-                sentences.remove (i);
-        }
-
-        if (sentences.size() < 1)
-            return;
-        
-        sentences.insert (0, "---- " + TRANS ("Beginning") + " ----");
-        sentences.add ("---- " + TRANS ("End") + " ----");
-
-        // add menu-item from the stringArray
-        PopupMenu outlineMenu;
-
-        for (int i = 0; i < sentences.size(); ++i)
-        {
-            if (sentences[i].trimStart().substring (0, 3) == "## ")
-                outlineMenu.addItem (i + 1, sentences[i].trimStart().substring (3), true, false);
-            else if (sentences[i].trimStart().substring (0, 4) == "### ")
-                outlineMenu.addItem (i + 1, ".   " + sentences[i].trimStart().substring (4), true, false);
-            else
-                outlineMenu.addItem (i + 1, sentences[i], true, false);
-        }
-
-        sentences.insert (0, "tempForMatchMenuSelectIndex");
-        const int menuItemIndex = outlineMenu.show();  // show it here
+        MarkdownEditor::popupOutlineMenu (editPreview, editPreview->getCurrentContent()
+                                          .replace (CharPointer_UTF8 ("\xef\xbc\x83"), "#"));
 
         // here need set to true no matter user click a menu-item or not
         allowShowMenu = true;  
-        treeContainer->getEditAndPreview()->outlineGoto (sentences, menuItemIndex);
     }
 }
 

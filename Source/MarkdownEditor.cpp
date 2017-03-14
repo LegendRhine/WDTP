@@ -32,6 +32,50 @@ void MarkdownEditor::paint (Graphics& g)
 }
 
 //=================================================================================================
+void MarkdownEditor::popupOutlineMenu (EditAndPreview* editAndPreview, 
+                                       const String& editorContent)
+{
+    StringArray sentences;
+    sentences.addTokens (editorContent, newLine, String());
+    sentences.removeEmptyStrings (true);
+
+    // only remain the sencond and third title
+    for (int i = sentences.size(); --i >= 0; )
+    {
+        if (sentences[i].trimStart().substring (0, 3) == "## "
+            || sentences[i].trimStart().substring (0, 4) == "### ")
+            continue;
+
+        else
+            sentences.remove (i);
+    }
+
+    if (sentences.size() < 1)
+        return;
+
+    sentences.insert (0, "---- " + TRANS ("Beginning") + " ----");
+    sentences.add ("---- " + TRANS ("End") + " ----");
+
+    // add menu-item from the stringArray
+    PopupMenu outlineMenu;
+
+    for (int i = 0; i < sentences.size(); ++i)
+    {
+        if (sentences[i].trimStart().substring (0, 3) == "## ")
+            outlineMenu.addItem (i + 1, sentences[i].trimStart().substring (3), true, false);
+        else if (sentences[i].trimStart().substring (0, 4) == "### ")
+            outlineMenu.addItem (i + 1, ".   " + sentences[i].trimStart().substring (4), true, false);
+        else
+            outlineMenu.addItem (i + 1, sentences[i], true, false);
+    }
+
+    sentences.insert (0, "tempForMatchMenuSelectIndex");
+    const int menuItemIndex = outlineMenu.show();  // show it here
+
+    editAndPreview->outlineGoto (sentences, menuItemIndex);
+}
+
+//=================================================================================================
 void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 {
     const File& docFile (parent->getCurrentDocFile());
@@ -1046,6 +1090,12 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     {
         puncMatchingForChinese (key);
         return true;
+    }
+
+    // popup menu
+    else if (key == KeyPress ('j', ModifierKeys::commandModifier, 0))
+    {
+        ;
     }
 
     //DBGX (key.getKeyCode());

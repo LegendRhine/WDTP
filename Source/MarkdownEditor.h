@@ -28,6 +28,9 @@ public:
 
     void paint (Graphics& g) override;
 
+    //=================================================================================================
+    static void popupOutlineMenu (EditAndPreview* editAndPreview, const String& editorContent);
+
     virtual void addPopupMenuItems (PopupMenu& menuToAddTo,
                                     const MouseEvent* mouseClickEvent) override;
 

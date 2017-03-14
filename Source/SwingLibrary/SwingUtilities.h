@@ -24,7 +24,8 @@
 
 /** Replace AlertWindow::showMessageWindow() */
 #ifndef SHOW_MESSAGE
-#define SHOW_MESSAGE(info) AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS("Message"), String(info))
+    //#define SHOW_MESSAGE(info) AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS("Message"), String(info))
+#define SHOW_MESSAGE(info) SplashWithMessage::showMessage (info) 
 #endif
 
 /** Use for replace the JUCE DBG(), it'll show the file and line-number in console.
@@ -280,5 +281,47 @@ private:
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ColourSelectorWithPreset)
 };
 
+//=========================================================================
+/** this class could replace messagebox (user no need to click any button to close it)
+    it could run on Android. */
+class SplashWithMessage : public SplashScreen
+{
+public:
+    SplashWithMessage (const String& message) : SplashScreen ("Splash", 280, 60, true)
+    {
+        addAndMakeVisible (label = new Label());
 
+        label->setFont (SwingUtilities::getFontSize() - 1.0f);
+        label->setColour (Label::textColourId, Colours::whitesmoke.withAlpha (0.85f));
+        label->setJustificationType (Justification::centred);
+        label->setBounds (5, 5, getWidth() - 10, getHeight() - 10);
+        label->setText (message, dontSendNotification);
+    }
+
+    void paint (Graphics& g)
+    {
+        g.setColour (Colours::black.withAlpha (0.75f));
+        g.fillRoundedRectangle (getLocalBounds().toFloat(), 5.f);
+
+        g.setColour (Colours::lightgrey);
+        g.drawRoundedRectangle (getLocalBounds().toFloat(), 5.f, 1.f);
+    }
+
+    static void showMessage (const String& message)
+    {
+        SplashWithMessage* splash = new SplashWithMessage (message);
+        LookAndFeel::getDefaultLookAndFeel().playAlertSound();
+
+        splash->deleteAfterDelay (RelativeTime::seconds (3.0), true);
+    }
+
+private:
+    //==============================================================================
+    ScopedPointer<Label> label;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SplashWithMessage)
+};
+
+
+//=================================================================================================
 #endif  // SWINGUTILITIES_H_INCLUDED

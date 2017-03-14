@@ -1095,7 +1095,11 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     // popup menu
     else if (key == KeyPress ('j', ModifierKeys::commandModifier, 0))
     {
-        ;
+        parent->saveCurrentDocIfChanged();
+        HtmlProcessor::createArticleHtml (parent->getCurrentTree(), true);
+
+        popupOutlineMenu (parent, getText());
+        return true;
     }
 
     //DBGX (key.getKeyCode());

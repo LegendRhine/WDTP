@@ -155,7 +155,7 @@
 - Ctrl + G: 
 - Ctrl + H: insert text hyper link (text mark syntax)
 - Ctrl + I: italic (text mark syntax)
-- Ctrl + J: 
+- Ctrl + J: popup outline menu of editor
 - Ctrl + K: insert code block (text mark syntax)
 - Ctrl + L: insert inline code (text mark syntax)
 - Ctrl + M: insert images (text mark syntax)

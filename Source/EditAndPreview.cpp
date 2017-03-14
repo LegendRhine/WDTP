@@ -248,6 +248,25 @@ void EditAndPreview::outlineGoto (const StringArray& titleStrs, const int itemIn
         editor->moveCaretToEnd (false);
         webView->goToURL (currentUrl + "#wdtpPageBottom");
     }
+    else if (itemIndex > 0 && itemIndex < titleStrs.size() - 1)
+    {
+        // replace Chinese '#' temporaily instead of change it in reality
+        const String content (currentContent.replace (CharPointer_UTF8 ("\xef\xbc\x83"), "#"));
+        
+        // here need position the caret twice and pageDown() after the first one.
+        // this'll make sure the scroll position is on top of the editor-view
+        // instead of at the bottom when place downward
+        int positionIndex = content.indexOf (titleStrs[itemIndex]);
+        editor->setCaretPosition (positionIndex);
+        editor->pageDown (false);
+        editor->setCaretPosition (positionIndex);
+        editor->setHighlightedRegion (Range<int> (positionIndex, positionIndex + titleStrs[itemIndex].length()));
+
+        const String& jumpTo (titleStrs[itemIndex].fromFirstOccurrenceOf ("## ", false, false));
+        webView->goToURL (currentUrl + "#" + jumpTo);
+    }
+
+    editor->grabKeyboardFocus();
 }
 
 //=================================================================================================

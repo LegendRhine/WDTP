@@ -399,24 +399,27 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
             return;
         }
 
+        treeContainer->getEditAndPreview()->saveCurrentDocIfChanged();
+        HtmlProcessor::createArticleHtml (treeContainer->getEditAndPreview()->getCurrentTree(), true);
+
         // here must set false to prevent popup this menu continuously 
         // when user doesn't select any menu-item and then click the doc-item 
         // after the menu has been displayed the first time
         allowShowMenu = false;
-        const String& content (treeContainer->getEditAndPreview()->getCurrentContent());
+
+        // replace Chinese '#' temporaily instead of change it in reality
+        const String& content (treeContainer->getEditAndPreview()->getCurrentContent()
+                               .replace (CharPointer_UTF8 ("\xef\xbc\x83"), "#"));
 
         StringArray sentences;
         sentences.addTokens (content, newLine, String());
-        sentences.trim();
         sentences.removeEmptyStrings (true);
                 
         // only remain the sencond and third title
         for (int i = sentences.size(); --i >= 0; )
         {
-            if (sentences[i].substring (0, 3) == "## "
-                || sentences[i].substring (0, 3) == CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83 ")
-                || sentences[i].substring (0, 4) == "### "
-                || sentences[i].substring (0, 4) == CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83 "))
+            if (sentences[i].trimStart().substring (0, 3) == "## "
+                || sentences[i].trimStart().substring (0, 4) == "### ")
                 continue;
 
             else
@@ -433,7 +436,14 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         PopupMenu outlineMenu;
 
         for (int i = 0; i < sentences.size(); ++i)
-            outlineMenu.addItem (i + 1, sentences[i], true, false);
+        {
+            if (sentences[i].trimStart().substring (0, 3) == "## ")
+                outlineMenu.addItem (i + 1, sentences[i].trimStart().substring (3), true, false);
+            else if (sentences[i].trimStart().substring (0, 4) == "### ")
+                outlineMenu.addItem (i + 1, ".   " + sentences[i].trimStart().substring (4), true, false);
+            else
+                outlineMenu.addItem (i + 1, sentences[i], true, false);
+        }
 
         sentences.insert (0, "tempForMatchMenuSelectIndex");
         const int menuItemIndex = outlineMenu.show();  // show it here

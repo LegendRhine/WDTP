@@ -63,7 +63,8 @@ private:
         formatBold, formatItalic, formatBoldAndItalic, formatHighlight,        
         codeBlock, inlineCode, audioRecord,
         searchNext, searchPrev,
-        fontSize, fontColor, setBackground, resetDefault
+        fontSize, fontColor, setBackground, resetDefault,
+        outlineMenu
     };
 
     /** for click to select/unselect a keyword from keywords-table component.

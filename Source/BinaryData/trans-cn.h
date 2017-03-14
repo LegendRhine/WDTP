@@ -379,6 +379,7 @@ countries: cn
 "Hide: " = "隐身模式："
 "Beginning" = "文章开头"
 "End" = "文章末尾"
+"Document Outline..." = "文档大纲..."
 "WDTP Text Mark Syntax..." = "WDTP文本标记语法..."
 "WDTP Demo Page..." = "WDTP示例页面..."
 "FAQ..." = "常见问题..."

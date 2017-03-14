@@ -160,6 +160,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         editorSetup.addItem (resetDefault, TRANS ("Reset to Default"));
 
         menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docFile.existsAsFile());
+        menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)");
     }
 }
 
@@ -185,6 +186,14 @@ void MarkdownEditor::performPopupMenuAction (int index)
         parent->getCurrentTree().setProperty ("description", getHighlightedText(), nullptr);
         parent->getSetupPanel()->showDocProperties (false, parent->getCurrentTree());
         DocTreeViewItem::needCreate (parent->getCurrentTree());
+    }
+
+    else if (outlineMenu == index)
+    {
+        parent->saveCurrentDocIfChanged();
+        HtmlProcessor::createArticleHtml (parent->getCurrentTree(), true);
+
+        popupOutlineMenu (parent, getText());
     }
 
     else if (insertSeparator == index)      insertTextAtCaret (newLine + "---" + newLine);

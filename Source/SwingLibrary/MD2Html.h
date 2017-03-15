@@ -27,15 +27,20 @@ private:
         Markdown form (MUST NOT begin and end with '|'):
 
     headOne | headTwo | headThree    -> at least one ' | ', how many ' | ' then the columns + 1
-    ------------------------------   -> begin with and at least 6 '-' in the second line
+    ------------------------------   -> begin with and at least 6 '-', '=' or '/' in the second line
     row-1-1 | row-1-2 |  row-1-3     -> divide cells by ' | '. if '|'s more than the head line's, the extra will be cut off
     row-2-1 |         |  row-2-3     -> empty between two ' | ' means empty cell
     row-3-1                          -> means this row only has one content-cell which at the very left cell
                                      -> end up with an empty line
 
     about align mark:
-        - '(>)' for align right, '(^)' for center, none for left
-        - align mark should be placed at the begin of head-line or after ' | '
+        1. '(>)' for align right, '(^)' for center, none for left
+        2. align mark should be placed at the begin of head-line or after ' | '
+
+    about table style:
+        1. '------' at the sencond line for normal table
+        2. '======' at the sencond line for interlaced table
+        3. '//////' at the sencond line for no-border and no-background color table
     */
     static const String tableParse (const String& mdString);
 

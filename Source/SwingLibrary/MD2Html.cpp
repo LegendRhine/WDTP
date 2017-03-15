@@ -60,9 +60,24 @@ const String Md2Html::tableParse (const String& mdString)
         String& currentLine (contentByLine.getReference (i));
         String& nextLine = contentByLine.getReference (i + 1);
 
-        if (currentLine.substring (0, 6) == "------"
-            && prevLine.contains (" | ") && nextLine.contains (" | "))
+        if ((currentLine.substring (0, 6) == "------"
+             || currentLine.substring (0, 6) == "======"
+             || currentLine.substring (0, 6) == "//////")
+            && prevLine.contains (" | ") 
+            && nextLine.contains (" | "))
         {
+            // style
+            String styleClass;
+
+            if (currentLine.substring (0, 6) == "------")
+                styleClass = "<table class=normalTable>";
+
+            else if (currentLine.substring (0, 6) == "======")
+                styleClass = "<table class=interlacedTable>";
+
+            else if (currentLine.substring (0, 6) == "//////")
+                styleClass = "<table class=noBorderTable>";
+
             // the first column's align
             String firstColumnAlign (">");  // default for left
 
@@ -89,7 +104,7 @@ const String Md2Html::tableParse (const String& mdString)
             
             // process the table-head line
             currentLine = prevLine.replace ("(>)", String()).replace ("(^)", String());
-            prevLine = "<table>";
+            prevLine = styleClass;
             currentLine = "<tr><th>" + currentLine.replace (" | ", "</th><th>") + "</th></tr>";
 
             // process next line (the first line of this table)
@@ -135,6 +150,10 @@ const String Md2Html::tableParse (const String& mdString)
                         ++indexOfMarkArray;
                         alignIndex = thisLine.indexOf (alignIndex + 9, "<td>"); // 9 for '<td></td>'
                     }
+
+                    // for interlace style
+                    if (styleClass == "<table class=interlacedTable>" && (rowNums % 2 == 1))
+                        thisLine = thisLine.replaceSection (0, 4, "<tr class=interlacedEven>");
                 }
                 else
                 {

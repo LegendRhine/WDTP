@@ -99,9 +99,13 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (insertImage, TRANS ("Iamge(s)...") + ctrlStr + "M)");
         insertMenu.addItem (insertAudio, TRANS ("Audio(s)..."));
         insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink...") + ctrlStr + "H)");
-        insertMenu.addItem (insertTable, TRANS ("Table (4 x 3)") + ctrlStr + "T)");
         insertMenu.addItem (insertQuota, TRANS ("Quotation"));
         insertMenu.addSeparator();
+
+        insertMenu.addItem (insertNormalTable, TRANS ("Normal Table") + ctrlStr + "T)");
+        insertMenu.addItem (insertInterlaced, TRANS ("Interlaced Table"));
+        insertMenu.addItem (insertNoborderTable, TRANS ("Frameless Table"));
+        insertMenu.addSeparator ();
 
         insertMenu.addItem (insertAlignCenter, TRANS ("Align Center") + ctrlStr + "N)");
         insertMenu.addItem (insertAlignRight, TRANS ("Align Right") + ctrlStr + "R)");
@@ -204,7 +208,9 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (insertImage == index)          insertImages();
     else if (insertAudio == index)          insertAudioFiles();
     else if (insertHyperlink == index)      hyperlinkInsert();
-    else if (insertTable == index)          tableInsert();
+    else if (insertNormalTable == index)    tableInsert (-1);
+    else if (insertInterlaced == index)     tableInsert (1);
+    else if (insertNoborderTable == index)  tableInsert (0);
     else if (insertQuota == index)          quotaInsert();
     else if (insertAlignCenter == index)    alignCenterInsert();
     else if (insertAlignRight == index)     alignRightInsert();
@@ -480,16 +486,24 @@ void MarkdownEditor::quotaInsert()
 }
 
 //=================================================================================================
-void MarkdownEditor::tableInsert()
+void MarkdownEditor::tableInsert (const int tableStyle)
 {
+    // tableStyle: 0 for frameless table, 1 for interlaced, -1 for normal table
+    String styleStr ("////////"); // 0
+
+    if (tableStyle == 1)
+        styleStr = "========";
+    else if (tableStyle == -1)
+        styleStr = "--------";
+
     String content;
     content << newLine
-            << " H1 | H2 | H3 " << newLine
-            << "--------------" << newLine
-            << " 11 | 12 | 13 " << newLine
-            << " 21 | 22 | 23 " << newLine
-            << " 31 | 32 | 33 " << newLine
-            << " 41 | 42 | 43 " << newLine << newLine
+            << "(>)H1 | (^)H2 | (^)H3 | H4 " << newLine
+            << styleStr << newLine
+            << "11 | 12 | 13 | 14 " << newLine
+            << "21 | 22 | 23 | 24 " << newLine
+            << "31 | 32 | 33 | 34 " << newLine            
+            << newLine
             << "^^ " << TRANS ("Table: ");
 
     insertTextAtCaret (content);
@@ -996,7 +1010,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
     // insert table
     else if (key == KeyPress ('t', ModifierKeys::commandModifier, 0))
-        tableInsert();
+        tableInsert (-1);
 
     // insert align center
     else if (key == KeyPress ('n', ModifierKeys::commandModifier, 0))

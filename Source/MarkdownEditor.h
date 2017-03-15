@@ -55,9 +55,12 @@ private:
     enum MenuIndex
     {
         pickTitle = 1, addKeywords, pickFromAllKeywords, pickDesc,
-        insertImage, insertAudio, insertHyperlink, insertTable, insertQuota,
-        insertAlignCenter, insertAlignRight, insertUnoerderList, insertOrderList,
-        insertFirstTitle, insertSecondTitle, insertThirdTitle, insertToc, insertEndnote,
+        insertImage, insertAudio, insertHyperlink, insertQuota,
+        insertNormalTable, insertInterlaced, insertNoborderTable,
+        insertAlignCenter, insertAlignRight, 
+        insertUnoerderList, insertOrderList,
+        insertFirstTitle, insertSecondTitle, insertThirdTitle, 
+        insertToc, insertEndnote,
         insertIdentifier,
         insertCaption, insertSeparator, insertAuthor, insertInterLink,
         formatBold, formatItalic, formatBoldAndItalic, formatHighlight,        
@@ -76,7 +79,9 @@ private:
     void insertImages();
     void insertAudioFiles();
 
-    void tableInsert();
+    /** tableStyle: 0 for frameless table, 1 for interlaced, -1 for normal table */
+    void tableInsert (const int tableStyle);
+
     void quotaInsert();
     void insertTitle (const int level);
     void endnoteInsert();

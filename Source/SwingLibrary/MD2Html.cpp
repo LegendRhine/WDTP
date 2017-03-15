@@ -61,12 +61,10 @@ const String Md2Html::tableParse (const String& mdString)
         String& nextLine = contentByLine.getReference (i + 1);
 
         if (currentLine.substring (0, 6) == "------"
-            && prevLine.contains (" | ")
-            && nextLine.contains (" | "))
+            && prevLine.contains (" | ") && nextLine.contains (" | "))
         {
-            // align: mark '(>)' for right, '(^)' for center, none for left
-            // the mark should be placed at the begin of line or after ' | '
-
+            // '(>)' for align right, '(^)' for center, none for left
+            // align marks should be placed at the begin of head-line or after ' | '
             String firstColumnAlign (">");  // default for left
 
             if (prevLine.trimStart().substring (0, 4) == "(>) ")
@@ -93,17 +91,16 @@ const String Md2Html::tableParse (const String& mdString)
             // process the table-head line
             currentLine = prevLine.replace ("(>)", String()).replace ("(^)", String());
             prevLine = "<table>";
-
             currentLine = "<tr><th>" + currentLine.replace (" | ", "</th><th>") + "</th></tr>";
 
-            // process next line
+            // process next line (the first line of this table)
             nextLine = "<tr><td" + firstColumnAlign + nextLine.replace (" | ", "</td><td>") + "</td></tr>";
             alignIndex = nextLine.indexOf (8, "<td>"); // 8 for at least is '<tr><td>'
             int indexOfMarkArray = 0;
 
             while (alignIndex != -1)
             {
-                // table-head columns may be less than other lines
+                // here to prevent table-head columns less than this line's column
                 if (indexOfMarkArray < alignArray.size())
                     nextLine = nextLine.replaceSection (alignIndex + 3, 1, alignArray[indexOfMarkArray]);
                 else
@@ -123,6 +120,22 @@ const String Md2Html::tableParse (const String& mdString)
                 if (thisLine.contains (" | "))
                 {
                     thisLine = "<tr><td" + firstColumnAlign + thisLine.replace (" | ", "</td><td>") + "</td></tr>";
+
+                    // process align
+                    alignIndex = thisLine.indexOf (8, "<td>"); // 8 for at least is '<tr><td>'
+                    indexOfMarkArray = 0;
+
+                    while (alignIndex != -1)
+                    {
+                        // here to prevent table-head columns less than this line's column
+                        if (indexOfMarkArray < alignArray.size ())
+                            thisLine = thisLine.replaceSection (alignIndex + 3, 1, alignArray[indexOfMarkArray]);
+                        else
+                            break;
+
+                        ++indexOfMarkArray;
+                        alignIndex = thisLine.indexOf (alignIndex + 9, "<td>"); // 9 for '<td></td>'
+                    }
                 }
                 else
                 {

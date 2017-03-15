@@ -46,10 +46,10 @@ public:
         if (!f.existsAsFile())
         {
             systemFile->setValue ("language", 0);  // 0 for English
-            systemFile->setValue ("uiBackground", Colour (0xffdcdbdb).toString());
-            systemFile->setValue ("uiTextColour", Colour (0xff181818).toString());
+            systemFile->setValue ("uiBackground", Colour (0xff202020).toString());
+            systemFile->setValue ("uiTextColour", Colour (0xffe8e8e8).toString());
             systemFile->setValue ("editorFontColour", Colour (0xff181818).toString());
-            systemFile->setValue ("editorBackground", Colour (0xffdedede).toString());
+            systemFile->setValue ("editorBackground", Colour (0xffafcc90).toString());
             systemFile->setValue ("fontSize", SwingUtilities::getFontSize() + 1.f);
 
             systemFile->save();

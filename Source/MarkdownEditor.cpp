@@ -143,9 +143,22 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addSeparator();
         formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
-
         menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile());
-        menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)", docFile.existsAsFile());
+
+        PopupMenu expandMark;
+        expandMark.addItem (latestPublish, TRANS ("Latest Publish"));
+        expandMark.addItem (latestModify, TRANS ("Latest Modified"));
+        expandMark.addItem (featuredArticle, TRANS ("Featured Articles"));
+        expandMark.addSeparator();
+        expandMark.addItem (allModify, TRANS ("Modify List"));
+        expandMark.addItem (allPublish, TRANS ("Publish List"));
+        expandMark.addItem (randomArticle, TRANS ("Random Articles"));
+        expandMark.addItem (allKeywords, TRANS ("All Keywords"));
+
+        menu.addSubMenu (TRANS ("Expand Mark"), expandMark, docFile.existsAsFile());
+        menu.addSeparator();
+
+        menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)", docFile.existsAsFile ());
         menu.addSeparator();
 
         menu.addItem (searchNext, TRANS ("Search Next Selection") + "  F3", getHighlightedText().isNotEmpty());

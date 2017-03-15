@@ -65,6 +65,8 @@ private:
         insertCaption, insertSeparator, insertAuthor, insertInterLink,
         formatBold, formatItalic, formatBoldAndItalic, formatHighlight,        
         codeBlock, inlineCode, audioRecord,
+        latestPublish, latestModify, featuredArticle, 
+        allKeywords, randomArticle, allPublish, allModify,
         searchNext, searchPrev,
         fontSize, fontColor, setBackground, resetDefault,
         outlineMenu

@@ -97,6 +97,11 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
             currentContent = editor->getText();
             editor->addListener (this);
         }
+
+        else if (!docOrDirFile.exists())
+        {
+            return;
+        }
     }
 
     // prevent auto-enter preview mode when created a new document

@@ -53,7 +53,7 @@ const String Md2Html::tableParse (const String& mdString)
 
     contentByLine.insert (0, "%%__table@MDtag@Parse__%%");
     contentByLine.add ("%%__table@MDtag@Parse__%%");
-
+    
     for (int i = 1; i < contentByLine.size() - 1; ++i)
     {
         String& prevLine = contentByLine.getReference (i - 1);
@@ -89,7 +89,7 @@ const String Md2Html::tableParse (const String& mdString)
             // get align marks for other columns
             StringArray alignArray;
             int alignIndex = prevLine.indexOf (" | ");
-            
+
             while (alignIndex != -1)
             {
                 if (prevLine.substring (alignIndex + 3, alignIndex + 6) == "(>)")
@@ -126,6 +126,7 @@ const String Md2Html::tableParse (const String& mdString)
 
             // process other lines
             int rowNums = i + 1;
+            int numForEvenLine = 0;
 
             while (++rowNums < contentByLine.size())
             {
@@ -152,8 +153,10 @@ const String Md2Html::tableParse (const String& mdString)
                     }
 
                     // for interlace style
-                    if (styleClass == "<table class=interlacedTable>" && (rowNums % 2 == 1))
+                    if (styleClass == "<table class=interlacedTable>" && (numForEvenLine % 2 == 0))
                         thisLine = thisLine.replaceSection (0, 4, "<tr class=interlacedEven>");
+
+                    ++numForEvenLine;
                 }
                 else
                 {

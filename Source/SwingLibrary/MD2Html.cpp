@@ -550,11 +550,11 @@ const String Md2Html::processByLine (const String& mdString)
             + currentLine.trimStart().substring (2) + "</h1>";
 
         // align
-        else if (currentLine.trimStart().substring (0, 4) == ">|< ")
-            currentLine = "<div align=center>" + currentLine.substring (4) + "</div>";
+        else if (currentLine.trimStart().substring (0, 4) == "(^) ")
+            currentLine = "<div align=center>" + currentLine.trimStart().substring (4) + "</div>";
 
-        else if (currentLine.trimStart().substring (0, 4) == ">>> ")
-            currentLine = "<div align=right>" + currentLine.substring (4) + "</div>";
+        else if (currentLine.trimStart().substring (0, 4) == "(>) ")
+            currentLine = "<div align=right>" + currentLine.trimStart().substring (4) + "</div>";
 
         // diagram description
         else if (currentLine.trimStart().substring (0, 3) == "^^ ")

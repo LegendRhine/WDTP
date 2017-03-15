@@ -77,11 +77,11 @@ private:
         <blockquote>: "> "
         <h1>: "# " will auto place in center.
 
-        defined by WDTP:
-         - center: ">|< "
-         - right: ">>> "
+        defined by WDTP (these 3 must followed by a whitespace):
+         - center: "(^) "
+         - right: "(>) "
          - diagram description: "^^ " (center at the line and font style is <h5>)
-           it could be placed under image or table, also could use it freely
+           it could be placed under image or table, also could be used freely
         */
     static const String processByLine (const String& mdString);
 

@@ -379,7 +379,7 @@ void MarkdownEditor::authorInsert()
 {
     String content;
     content << newLine 
-        << ">>> " << FileTreeContainer::projectTree.getProperty ("owner").toString() 
+        << "(>) " << FileTreeContainer::projectTree.getProperty ("owner").toString() 
         << newLine;
 
     insertTextAtCaret (content);
@@ -464,13 +464,13 @@ void MarkdownEditor::unorderListInsert()
 //=================================================================================================
 void MarkdownEditor::alignRightInsert()
 {
-    insertTextAtCaret (newLine + ">>> ");
+    insertTextAtCaret (newLine + "(>) ");
 }
 
 //=================================================================================================
 void MarkdownEditor::alignCenterInsert()
 {
-    insertTextAtCaret (newLine + ">|< ");
+    insertTextAtCaret (newLine + "(^) ");
 }
 
 //=================================================================================================

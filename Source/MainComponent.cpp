@@ -161,9 +161,10 @@ void MainContentComponent::run()
             }
             else
             {
-                SHOW_MESSAGE (TRANS ("The MP3 encoder 'lame-osx.zip' has been downloaded.")
-                                     + newLine
-                                     + TRANS ("Please double click the zip file to release it."));
+                AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS ("Congratulations"),
+                                             TRANS ("The MP3 encoder 'lame-osx.zip' has been downloaded.")
+                                             + newLine
+                                             + TRANS ("Please double click the zip file to release it."));
                 lameZip.revealToUser();
             }
 #endif

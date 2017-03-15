@@ -646,7 +646,10 @@ void TopToolBar::run()
     accumulator = 0;
     progressValue = 0.999;
 
-    SHOW_MESSAGE (TRANS ("Site clean and regenerate successful!"));
+    AlertWindow::showMessageBox (AlertWindow::InfoIcon, 
+                                 TRANS ("Congratulations"),
+                                 TRANS ("Site clean and regenerate successful!"));
+
     FileTreeContainer::saveProject();
     progressValue = 0.0;
 

@@ -6,6 +6,7 @@ countries: cn
 "Acknowledgements:" = "鸣谢:"
 "About " = "关于 "
 "Message" = "消息"
+"Congratulations" = "恭喜"
 "New Folder..." = "新建文件夹..."
 "New Document..." = "新建文档..."
 "Pack Site Data" = "网站数据打包"

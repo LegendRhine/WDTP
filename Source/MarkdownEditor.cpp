@@ -20,7 +20,6 @@ MarkdownEditor::MarkdownEditor (EditAndPreview* parent_)
     fontSizeSlider.setRange (15.0, 35.0, 1.0);
     fontSizeSlider.setDoubleClickReturnValue (true, 20.0);
     fontSizeSlider.setSize (300, 60);
-    fontSizeSlider.addListener (this);
 }
 
 //=================================================================================================
@@ -246,14 +245,14 @@ void MarkdownEditor::resetToDefault()
 
         systemFile->setValue ("fontSize", SwingUtilities::getFontSize() + 1.f);
         systemFile->setValue ("editorFontColour", Colour (0xff181818).toString());
-        systemFile->setValue ("editorBackground", Colour (0xffdedede).toString());
+        systemFile->setValue ("editorBackground", Colour (0xffafcc90).toString());
 
         parent->getEditor()->setColour (TextEditor::textColourId, Colour (0xff181818));
         parent->getEditor()->setColour (CaretComponent::caretColourId, Colour (0xff181818).withAlpha (0.6f));
-        parent->getEditor()->setColour (TextEditor::backgroundColourId, Colour (0xffdedede));
+        parent->getEditor()->setColour (TextEditor::backgroundColourId, Colour (0xffafcc90));
         parent->getEditor()->setFont (SwingUtilities::getFontSize() + 1.f);
-
         parent->getEditor()->applyFontToAllText (SwingUtilities::getFontSize() + 1.f);
+
         systemFile->saveIfNeeded();
     }
 }
@@ -293,10 +292,12 @@ void MarkdownEditor::setFontColour()
 //=================================================================================================
 void MarkdownEditor::setFontSize()
 {
-    fontSizeSlider.setValue (systemFile->getValue ("fontSize").getDoubleValue(),
-                             dontSendNotification);
+    fontSizeSlider.setValue (systemFile->getValue ("fontSize").getDoubleValue(), dontSendNotification);
+    fontSizeSlider.addListener (this);
     CallOutBox callOut (fontSizeSlider, getLocalBounds(), this);
     callOut.runModalLoop();
+    
+    fontSizeSlider.removeListener (this);
 
     systemFile->setValue ("fontSize", fontSizeSlider.getValue());
     systemFile->saveIfNeeded();

@@ -787,10 +787,10 @@ void TopToolBar::resetUiColour()
                                       TRANS ("Do you want to reset the UI's color?")))
     {
         // background colour
-        systemFile->setValue ("uiBackground", Colour (0xffdcdbdb).toString());
+        systemFile->setValue ("uiBackground", Colour (0xff202020).toString());
         getParentComponent()->repaint();
 
-        systemFile->setValue ("uiTextColour", Colour (0xff181818).toString());
+        systemFile->setValue ("uiTextColour", Colour (0xffe8e8e8).toString());
 
         // treeView
         TreeViewItem* projectTreeItem = fileTreeContainer->getTreeView().getRootItem();

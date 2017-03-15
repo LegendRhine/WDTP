@@ -64,12 +64,56 @@ const String Md2Html::tableParse (const String& mdString)
             && prevLine.contains (" | ")
             && nextLine.contains (" | "))
         {
-            currentLine = prevLine;
+            // align: mark '(>)' for right, '(^)' for center, none for left
+            // the mark should be placed at the begin of line or after ' | '
+
+            String firstColumnAlign (">");  // default for left
+
+            if (prevLine.trimStart().substring (0, 4) == "(>) ")
+                firstColumnAlign = " align=right>";
+            else if (prevLine.trimStart().substring (0, 4) == "(^) ")
+                firstColumnAlign = " align=center>";
+
+            // get align marks for every column
+            StringArray alignArray;
+            int alignIndex = prevLine.indexOf (" | ");
+            
+            while (alignIndex != -1)
+            {
+                if (prevLine.substring (alignIndex + 3, alignIndex + 6) == "(>)")
+                    alignArray.add (" align=right>");
+                else if (prevLine.substring (alignIndex + 3, alignIndex + 6) == "(^)")
+                    alignArray.add (" align=center>");
+                else
+                    alignArray.add (">");
+
+                alignIndex = prevLine.indexOf (alignIndex + 3, " | "); // 3 for ' | '
+            }
+            
+            // process the table-head line
+            currentLine = prevLine.replace ("(>)", String()).replace ("(^)", String());
             prevLine = "<table>";
 
             currentLine = "<tr><th>" + currentLine.replace (" | ", "</th><th>") + "</th></tr>";
-            nextLine = "<tr><td>" + nextLine.replace (" | ", "</td><td>") + "</td></tr>";
 
+            // process next line
+            nextLine = "<tr><td" + firstColumnAlign + nextLine.replace (" | ", "</td><td>") + "</td></tr>";
+            alignIndex = nextLine.indexOf (8, "<td>"); // 8 for at least is '<tr><td>'
+            int indexOfMarkArray = 0;
+
+            while (alignIndex != -1)
+            {
+                // table-head columns may be less than other lines
+                if (indexOfMarkArray < alignArray.size())
+                    nextLine = nextLine.replaceSection (alignIndex + 3, 1, alignArray[indexOfMarkArray]);
+                else
+                    break;
+
+                ++indexOfMarkArray;
+                alignIndex = nextLine.indexOf (alignIndex + 9, "<td>"); // 9 for '<td></td>'
+            }
+
+            // process other lines
             int rowNums = i + 1;
 
             while (++rowNums < contentByLine.size())
@@ -78,7 +122,7 @@ const String Md2Html::tableParse (const String& mdString)
 
                 if (thisLine.contains (" | "))
                 {
-                    thisLine = "<tr><td>" + thisLine.replace (" | ", "</td><td>") + "</td></tr>";
+                    thisLine = "<tr><td" + firstColumnAlign + thisLine.replace (" | ", "</td><td>") + "</td></tr>";
                 }
                 else
                 {
@@ -92,7 +136,7 @@ const String Md2Html::tableParse (const String& mdString)
     }
 
     contentByLine.removeString ("%%__table@MDtag@Parse__%%");
-    return contentByLine.joinIntoString (newLine);
+    return contentByLine.joinIntoString ("\n");
 }
 
 //=================================================================================================

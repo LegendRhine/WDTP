@@ -24,7 +24,7 @@ private:
     /** process table. doesn't support align MD-tag.
         It must at least 2 rows and 2 columns.
 
-        Markdown form:
+        Markdown form (MUST NOT begin and end with '|'):
 
     headOne | headTwo | headThree    -> at least one ' | ', how many ' | ' then the columns + 1
     ------------------------------   -> begin with and at least 6 '-' in the second line

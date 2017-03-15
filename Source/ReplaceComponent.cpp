@@ -14,10 +14,7 @@ Author:  SwingCoder
 ReplaceComponent::ReplaceComponent (TextEditor* editor_,
                                     ValueTree& tree_)
     : tree (tree_),
-    editor (editor_),
-    numberFilesOfReplaced (0),
-    numberOfReplaced (0),
-    replaced (false)
+    editor (editor_)
 {
     jassert (editor != nullptr);
     jassert (tree.isValid());
@@ -112,24 +109,23 @@ void ReplaceComponent::buttonClicked (Button* buttonThatWasClicked)
 {
     if (buttonThatWasClicked == replaceBt)
     {
-        if (originalTe->getText().isEmpty()
-            || originalTe->getText() == replaceTe->getText())
+        if (originalTe->getText().isEmpty() || originalTe->getText() == replaceTe->getText())
             return;
 
         const String& originalText (originalTe->getText());
         const String& replaceText (replaceTe->getText());
 
-        numberFilesOfReplaced = 0;
-        numberOfReplaced = 0;
-
-        replaceContent (tree, originalText, replaceText);
-
-        if (replaced)
+        int numberFilesOfReplaced = 0;
+        int numberOfReplaced = 0;
+        replaceContent (tree, originalText, replaceText, 
+                        numberFilesOfReplaced, numberOfReplaced);
+        
+        if (numberOfReplaced > 0)
         {
             DocTreeViewItem::needCreate (tree);
             SHOW_MESSAGE (TRANS ("Total replaced: ") 
-                          + String(numberOfReplaced) + TRANS(" matched in ")
-                          + String(numberFilesOfReplaced) + TRANS(" file(s)."));
+                          + String (numberOfReplaced) + TRANS(" matched in ")
+                          + String (numberFilesOfReplaced) + TRANS(" file(s)."));
         }
         else
         {
@@ -137,7 +133,7 @@ void ReplaceComponent::buttonClicked (Button* buttonThatWasClicked)
             SHOW_MESSAGE (TRANS ("Nothing could be found."));
         }
 
-        if (replaced && tree.getType().toString() == "doc")
+        if ((numberOfReplaced > 0) && tree.getType().toString() == "doc")
             editor->setText (DocTreeViewItem::getMdFileOrDir (tree).loadFileAsString());
     }
     else if (buttonThatWasClicked == cancelBt)
@@ -146,11 +142,6 @@ void ReplaceComponent::buttonClicked (Button* buttonThatWasClicked)
         replaceTe->setText (String());
         
         originalTe->grabKeyboardFocus();
-        replaced = false;
-    }
-    else if (buttonThatWasClicked == caseBt)
-    {
-        replaced = false;
     }
 }
 
@@ -162,13 +153,15 @@ void ReplaceComponent::textEditorReturnKeyPressed (TextEditor& te)
 }
 
 //=================================================================================================
-void ReplaceComponent::replaceContent (ValueTree tree_,
+void ReplaceComponent::replaceContent (ValueTree treeNeedReplaced,
                                        const String& originalText,
-                                       const String& replaceText)
+                                       const String& replaceText,
+                                       int& numberFilesOfReplaced,
+                                       int& numberOfReplaced)
 {
-    if (tree_.getType().toString() == "doc")
+    if (treeNeedReplaced.getType().toString() == "doc")
     {
-        const File& docFile (DocTreeViewItem::getMdFileOrDir (tree_));
+        const File& docFile (DocTreeViewItem::getMdFileOrDir (treeNeedReplaced));
         String content (docFile.loadFileAsString());
 
         const bool contained = caseBt->getToggleState() ? content.contains (originalText)
@@ -178,7 +171,7 @@ void ReplaceComponent::replaceContent (ValueTree tree_,
         {
             ++numberFilesOfReplaced;
 
-            int startIndex = caseBt->getToggleState()
+            int startIndex = caseBt->getToggleState() 
                 ? content.indexOf (0, originalText)
                 : content.indexOfIgnoreCase (0, originalText);
 
@@ -193,17 +186,13 @@ void ReplaceComponent::replaceContent (ValueTree tree_,
             }
 
             docFile.replaceWithText (content);
-            replaced = true;
-        }
-        else
-        {
-            replaced = false;
-        }
+        }        
     }
     else
     {
-        for (int i = tree_.getNumChildren(); --i >= 0; )
-            replaceContent (tree_.getChild (i), originalText, replaceText);
+        for (int i = treeNeedReplaced.getNumChildren(); --i >= 0; )
+            replaceContent (treeNeedReplaced.getChild (i), originalText, replaceText, 
+                            numberFilesOfReplaced, numberOfReplaced);
     }
 }
 

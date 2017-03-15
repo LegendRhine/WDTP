@@ -30,16 +30,15 @@ public:
 
 private:
     //=================================================================================================
-    /** recursive method */
+    /** recursive method. if any doc has been replaced, then it will return true. */
     void replaceContent (ValueTree tree_,
                          const String& originalText,
-                         const String& replaceText);
+                         const String& replaceText,
+                         int& numberFilesOfReplaced,
+                         int& numberOfReplaced);
 
     ValueTree tree;
     TextEditor* editor;
-    int numberFilesOfReplaced;
-    int numberOfReplaced;
-    bool replaced;
 
     ScopedPointer<Label> label;
     ScopedPointer<Label> orignalLb;

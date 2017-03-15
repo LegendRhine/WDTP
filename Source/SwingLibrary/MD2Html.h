@@ -32,6 +32,10 @@ private:
     row-2-1 |         |  row-2-3     -> empty between two ' | ' means empty cell
     row-3-1                          -> means this row only has one content-cell which at the very left cell
                                      -> end up with an empty line
+
+    about align mark:
+        - '(>)' for align right, '(^)' for center, none for left
+        - align mark should be placed at the begin of head-line or after ' | '
     */
     static const String tableParse (const String& mdString);
 

@@ -63,16 +63,15 @@ const String Md2Html::tableParse (const String& mdString)
         if (currentLine.substring (0, 6) == "------"
             && prevLine.contains (" | ") && nextLine.contains (" | "))
         {
-            // '(>)' for align right, '(^)' for center, none for left
-            // align marks should be placed at the begin of head-line or after ' | '
+            // the first column's align
             String firstColumnAlign (">");  // default for left
 
-            if (prevLine.trimStart().substring (0, 4) == "(>) ")
+            if (prevLine.trimStart().substring (0, 3) == "(>)")
                 firstColumnAlign = " align=right>";
-            else if (prevLine.trimStart().substring (0, 4) == "(^) ")
+            else if (prevLine.trimStart().substring (0, 3) == "(^)")
                 firstColumnAlign = " align=center>";
 
-            // get align marks for every column
+            // get align marks for other columns
             StringArray alignArray;
             int alignIndex = prevLine.indexOf (" | ");
             

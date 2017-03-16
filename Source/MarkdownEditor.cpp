@@ -222,9 +222,9 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (insertImage == index)          insertImages();
     else if (insertAudio == index)          insertAudioFiles();
     else if (insertHyperlink == index)      hyperlinkInsert();
-    else if (insertNormalTable == index)    tableInsert (-1);
-    else if (insertInterlaced == index)     tableInsert (1);
-    else if (insertNoborderTable == index)  tableInsert (0);
+    else if (insertNormalTable == index)    tableInsert (insertNormalTable);
+    else if (insertInterlaced == index)     tableInsert (insertInterlaced);
+    else if (insertNoborderTable == index)  tableInsert (insertNoborderTable);
     else if (insertQuota == index)          quotaInsert();
     else if (insertAlignCenter == index)    alignCenterInsert();
     else if (insertAlignRight == index)     alignRightInsert();
@@ -510,7 +510,7 @@ void MarkdownEditor::quotaInsert()
 //=================================================================================================
 void MarkdownEditor::tableInsert (const int tableStyle)
 {    
-    String styleStr ("////////"); // 0
+    String styleStr ("////////");
 
     if (tableStyle == insertInterlaced)
         styleStr = "========";
@@ -1052,7 +1052,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
     // insert table
     else if (key == KeyPress ('t', ModifierKeys::commandModifier, 0))
-        tableInsert (-1);
+        tableInsert (insertNormalTable);
 
     // insert align center
     else if (key == KeyPress ('n', ModifierKeys::commandModifier, 0))

@@ -105,7 +105,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (insertNormalTable, TRANS ("Normal Table") + ctrlStr + "T)");
         insertMenu.addItem (insertInterlaced, TRANS ("Interlaced Table"));
         insertMenu.addItem (insertNoborderTable, TRANS ("Frameless Table"));
-        insertMenu.addSeparator ();
+        insertMenu.addSeparator();
 
         insertMenu.addItem (insertAlignCenter, TRANS ("Align Center") + ctrlStr + "N)");
         insertMenu.addItem (insertAlignRight, TRANS ("Align Right") + ctrlStr + "R)");
@@ -158,7 +158,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSubMenu (TRANS ("Expand Mark"), expandMark, docFile.existsAsFile());
         menu.addSeparator();
 
-        menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)", docFile.existsAsFile ());
+        menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)", docFile.existsAsFile());
         menu.addSeparator();
 
         menu.addItem (searchNext, TRANS ("Search Next Selection") + "  F3", getHighlightedText().isNotEmpty());
@@ -218,6 +218,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (pickFromAllKeywords == index)  showAllKeywords();
     else if (searchPrev == index)           searchPrevious();
     else if (searchNext == index)           searchForNext();
+
     else if (insertImage == index)          insertImages();
     else if (insertAudio == index)          insertAudioFiles();
     else if (insertHyperlink == index)      hyperlinkInsert();
@@ -238,12 +239,22 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (insertCaption == index)        captionInsert();
     else if (insertAuthor == index)         authorInsert();
     else if (insertInterLink == index)      interLinkInsert();
+
     else if (formatBold == index)           inlineFormat (bold);
     else if (formatItalic == index)         inlineFormat (italic);
     else if (formatBoldAndItalic == index)  inlineFormat (boldAndItalic);
     else if (formatHighlight == index)      inlineFormat (highlight);
     else if (inlineCode == index)           inlineFormat (codeOfinline);
     else if (codeBlock == index)            codeBlockFormat();
+
+    else if (latestPublish == index)        insertExpandMark (latestPublish);
+    else if (latestModify == index)         insertExpandMark (latestModify);
+    else if (featuredArticle == index)      insertExpandMark (featuredArticle);
+    else if (allKeywords == index)          insertExpandMark (allKeywords);
+    else if (randomArticle == index)        insertExpandMark (randomArticle);
+    else if (allPublish == index)           insertExpandMark (allPublish);
+    else if (allModify == index)            insertExpandMark (allModify);
+
     else if (audioRecord == index)          recordAudio();
     else if (fontSize == index)             setFontSize();
     else if (fontColor == index)            setFontColour();
@@ -658,6 +669,29 @@ void MarkdownEditor::insertAudioFiles()
     }
 
     insertTextAtCaret (content);
+}
+
+//=================================================================================================
+void MarkdownEditor::insertExpandMark (const int expandIndex)
+{
+    String markStr;
+
+    if (expandIndex == latestPublish)
+        markStr = "[latestPublish]";
+    else if (expandIndex == latestModify)
+        markStr = "[latestModify]";
+    else if (expandIndex == featuredArticle)
+        markStr = "[featuredArticle]";
+    else if (expandIndex == allKeywords)
+        markStr = "[keywords]";
+    else if (expandIndex == randomArticle)
+        markStr = "[randomArticle]";
+    else if (expandIndex == allPublish)
+        markStr = "[allPublish]";
+    else if (expandIndex == allModify)
+        markStr = "[allModify]";
+    
+    insertTextAtCaret ("\n" + markStr + newLine);
 }
 
 //=================================================================================================

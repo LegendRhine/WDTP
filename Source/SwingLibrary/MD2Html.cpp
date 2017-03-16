@@ -143,7 +143,7 @@ const String Md2Html::tableParse (const String& mdString)
                     while (alignIndex != -1)
                     {
                         // here to prevent table-head columns less than this line's column
-                        if (indexOfMarkArray < alignArray.size ())
+                        if (indexOfMarkArray < alignArray.size())
                             thisLine = thisLine.replaceSection (alignIndex + 3, 1, alignArray[indexOfMarkArray]);
                         else
                             break;

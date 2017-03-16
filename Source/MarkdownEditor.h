@@ -77,13 +77,14 @@ private:
     virtual void actionListenerCallback (const String& message) override;
     void showAllKeywords();
 
+    /** tableStyle: 0 for frameless table, 1 for interlaced, -1 for normal table */
+    void tableInsert (const int tableStyle);
     void hyperlinkInsert();
     void insertImages();
     void insertAudioFiles();
 
-    /** tableStyle: 0 for frameless table, 1 for interlaced, -1 for normal table */
-    void tableInsert (const int tableStyle);
-
+    /** expandIndex: should be the menu index see above */
+    void insertExpandMark (const int expandIndex);
     void quotaInsert();
     void insertTitle (const int level);
     void endnoteInsert();

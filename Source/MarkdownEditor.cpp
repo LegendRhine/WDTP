@@ -509,13 +509,12 @@ void MarkdownEditor::quotaInsert()
 
 //=================================================================================================
 void MarkdownEditor::tableInsert (const int tableStyle)
-{
-    // tableStyle: 0 for frameless table, 1 for interlaced, -1 for normal table
+{    
     String styleStr ("////////"); // 0
 
-    if (tableStyle == 1)
+    if (tableStyle == insertInterlaced)
         styleStr = "========";
-    else if (tableStyle == -1)
+    else if (tableStyle == insertNormalTable)
         styleStr = "--------";
 
     String content;
@@ -672,11 +671,9 @@ void MarkdownEditor::insertAudioFiles()
 //=================================================================================================
 void MarkdownEditor::insertExpandMark (const int expandIndex)
 {
-    String markStr;
+    String markStr ("[latestPublish]");
 
-    if (expandIndex == latestPublish)
-        markStr = "[latestPublish]";
-    else if (expandIndex == latestModify)
+    if (expandIndex == latestModify)
         markStr = "[latestModify]";
     else if (expandIndex == featuredArticle)
         markStr = "[featuredArticle]";

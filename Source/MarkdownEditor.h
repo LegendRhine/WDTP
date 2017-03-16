@@ -77,7 +77,7 @@ private:
     virtual void actionListenerCallback (const String& message) override;
     void showAllKeywords();
 
-    /** tableStyle: 0 for frameless table, 1 for interlaced, -1 for normal table */
+    /** tableStyle: should be the menu index see above */
     void tableInsert (const int tableStyle);
     void hyperlinkInsert();
     void insertImages();

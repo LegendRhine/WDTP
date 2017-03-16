@@ -649,8 +649,9 @@ const String Md2Html::processByLine (const String& mdString)
             currentLine = "<h5 align=center>" + currentLine.trimStart().substring (3) + "</h5></div>";
 
         // indent
-        else if (currentLine.containsIgnoreCase ("(+) "))
-            currentLine = currentLine.replace ("(+) ", "<div style=\"text-indent: 2em; padding: 0;\">") + "</div>";
+        else if (currentLine.trimStart().substring (0, 4) == "(+) ")
+            currentLine = "<div style=\"text-indent: 2em; padding: 0;\">"
+            + currentLine.trimStart().substring (4) + "</div>";
 
         // anti-indent
         else if (currentLine.trimStart().substring (0, 4) == "(-) ")
@@ -990,18 +991,18 @@ const String Md2Html::cleanUp (const String& mdString)
     resultStr = resultStr.replace (String ("</code></pre>") + newLine, "</code></pre>\n<p>");
 
     // for escape
-    resultStr = resultStr.replace (String ("\\*"), "*");
-    resultStr = resultStr.replace (String ("\\~"), "~");
-    resultStr = resultStr.replace (String ("\\`"), "`");
-    resultStr = resultStr.replace (String ("\\```"), "```");
-    resultStr = resultStr.replace (String ("\\#"), "#");
-    resultStr = resultStr.replace (String ("\\["), "[");
-    resultStr = resultStr.replace (String ("\\!["), "![");
-    resultStr = resultStr.replace (String ("\\~["), "~[");
-    resultStr = resultStr.replace (String ("\\[^"), "[^");
-    resultStr = resultStr.replace (String ("\\]"), "]");
-    resultStr = resultStr.replace (String ("<p><br>"), "<p>"); 
-
+    resultStr = resultStr.replace ("\\*", "*");
+    resultStr = resultStr.replace ("\\~", "~");
+    resultStr = resultStr.replace ("\\`", "`");
+    resultStr = resultStr.replace ("\\```", "```");
+    resultStr = resultStr.replace ("\\#", "#");
+    resultStr = resultStr.replace ("\\[", "[");
+    resultStr = resultStr.replace ("\\![", "![");
+    resultStr = resultStr.replace ("\\~[", "~[");
+    resultStr = resultStr.replace ("\\[^", "[^");
+    resultStr = resultStr.replace ("\\]", "]");
+    resultStr = resultStr.replace ("<p><br>", "<p>"); 
+    
     // for scroll to bottom
     resultStr += newLine + "<span id=\"wdtpPageBottom\"></span>";
 

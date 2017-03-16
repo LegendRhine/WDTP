@@ -97,12 +97,12 @@ private:
         <blockquote>: "> "
         <h1>: "# " will auto place in center.
 
-        defined by WDTP (these 3 must followed by a whitespace):
+        defined by WDTP (these marks must be placed at the begin of line and followed by a whitespace):
          - center: "(^) "
          - right: "(>) "
-         - indent "(+) ": it could be placed at the begin of line or in the content 
-         - anti-indent "(-) ": it MUST be placed at the begin of line 
-         - diagram description: "^^ " (center at the line and font style is <h5>)
+         - indent "(+) " 
+         - anti-indent "(-) "
+         - diagram caption: "^^ " (center at the line and font style is <h5>)
            it could be placed under image or table, also could be used freely
         */
     static const String processByLine (const String& mdString);

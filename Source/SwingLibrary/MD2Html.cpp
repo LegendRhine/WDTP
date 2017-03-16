@@ -253,7 +253,7 @@ const String Md2Html::hybridParse (const String& mdString)
 
         const String& htmlStr (lines.joinIntoString (newLine));
 
-        DBG (htmlStr);
+        //DBG (htmlStr);
         resultStr = resultStr.replaceSection (indexStart, contentStr.length() + 3, htmlStr);
         indexStart = resultStr.indexOfIgnoreCase (indexStart + htmlStr.length(), "~~~");
     }
@@ -681,7 +681,7 @@ const String Md2Html::spaceLinkParse (const String& mdString)
 //=================================================================================================
 const String Md2Html::imageParse (const String& mdString)
 {
-    /**< ![](media/xxx.jpg) */
+    /**< ![](media/xxx.jpg =500) */
     String resultStr (mdString);
     int indexStart = resultStr.indexOfIgnoreCase (0, "![");
 
@@ -695,16 +695,35 @@ const String Md2Html::imageParse (const String& mdString)
 
         // get alt content
         const int altEnd = resultStr.indexOfIgnoreCase (indexStart + 2, "](");
-        if (altEnd == -1)            break;
+
+        if (altEnd == -1)
+            break;
+
         const String& altContent (resultStr.substring (indexStart + 2, altEnd));
 
-        // get img path
+        // get img str include width
         const int imgEnd = resultStr.indexOfIgnoreCase (altEnd + 2, ")");
-        if (imgEnd == -1)            break;
-        const String& imgPath (resultStr.substring (altEnd + 2, imgEnd));
+
+        if (imgEnd == -1)
+            break;
+
+        const String& imgStrIncludeWidth (resultStr.substring (altEnd + 2, imgEnd));
+        const String& widthValueStr (imgStrIncludeWidth.fromLastOccurrenceOf ("=", false, false).trim());
+
+        String imgPath (imgStrIncludeWidth);
+        String widthStr;
+
+        // img path and width
+        if (widthValueStr != imgStrIncludeWidth)
+        {
+            imgPath = imgPath.upToLastOccurrenceOf ("=", false, false).dropLastCharacters (1);
+
+            if (widthValueStr.getIntValue() != 0)
+                widthStr = " width=\"" + String (widthValueStr.getIntValue()) + "\"";
+        }
 
         const String& imgStr ("<div align=center><img src=\"" + imgPath + "\" title=\""
-                             + altContent + "\" />" + "</div>");
+                             + altContent + "\"" + widthStr + " />" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, imgEnd + 1 - indexStart, imgStr);
         indexStart = resultStr.indexOfIgnoreCase (indexStart + imgStr.length(), "![");

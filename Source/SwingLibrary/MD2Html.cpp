@@ -214,26 +214,37 @@ const String Md2Html::hybridParse (const String& mdString)
             lines.remove (lines.size() - 1);
 
         // process the 1st column of the first line
-        lines.getReference (0) = "<tr><td>" + lines[0] + "</td>";
-        
-        // process others..
-        for (int i = lines.size() - 1; --i > 0; )
+        if (lines.size () < 1)
         {
-            if (lines[i - 1].trim().isEmpty())
-                lines.getReference (i) = "<tr><td>" + lines[i] + "</td>";
-            else if (lines[i + 1].trim().isEmpty())
-                lines.getReference (i) = "<td>" + lines[i] + "</td></tr>";
-            else if (lines[i].trim().isNotEmpty())
-                lines.getReference (i) = "<td>" + lines[i] + "</td>";           
+            return String ();
         }
+        else if (lines.size () == 1)
+        {
+            lines.getReference (0) = "<tr><td>" + lines[0] + "</td></tr>";
+        }
+        else
+        {
+            lines.getReference (0) = "<tr><td>" + lines[0] + "</td>";
 
-        lines.removeEmptyStrings (true);
+            // process others..
+            for (int i = lines.size () - 1; --i > 0; )
+            {
+                if (lines[i - 1].trim ().isEmpty ())
+                    lines.getReference (i) = "<tr><td>" + lines[i] + "</td>";
+                else if (lines[i + 1].trim ().isEmpty ())
+                    lines.getReference (i) = "<td>" + lines[i] + "</td></tr>";
+                else if (lines[i].trim ().isNotEmpty ())
+                    lines.getReference (i) = "<td>" + lines[i] + "</td>";
+            }
 
-        // process the last column of the last line
-        lines.getReference (lines.size() - 1) = "<td>" + lines[lines.size() - 1] + "</td></tr>";
+            lines.removeEmptyStrings (true);
+
+            // process the last column of the last line
+            lines.getReference (lines.size () - 1) = "<td>" + lines[lines.size () - 1] + "</td></tr>";
+        }
         
         // finally...
-        lines.insert (0, "<table class=hybridTable>");
+        lines.insert (0, "<table class=hybridTable id=hybrid-" + String (marginNum) + ">");
         lines.add ("</table>");
 
         const String& htmlStr (lines.joinIntoString (newLine));
@@ -925,7 +936,7 @@ const String Md2Html::cleanUp (const String& mdString)
     }
 
     // clean up empty line in table
-    resultStr = resultStr.replace ("\n\n<td>", "<td>")
+    resultStr = resultStr.replace ("\n\n<td>", "\n<td>")
         .replace ("\n<tr>", "<tr>")
         .replace ("</tr>\n", "<tr>")
         .replace ("\n</table>", "</table>");

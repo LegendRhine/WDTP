@@ -240,11 +240,11 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (insertAuthor == index)         authorInsert();
     else if (insertInterLink == index)      interLinkInsert();
 
-    else if (formatBold == index)           inlineFormat (bold);
-    else if (formatItalic == index)         inlineFormat (italic);
-    else if (formatBoldAndItalic == index)  inlineFormat (boldAndItalic);
-    else if (formatHighlight == index)      inlineFormat (highlight);
-    else if (inlineCode == index)           inlineFormat (codeOfinline);
+    else if (formatBold == index)           inlineFormat (formatBold);
+    else if (formatItalic == index)         inlineFormat (formatItalic);
+    else if (formatBoldAndItalic == index)  inlineFormat (formatBoldAndItalic);
+    else if (formatHighlight == index)      inlineFormat (formatHighlight);
+    else if (inlineCode == index)           inlineFormat (inlineCode);
     else if (codeBlock == index)            codeBlockFormat();
 
     else if (latestPublish == index)        insertExpandMark (latestPublish);
@@ -346,24 +346,20 @@ void MarkdownEditor::codeBlockFormat()
 }
 
 //=================================================================================================
-void MarkdownEditor::inlineFormat (const inlineFormatIndex& format)
-{
+void MarkdownEditor::inlineFormat (const int format)
+{ 
     String content (getHighlightedText());
     const bool selectNothing = content.isEmpty();
 
-    if (format == bold)
+    if (format == formatBold)
         content = "**" + content + "**";
-
-    else if (format == italic)
+    else if (format == formatItalic)
         content = "*" + content + "*";
-
-    else if (format == boldAndItalic)
+    else if (format == formatBoldAndItalic)
         content = "***" + content + "***";
-
-    else if (format == highlight)
+    else if (format == formatHighlight)
         content = "~~" + content + "~~";
-
-    else if (format == codeOfinline)
+    else if (format == inlineCode)
         content = "`" + content + "`";
 
     insertTextAtCaret (content);
@@ -372,12 +368,12 @@ void MarkdownEditor::inlineFormat (const inlineFormatIndex& format)
     {
         moveCaretLeft (false, false);
 
-        if (format == bold || format == highlight || format == boldAndItalic)
+        if (format == formatBold || format == formatHighlight || format == formatBoldAndItalic)
             moveCaretLeft (false, false);
 
         // here must another 'if' instead of 'else if' because 
         // the caret should move left thrice for '***' (bold + italic)
-        if (format == boldAndItalic)
+        if (format == formatBoldAndItalic)
             moveCaretLeft (false, false);
     }
 }
@@ -1029,19 +1025,19 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
     // format bold
     else if (key == KeyPress ('b', ModifierKeys::commandModifier, 0))
-        inlineFormat (bold);
+        inlineFormat (formatBold);
 
     // format italic
     else if (key == KeyPress ('i', ModifierKeys::commandModifier, 0))
-        inlineFormat (italic);
+        inlineFormat (formatItalic);
 
     // format highlight
     else if (key == KeyPress ('u', ModifierKeys::commandModifier, 0))
-        inlineFormat (highlight);
+        inlineFormat (formatHighlight);
 
     // format inline-code
     else if (key == KeyPress ('l', ModifierKeys::commandModifier, 0))
-        inlineFormat (codeOfinline);
+        inlineFormat (inlineCode);
 
     // code block
     else if (key == KeyPress ('k', ModifierKeys::commandModifier, 0))

@@ -116,8 +116,8 @@ private:
     void setBackgroundColour();
     void resetToDefault();
 
-    enum inlineFormatIndex { bold = 0, italic, boldAndItalic, highlight, codeOfinline };
-    void inlineFormat (const inlineFormatIndex& format);
+    /** formatIndex: should be the menu index see above */
+    void inlineFormat (const int formatIndex);
 
     const bool puncMatchingForChinese (const KeyPress& key);
 

@@ -206,12 +206,16 @@ const String Md2Html::hybridParse (const String& mdString)
         StringArray lines;
         lines.addTokens (contentStr, newLine, String());
 
-        // make sure there isn't any empty line at the begin and end
-        while (lines[0].containsIgnoreCase ("~~~") || lines[0].trim().isEmpty())
-            lines.remove (0);
+        // remove 2 '~~~'
+        lines.remove (0);
+        lines.remove (lines.size() - 1);
 
-        while (lines[lines.size() - 1].trim().isEmpty())
-            lines.remove (lines.size() - 1);
+        // make sure there isn't any empty line at the begin and end
+        while (lines.size () > 0 && lines[0].isEmpty ())
+            lines.remove (0);   
+
+        while (lines.size () > 0 && lines[lines.size() - 1].isEmpty ())
+            lines.remove (lines.size () - 1);
 
         // process the 1st column of the first line
         if (lines.size () < 1)

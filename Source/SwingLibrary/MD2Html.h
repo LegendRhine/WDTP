@@ -43,21 +43,24 @@ private:
     */
     static const String tableParse (const String& mdString);
 
-    /** mixed text and/or images, it uses no-border table tech at the present.
+    /** mixed text and/or images freely, uses no-border table tech to achieve it.
         Markdown form (MUST begin with '~~~' or '~~~x' and end with '~~~', 
-        they should in a single line):
+        both 2 marks should in a single line):
 
         ~~~X 
-        content     -> the 1st column in the first line
-        content     -> the 2nd column in the first line
-        content     -> the 3rd column in the first line
-                    -> empty line represents start a new table line
-        content     -> the 1st column in the sencond line
-        content     -> the 2nd column in the sencond line
-        content     -> the 3rd column in the sencond line
+                    -> all empty line at the begin will be discarded
+        content     -> the 1st column in the first row
+        content     -> the 2nd column in the first row
+        content     -> the 3rd column in the first row...
+                    -> empty line between rows represents start a new table row
+        content     -> the 1st column in the sencond row
+        content     -> the 2nd column in the sencond row
+        content     -> the 3rd column in the sencond row...
+                    -> all empty line at the end will be discarded also
         ~~~
 
-        'x' represents the margin of cells, it must more than 0 and less than 9   
+        'x' represents the margins of each cell, 
+            it must more than or equal to 0 and less than 9   
     */
     static const String hybridParse (const String& mdString);
 

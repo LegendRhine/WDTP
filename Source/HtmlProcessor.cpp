@@ -149,7 +149,7 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
                                                          orderedLatests.joinIntoString ("<br>"));
     }
 
-    // prevent repeat when using all below marks (or 2 of them) 
+    // prevent repetition when using all below marks (or 2 of them) 
     bool hasLatestPublish, hasLatestModify, hasFeatured;
     hasLatestPublish = hasLatestModify = hasFeatured = false;
 
@@ -303,11 +303,12 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
         const String& randoms (getRandomArticels (docTree, 5)
                                .replace ("<div class=randomArticels>", String())
                                .replace ("<strong>" + TRANS ("Random Posts:") + "</strong>", String())
-                               .replace ("</div>", String()).replace (newLine, "<br>"));
-
+                               .replace ("</div>", String())
+                               .replace (newLine, "<br>")
+                               .replace ("<br><ul>", "<ul>"));
+        
         mdStrWithoutAbbrev = mdStrWithoutAbbrev.replace ("[randomArticle]", randoms);
     }
-
 }
 
 //=================================================================================================
@@ -1161,8 +1162,9 @@ const String HtmlProcessor::getRandomArticels (const ValueTree& notIncludeThisTr
     StringArray links;
     getLinkStrOfAlllDocTrees (FileTreeContainer::projectTree, notIncludeThisTree, links);
 
-    // + 1: prevent a articel is the current, make sure enough
-    Array<int> randoms = getRandomInts (howMany + 1);
+    // + 2: prevent a articel is the current or something else, 
+    // make sure it'll be gotten enough
+    Array<int> randoms = getRandomInts (howMany + 2);
     StringArray randomLinks;
 
     for (int i = 0; i < randoms.size(); ++i)
@@ -1170,8 +1172,9 @@ const String HtmlProcessor::getRandomArticels (const ValueTree& notIncludeThisTr
 
     randomLinks.removeEmptyStrings (true);
 
-    if (randomLinks.size() > howMany)
-        randomLinks.remove (0);  // remove the newest one    
+    // remove the newest
+    while (randomLinks.size() > howMany)
+        randomLinks.remove (0);      
 
     for (int j = randomLinks.size(); --j >= 0; )
         randomLinks.getReference (j) = "<li>" + randomLinks[j] + "</li>";

@@ -8,10 +8,10 @@ Application/Debug
 Application/Release
 Application/Release-Github
 
-*.jucer
-
 Builds/
 JuceLibraryCode/
+
+*.jucer
 
 # =========================
 # Operating System Files

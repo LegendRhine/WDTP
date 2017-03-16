@@ -211,18 +211,18 @@ const String Md2Html::hybridParse (const String& mdString)
         lines.remove (lines.size() - 1);
 
         // make sure there isn't any empty line at the begin and end
-        while (lines.size () > 0 && lines[0].isEmpty ())
+        while (lines.size() > 0 && lines[0].isEmpty())
             lines.remove (0);   
 
-        while (lines.size () > 0 && lines[lines.size() - 1].isEmpty ())
-            lines.remove (lines.size () - 1);
+        while (lines.size() > 0 && lines[lines.size() - 1].isEmpty())
+            lines.remove (lines.size() - 1);
 
         // process the 1st column of the first line
-        if (lines.size () < 1)
+        if (lines.size() < 1)
         {
-            return String ();
+            return String();
         }
-        else if (lines.size () == 1)
+        else if (lines.size() == 1)
         {
             lines.getReference (0) = "<tr><td>" + lines[0] + "</td></tr>";
         }
@@ -231,20 +231,20 @@ const String Md2Html::hybridParse (const String& mdString)
             lines.getReference (0) = "<tr><td>" + lines[0] + "</td>";
 
             // process others..
-            for (int i = lines.size () - 1; --i > 0; )
+            for (int i = lines.size() - 1; --i > 0; )
             {
-                if (lines[i - 1].trim ().isEmpty ())
+                if (lines[i - 1].trim().isEmpty())
                     lines.getReference (i) = "<tr><td>" + lines[i] + "</td>";
-                else if (lines[i + 1].trim ().isEmpty ())
+                else if (lines[i + 1].trim().isEmpty())
                     lines.getReference (i) = "<td>" + lines[i] + "</td></tr>";
-                else if (lines[i].trim ().isNotEmpty ())
+                else if (lines[i].trim().isNotEmpty())
                     lines.getReference (i) = "<td>" + lines[i] + "</td>";
             }
 
             lines.removeEmptyStrings (true);
 
             // process the last column of the last line
-            lines.getReference (lines.size () - 1) = "<td>" + lines[lines.size () - 1] + "</td></tr>";
+            lines.getReference (lines.size() - 1) = "<td>" + lines[lines.size() - 1] + "</td></tr>";
         }
         
         // finally...
@@ -602,39 +602,39 @@ const String Md2Html::processByLine (const String& mdString)
 
         // <h6> ~ <h1>, also parse Chinese '#'
         else if (currentLine.trimStart().substring (0, 7) == "###### "
-                 || currentLine.trimStart().substring (0, 7) == 
+                 || currentLine.trimStart().substring (0, 7) ==
                  CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83 "))
             currentLine = "<h6>" + currentLine.trimStart().substring (7) + "</h6>";
 
         else if (currentLine.trimStart().substring (0, 6) == "##### "
-                 || currentLine.trimStart().substring (0, 6) == 
+                 || currentLine.trimStart().substring (0, 6) ==
                  CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83 "))
             currentLine = "<h5>" + currentLine.trimStart().substring (6) + "</h5>";
 
         else if (currentLine.trimStart().substring (0, 5) == "#### "
-                 || currentLine.trimStart().substring (0, 5) == 
+                 || currentLine.trimStart().substring (0, 5) ==
                  CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83 "))
             currentLine = "<h4>" + currentLine.trimStart().substring (5) + "</h4>";
 
         // <h3> anchor
         else if (currentLine.trimStart().substring (0, 4) == "### "
-                 || currentLine.trimStart().substring (0, 4) == 
+                 || currentLine.trimStart().substring (0, 4) ==
                  CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83 "))
             currentLine = "<h3 id=\"" + currentLine.trimStart().substring (4) + "\">"
             + currentLine.trimStart().substring (4) + "</h3>";
 
         // <h2> anchor
         else if (currentLine.trimStart().substring (0, 3) == "## "
-                 || currentLine.trimStart().substring (0, 3) == 
+                 || currentLine.trimStart().substring (0, 3) ==
                  CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83 "))
-            currentLine = "<h2 id=\"" + currentLine.trimStart().substring (3) + "\">" 
+            currentLine = "<h2 id=\"" + currentLine.trimStart().substring (3) + "\">"
             + currentLine.trimStart().substring (3) + "</h2>";
 
         // <h1> anchor
         else if (currentLine.trimStart().substring (0, 2) == "# "
-                 || currentLine.trimStart().substring (0, 2) == 
+                 || currentLine.trimStart().substring (0, 2) ==
                  CharPointer_UTF8 ("\xef\xbc\x83 "))
-            currentLine = "<h1 id=\"" + currentLine.trimStart().substring (2) + "\">" 
+            currentLine = "<h1 id=\"" + currentLine.trimStart().substring (2) + "\">"
             + currentLine.trimStart().substring (2) + "</h1>";
 
         // align
@@ -646,7 +646,17 @@ const String Md2Html::processByLine (const String& mdString)
 
         // diagram description
         else if (currentLine.trimStart().substring (0, 3) == "^^ ")
-            currentLine = "<h5 align=center>" + currentLine.substring (3) + "</h5></div>";
+            currentLine = "<h5 align=center>" + currentLine.trimStart().substring (3) + "</h5></div>";
+
+        // indent
+        else if (currentLine.trimStart().substring (0, 4) == "(+) ")
+            currentLine = "<div style=\"text-indent: 2em; padding: 0;\">"
+            + currentLine.trimStart().substring (4) + "</div>";
+
+        // anti-indent
+        else if (currentLine.trimStart().substring (0, 4) == "(-) ")
+            currentLine = "<div style=\"text-indent: 0; padding: 0;\">" 
+            + currentLine.trimStart().substring (4) + "</div>";
     }
 
     return contentByLine.joinIntoString (newLine);

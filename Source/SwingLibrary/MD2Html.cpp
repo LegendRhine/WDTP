@@ -1002,6 +1002,8 @@ const String Md2Html::cleanUp (const String& mdString)
     resultStr = resultStr.replace ("\\[^", "[^");
     resultStr = resultStr.replace ("\\]", "]");
     resultStr = resultStr.replace ("<p><br>", "<p>"); 
+    resultStr = resultStr.replace ("<!--<br>", "<!--");
+    resultStr = resultStr.replace ("<!--<p>", "<!--");
     
     // for scroll to bottom
     resultStr += newLine + "<span id=\"wdtpPageBottom\"></span>";

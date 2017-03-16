@@ -57,7 +57,7 @@ private:
         content     -> the 3rd column in the sencond line
         ~~~
 
-        Note: 'x' represents the margin of cells, it must more than 0 and less than 9   
+        'x' represents the margin of cells, it must more than 0 and less than 9   
     */
     static const String hybridParse (const String& mdString);
 

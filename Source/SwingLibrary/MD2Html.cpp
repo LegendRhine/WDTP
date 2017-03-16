@@ -22,6 +22,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     String htmlContent (mdString);
 
     htmlContent = tableParse (htmlContent);
+    htmlContent = hybridParse (htmlContent);
     htmlContent = identifierParse (htmlContent);
     htmlContent = codeBlockParse (htmlContent);
     htmlContent = endnoteParse (htmlContent);
@@ -176,7 +177,73 @@ const String Md2Html::tableParse (const String& mdString)
 //=================================================================================================
 const String Md2Html::hybridParse (const String& mdString)
 {
+    String resultStr (mdString);
+    int indexStart = resultStr.indexOfIgnoreCase (0, "~~~");
 
+    while (indexStart != -1 && resultStr[indexStart - 1] != '\\')
+    {
+        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 4, "~~~");
+
+        if (indexEnd == -1)
+            break;
+
+        if (resultStr[indexEnd - 1] == '\\')
+        {
+            indexStart = resultStr.indexOfIgnoreCase (indexStart + 4, "~~~");
+            continue;
+        }
+
+        // get margin value
+        int marginNum = 0;
+        const String& marginChar (resultStr.substring (indexStart + 3, indexStart + 4));
+
+        if (marginChar.isNotEmpty())
+            marginNum = jlimit (0, 9, marginChar.getIntValue());
+
+        const String contentStr (resultStr.substring (indexStart, indexEnd));
+
+        // process by line
+        StringArray lines;
+        lines.addTokens (contentStr, newLine, String());
+
+        // make sure there isn't any empty line at the begin and end
+        while (lines[0].containsIgnoreCase ("~~~") || lines[0].trim().isEmpty())
+            lines.remove (0);
+
+        while (lines[lines.size() - 1].trim().isEmpty())
+            lines.remove (lines.size() - 1);
+
+        // process the 1st column of the first line
+        lines.getReference (0) = "<tr><td>" + lines[0] + "</td>";
+        
+        // process others..
+        for (int i = lines.size() - 1; --i > 0; )
+        {
+            if (lines[i - 1].trim().isEmpty())
+                lines.getReference (i) = "<tr><td>" + lines[i] + "</td>";
+            else if (lines[i + 1].trim().isEmpty())
+                lines.getReference (i) = "<td>" + lines[i] + "</td></tr>";
+            else if (lines[i].trim().isNotEmpty())
+                lines.getReference (i) = "<td>" + lines[i] + "</td>";           
+        }
+
+        lines.removeEmptyStrings (true);
+
+        // process the last column of the last line
+        lines.getReference (lines.size() - 1) = "<td>" + lines[lines.size() - 1] + "</td></tr>";
+        
+        // finally...
+        lines.insert (0, "<table class=hybridTable>");
+        lines.add ("</table>");
+
+        const String& htmlStr (lines.joinIntoString (newLine));
+
+        DBG (htmlStr);
+        resultStr = resultStr.replaceSection (indexStart, contentStr.length() + 3, htmlStr);
+        indexStart = resultStr.indexOfIgnoreCase (indexStart + htmlStr.length(), "~~~");
+    }
+
+    return resultStr;
 }
 
 //=================================================================================================
@@ -810,8 +877,7 @@ const String Md2Html::cleanUp (const String& mdString)
     // transform newLine to <p> and <br>
     String resultStr (mdString.replace ("_%5x|z%!##!_", "*") // for code parse
                       .replace (newLine + newLine, "<p>\n")
-                      .replace (newLine, "<br>\n")
-    );
+                      .replace (newLine, "<br>\n"));
 
     // clean extra <br> when it's after any html-tag
     int indexBr = resultStr.indexOfIgnoreCase (0, "<br>");
@@ -857,6 +923,12 @@ const String Md2Html::cleanUp (const String& mdString)
         resultStr = resultStr.replaceSection (indexCodeStart, jsCode.length(), codeHtml);
         indexCodeStart = resultStr.indexOfIgnoreCase (indexCodeStart + 17, "<script");
     }
+
+    // clean up empty line in table
+    resultStr = resultStr.replace ("\n\n<td>", "<td>")
+        .replace ("\n<tr>", "<tr>")
+        .replace ("</tr>\n", "<tr>")
+        .replace ("\n</table>", "</table>");
 
     // somehow, there's this ugly thing. dont know why.
     resultStr = resultStr.replace ("<pre><code>				", "<pre><code>");

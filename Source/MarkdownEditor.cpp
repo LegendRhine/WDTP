@@ -343,6 +343,8 @@ void MarkdownEditor::codeBlockFormat()
         << "```" << newLine;
 
     insertTextAtCaret (content);
+    moveCaretUp (false);
+    moveCaretUp (false);
 }
 
 //=================================================================================================

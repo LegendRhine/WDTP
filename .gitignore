@@ -6,6 +6,9 @@ Application/x64-Debug
 Application/x64-Release
 Application/Debug
 Application/Release
+Application/Release-Github
+
+*.jucer
 
 Builds/
 JuceLibraryCode/

@@ -2,7 +2,7 @@
 
 See: http://www.gnu.org/licenses/gpl.html
 
-WDTP uses JUCE Library, Sternberg ASIO and Highlight.js, which are licensed separately. 
+WDTP uses JUCE Library, Steinberg ASIO and Highlight.js, which are licensed separately. 
 
 See: https://juce.com  https://steinberg.net  https://highlightjs.org 
 

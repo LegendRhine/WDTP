@@ -21,21 +21,20 @@ private:
     //=================================================================================================
     // call these methods must according to the below order
 
-    /** process table. doesn't support align MD-tag.
+    /** process table. support align mark and 3 styles.
         It must at least 2 rows and 2 columns.
 
         Markdown form (MUST NOT begin and end with '|'):
 
     headOne | headTwo | headThree    -> at least one ' | ', how many ' | ' then the columns + 1
     ------------------------------   -> begin with and at least 6 '-', '=' or '/' in the second line
-    row-1-1 | row-1-2 |  row-1-3     -> divide cells by ' | '. if '|'s more than the head line's, the extra will be cut off
+    row-1-1 | row-1-2 |  row-1-3     -> if '|'s more than the head line's, the extra cells will be cut off
     row-2-1 |         |  row-2-3     -> empty between two ' | ' means empty cell
-    row-3-1                          -> means this row only has one content-cell which at the very left cell
-                                     -> end up with an empty line
+    row-3-1 | |                      -> means this row only has one content-cell which at the very left cell
 
     about align mark:
         1. '(>)' for align right, '(^)' for center, none for left
-        2. align mark should be placed at the begin of head-line or after ' | '
+        2. align mark should be placed in head line, at the begin or after ' | '
 
     about table style:
         1. '------' at the sencond line for normal table
@@ -43,6 +42,24 @@ private:
         3. '//////' at the sencond line for no-border and no-background color table
     */
     static const String tableParse (const String& mdString);
+
+    /** mixed text and/or images, it uses no-border table tech at the present.
+        Markdown form (MUST begin with '~~~' or '~~~x' and end with '~~~', 
+        they should in a single line):
+
+        ~~~X 
+        content     -> the 1st column in the first line
+        content     -> the 2nd column in the first line
+        content     -> the 3rd column in the first line
+                    -> empty line represents start a new table line
+        content     -> the 1st column in the sencond line
+        content     -> the 2nd column in the sencond line
+        content     -> the 3rd column in the sencond line
+        ~~~
+
+        Note: 'x' represents the margin of cells, it must more than 0 and less than 9   
+    */
+    static const String hybridParse (const String& mdString);
 
     /** process "****" (at least 6 '*') to none. call this method must before codeBlockParse() */
     static const String identifierParse (const String& mdString);

@@ -174,6 +174,12 @@ const String Md2Html::tableParse (const String& mdString)
 }
 
 //=================================================================================================
+const String Md2Html::hybridParse (const String& mdString)
+{
+
+}
+
+//=================================================================================================
 const String Md2Html::identifierParse (const String& mdString)
 {
     StringArray lines;

@@ -649,9 +649,8 @@ const String Md2Html::processByLine (const String& mdString)
             currentLine = "<h5 align=center>" + currentLine.trimStart().substring (3) + "</h5></div>";
 
         // indent
-        else if (currentLine.trimStart().substring (0, 4) == "(+) ")
-            currentLine = "<div style=\"text-indent: 2em; padding: 0;\">"
-            + currentLine.trimStart().substring (4) + "</div>";
+        else if (currentLine.containsIgnoreCase ("(+) "))
+            currentLine = currentLine.replace ("(+) ", "<div style=\"text-indent: 2em; padding: 0;\">") + "</div>";
 
         // anti-indent
         else if (currentLine.trimStart().substring (0, 4) == "(-) ")

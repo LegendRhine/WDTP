@@ -100,8 +100,8 @@ private:
         defined by WDTP (these 3 must followed by a whitespace):
          - center: "(^) "
          - right: "(>) "
-         - indent "(+) " 
-         - anti-indent "(-) " 
+         - indent "(+) ": it could be placed at the begin of line or in the content 
+         - anti-indent "(-) ": it MUST be placed at the begin of line 
          - diagram description: "^^ " (center at the line and font style is <h5>)
            it could be placed under image or table, also could be used freely
         */

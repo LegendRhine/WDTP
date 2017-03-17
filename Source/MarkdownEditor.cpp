@@ -143,6 +143,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addSeparator();
         formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
+        formatMenu.addItem (commentBlock, TRANS ("Comment Block"));
         menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile());
 
         PopupMenu expandMark;
@@ -246,6 +247,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (formatHighlight == index)      inlineFormat (formatHighlight);
     else if (inlineCode == index)           inlineFormat (inlineCode);
     else if (codeBlock == index)            codeBlockFormat();
+    else if (commentBlock == index)         commentBlockFormat();
 
     else if (latestPublish == index)        insertExpandMark (latestPublish);
     else if (latestModify == index)         insertExpandMark (latestModify);
@@ -341,6 +343,20 @@ void MarkdownEditor::codeBlockFormat()
         << "```" << newLine
         << getHighlightedText() << newLine
         << "```" << newLine;
+
+    insertTextAtCaret (content);
+    moveCaretUp (false);
+    moveCaretUp (false);
+}
+
+//=================================================================================================
+void MarkdownEditor::commentBlockFormat()
+{
+    String content;
+    content << newLine
+        << "////////////" << newLine
+        << getHighlightedText() << newLine
+        << "////////////" << newLine;
 
     insertTextAtCaret (content);
     moveCaretUp (false);

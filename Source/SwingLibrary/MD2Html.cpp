@@ -24,6 +24,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     htmlContent = tableParse (htmlContent);
     htmlContent = hybridParse (htmlContent);
     htmlContent = identifierParse (htmlContent);
+    htmlContent = commentParse (htmlContent);
     htmlContent = codeBlockParse (htmlContent);
     htmlContent = endnoteParse (htmlContent);
     htmlContent = inlineCodeParse (htmlContent);
@@ -274,6 +275,53 @@ const String Md2Html::identifierParse (const String& mdString)
     }
 
     return lines.joinIntoString (newLine);
+}
+
+//=================================================================================================
+const String Md2Html::commentParse (const String& mdString)
+{
+    String resultStr (mdString);
+    int indexStart = resultStr.indexOfIgnoreCase (0, "//////");
+
+    while (indexStart != -1)
+    {
+        if (resultStr.substring (indexStart - 1, indexStart) == "\\")
+        {
+            indexStart = resultStr.indexOfIgnoreCase (indexStart + 6, "//////");
+            continue;
+        }
+
+        // get to the end. because more than 6 '/' at the begin might be
+        int tempIndex = indexStart + 6;
+
+        while (resultStr.indexOfIgnoreCase (tempIndex + 1, "/") != -1
+               && resultStr.substring (tempIndex, tempIndex + 1) != "\n")
+            ++tempIndex;
+
+        int indexEnd = resultStr.indexOfIgnoreCase (tempIndex, "//////");
+
+        if (indexEnd == -1)
+            break;
+
+        if (resultStr.substring (indexEnd - 1, indexEnd) == "\\")
+        {
+            indexStart = resultStr.indexOfIgnoreCase (indexStart + 12, "//////");
+            continue;
+        }
+        
+        // get to the end. because more than 6 '/' at the end might be
+        indexEnd += 6;
+
+        while (resultStr.indexOfIgnoreCase (indexEnd + 1, "/") != -1
+               && resultStr.substring (indexEnd, indexEnd + 1) != "\n")
+            ++indexEnd;
+
+        resultStr = resultStr.replaceSection (indexStart, indexEnd - indexStart + 1, "<p>");
+        indexStart = resultStr.indexOfIgnoreCase (indexStart, "//////");
+    }
+
+    //DBG (resultStr);
+    return resultStr;
 }
 
 //=================================================================================================

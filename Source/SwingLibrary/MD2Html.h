@@ -67,6 +67,9 @@ private:
     /** process "****" (at least 6 '*') to none. call this method must before codeBlockParse() */
     static const String identifierParse (const String& mdString);
 
+    /** comment mark ////// content need to be commented //////. at least 6 '/'s. */
+    static const String commentParse (const String& mdString);
+
     /** ``` [code] ```: <pre><code>...</pre></code> */
     static const String codeBlockParse (const String& mdString);
 

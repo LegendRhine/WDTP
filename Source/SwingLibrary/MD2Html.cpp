@@ -786,7 +786,7 @@ const String Md2Html::imageParse (const String& mdString)
         {
             imgPath = imgPath.upToLastOccurrenceOf ("=", false, false).dropLastCharacters (1);
 
-            if (widthValueStr.getIntValue() != 0)
+            if (widthValueStr.getIntValue() > 0)
                 widthStr = " width=\"" + String (widthValueStr.getIntValue()) + "\"";
         }
 

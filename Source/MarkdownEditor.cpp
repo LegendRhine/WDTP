@@ -143,12 +143,14 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addSeparator();
         formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
+        formatMenu.addItem (hybridLayout, TRANS ("Hybrid Layout"));
+        formatMenu.addSeparator();
         formatMenu.addItem (commentBlock, TRANS ("Comment Block"));
-        formatMenu.addSeparator ();
+        formatMenu.addSeparator();
         formatMenu.addItem (antiIndent, TRANS ("Anti-Indent"));
         formatMenu.addItem (forceIndent, TRANS ("Force Indent"));
 
-        menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile ());
+        menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile());
 
         PopupMenu expandMark;
         expandMark.addItem (latestPublish, TRANS ("Latest Publish"));
@@ -253,6 +255,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (formatHighlight == index)      inlineFormat (formatHighlight);
     else if (inlineCode == index)           inlineFormat (inlineCode);
     else if (codeBlock == index)            codeBlockFormat();
+    else if (hybridLayout == index)         hybridFormat();
     else if (commentBlock == index)         commentBlockFormat();
 
     else if (latestPublish == index)        insertExpandMark (latestPublish);
@@ -349,6 +352,20 @@ void MarkdownEditor::codeBlockFormat()
         << "```" << newLine
         << getHighlightedText() << newLine
         << "```" << newLine;
+
+    insertTextAtCaret (content);
+    moveCaretUp (false);
+    moveCaretUp (false);
+}
+
+//=================================================================================================
+void MarkdownEditor::hybridFormat()
+{
+    String content;
+    content << newLine
+        << "~~~5" << newLine
+        << getHighlightedText() << newLine
+        << "~~~" << newLine;
 
     insertTextAtCaret (content);
     moveCaretUp (false);

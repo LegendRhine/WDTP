@@ -64,7 +64,7 @@ private:
         insertIdentifier,
         insertCaption, insertSeparator, insertAuthor, insertInterLink,
         formatBold, formatItalic, formatBoldAndItalic, formatHighlight,        
-        codeBlock, commentBlock, inlineCode, antiIndent, forceIndent,
+        codeBlock, hybridLayout, commentBlock, inlineCode, antiIndent, forceIndent,
         audioRecord,
         latestPublish, latestModify, featuredArticle, 
         allKeywords, randomArticle, allPublish, allModify,
@@ -102,6 +102,7 @@ private:
     void interLinkInsert();
     void authorInsert();
     void codeBlockFormat();
+    void hybridFormat();
     void commentBlockFormat();
 
     void autoWrapSelected (const KeyPress& key);

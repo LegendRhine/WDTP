@@ -54,6 +54,7 @@ void SwingUtilities::showAbout (const String& shortDescription,
                           TRANS (" WDTP is GPL(v3) licensed.") + newLine +
                           "=================================\n" +
                           TRANS ("Acknowledgements:") + newLine +
+                          //"  - XiaoYu (YunZuo)\n" +
                           "  - Framework: JUCE (https://juce.com)\n" +
                           //"  - Library: cURL (https://curl.haxx.se)\n" +
                           //"  - Mr. Chen Ping: (http://cpww601.blog.163.com)\n" +

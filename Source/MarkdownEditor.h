@@ -64,7 +64,8 @@ private:
         insertIdentifier,
         insertCaption, insertSeparator, insertAuthor, insertInterLink,
         formatBold, formatItalic, formatBoldAndItalic, formatHighlight,        
-        codeBlock, commentBlock, inlineCode, audioRecord,
+        codeBlock, commentBlock, inlineCode, antiIndent, forceIndent,
+        audioRecord,
         latestPublish, latestModify, featuredArticle, 
         allKeywords, randomArticle, allPublish, allModify,
         searchNext, searchPrev,
@@ -86,6 +87,7 @@ private:
     /** expandIndex: should be the menu index see above */
     void insertExpandMark (const int expandIndex);
     void quotaInsert();
+    void insertIndent (const bool isIndent);  // false for anti-indent
     void insertTitle (const int level);
     void endnoteInsert();
     void tocInsert();

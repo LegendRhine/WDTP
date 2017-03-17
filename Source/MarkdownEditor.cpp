@@ -144,7 +144,11 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
         formatMenu.addItem (commentBlock, TRANS ("Comment Block"));
-        menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile());
+        formatMenu.addSeparator ();
+        formatMenu.addItem (antiIndent, TRANS ("Anti-Indent"));
+        formatMenu.addItem (forceIndent, TRANS ("Force Indent"));
+
+        menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile ());
 
         PopupMenu expandMark;
         expandMark.addItem (latestPublish, TRANS ("Latest Publish"));
@@ -227,6 +231,8 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (insertInterlaced == index)     tableInsert (insertInterlaced);
     else if (insertNoborderTable == index)  tableInsert (insertNoborderTable);
     else if (insertQuota == index)          quotaInsert();
+    else if (antiIndent == index)           insertIndent (false);
+    else if (forceIndent == index)          insertIndent (true);
     else if (insertAlignCenter == index)    alignCenterInsert();
     else if (insertAlignRight == index)     alignRightInsert();
     else if (insertUnoerderList == index)   unorderListInsert();
@@ -521,6 +527,13 @@ void MarkdownEditor::alignCenterInsert()
 void MarkdownEditor::quotaInsert()
 {
     insertTextAtCaret (newLine + "> ");
+}
+
+//=================================================================================================
+void MarkdownEditor::insertIndent (const bool isIndent)
+{
+    moveCaretToStartOfLine (false);
+    insertTextAtCaret (isIndent ? "(+) " : "(-) ");
 }
 
 //=================================================================================================

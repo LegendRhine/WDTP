@@ -21,10 +21,10 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     // parse markdown, must followed by these order
     String htmlContent (mdString);
 
-    htmlContent = tableParse (htmlContent);
-    htmlContent = hybridParse (htmlContent);
     htmlContent = identifierParse (htmlContent);
     htmlContent = commentParse (htmlContent);
+    htmlContent = tableParse (htmlContent);
+    htmlContent = hybridParse (htmlContent);
     htmlContent = codeBlockParse (htmlContent);
     htmlContent = endnoteParse (htmlContent);
     htmlContent = inlineCodeParse (htmlContent);
@@ -1049,6 +1049,7 @@ const String Md2Html::cleanUp (const String& mdString)
     resultStr = resultStr.replace ("\\~[", "~[");
     resultStr = resultStr.replace ("\\[^", "[^");
     resultStr = resultStr.replace ("\\]", "]");
+    resultStr = resultStr.replace ("\\/", "/");
     resultStr = resultStr.replace ("<p><br>", "<p>"); 
     resultStr = resultStr.replace ("<!--<br>", "<!--");
     resultStr = resultStr.replace ("<!--<p>", "<!--");

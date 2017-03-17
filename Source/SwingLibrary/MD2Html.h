@@ -21,6 +21,12 @@ private:
     //=================================================================================================
     // call these methods must according to the below order
 
+    /** process "****" (at least 6 '*') to none. call this method must before codeBlockParse() */
+    static const String identifierParse (const String& mdString);
+
+    /** comment mark ////// content need to be commented //////. at least 6 '/'s. */
+    static const String commentParse (const String& mdString);
+
     /** process table. support align mark and 3 styles.
         It must at least 2 rows and 2 columns.
 
@@ -63,12 +69,6 @@ private:
             it must more than or equal to 0 and less than 9   
     */
     static const String hybridParse (const String& mdString);
-
-    /** process "****" (at least 6 '*') to none. call this method must before codeBlockParse() */
-    static const String identifierParse (const String& mdString);
-
-    /** comment mark ////// content need to be commented //////. at least 6 '/'s. */
-    static const String commentParse (const String& mdString);
 
     /** ``` [code] ```: <pre><code>...</pre></code> */
     static const String codeBlockParse (const String& mdString);

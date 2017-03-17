@@ -696,10 +696,20 @@ const String Md2Html::processByLine (const String& mdString)
         else if (currentLine.trimStart().substring (0, 3) == "^^ ")
             currentLine = "<h5 align=center>" + currentLine.trimStart().substring (3) + "</h5></div>";
 
-        // indent
+        // indent (it might be inside a table)
         else if (currentLine.trimStart().substring (0, 4) == "(+) ")
             currentLine = "<div style=\"text-indent: 2em; padding: 0;\">"
             + currentLine.trimStart().substring (4) + "</div>";
+
+        else if (currentLine.trimStart().substring (4, 8) == "(+) ")
+            currentLine = currentLine.trimStart().substring (0, 4)
+            + "<div style=\"text-indent: 2em; padding: 0;\">"
+            + currentLine.trimStart().substring (8) + "</div>";
+
+        else if (currentLine.trimStart().substring (8, 12) == "(+) ")
+            currentLine = currentLine.trimStart().substring (0, 8)
+            + "<div style=\"text-indent: 2em; padding: 0;\">"
+            + currentLine.trimStart().substring (12) + "</div>";
 
         // anti-indent
         else if (currentLine.trimStart().substring (0, 4) == "(-) ")

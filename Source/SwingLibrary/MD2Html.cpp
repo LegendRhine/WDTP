@@ -183,14 +183,14 @@ const String Md2Html::hybridParse (const String& mdString)
 
     while (indexStart != -1 && resultStr[indexStart - 1] != '\\')
     {
-        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 4, "~~~");
+        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 3, "~~~");
 
         if (indexEnd == -1)
             break;
 
         if (resultStr[indexEnd - 1] == '\\')
         {
-            indexStart = resultStr.indexOfIgnoreCase (indexStart + 4, "~~~");
+            indexStart = resultStr.indexOfIgnoreCase (indexStart + 3, "~~~");
             continue;
         }
 
@@ -221,7 +221,7 @@ const String Md2Html::hybridParse (const String& mdString)
         // process the 1st column of the first line
         if (lines.size() < 1)
         {
-            return String();
+            return resultStr.replaceSection (indexStart, indexEnd - indexStart + 3, String());
         }
         else if (lines.size() == 1)
         {
@@ -291,7 +291,7 @@ const String Md2Html::commentParse (const String& mdString)
             continue;
         }
 
-        // get to the end. because more than 6 '/' at the begin might be
+        // get to the row end. because more than 6 '/' at the begin might be
         int tempIndex = indexStart + 6;
 
         while (resultStr.indexOfIgnoreCase (tempIndex + 1, "/") != -1
@@ -305,7 +305,7 @@ const String Md2Html::commentParse (const String& mdString)
 
         if (resultStr.substring (indexEnd - 1, indexEnd) == "\\")
         {
-            indexStart = resultStr.indexOfIgnoreCase (indexStart + 12, "//////");
+            indexStart = resultStr.indexOfIgnoreCase (indexEnd + 6, "//////");
             continue;
         }
         

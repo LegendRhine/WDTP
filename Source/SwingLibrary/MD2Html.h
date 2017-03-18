@@ -114,7 +114,7 @@ private:
     static const String spaceLinkParse (const String& mdString);
 
 public:
-    /**< ![](media/xx.jpg =500) support 'title' and 'width' */
+    /**< ![](media/xx.jpg = 500) support 'title' and 'width' */
     static const String imageParse (const String& mdString);  
     static const String audioParse (const String& mdString);  /**< ~[](media/xx.mp3) doesn't support 'title' */
 

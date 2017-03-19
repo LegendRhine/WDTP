@@ -66,7 +66,7 @@ private:
     void openProject();
     void closeProject();
     void cleanAndGenerateAll();
-    void cleanLocalMedias();
+    void cleanNeedlessMedias (const bool showMessageWhenNoAnyNeedless);
 
     /** generate the tree and all its children's html file */
     static void generateHtmlFiles (ValueTree tree);

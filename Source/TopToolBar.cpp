@@ -417,7 +417,7 @@ void TopToolBar::menuPerform (const int index)
     else if (index == closePjt)         closeProject();
     else if (index == openPjt)          openProject();
     else if (index == generateWhole)    cleanAndGenerateAll();
-    else if (index == cleanUpLocal)     cleanLocalMedias();
+    else if (index == cleanUpLocal)     cleanNeedlessMedias (true);
     else if (index == exportTpl)        exportCurrentTpls();
     else if (index == importTpl)        importExternalTpls();
     else if (index == releaseSystemTpl) releaseSystemTpls (FileTreeContainer::projectFile, true);
@@ -531,18 +531,18 @@ void TopToolBar::cleanAndGenerateAll()
                                       TRANS ("Do you really want to cleanup the whole site\n"
                                              "and then auto-regenerate them all?")))
     {
-        // move the add-in dir and favicon.ico prevent they will be deleted
-        const File addinDir (FileTreeContainer::projectFile.getSiblingFile ("site").getChildFile ("add-in"));
-        const File tempDirForAddin (FileTreeContainer::projectFile.getSiblingFile ("add-in"));
-        addinDir.copyDirectoryTo (tempDirForAddin);
+        // cleanup needless medias
+        cleanNeedlessMedias (false);
 
-        const File iconFile (FileTreeContainer::projectFile.getSiblingFile ("site").getChildFile ("favicon.ico"));
-        const File tempIconFile (FileTreeContainer::projectFile.getSiblingFile ("favicon.ico"));
-        iconFile.copyFileTo (tempIconFile);
+        // cleanup all html but medias 
+        const File& site (FileTreeContainer::projectFile.getSiblingFile ("site"));
+        Array<File> htmls;
+        site.findChildFiles (htmls, File::findFiles, true, "*.html");
 
-        // cleanup and initial progress value
-        FileTreeContainer::projectFile.getSiblingFile ("site").deleteRecursively();
+        for (int i = htmls.size(); --i >= 0; )
+            htmls[i].deleteFile();
 
+        // initial progress value
         fileTreeContainer->getTreeView().getRootItem()->setOpen (true);
         totalItems = fileTreeContainer->getTreeView().getNumRowsInTree();
         accumulator = 0;
@@ -550,16 +550,6 @@ void TopToolBar::cleanAndGenerateAll()
 
         progressBar.enterModalState();
         startThread();  // start generate..
-
-        // restore the add-in dir and favicon.ico
-        addinDir.createDirectory();
-        iconFile.create();
-
-        tempDirForAddin.moveFileTo (addinDir);
-        tempIconFile.moveFileTo (iconFile);
-
-        tempDirForAddin.deleteRecursively();
-        tempIconFile.deleteFile();
     }
 }
 
@@ -641,8 +631,8 @@ void TopToolBar::hasNewVersion()
 //=================================================================================================
 void TopToolBar::run()
 {
+    //const uint32 startTime = Time::getMillisecondCounter();
     generateHtmlFiles (FileTreeContainer::projectTree);
-
     accumulator = 0;
     progressValue = 0.999;
 
@@ -655,6 +645,8 @@ void TopToolBar::run()
 
     const MessageManagerLock mmLock;
     progressBar.exitModalState (0);
+
+    //DBGX (int (Time::getMillisecondCounter() - startTime));
 }
 
 //=================================================================================================
@@ -1069,7 +1061,7 @@ void TopToolBar::setEmptyTextOfSearchBox()
 }
 
 //=================================================================================================
-void TopToolBar::cleanLocalMedias()
+void TopToolBar::cleanNeedlessMedias (const bool showMessageWhenNoAnyNeedless)
 {
     // exist medias
     Array<File> allDirs;
@@ -1096,7 +1088,8 @@ void TopToolBar::cleanLocalMedias()
 
     if (allMediasOnLocal.size() < 1)
     {
-        SHOW_MESSAGE (TRANS ("Your project is very neat. \nNo need to clean it up."));
+        if (showMessageWhenNoAnyNeedless)
+            SHOW_MESSAGE (TRANS ("Your project is very neat. \nNo need to clean it up."));
     }
     else
     {

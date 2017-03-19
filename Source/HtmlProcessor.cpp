@@ -428,11 +428,12 @@ void HtmlProcessor::copyDocMediasToSite (const File& mdFile,
         {
             htmlMedias[i].create();
 
-            if ((docMedias[i].getLastModificationTime() == htmlMedias[i].getLastModificationTime())
-                && (docMedias[i].getSize() == htmlMedias[i].getSize()))
+            if (docMedias[i].getFileName() == htmlMedias[i].getFileName()
+                && docMedias[i].getSize() == htmlMedias[i].getSize()
+                && docMedias[i].getLastModificationTime() == htmlMedias[i].getLastModificationTime())
                 continue;
 
-            if (!docMedias[i].copyFileTo (htmlMedias[i]))
+            else if (!docMedias[i].copyFileTo (htmlMedias[i]))
                 errorStr << docMedias[i].getFullPathName() << newLine;
         }
     }

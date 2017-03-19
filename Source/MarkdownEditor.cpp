@@ -659,16 +659,16 @@ void MarkdownEditor::insertMedias (const Array<File>& mediaFiles)
 
         if (f.copyFileTo (targetFile))
         {
-            if (targetFile.getFileExtension () != ".mp3")
-                content << newLine << "![](media/" << targetFile.getFileName () << ")" << newLine
+            if (targetFile.getFileExtension() != ".mp3")
+                content << newLine << "![](media/" << targetFile.getFileName() << ")" << newLine
                 << "^^ " << TRANS ("Image: ") << newLine;
             else
-                content << newLine << "~[](media/" << targetFile.getFileName () << ")" << newLine
+                content << newLine << "~[](media/" << targetFile.getFileName() << ")" << newLine
                 << "^^ " << TRANS ("Audio: ") << newLine;
         }
         else
         {
-            SHOW_MESSAGE (TRANS ("Can't insert this media: ") + newLine + f.getFullPathName ());
+            SHOW_MESSAGE (TRANS ("Can't insert this media: ") + newLine + f.getFullPathName());
         }
     }
 

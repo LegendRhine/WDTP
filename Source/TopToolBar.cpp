@@ -364,7 +364,7 @@ void TopToolBar::popupSystemMenu()
     m.addSeparator();
 
     m.addItem (generateWhole, TRANS ("Regenerate Whole Site"), fileTreeContainer->hasLoadedProject());
-    m.addItem (cleanUpLocal, TRANS ("Cleanup Local Medias"), fileTreeContainer->hasLoadedProject());
+    m.addItem (cleanUpLocal, TRANS ("Cleanup Needless Medias"), fileTreeContainer->hasLoadedProject());
     m.addSeparator();
 
     m.addItem (exportTpl, TRANS ("Export Current Templates"), fileTreeContainer->hasLoadedProject());
@@ -1101,9 +1101,12 @@ void TopToolBar::cleanLocalMedias()
     else
     {
         String extraFilesName;
+        const String rootPath (FileTreeContainer::projectFile.getSiblingFile ("docs").getFullPathName());
 
         for (int i = allMediasOnLocal.size(); --i >= 0; )
-            extraFilesName += "  - " + allMediasOnLocal[i].getFullPathName() + newLine;
+            extraFilesName += "  - " 
+            + allMediasOnLocal[i].getFullPathName().fromFirstOccurrenceOf (rootPath, false, false).substring (1)
+            + newLine;
 
         if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),
                                           TRANS ("Find ") + String (allMediasOnLocal.size()) + " "
@@ -1112,9 +1115,14 @@ void TopToolBar::cleanLocalMedias()
                                           + TRANS ("Do you want to clean them up?")))
         {
             for (int i = allMediasOnLocal.size(); --i >= 0; )
-                allMediasOnLocal[i].moveToTrash();
+            {
+                const String& siteMediaPath (allMediasOnLocal[i].getFullPathName().replace ("docs", "site"));
 
-            SHOW_MESSAGE (TRANS ("Local medias cleanup successful!"));
+                allMediasOnLocal[i].moveToTrash();
+                File (siteMediaPath).deleteFile();
+            }
+
+            SHOW_MESSAGE (TRANS ("Needless medias cleanup successful!"));
         }
     }
 }

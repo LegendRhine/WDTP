@@ -898,7 +898,8 @@ const String Md2Html::mdLinkParse (const String& mdString)
 
         if (resultStr.substring (altStart - 1, altStart) != "\\"
             && resultStr.substring (altStart - 1, altStart) != "!"
-            && resultStr.substring (altStart - 1, altStart) != "~")
+            && resultStr.substring (altStart - 1, altStart) != "~"
+            && resultStr.substring (altStart - 1, altStart) != "@")
         {
             const String altContent (resultStr.substring (altStart + 1, linkPathStart));
 
@@ -1104,6 +1105,7 @@ const String Md2Html::cleanUp (const String& mdString)
     resultStr = resultStr.replace ("\\[", "[");
     resultStr = resultStr.replace ("\\![", "![");
     resultStr = resultStr.replace ("\\~[", "~[");
+    resultStr = resultStr.replace ("\\@[", "@[");
     resultStr = resultStr.replace ("\\[^", "[^");
     resultStr = resultStr.replace ("\\]", "]");
     resultStr = resultStr.replace ("\\/", "/");

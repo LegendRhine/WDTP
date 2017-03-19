@@ -115,8 +115,13 @@ private:
 
 public:
     /**< ![](media/xx.jpg = 500) support 'title' and 'width' */
-    static const String imageParse (const String& mdString);  
-    static const String audioParse (const String& mdString);  /**< ~[](media/xx.mp3) doesn't support 'title' */
+    static const String imageParse (const String& mdString); 
+
+    /**< ~[](media/xx.mp3) doesn't support 'title' */
+    static const String audioParse (const String& mdString);  
+
+    /**< @[](media/xx.mp4) doesn't support 'title' */
+    static const String videoParse (const String& mdString);
 
 private:
     //=================================================================================================

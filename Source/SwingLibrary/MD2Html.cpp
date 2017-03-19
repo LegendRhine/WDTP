@@ -37,6 +37,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     htmlContent = spaceLinkParse (htmlContent);
     htmlContent = imageParse (htmlContent);
     htmlContent = audioParse (htmlContent);
+    htmlContent = videoParse (htmlContent);
     htmlContent = mdLinkParse (htmlContent);
     htmlContent = listParse (htmlContent, true);
     htmlContent = listParse (htmlContent, false);
@@ -828,6 +829,39 @@ const String Md2Html::audioParse (const String& mdString)
 
         resultStr = resultStr.replaceSection (indexStart, audioEnd + 1 - indexStart, audioStr);
         indexStart = resultStr.indexOfIgnoreCase (indexStart + audioStr.length(), "~[](");
+    }
+
+    return resultStr;
+}
+
+//=================================================================================================
+const String Md2Html::videoParse (const String& mdString)
+{
+    /**< @[](media/xxx.mp3) */
+    String resultStr (mdString);
+    int indexStart = resultStr.indexOfIgnoreCase (0, "@[](");
+
+    while (indexStart != -1)
+    {
+        if (resultStr.substring (indexStart - 1, indexStart) == "\\")
+        {
+            indexStart = resultStr.indexOfIgnoreCase (indexStart + 4, "@[](");
+            continue;
+        }
+
+        // get video file path
+        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 3, ")");
+
+        if (indexEnd == -1)
+            break;
+
+        const String& videoPath (resultStr.substring (indexStart + 4, indexEnd));
+
+        const String& videoStr ("<div align=center><video src=\"" + videoPath + "\""
+                                + " preload=\"auto\" controls />" + "</div>");
+
+        resultStr = resultStr.replaceSection (indexStart, indexEnd + 1 - indexStart, videoStr);
+        indexStart = resultStr.indexOfIgnoreCase (indexStart + videoStr.length (), "@[](");
     }
 
     return resultStr;

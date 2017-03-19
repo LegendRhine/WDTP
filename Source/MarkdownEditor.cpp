@@ -96,7 +96,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         ctrlStr = "  (Cmd + ";
 #endif
 
-        insertMenu.addItem (insertMedia, TRANS ("Image(s) and Audio(s)...") + ctrlStr + "M)");
+        insertMenu.addItem (insertMedia, TRANS ("Image/Audio/Video...") + ctrlStr + "M)");
         insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink...") + ctrlStr + "H)");
         insertMenu.addSeparator();
         insertMenu.addItem (insertQuota, TRANS ("Quotation"));
@@ -616,8 +616,8 @@ void MarkdownEditor::hyperlinkInsert()
 //=================================================================================================
 void MarkdownEditor::insertMedias()
 {
-    FileChooser fc (TRANS ("Select Images/Audios..."), File::nonexistent,
-                    "*.jpg;*.jpeg;*.png;*.gif;*.mp3", true);
+    FileChooser fc (TRANS ("Select Images/Audios/Videos..."), File::nonexistent,
+                    "*.jpg;*.jpeg;*.png;*.gif;*.mp3;*.mp4", true);
 
     if (!fc.browseForMultipleFilesToOpen())
         return;
@@ -634,7 +634,7 @@ void MarkdownEditor::insertMedias (const Array<File>& mediaFiles)
 
     for (int i = files.size(); --i >= 0; )
     {
-        if (!files[i].hasFileExtension (".jpg;jpeg;png;gif;mp3"))
+        if (!files[i].hasFileExtension (".jpg;jpeg;png;gif;mp3;mp4"))
             files.remove (i);
     }
 
@@ -659,12 +659,16 @@ void MarkdownEditor::insertMedias (const Array<File>& mediaFiles)
 
         if (f.copyFileTo (targetFile))
         {
-            if (targetFile.getFileExtension() != ".mp3")
-                content << newLine << "![](media/" << targetFile.getFileName() << ")" << newLine
-                << "^^ " << TRANS ("Image: ") << newLine;
-            else
-                content << newLine << "~[](media/" << targetFile.getFileName() << ")" << newLine
+            if (targetFile.getFileExtension() == ".mp3")
+                content << newLine << "~[](media/" << targetFile.getFileName () << ")" << newLine
                 << "^^ " << TRANS ("Audio: ") << newLine;
+                
+            else if (targetFile.getFileExtension () == ".mp4")
+                content << newLine << "@[](media/" << targetFile.getFileName () << ")" << newLine
+                << "^^ " << TRANS ("Video: ") << newLine;
+            else
+                content << newLine << "![](media/" << targetFile.getFileName () << ")" << newLine
+                << "^^ " << TRANS ("Image: ") << newLine;
         }
         else
         {

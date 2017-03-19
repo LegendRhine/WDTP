@@ -37,7 +37,7 @@ public:
     virtual void performPopupMenuAction (int menuItemID) override;        
     bool keyPressed (const KeyPress& key) override;
 
-    void insertImages (const Array<File>& imageFiles);
+    void insertMedias (const Array<File>& mediaFiles);
 
     /** for set the font-size and color of font and backgroud */
     virtual void sliderValueChanged (Slider* slider) override;
@@ -55,7 +55,7 @@ private:
     enum MenuIndex
     {
         pickTitle = 1, addKeywords, pickFromAllKeywords, pickDesc,
-        insertImage, insertAudio, insertHyperlink, insertQuota,
+        insertMedia, insertHyperlink, insertQuota,
         insertNormalTable, insertInterlaced, insertNoborderTable,
         insertAlignCenter, insertAlignRight, 
         insertUnoerderList, insertOrderList,
@@ -81,8 +81,7 @@ private:
     /** tableStyle: should be the menu index see above */
     void tableInsert (const int tableStyle);
     void hyperlinkInsert();
-    void insertImages();
-    void insertAudioFiles();
+    void insertMedias();
 
     /** expandIndex: should be the menu index see above */
     void insertExpandMark (const int expandIndex);

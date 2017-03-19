@@ -96,8 +96,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         ctrlStr = "  (Cmd + ";
 #endif
 
-        insertMenu.addItem (insertImage, TRANS ("Iamge(s)...") + ctrlStr + "M)");
-        insertMenu.addItem (insertAudio, TRANS ("Audio(s)..."));
+        insertMenu.addItem (insertMedia, TRANS ("Image(s) and Audio(s)...") + ctrlStr + "M)");
         insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink...") + ctrlStr + "H)");
         insertMenu.addItem (insertQuota, TRANS ("Quotation"));
         insertMenu.addSeparator();
@@ -226,8 +225,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (searchPrev == index)           searchPrevious();
     else if (searchNext == index)           searchForNext();
 
-    else if (insertImage == index)          insertImages();
-    else if (insertAudio == index)          insertAudioFiles();
+    else if (insertMedia == index)          insertMedias();
     else if (insertHyperlink == index)      hyperlinkInsert();
     else if (insertNormalTable == index)    tableInsert (insertNormalTable);
     else if (insertInterlaced == index)     tableInsert (insertInterlaced);
@@ -615,86 +613,40 @@ void MarkdownEditor::hyperlinkInsert()
 }
 
 //=================================================================================================
-void MarkdownEditor::insertImages()
+void MarkdownEditor::insertMedias()
 {
-    FileChooser fc (TRANS ("Select Images..."), File::nonexistent,
-                    "*.jpg;*.jpeg;*.png;*.gif", true);
+    FileChooser fc (TRANS ("Select Images/Audios..."), File::nonexistent,
+                    "*.jpg;*.jpeg;*.png;*.gif;*.mp3", true);
 
     if (!fc.browseForMultipleFilesToOpen())
         return;
 
     Array<File> imageFiles (fc.getResults());
-    insertImages (imageFiles);
+    insertMedias (imageFiles);
 }
 
 //=================================================================================================
-void MarkdownEditor::insertImages (const Array<File>& imageFiles)
+void MarkdownEditor::insertMedias (const Array<File>& mediaFiles)
 {
-    // remove non-image file(s)
-    Array<File> files (imageFiles);
+    // remove non-media file(s)
+    Array<File> files (mediaFiles);
 
     for (int i = files.size(); --i >= 0; )
     {
-        if (!files[i].hasFileExtension (".jpg;jpeg;png;gif"))
+        if (!files[i].hasFileExtension (".jpg;jpeg;png;gif;mp3"))
             files.remove (i);
     }
 
-    // doesn't import project-internal images
+    // doesn't import project-internal medias
     const File& projectDir (FileTreeContainer::projectFile.getParentDirectory());
 
     if (files[0].getFullPathName().contains (projectDir.getFullPathName()))
     {
-        SHOW_MESSAGE (TRANS ("Can't import image(s) inside the current project!"));
+        SHOW_MESSAGE (TRANS ("Can't import media file(s) inside the current project!"));
         return;
     }
 
-    // copy and insert image-syntax
-    ValueTree& docTree (parent->getCurrentTree());
-    const File imgPath (DocTreeViewItem::getMdFileOrDir (docTree).getSiblingFile ("media"));
-    String content;
-
-    for (auto f : files)
-    {
-        const File targetFile (imgPath.getChildFile (f.getFileName()).getNonexistentSibling (false));
-        targetFile.create();
-
-        if (f.copyFileTo (targetFile))
-            content << newLine << "![](media/" << targetFile.getFileName() << ")" << newLine
-            << "^^ " << TRANS ("Image: ") << newLine;
-        else
-            SHOW_MESSAGE (TRANS ("Can't insert this image: ") + newLine + f.getFullPathName());
-    }
-
-    insertTextAtCaret (content);
-}
-
-//=================================================================================================
-void MarkdownEditor::insertAudioFiles()
-{
-    FileChooser fc (TRANS ("Select Audio Files..."), File::nonexistent,
-                    "*.mp3", true);
-
-    if (!fc.browseForMultipleFilesToOpen())
-        return;
-
-    Array<File> files (fc.getResults());
-
-    for (int i = files.size(); --i >= 0; )
-    {
-        if (!files[i].hasFileExtension ("mp3"))
-            files.remove (i);
-    }
-
-    // doesn't import project-internal audios
-    const File& projectDir (FileTreeContainer::projectFile.getParentDirectory());
-
-    if (files[0].getFullPathName().contains (projectDir.getFullPathName()))
-    {
-        SHOW_MESSAGE (TRANS ("Can't import audio(s) inside the current project!"));
-        return;
-    }
-
-    // copy and insert audio-syntax
+    // copy and insert image/audio-syntax
     ValueTree& docTree (parent->getCurrentTree());
     const File mediaPath (DocTreeViewItem::getMdFileOrDir (docTree).getSiblingFile ("media"));
     String content;
@@ -705,10 +657,18 @@ void MarkdownEditor::insertAudioFiles()
         targetFile.create();
 
         if (f.copyFileTo (targetFile))
-            content << newLine << "~[](media/" << targetFile.getFileName() << ")" << newLine
-            << "^^ " << TRANS ("Audio: ") << newLine;
+        {
+            if (targetFile.getFileExtension () != ".mp3")
+                content << newLine << "![](media/" << targetFile.getFileName () << ")" << newLine
+                << "^^ " << TRANS ("Image: ") << newLine;
+            else
+                content << newLine << "~[](media/" << targetFile.getFileName () << ")" << newLine
+                << "^^ " << TRANS ("Audio: ") << newLine;
+        }
         else
-            SHOW_MESSAGE (TRANS ("Can't insert this Audio: ") + newLine + f.getFullPathName());
+        {
+            SHOW_MESSAGE (TRANS ("Can't insert this media: ") + newLine + f.getFullPathName ());
+        }
     }
 
     insertTextAtCaret (content);
@@ -1094,7 +1054,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
     // insert images
     else if (key == KeyPress ('m', ModifierKeys::commandModifier, 0))
-        insertImages();
+        insertMedias();
 
     // insert table
     else if (key == KeyPress ('t', ModifierKeys::commandModifier, 0))
@@ -1361,7 +1321,7 @@ void MarkdownEditor::filesDropped (const StringArray& pathes, int, int)
     for (auto path : pathes)
         files.add (File (path));
 
-    insertImages (files);
+    insertMedias (files);
 }
 
 //=================================================================================================

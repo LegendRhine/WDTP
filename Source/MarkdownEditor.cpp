@@ -664,8 +664,9 @@ void MarkdownEditor::insertMedias (const Array<File>& mediaFiles)
                 << "^^ " << TRANS ("Audio: ") << newLine;
                 
             else if (targetFile.getFileExtension () == ".mp4")
-                content << newLine << "@[](media/" << targetFile.getFileName () << ")" << newLine
+                content << newLine << "@[](media/" << targetFile.getFileName () << " = 680)" << newLine
                 << "^^ " << TRANS ("Video: ") << newLine;
+
             else
                 content << newLine << "![](media/" << targetFile.getFileName () << ")" << newLine
                 << "^^ " << TRANS ("Image: ") << newLine;

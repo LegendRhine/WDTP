@@ -758,7 +758,7 @@ const String Md2Html::imageParse (const String& mdString)
     {
         if (resultStr.substring (indexStart - 1, indexStart) == "\\")
         {
-            indexStart = resultStr.indexOfIgnoreCase (indexStart + 2, "~[");
+            indexStart = resultStr.indexOfIgnoreCase (indexStart + 2, "![");
             continue;
         }
 
@@ -785,7 +785,7 @@ const String Md2Html::imageParse (const String& mdString)
         // img path and width
         if (widthValueStr != imgStrIncludeWidth)
         {
-            imgPath = imgPath.upToLastOccurrenceOf ("=", false, false).dropLastCharacters (1);
+            imgPath = imgPath.upToLastOccurrenceOf ("=", false, false).trim();
 
             if (widthValueStr.getIntValue() > 0)
                 widthStr = " width=\"" + String (widthValueStr.getIntValue()) + "\"";
@@ -817,12 +817,12 @@ const String Md2Html::audioParse (const String& mdString)
         }
                 
         // get audio file path
-        const int audioEnd = resultStr.indexOfIgnoreCase (indexStart + 3, ")");
+        const int audioEnd = resultStr.indexOfIgnoreCase (indexStart + 4, ")");
 
         if (audioEnd == -1)
             break;
 
-        const String& audioPath (resultStr.substring (indexStart + 4, audioEnd));
+        const String& audioPath (resultStr.substring (indexStart + 4, audioEnd).trim());
 
         const String& audioStr ("<div align=center><audio src=\"" + audioPath + "\""
                                 + " preload=\"auto\" controls />" + "</div>");
@@ -837,7 +837,7 @@ const String Md2Html::audioParse (const String& mdString)
 //=================================================================================================
 const String Md2Html::videoParse (const String& mdString)
 {
-    /**< @[](media/xxx.mp3) */
+    /**< @[](media/xxx.mp4 = 680) */
     String resultStr (mdString);
     int indexStart = resultStr.indexOfIgnoreCase (0, "@[](");
 
@@ -848,17 +848,30 @@ const String Md2Html::videoParse (const String& mdString)
             indexStart = resultStr.indexOfIgnoreCase (indexStart + 4, "@[](");
             continue;
         }
-
-        // get video file path
-        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 3, ")");
+                
+        // get video str include width
+        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 4, ")");
 
         if (indexEnd == -1)
             break;
 
-        const String& videoPath (resultStr.substring (indexStart + 4, indexEnd));
+        const String& videoStrIncludeWidth (resultStr.substring (indexStart + 4, indexEnd));
+        const String& widthValueStr (videoStrIncludeWidth.fromLastOccurrenceOf ("=", false, false).trim());
+
+        String videoPath (videoStrIncludeWidth);
+        String widthStr;
+
+        // video path and width
+        if (widthValueStr != videoStrIncludeWidth)
+        {
+            videoPath = videoPath.upToLastOccurrenceOf ("=", false, false).trim();
+
+            if (widthValueStr.getIntValue () > 0)
+                widthStr = " width=\"" + String (widthValueStr.getIntValue ()) + "\"";
+        }
 
         const String& videoStr ("<div align=center><video src=\"" + videoPath + "\""
-                                + " preload=\"auto\" controls />" + "</div>");
+                              + widthStr + " preload=\"auto\" controls />" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, indexEnd + 1 - indexStart, videoStr);
         indexStart = resultStr.indexOfIgnoreCase (indexStart + videoStr.length (), "@[](");

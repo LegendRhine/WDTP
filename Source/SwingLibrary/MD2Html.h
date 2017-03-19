@@ -120,7 +120,7 @@ public:
     /**< ~[](media/xx.mp3) doesn't support 'title' */
     static const String audioParse (const String& mdString);  
 
-    /**< @[](media/xx.mp4) doesn't support 'title' */
+    /**< @[](media/xx.mp4 = 680) support 'width', doesn't support 'title' */
     static const String videoParse (const String& mdString);
 
 private:

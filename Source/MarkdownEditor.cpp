@@ -660,15 +660,15 @@ void MarkdownEditor::insertMedias (const Array<File>& mediaFiles)
         if (f.copyFileTo (targetFile))
         {
             if (targetFile.getFileExtension() == ".mp3")
-                content << newLine << "~[](media/" << targetFile.getFileName () << ")" << newLine
+                content << newLine << "~[](media/" << targetFile.getFileName() << ")" << newLine
                 << "^^ " << TRANS ("Audio: ") << newLine;
                 
-            else if (targetFile.getFileExtension () == ".mp4")
-                content << newLine << "@[](media/" << targetFile.getFileName () << " = 680)" << newLine
+            else if (targetFile.getFileExtension() == ".mp4")
+                content << newLine << "@[](media/" << targetFile.getFileName() << " = 680)" << newLine
                 << "^^ " << TRANS ("Video: ") << newLine;
 
             else
-                content << newLine << "![](media/" << targetFile.getFileName () << ")" << newLine
+                content << newLine << "![](media/" << targetFile.getFileName() << ")" << newLine
                 << "^^ " << TRANS ("Image: ") << newLine;
         }
         else
@@ -896,7 +896,7 @@ void MarkdownEditor::pasteForCtrlV()
             insertTextAtCaret ("~[](" + content + ")");
         }
         // video
-        else if (content.getLastCharacters (3).toLowerCase () == "mp4")
+        else if (content.getLastCharacters (3).toLowerCase() == "mp4")
         {
             insertTextAtCaret ("@[](" + content + " = 680)");
         }

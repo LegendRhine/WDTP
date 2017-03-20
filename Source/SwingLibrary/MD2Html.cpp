@@ -866,15 +866,15 @@ const String Md2Html::videoParse (const String& mdString)
         {
             videoPath = videoPath.upToLastOccurrenceOf ("=", false, false).trim();
 
-            if (widthValueStr.getIntValue () > 0)
-                widthStr = " width=\"" + String (widthValueStr.getIntValue ()) + "\"";
+            if (widthValueStr.getIntValue() > 0)
+                widthStr = " width=\"" + String (widthValueStr.getIntValue()) + "\"";
         }
 
         const String& videoStr ("<div align=center><video src=\"" + videoPath + "\""
                               + widthStr + " preload=\"auto\" controls />" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, indexEnd + 1 - indexStart, videoStr);
-        indexStart = resultStr.indexOfIgnoreCase (indexStart + videoStr.length (), "@[](");
+        indexStart = resultStr.indexOfIgnoreCase (indexStart + videoStr.length(), "@[](");
     }
 
     return resultStr;

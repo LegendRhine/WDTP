@@ -51,10 +51,9 @@ void SwingUtilities::showAbout (const String& shortDescription,
                           "underwaySoft@126.com" + newLine + newLine +
                           String (CharPointer_UTF8 ("\xc2\xa9")) + copyrightYear + " UnderwaySoft " +
                           TRANS ("All Right Reserved.") + newLine  +
-                          TRANS (" WDTP is GPL(v3) licensed.") + newLine +
+                          TRANS (" WDTP is GPL(v2) licensed.") + newLine +
                           "=================================\n" +
                           TRANS ("Acknowledgements:") + newLine +
-                          //"  - XiaoYu (YunZuo)\n" +
                           "  - Framework: JUCE (https://juce.com)\n" +
                           //"  - Library: cURL (https://curl.haxx.se)\n" +
                           //"  - Mr. Chen Ping: (http://cpww601.blog.163.com)\n" +

@@ -1,6 +1,6 @@
-﻿WDTP is GPL (v3) licensed.
+﻿WDTP is GPL (v2) licensed.
 
-See: http://www.gnu.org/licenses/gpl.html
+See: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 
 WDTP uses JUCE Library, Steinberg ASIO and Highlight.js, which are licensed separately. 
 

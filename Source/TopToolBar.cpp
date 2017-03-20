@@ -116,18 +116,16 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
                             ImageCache::getFromMemory (BinaryData::system_png,
                                                        BinaryData::system_pngSize),
                             imageTrans, Colour (0x00),
-                            Image::null, 1.000f, Colours::darkcyan,
-                            Image::null, 1.000f, Colours::darkcyan);
+                            Image::null, 1.000f, Colour (0x00),
+                            Image::null, 1.000f, Colour (0x00));
 
-    bts[width]->setTooltip (TRANS ("Switch Simply / Full Mode") + "  (" + ctrlStr + " + D)");
+    bts[width]->setTooltip (TRANS ("Popup Layout Menu") + "  (" + ctrlStr + " + D)");
     bts[width]->setImages (false, true, true,
                            ImageCache::getFromMemory (BinaryData::width_png,
                                                       BinaryData::width_pngSize),
                            imageTrans, Colour (0x00),
                            Image::null, 1.0f, Colour (0x00),
-                           Image::null, 1.0f, Colours::darkcyan);
-
-    bts[width]->setToggleState (true, dontSendNotification);
+                           Image::null, 1.0f, Colour (0x00));
 
     // progressBar
     progressBar.setColour (ProgressBar::backgroundColourId, Colour (0x00));
@@ -313,18 +311,13 @@ void TopToolBar::buttonClicked (Button* bt)
 {
     if (bt == bts[view])
     {
-        bts[view]->setToggleState (!bts[view]->getToggleState(), dontSendNotification);
-        editAndPreview->saveCurrentDocIfChanged();
-        editAndPreview->switchMode (bts[view]->getToggleState());
+        bts[view]->setToggleState (!bts[view]->getToggleState (), dontSendNotification);
+        editAndPreview->saveCurrentDocIfChanged ();
+        editAndPreview->switchMode (bts[view]->getToggleState ());
+    }
 
-        //editAndPreview->startWork (editAndPreview->getCurrentTree());
-    }
     else if (bt == bts[width])
-    {
-        bts[width]->setToggleState (!bts[width]->getToggleState(), dontSendNotification);
-        getParentComponent()->setSize ((bts[width]->getToggleState() ? 1260 : 700), 800);
-        getTopLevelComponent()->setCentreRelative (0.5f, 0.53f);
-    }
+        popupLayoutMenu();
     else if (bt == bts[system])
         popupSystemMenu();
     else if (bt == bts[prevAll])
@@ -406,11 +399,11 @@ void TopToolBar::popupSystemMenu()
     if (index >= 100 && index < 200)   
         fileTreeContainer->openProject (recentFiles.getFile (index - 100));
     else
-        menuPerform (index);
+        systemMenuPerform (index);
 }
 
 //=================================================================================================
-void TopToolBar::menuPerform (const int index)
+void TopToolBar::systemMenuPerform (const int index)
 {
     if (index == newPjt)                createNewProject();
     else if (index == packPjt)          packProject();
@@ -443,6 +436,12 @@ void TopToolBar::menuPerform (const int index)
         systemFile->setValue ("language", 1);
         setUiLanguage (Chinese);
     }
+}
+
+//=================================================================================================
+void TopToolBar::popupLayoutMenu ()
+{
+
 }
 
 //=================================================================================================

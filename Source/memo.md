@@ -149,7 +149,7 @@
 - Ctrl + A: select all content (text mark syntax)
 - Ctrl + B: bold (text mark syntax)
 - Ctrl + C: copy 
-- Ctrl + D: switch width
+- Ctrl + D: popup layout menu
 - Ctrl + E: 
 - Ctrl + F: active search
 - Ctrl + G: 

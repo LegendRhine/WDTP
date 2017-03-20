@@ -60,7 +60,8 @@ private:
 
     virtual void buttonClicked (Button*) override;
     void popupSystemMenu();
-    void menuPerform (const int menuIndex);
+    void systemMenuPerform (const int menuIndex);
+    void popupLayoutMenu();
 
     void createNewProject();
     void openProject();

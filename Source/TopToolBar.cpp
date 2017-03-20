@@ -117,7 +117,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
                                                        BinaryData::system_pngSize),
                             imageTrans, Colour (0x00),
                             Image::null, 1.000f, Colour (0x00),
-                            Image::null, 1.000f, Colour (0x00));
+                            Image::null, 1.000f, Colours::darkcyan);
 
     bts[width]->setTooltip (TRANS ("Popup Layout Menu") + "  (" + ctrlStr + " + D)");
     bts[width]->setImages (false, true, true,
@@ -125,7 +125,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
                                                       BinaryData::width_pngSize),
                            imageTrans, Colour (0x00),
                            Image::null, 1.0f, Colour (0x00),
-                           Image::null, 1.0f, Colour (0x00));
+                           Image::null, 1.0f, Colours::darkcyan);
 
     // progressBar
     progressBar.setColour (ProgressBar::backgroundColourId, Colour (0x00));
@@ -441,6 +441,13 @@ void TopToolBar::systemMenuPerform (const int index)
 //=================================================================================================
 void TopToolBar::popupLayoutMenu ()
 {
+    PopupMenu menu;
+    menu.addItem (1, TRANS ("Show File Tree Panel"), true, true);
+    menu.addItem (2, TRANS ("Show Properties Panel"), true, true);
+    menu.addSeparator();
+    menu.addItem (3, TRANS ("Silent Mode"), true, true);
+
+    const int index = menu.show();
 
 }
 

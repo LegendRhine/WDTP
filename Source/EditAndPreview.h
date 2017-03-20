@@ -35,6 +35,9 @@ public:
     void paint (Graphics&) override {}
     void resized() override;
 
+    void setLayout (const bool showProperties);
+    const bool propertiesIsShowing();
+
     TextEditor* getEditor() const               { return editor; }
     WebBrowserComponent* getWebBrowser() const  { return webView; }
     const String& getCurrentUrl() const         { return currentUrl; }
@@ -80,6 +83,7 @@ private:
 
     StretchableLayoutManager layoutManager;
     ScopedPointer<StrechableBar> layoutBar;
+    bool showPropertiesPanel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditAndPreview)
 };

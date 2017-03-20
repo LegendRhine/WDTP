@@ -15,15 +15,16 @@ extern PropertiesFile* systemFile;
 //==============================================================================
 EditAndPreview::EditAndPreview (MainContentComponent* mainComp_) 
     : docHasChanged (false),
-    mainComp (mainComp_)
+    mainComp (mainComp_),
+    showPropertiesPanel (true)
 {
     addAndMakeVisible (webView = new WebBrowserComp (this));
     webView->setWantsKeyboardFocus (false);
 
     // stretched layout, arg: index, min-width, max-width，default x%
-    layoutManager.setItemLayout (0, -0.5, -1.0, -0.72);  // editor，
+    layoutManager.setItemLayout (0, -0.5, -1.0, -0.74);  // editor，
     layoutManager.setItemLayout (1, 2, 2, 2);            // layoutBar
-    layoutManager.setItemLayout (2, 2, -0.5, -0.28);     // propertiesPanel
+    layoutManager.setItemLayout (2, 2, -0.5, -0.26);     // propertiesPanel
 
     addAndMakeVisible (editor = new MarkdownEditor (this));
     addAndMakeVisible (setupPanel = new SetupPanel (this));
@@ -63,7 +64,7 @@ void EditAndPreview::resized()
 
     jassert (wordArea != nullptr);
 
-    if (getParentComponent()->getWidth() > 1020)  // stretched layout
+    if (getParentComponent()->getWidth() > 1020 && showPropertiesPanel)  // stretched layout
     {
         setupPanel->setVisible (true);
         layoutBar->setVisible (true);
@@ -77,6 +78,19 @@ void EditAndPreview::resized()
         layoutBar->setVisible (false);
         wordArea->setBounds (0, 0, getWidth(), getHeight());
     }
+}
+
+//=================================================================================================
+void EditAndPreview::setLayout (const bool showProperties)
+{
+    showPropertiesPanel = showProperties;
+    resized();
+}
+
+//=================================================================================================
+const bool EditAndPreview::propertiesIsShowing()
+{
+    return setupPanel->isVisible();
 }
 
 //=================================================================================================

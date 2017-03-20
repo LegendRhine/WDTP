@@ -61,7 +61,9 @@ private:
     virtual void buttonClicked (Button*) override;
     void popupSystemMenu();
     void systemMenuPerform (const int menuIndex);
+
     void popupLayoutMenu();
+    void switchSilentMode (const bool enterSilent);
 
     void createNewProject();
     void openProject();

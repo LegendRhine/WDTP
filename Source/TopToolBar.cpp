@@ -119,7 +119,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
                             Image::null, 1.000f, Colour (0x00),
                             Image::null, 1.000f, Colours::darkcyan);
 
-    bts[width]->setTooltip (TRANS ("Popup Layout Menu") + "  (" + ctrlStr + " + D)");
+    bts[width]->setTooltip (TRANS ("Popup Layout Menu"));
     bts[width]->setImages (false, true, true,
                            ImageCache::getFromMemory (BinaryData::width_png,
                                                       BinaryData::width_pngSize),
@@ -311,9 +311,9 @@ void TopToolBar::buttonClicked (Button* bt)
 {
     if (bt == bts[view])
     {
-        bts[view]->setToggleState (!bts[view]->getToggleState (), dontSendNotification);
-        editAndPreview->saveCurrentDocIfChanged ();
-        editAndPreview->switchMode (bts[view]->getToggleState ());
+        bts[view]->setToggleState (!bts[view]->getToggleState(), dontSendNotification);
+        editAndPreview->saveCurrentDocIfChanged();
+        editAndPreview->switchMode (bts[view]->getToggleState());
     }
 
     else if (bt == bts[width])
@@ -439,16 +439,51 @@ void TopToolBar::systemMenuPerform (const int index)
 }
 
 //=================================================================================================
-void TopToolBar::popupLayoutMenu ()
+void TopToolBar::popupLayoutMenu()
 {
+    const bool isSilentMode = (getParentComponent()->getWidth() < 760);
+    String ctrlStr ("  (Ctrl + ");
+
+#if JUCE_MAC
+    ctrlStr = "  (Cmd + ";
+#endif
+
     PopupMenu menu;
-    menu.addItem (1, TRANS ("Show File Tree Panel"), true, true);
-    menu.addItem (2, TRANS ("Show Properties Panel"), true, true);
+    menu.addItem (1, TRANS ("Show File Tree Panel"), !isSilentMode, fileTreeContainer->isVisible());
+    menu.addItem (2, TRANS ("Show Properties Panel"), !isSilentMode, editAndPreview->propertiesIsShowing());
     menu.addSeparator();
-    menu.addItem (3, TRANS ("Silent Mode"), true, true);
+    menu.addItem (3, TRANS ("Silent Mode") + ctrlStr + "D)", true, isSilentMode);
 
     const int index = menu.show();
+    MainContentComponent* main = dynamic_cast<MainContentComponent*>(getParentComponent());
 
+    if (index == 1 && main != nullptr)
+        main->setLayout (!fileTreeContainer->isVisible());
+
+    else if (index == 2)
+        editAndPreview->setLayout (!editAndPreview->propertiesIsShowing());
+    
+    else if (index == 3)
+        switchSilentMode (!isSilentMode);
+}
+
+//=================================================================================================
+void TopToolBar::switchSilentMode (const bool enterSilent)
+{
+    DocumentWindow* mainWindow = findParentComponentOfClass<DocumentWindow>();
+    jassert (mainWindow != nullptr);
+
+    if (enterSilent)
+    {
+        const int height = getParentComponent()->getHeight();
+        mainWindow->setFullScreen (false);
+        getParentComponent()->setSize (710, height);
+        getTopLevelComponent()->setCentreRelative (0.5f, 0.f);
+    }
+    else
+    {
+        mainWindow->setFullScreen (true);
+    }
 }
 
 //=================================================================================================
@@ -767,14 +802,15 @@ void TopToolBar::getCommandInfo (CommandID commandID, ApplicationCommandInfo& re
 //=================================================================================================
 bool TopToolBar::perform (const InvocationInfo& info)
 {
+    const bool isSilentMode = (getParentComponent()->getWidth() < 760);
+
     switch (info.commandID)
     {
     case switchEdit:        bts[view]->triggerClick();         break;
-    case switchWidth:       bts[width]->triggerClick();        break;
+    case switchWidth:       switchSilentMode (!isSilentMode);  break;
     case generateCurrent:   generateCurrentPage();             break;
     case generateNeeded:    generateHtmlsIfNeeded();           break;
     case activeSearch:      searchInDoc->grabKeyboardFocus();  break;
-
     default:                return false; 
     }
 

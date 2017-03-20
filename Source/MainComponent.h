@@ -28,9 +28,13 @@ public:
     void paint (Graphics&) override;
     void resized() override;
 
-    FileTreeContainer* getFileTree() const         { return fileTree; }
-    TopToolBar* getToolbar() const                 { return toolBar; }
-    EditAndPreview* getEditAndPreview() const      { return editAndPreview; }
+    void setLayout (const bool showFileTree);
+    const bool fileTreeIsShowing() const            { return showFileTreePanel; }
+
+    FileTreeContainer* getFileTree() const          { return fileTree; }
+    TopToolBar* getToolbar() const                  { return toolBar; }
+    EditAndPreview* getEditAndPreview() const       { return editAndPreview; }
+    
 
     /** 3 transfer methods */
     const bool aDocSelectedCurrently() const;
@@ -49,6 +53,7 @@ private:
 
     StretchableLayoutManager layoutManager;
     ScopedPointer<StrechableBar> layoutBar;
+    bool showFileTreePanel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)
 };

@@ -16,7 +16,8 @@ File lameEncoder;
 
 //==============================================================================
 MainContentComponent::MainContentComponent() :
-    Thread ("CheckNewVersion")
+    Thread ("CheckNewVersion"),
+    showFileTreePanel (true)
 {
     // must be these order...
     addAndMakeVisible (editAndPreview = new EditAndPreview (this));
@@ -31,9 +32,9 @@ MainContentComponent::MainContentComponent() :
     toolBar->enableEditPreviewBt (false, true);
 
     // stretched layout. arg: index, min-width, max-width，default x%
-    layoutManager.setItemLayout (0, 2, -0.3, -0.21);        // fileTree
+    layoutManager.setItemLayout (0, 2, -0.3, -0.20);        // fileTree
     layoutManager.setItemLayout (1, 2, 2, 2);               // layoutBar
-    layoutManager.setItemLayout (2, -0.7, -1.0, -0.79);     // editAndPreview
+    layoutManager.setItemLayout (2, -0.7, -1.0, -0.80);     // editAndPreview
 
     setSize (1260, 780);
 
@@ -60,7 +61,7 @@ void MainContentComponent::resized()
 {
     toolBar->setBounds (0, 0, getWidth(), 45);
 
-    if (getWidth() > 760)  // stretched layout
+    if (getWidth() > 760 && showFileTreePanel)  // stretched layout
     {
         fileTree->setVisible (true);
         layoutBar->setVisible (true);
@@ -74,6 +75,13 @@ void MainContentComponent::resized()
         layoutBar->setVisible (false);
         editAndPreview->setBounds (0, 45, getWidth(), getHeight() - 45);
     }
+}
+
+//=================================================================================================
+void MainContentComponent::setLayout (const bool showFileTree)
+{
+    showFileTreePanel = showFileTree;
+    resized();
 }
 
 //=================================================================================================

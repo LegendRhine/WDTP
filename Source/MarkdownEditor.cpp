@@ -895,6 +895,11 @@ void MarkdownEditor::pasteForCtrlV()
         {
             insertTextAtCaret ("~[](" + content + ")");
         }
+        // video
+        else if (content.getLastCharacters (3).toLowerCase () == "mp4")
+        {
+            insertTextAtCaret ("@[](" + content + " = 680)");
+        }
         else     // url
         {
             if (getHighlightedText().isNotEmpty())

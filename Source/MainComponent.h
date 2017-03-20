@@ -27,9 +27,7 @@ public:
 
     void paint (Graphics&) override;
     void resized() override;
-
     void setLayout (const bool showFileTree);
-    const bool fileTreeIsShowing() const            { return showFileTreePanel; }
 
     FileTreeContainer* getFileTree() const          { return fileTree; }
     TopToolBar* getToolbar() const                  { return toolBar; }

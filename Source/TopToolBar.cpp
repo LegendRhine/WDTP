@@ -29,25 +29,15 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
     jassert (editAndPreview != nullptr);
 
     // 2 search textEditors..
-    addAndMakeVisible (searchInProject = new TextEditor());
-    searchInProject->addListener (this);
+    addAndMakeVisible (searchInput = new TextEditor());
+    searchInput->addListener (this);
 
-    searchInProject->setColour (TextEditor::textColourId, Colour (0xff303030));
-    searchInProject->setColour (TextEditor::focusedOutlineColourId, Colours::lightskyblue);
-    searchInProject->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha (0.6f));
-    searchInProject->setScrollBarThickness (10);
-    searchInProject->setFont (SwingUtilities::getFontSize() - 3.f);
-    searchInProject->setSelectAllWhenFocused (true);
-
-    addAndMakeVisible (searchInDoc = new TextEditor());
-    searchInDoc->addListener (this);
-
-    searchInDoc->setColour (TextEditor::textColourId, Colour (0xff303030));
-    searchInDoc->setColour (TextEditor::focusedOutlineColourId, Colours::lightskyblue);
-    searchInDoc->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha (0.6f));
-    searchInDoc->setScrollBarThickness (10);
-    searchInDoc->setFont (SwingUtilities::getFontSize() - 3.f);
-    searchInDoc->setSelectAllWhenFocused (true);
+    searchInput->setColour (TextEditor::textColourId, Colour (0xff303030));
+    searchInput->setColour (TextEditor::focusedOutlineColourId, Colours::lightskyblue);
+    searchInput->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha (0.6f));
+    searchInput->setScrollBarThickness (10);
+    searchInput->setFont (SwingUtilities::getFontSize() - 3.f);
+    searchInput->setSelectAllWhenFocused (true);
 
     // ui language
     setUiLanguage ((LanguageID)systemFile->getIntValue ("language"));
@@ -63,32 +53,16 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
         addAndMakeVisible (bt);
     }
 
-    bts[prevAll]->setTooltip (TRANS ("Find Previous"));
-    bts[prevAll]->setImages (false, true, true,
+    bts[searchPrev]->setTooltip (TRANS ("Find Previous"));
+    bts[searchPrev]->setImages (false, true, true,
                              ImageCache::getFromMemory (BinaryData::prev_png,
                                                         BinaryData::prev_pngSize),
                              imageTrans, Colour (0x00),
                              Image::null, 1.0f, Colours::darkcyan,
                              Image::null, 1.0f, Colours::darkcyan);
 
-    bts[nextAll]->setTooltip (TRANS ("Find Next"));
-    bts[nextAll]->setImages (false, true, true,
-                             ImageCache::getFromMemory (BinaryData::next_png,
-                                                        BinaryData::next_pngSize),
-                             imageTrans, Colour (0x00),
-                             Image::null, 1.0f, Colours::darkcyan,
-                             Image::null, 1.0f, Colours::darkcyan);
-
-    bts[prevPjt]->setTooltip (TRANS ("Find Previous"));
-    bts[prevPjt]->setImages (false, true, true,
-                             ImageCache::getFromMemory (BinaryData::prev_png,
-                                                        BinaryData::prev_pngSize),
-                             imageTrans, Colour (0x00),
-                             Image::null, 1.0f, Colours::darkcyan,
-                             Image::null, 1.0f, Colours::darkcyan);
-
-    bts[nextPjt]->setTooltip (TRANS ("Find Next"));
-    bts[nextPjt]->setImages (false, true, true,
+    bts[searchNext]->setTooltip (TRANS ("Find Next"));
+    bts[searchNext]->setImages (false, true, true,
                              ImageCache::getFromMemory (BinaryData::next_png,
                                                         BinaryData::next_pngSize),
                              imageTrans, Colour (0x00),
@@ -155,29 +129,19 @@ void TopToolBar::resized()
     // search textEditors and find buttons
     if (getWidth() >= 800)
     {
-        bts[prevAll]->setVisible (true);
-        searchInProject->setVisible (true);
-        bts[nextAll]->setVisible (true);
-        bts[nextPjt]->setVisible (true);
-        searchInDoc->setVisible (true);
-        bts[prevPjt]->setVisible (true);
+        bts[searchPrev]->setVisible (true);
+        searchInput->setVisible (true);
+        bts[searchNext]->setVisible (true);
 
-        bts[prevAll]->setBounds (12, 14, 16, 16);
-        searchInProject->setBounds (bts[prevAll]->getRight() + 10, 10, 200, 25);
-        bts[nextAll]->setBounds (searchInProject->getRight() + 10, 14, 16, 16);
-
-        bts[nextPjt]->setBounds (getWidth() - 24, 14, 16, 16);
-        searchInDoc->setBounds (bts[nextPjt]->getX() - 230, 10, 220, 25);
-        bts[prevPjt]->setBounds (searchInDoc->getX() - 25, 14, 16, 16);
+        bts[searchPrev]->setBounds (12, 14, 16, 16);
+        searchInput->setBounds (bts[searchPrev]->getRight() + 10, 10, 200, 25);
+        bts[searchNext]->setBounds (searchInput->getRight() + 10, 14, 16, 16);
     }
     else
     {
-        bts[prevAll]->setVisible (false);
-        searchInProject->setVisible (false);
-        bts[nextAll]->setVisible (false);
-        bts[nextPjt]->setVisible (false);
-        searchInDoc->setVisible (false);
-        bts[prevPjt]->setVisible (false);
+        bts[searchPrev]->setVisible (false);
+        searchInput->setVisible (false);
+        bts[searchNext]->setVisible (false);
     }
 
     // image buttons
@@ -200,54 +164,37 @@ void TopToolBar::enableEditPreviewBt (const bool enableIt,
 //=========================================================================
 void TopToolBar::textEditorReturnKeyPressed (TextEditor& te)
 {
-    if (&te == searchInProject)
-        findInProject (true);
-
-    else if (&te == searchInDoc)
-        findInDoc (true);
+    if (&te == searchInput)
+        keywordSearch (true);
 }
 
 //=========================================================================
 void TopToolBar::textEditorEscapeKeyPressed (TextEditor& te)
 {
-    if (&te == searchInProject)
-        searchInProject->setText (String(), false);
-
-    else if (&te == searchInDoc)
-        searchInDoc->setText (String(), false);
+    if (&te == searchInput)
+        searchInput->setText (String(), false);
 }
 
 //=================================================================================================
-void TopToolBar::findInProject (const bool next)
+void TopToolBar::keywordSearch (const bool next)
 {
-    const String& keyword (searchInProject->getText());
+    const String& keyword (searchInput->getText());
 
     if (keyword.isEmpty())
         return;
 
+    SystemClipboard::copyTextToClipboard (keyword);
     TreeView& treeView (fileTreeContainer->getTreeView());
     treeView.setDefaultOpenness (true);
+    int startIndex = treeView.getSelectedItem (0)->getRowNumberInTree();
 
-    // get start (selected) row-number
-    int startIndex = 0;
-
-    for (int i = startIndex; i < treeView.getNumRowsInTree(); ++i)
-    {
-        if (treeView.getItemOnRow (i)->isSelected())
-        {
-            startIndex = i;
-            break;
-        }
-    }
-
-    // find and select
-    for (int i = next ? startIndex + 1 : startIndex - 1;
+    for (int i = /*next ? startIndex + 1 : startIndex - 1*/startIndex;
          next ? (i < treeView.getNumRowsInTree()) : (i >= 0);
          next ? ++i : --i)
     {
         DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (treeView.getItemOnRow (i));
 
-        if (item == nullptr)
+        if (item == nullptr || item->getTree().getType().toString() != "doc")
             continue;
 
         const File& docFile (DocTreeViewItem::getMdFileOrDir (item->getTree()));
@@ -256,54 +203,44 @@ void TopToolBar::findInProject (const bool next)
         if (docContent.containsIgnoreCase (keyword))
         {
             item->setSelected (true, true);
-            searchInDoc->setText (keyword, false);
             treeView.scrollToKeepItemVisible (item);
 
-            editAndPreview->getEditor()->moveCaretToTop (false);
-            findInDoc (true);
+            editAndPreview->switchMode (false);
+            MarkdownEditor* editor = (MarkdownEditor*)editAndPreview->getEditor();
+            const String& content = editor->getText();
 
-            return;
+            int startIndexInDoc = 0;
+            int caretIndex = editor->getCaretPosition();
+
+            // find the start index of the keyword
+            if (next)
+            {
+                startIndexInDoc = content.indexOfIgnoreCase (caretIndex, keyword);
+            }
+            else
+            {
+                if (caretIndex != 0)
+                    startIndexInDoc = content.substring (0, caretIndex - 1).lastIndexOfIgnoreCase (keyword);
+                else
+                    startIndexInDoc = content.lastIndexOfIgnoreCase (keyword);
+            }
+
+            // select the keyword
+            if (startIndexInDoc != -1)
+            {
+                Array<Range<int>> rangeArray;
+                rangeArray.add (Range<int> (startIndexInDoc, startIndexInDoc + keyword.length()));
+
+                editor->setCaretPosition (startIndexInDoc + keyword.length());
+                //editor->setHighlightedRegion (rangeArray[0]);
+                editor->setTemporaryUnderlining (rangeArray);
+
+                return;
+            }             
         }
     }
 
     SHOW_MESSAGE (TRANS ("Nothing could be found."));
-}
-
-//=================================================================================================
-void TopToolBar::findInDoc (const bool next)
-{
-    const String& keyword (searchInDoc->getText());
-
-    if (keyword.isEmpty())
-        return;
-
-    editAndPreview->switchMode (false);
-    MarkdownEditor* editor = (MarkdownEditor*)editAndPreview->getEditor();
-    const String& content = editor->getText();
-
-    int startIndex = 0;
-    int caretIndex = editor->getCaretPosition();
-
-    // find the start index of the keyword
-    if (next)
-        startIndex = content.indexOfIgnoreCase (caretIndex, keyword);
-    else
-        startIndex = content.substring (0, caretIndex - 1).lastIndexOfIgnoreCase (keyword);
-
-    // select the keyword
-    if (startIndex != -1)
-    {
-        Array<Range<int>> rangeArray;
-        rangeArray.add (Range<int> (startIndex, startIndex + keyword.length()));
-
-        editor->setCaretPosition (startIndex + keyword.length());
-        //editor->setHighlightedRegion (rangeArray[0]);
-        editor->setTemporaryUnderlining (rangeArray);
-    }
-    else
-    {
-        SHOW_MESSAGE (TRANS ("Nothing could be found."));
-    }
 }
 
 //=========================================================================
@@ -316,18 +253,10 @@ void TopToolBar::buttonClicked (Button* bt)
         editAndPreview->switchMode (bts[view]->getToggleState());
     }
 
-    else if (bt == bts[width])
-        popupLayoutMenu();
-    else if (bt == bts[system])
-        popupSystemMenu();
-    else if (bt == bts[prevAll])
-        findInProject (false);
-    else if (bt == bts[nextAll])
-        findInProject (true);
-    else if (bt == bts[prevPjt])
-        findInDoc (false);
-    else if (bt == bts[nextPjt])
-        findInDoc (true);
+    else if (bt == bts[width])        popupLayoutMenu();
+    else if (bt == bts[system])       popupSystemMenu();
+    else if (bt == bts[searchPrev])   keywordSearch (false);
+    else if (bt == bts[searchNext])   keywordSearch (true);
 }
 
 //=================================================================================================
@@ -810,7 +739,7 @@ bool TopToolBar::perform (const InvocationInfo& info)
     case switchWidth:       switchSilentMode (!isSilentMode);  break;
     case generateCurrent:   generateCurrentPage();             break;
     case generateNeeded:    generateHtmlsIfNeeded();           break;
-    case activeSearch:      searchInDoc->grabKeyboardFocus();  break;
+    case activeSearch:      searchInput->grabKeyboardFocus();  break;
     default:                return false; 
     }
 
@@ -1083,23 +1012,6 @@ void TopToolBar::setUiLanguage (const LanguageID& id)
 
     fileTreeContainer->getTreeView().moveSelectedRow (1);
     fileTreeContainer->getTreeView().moveSelectedRow (-1);
-
-    setEmptyTextOfSearchBox();
-}
-
-//=================================================================================================
-void TopToolBar::setEmptyTextOfSearchBox()
-{
-    searchInProject->setTextToShowWhenEmpty (TRANS ("Search in this project"), 
-                                             Colour (0xff303030).withAlpha (0.6f));
-    searchInDoc->setTextToShowWhenEmpty (TRANS ("Search in current document"), 
-                                         Colour (0xff303030).withAlpha (0.6f));
-
-    // these 4 ugly staments for switch ui language without restart this app
-    searchInProject->setText (" ");
-    searchInDoc->setText (" ");
-    searchInProject->setText (String());
-    searchInDoc->setText (String());
 }
 
 //=================================================================================================

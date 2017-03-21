@@ -160,8 +160,6 @@ countries: cn
 "Title Image: " = "标题图片: "
 "Image File: " = "图片文件: "
 "Document Setup" = "文档设置"
-"Search in this project" = "搜索整个项目"
-"Search in current document" = "搜索当前文档"
 "Find Previous" = "查找上一个"
 "Find Next" = "查找下一个"
 "Switch Preview / Edit Mode" = "切换预览/编辑模式"

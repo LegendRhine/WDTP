@@ -55,9 +55,7 @@ private:
     virtual void textEditorReturnKeyPressed (TextEditor&) override;
     virtual void textEditorEscapeKeyPressed (TextEditor&) override;
 
-    void findInProject (const bool next);
-    void findInDoc (const bool next);
-
+    void keywordSearch (const bool next);
     virtual void buttonClicked (Button*) override;
     void popupSystemMenu();
     void systemMenuPerform (const int menuIndex);
@@ -92,13 +90,13 @@ private:
 
     enum LanguageID { English = 0, Chinese = 1 };
     void setUiLanguage (const LanguageID& id);
-    void setEmptyTextOfSearchBox();
 
     //==========================================================================
     enum BtIndex 
     {
-        prevAll = 0, nextAll, prevPjt, nextPjt,
-        view, system, width, totalBts
+        searchPrev = 0, searchNext, 
+        view, system, width, 
+        totalBts
     };
 
 public:
@@ -138,8 +136,7 @@ private:
 
     //=========================================================================
     OwnedArray<MyImageButton> bts;
-    ScopedPointer<TextEditor> searchInProject;
-    ScopedPointer<TextEditor> searchInDoc;
+    ScopedPointer<TextEditor> searchInput;
 
     FileTreeContainer* fileTreeContainer;
     EditAndPreview* editAndPreview;

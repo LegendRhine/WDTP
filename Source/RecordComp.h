@@ -41,7 +41,7 @@ public:
 
 private:
     //=========================================================================
-    enum Buttons  { recBt = 0, playBt, delBt, doneBt, totalButtons };
+    enum Buttons  { recBt = 0, playBt, cutBt, delBt, doneBt, totalButtons };
 
     // refresh labels
     virtual void timerCallback() override;

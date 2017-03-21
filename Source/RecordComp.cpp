@@ -48,6 +48,13 @@ RecordComp::RecordComp (const File& docFile) :
         Image::null, 1.000f, Colour (0x00),
         Image::null, 1.000f, Colour (0x00));
 
+    buttons[cutBt]->setTooltip (TRANS ("Cut by Pointer"));
+    buttons[cutBt]->setImages (false, true, true,
+                                ImageCache::getFromMemory (BinaryData::cut_png, BinaryData::cut_pngSize),
+                                transValue, Colour (0x00),
+                                Image::null, 1.000f, Colour (0x00),
+                                Image::null, 1.000f, Colour (0x00));
+
     buttons[delBt]->setTooltip (TRANS("Delete"));
     buttons[delBt]->setImages (false, true, true,
         ImageCache::getFromMemory (BinaryData::close_png, BinaryData::close_pngSize), 
@@ -126,10 +133,11 @@ void RecordComp::resized()
     recordThumbnail->setBounds (1, (getHeight() - 40 - thumbHeight) / 2, getWidth() - 2, thumbHeight);
     currentTimeLabel->setBounds (0, getHeight() - 37 - labelHeight, getWidth(), labelHeight - 10);
 
-    const int centerX = (getWidth() - 90) / 2;
+    const int centerX = (getWidth() - 150) / 2;
     buttons[playBt]->setBounds (centerX, getHeight() - 40, 32, 32);
     buttons[recBt]->setBounds (buttons[playBt]->getX() - 57, buttons[playBt]->getY(), 32, 32);
-    buttons[delBt]->setBounds (buttons[playBt]->getRight() + 25, buttons[playBt]->getY(), 32, 32);
+    buttons[cutBt]->setBounds (buttons[playBt]->getRight () + 25, buttons[playBt]->getY(), 32, 30);
+    buttons[delBt]->setBounds (buttons[cutBt]->getRight () + 25, buttons[playBt]->getY(), 32, 32);
     buttons[doneBt]->setBounds (buttons[delBt]->getRight() + 25, buttons[playBt]->getY(), 32, 32);
 
     grabKeyboardFocus();

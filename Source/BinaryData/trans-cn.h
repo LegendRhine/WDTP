@@ -403,3 +403,4 @@ countries: cn
 "All Keywords" = "整站索引"
 "Expand Mark" = "扩展标记"
 "Video: " = "视频："
+"Code: " = "代码："

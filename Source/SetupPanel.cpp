@@ -100,7 +100,7 @@ void SetupPanel::showProjectProperties (const ValueTree& pTree)
     projectProperties.add (new ChoicePropertyComponent (*values[tplFile], TRANS ("Render TPL: "),
                                                         tplFileSa, tplFileVar));
 
-    projectProperties.add (new TextPropertyComponent (*values[jsCode], "JavaScript: ", 0, true));
+    projectProperties.add (new TextPropertyComponent (*values[jsCode], TRANS ("Code: "), 0, true));
     projectProperties.add (new TextPropertyComponent (*values[ad], TRANS ("Advertisement: "), 0, true));
     projectProperties.add (new TextPropertyComponent (*values[contact], TRANS ("Contact Info: "), 0, true));
     projectProperties.add (new TextPropertyComponent (*values[copyrightInfo], TRANS ("Copyright: "), 0, true));
@@ -145,7 +145,7 @@ void SetupPanel::showDirProperties (const ValueTree& dTree)
     dirProperties.add (new TextPropertyComponent (*values[keywords], TRANS ("Keywords: "), 0, false));
     dirProperties.add (new TextPropertyComponent (*values[desc], TRANS ("Description: "), 0, true));
     dirProperties.add (new BooleanPropertyComponent (*values[isMenu], TRANS ("Site Menu: "), TRANS ("Yes")));
-    dirProperties.add (new TextPropertyComponent (*values[jsCode], "JavaScript: ", 0, true));
+    dirProperties.add (new TextPropertyComponent (*values[jsCode], TRANS ("Code: "), 0, true));
 
     // render tpl-file
     StringArray tplFileSa;
@@ -221,7 +221,7 @@ void SetupPanel::showDocProperties (const bool currentValuesUpdateTree,
     docProperties.add (new BooleanPropertyComponent (*values[showKeys], TRANS ("Show Keywords: "), TRANS ("Yes")));
     docProperties.add (new TextPropertyComponent (*values[desc], TRANS ("Description: "), 0, true));
     docProperties.add (new BooleanPropertyComponent (*values[isMenu], TRANS ("Site Menu: "), TRANS ("Yes")));
-    docProperties.add (new TextPropertyComponent (*values[jsCode], "JavaScript: ", 0, true));
+    docProperties.add (new TextPropertyComponent (*values[jsCode], TRANS ("Code: "), 0, true));
 
     // render tpl-file
     StringArray tplFileSa;

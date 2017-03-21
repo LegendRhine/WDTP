@@ -402,3 +402,4 @@ countries: cn
 "Expand Mark" = "扩展标记"
 "Video: " = "视频："
 "Code: " = "代码："
+"Cut by Pointer" = "基于指针位置裁剪波形"

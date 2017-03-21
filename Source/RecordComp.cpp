@@ -339,20 +339,16 @@ void RecordComp::mouseDrag (const MouseEvent& e)
 {
     if ((e.y < getHeight() - 40) && player->getLengthInSeconds() > 0)
     {
-        const int labelHeight = (getHeight() - 40) / 4;
-        currentPositionMarker.setRectangle (Rectangle<float> (
-            float (e.x), 
-            labelHeight + 5.0f,
-            1.5f, labelHeight * 2.0f - 8.0f));
-
+        const int labelHeight = (getHeight() - 40) / 6;
         double xToTime = double (e.x) / getWidth() * player->getLengthInSeconds();
+
         xToTime = jlimit (0.0, player->getLengthInSeconds(), xToTime);
         currentTimeLabel->setText (SwingUtilities::doubleToString (xToTime), dontSendNotification);
 
         currentPositionMarker.setRectangle (Rectangle<float> (
             e.x - 0.75f, 
             labelHeight + 5.0f,
-            1.5f, labelHeight * 2.0f - 8.0f));
+            1.5f, labelHeight * 4.0f - 2.0f));
     }
 }
 //=================================================================================================

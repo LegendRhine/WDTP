@@ -45,6 +45,7 @@ public:
 
     static void generateHtmlFilesIfNeeded (ValueTree tree);
 
+    void setSearchKeyword (const String& kw);
     void hasNewVersion();
 
 private:

@@ -183,12 +183,11 @@ void TopToolBar::keywordSearch (const bool next)
     if (keyword.isEmpty())
         return;
 
-    SystemClipboard::copyTextToClipboard (keyword);
     TreeView& treeView (fileTreeContainer->getTreeView());
     treeView.setDefaultOpenness (true);
     int startIndex = treeView.getSelectedItem (0)->getRowNumberInTree();
 
-    for (int i = /*next ? startIndex + 1 : startIndex - 1*/startIndex;
+    for (int i = startIndex;
          next ? (i < treeView.getNumRowsInTree()) : (i >= 0);
          next ? ++i : --i)
     {
@@ -225,7 +224,7 @@ void TopToolBar::keywordSearch (const bool next)
                     startIndexInDoc = content.lastIndexOfIgnoreCase (keyword);
             }
 
-            // select the keyword
+            // highlight the keyword
             if (startIndexInDoc != -1)
             {
                 Array<Range<int>> rangeArray;
@@ -583,6 +582,12 @@ void TopToolBar::generateHtmlFilesIfNeeded (ValueTree tree)
                 generateHtmlFilesIfNeeded (tree.getChild (i));
         }
     }    
+}
+
+//=================================================================================================
+void TopToolBar::setSearchKeyword (const String& kw)
+{
+    searchInput->setText (kw, false);
 }
 
 //=================================================================================================

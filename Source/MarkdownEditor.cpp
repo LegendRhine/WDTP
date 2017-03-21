@@ -1378,7 +1378,10 @@ void MarkdownEditor::searchPrevious()
 {
     // make sure continue to search when modified the previous search result
     if (getHighlightedText().isNotEmpty())
+    {
         SystemClipboard::copyTextToClipboard (getHighlightedText());
+        parent->setSearchKeyword (getHighlightedText());
+    }
     
     const String& searchFor (SystemClipboard::getTextFromClipboard());
 
@@ -1402,7 +1405,10 @@ void MarkdownEditor::searchForNext()
 {
     // make sure continue to search when modified the previous search result
     if (getHighlightedText().isNotEmpty())
+    {
         SystemClipboard::copyTextToClipboard (getHighlightedText());
+        parent->setSearchKeyword (getHighlightedText());
+    }
 
     const String& searchFor (SystemClipboard::getTextFromClipboard());
 

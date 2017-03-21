@@ -61,6 +61,8 @@ public:
     /** a transfer method */
     const bool selectItemFromHtmlFile (const File& htmlFile);
 
+    void setSearchKeyword (const String& keyword);
+
 private:
     //=========================================================================
     void editCurrentDoc();

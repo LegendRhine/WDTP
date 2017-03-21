@@ -331,6 +331,13 @@ const bool EditAndPreview::selectItemFromHtmlFile (const File& html)
 }
 
 //=================================================================================================
+void EditAndPreview::setSearchKeyword (const String& keyword)
+{
+    if (TopToolBar* toolBar = findParentComponentOfClass<MainContentComponent>()->getToolbar())
+        toolBar->setSearchKeyword (keyword);
+}
+
+//=================================================================================================
 void EditAndPreview::textEditorTextChanged (TextEditor&)
 {
     // somehow, this method always be called when about to load a doc, 

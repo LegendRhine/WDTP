@@ -1112,7 +1112,12 @@ const String Md2Html::cleanUp (const String& mdString)
     resultStr = resultStr.replace ("<p><br>", "<p>"); 
     resultStr = resultStr.replace ("<!--<br>", "<!--");
     resultStr = resultStr.replace ("<!--<p>", "<!--");
-    
+
+    // parse [TOP]: a html-button on page for 'back to top'
+    resultStr = resultStr.replace ("\\[TOP]", "@@##ToTOPOfThePage##@@");  // escape for [TOP]
+    resultStr = resultStr.replace ("[TOP]", "<div class=page_navi><a href=\"#top\">" + TRANS ("Back To Top") + "</a></div>");
+    resultStr = resultStr.replace ("@@##ToTOPOfThePage##@@", "[TOP]");
+
     // for scroll to bottom
     resultStr += newLine + "<span id=\"wdtpPageBottom\"></span>";
 

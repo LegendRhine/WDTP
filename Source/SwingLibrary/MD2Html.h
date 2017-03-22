@@ -134,6 +134,7 @@ private:
     /** process the content inside Chinese brackets, give it a <span class=cnBracket> */
     static const String cnBracketParse (const String& mdString);
 
+    /** include [TOP] parse */
     static const String cleanUp (const String& mdString);
 
 };

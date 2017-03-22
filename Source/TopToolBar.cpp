@@ -75,31 +75,31 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
     ctrlStr = "Cmd";
 #endif
 
-    bts[view]->setTooltip (TRANS ("Switch Preview / Edit Mode") + "  (" + ctrlStr + " + S)");
-    bts[view]->setImages (false, true, true,
+    bts[viewBt]->setTooltip (TRANS ("Switch Preview / Edit Mode") + "  (" + ctrlStr + " + S)");
+    bts[viewBt]->setImages (false, true, true,
                           ImageCache::getFromMemory (BinaryData::view_png,
                                                      BinaryData::view_pngSize),
                           imageTrans, Colour (0x00),
                           Image::null, 1.0f, Colour (0x00),
                           Image::null, 1.0f, Colours::darkcyan);
 
-    bts[view]->setToggleState (true, dontSendNotification);
+    bts[viewBt]->setToggleState (true, dontSendNotification);
 
-    bts[system]->setTooltip (TRANS ("Popup System Menu"));
-    bts[system]->setImages (false, true, true,
+    bts[systemBt]->setTooltip (TRANS ("Popup System Menu"));
+    bts[systemBt]->setImages (false, true, true,
                             ImageCache::getFromMemory (BinaryData::system_png,
                                                        BinaryData::system_pngSize),
                             imageTrans, Colour (0x00),
                             Image::null, 1.000f, Colour (0x00),
                             Image::null, 1.000f, Colours::darkcyan);
 
-    bts[width]->setTooltip (TRANS ("Popup Layout Menu"));
-    bts[width]->setImages (false, true, true,
-                           ImageCache::getFromMemory (BinaryData::width_png,
-                                                      BinaryData::width_pngSize),
-                           imageTrans, Colour (0x00),
-                           Image::null, 1.0f, Colour (0x00),
-                           Image::null, 1.0f, Colours::darkcyan);
+    bts[layoutBt]->setTooltip (TRANS ("Popup Layout Menu"));
+    bts[layoutBt]->setImages (false, true, true,
+                              ImageCache::getFromMemory (BinaryData::width_png,
+                                                         BinaryData::width_pngSize),
+                              imageTrans, Colour (0x00),
+                              Image::null, 1.0f, Colour (0x00),
+                              Image::null, 1.0f, Colours::darkcyan);
 
     // progressBar
     progressBar.setColour (ProgressBar::backgroundColourId, Colour (0x00));
@@ -145,9 +145,9 @@ void TopToolBar::resized()
     }
 
     // image buttons
-    bts[system]->setTopLeftPosition (getWidth() / 2 - 9, 12);
-    bts[view]->setTopRightPosition (bts[system]->getX() - 40, 12);
-    bts[width]->setTopLeftPosition (bts[system]->getRight() + 40, 12);
+    bts[systemBt]->setTopLeftPosition (getWidth() / 2 - 9, 12);
+    bts[viewBt]->setTopRightPosition (bts[systemBt]->getX() - 40, 12);
+    bts[layoutBt]->setTopLeftPosition (bts[systemBt]->getRight() + 40, 12);
 
     // progressBar
     progressBar.setBounds (0, getHeight() - 5, getWidth(), 5);
@@ -157,8 +157,8 @@ void TopToolBar::resized()
 void TopToolBar::enableEditPreviewBt (const bool enableIt,
                                       const bool toggleState)
 {
-    bts[view]->setToggleState (toggleState, dontSendNotification);
-    bts[view]->setVisible (enableIt);
+    bts[viewBt]->setToggleState (toggleState, dontSendNotification);
+    bts[viewBt]->setVisible (enableIt);
 }
 
 //=========================================================================
@@ -245,15 +245,15 @@ void TopToolBar::keywordSearch (const bool next)
 //=========================================================================
 void TopToolBar::buttonClicked (Button* bt)
 {
-    if (bt == bts[view])
+    if (bt == bts[viewBt])
     {
-        bts[view]->setToggleState (!bts[view]->getToggleState(), dontSendNotification);
+        bts[viewBt]->setToggleState (!bts[viewBt]->getToggleState(), dontSendNotification);
         editAndPreview->saveCurrentDocIfChanged();
-        editAndPreview->switchMode (bts[view]->getToggleState());
+        editAndPreview->switchMode (bts[viewBt]->getToggleState());
     }
 
-    else if (bt == bts[width])        popupLayoutMenu();
-    else if (bt == bts[system])       popupSystemMenu();
+    else if (bt == bts[layoutBt])     popupLayoutMenu();
+    else if (bt == bts[systemBt])     popupSystemMenu();
     else if (bt == bts[searchPrev])   keywordSearch (false);
     else if (bt == bts[searchNext])   keywordSearch (true);
 }
@@ -370,6 +370,7 @@ void TopToolBar::systemMenuPerform (const int index)
 void TopToolBar::popupLayoutMenu()
 {
     const bool isSilentMode = (getParentComponent()->getWidth() < 760);
+    const bool hasProject = fileTreeContainer->projectTree.isValid();
     String ctrlStr ("  (Ctrl + ");
 
 #if JUCE_MAC
@@ -377,8 +378,11 @@ void TopToolBar::popupLayoutMenu()
 #endif
 
     PopupMenu menu;
-    menu.addItem (1, TRANS ("Show File Tree Panel"), !isSilentMode, fileTreeContainer->isVisible());
-    menu.addItem (2, TRANS ("Show Properties Panel"), !isSilentMode, editAndPreview->propertiesIsShowing());
+    menu.addItem (1, TRANS ("Show File Tree Panel"), !isSilentMode && hasProject, 
+                  fileTreeContainer->isVisible());
+    menu.addItem (2, TRANS ("Show Properties Panel"), !isSilentMode && hasProject, 
+                  editAndPreview->propertiesIsShowing() && hasProject);
+
     menu.addSeparator();
     menu.addItem (3, TRANS ("Silent Mode") + ctrlStr + "D)", true, isSilentMode);
 
@@ -489,7 +493,7 @@ void TopToolBar::openProject()
 void TopToolBar::closeProject()
 {
     fileTreeContainer->closeProject();
-    bts[view]->setVisible (false);
+    bts[viewBt]->setVisible (false);
 }
 
 //=================================================================================================
@@ -595,7 +599,7 @@ void TopToolBar::hasNewVersion()
 {
     newVersionIsReady = true;
 
-    bts[system]->setImages (false, true, true,
+    bts[systemBt]->setImages (false, true, true,
                             ImageCache::getFromMemory (BinaryData::systemr_png,
                                                        BinaryData::systemr_pngSize),
                             imageTrans, Colour (0x00),
@@ -717,7 +721,7 @@ void TopToolBar::getCommandInfo (CommandID commandID, ApplicationCommandInfo& re
     {
         result.setInfo (TRANS ("Update Current Page"), "Update Current Page", String(), 0);
         result.addDefaultKeypress (KeyPress::F5Key, ModifierKeys::noModifiers);
-        result.setActive (bts[view]->getToggleState() && editAndPreview->getCurrentDocFile().exists());
+        result.setActive (bts[viewBt]->getToggleState() && editAndPreview->getCurrentDocFile().exists());
     }
     else if (generateNeeded == commandID)
     {
@@ -740,7 +744,7 @@ bool TopToolBar::perform (const InvocationInfo& info)
 
     switch (info.commandID)
     {
-    case switchEdit:        bts[view]->triggerClick();         break;
+    case switchEdit:        bts[viewBt]->triggerClick();       break;
     case switchWidth:       switchSilentMode (!isSilentMode);  break;
     case generateCurrent:   generateCurrentPage();             break;
     case generateNeeded:    generateHtmlsIfNeeded();           break;

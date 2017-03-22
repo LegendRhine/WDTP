@@ -31,7 +31,7 @@ public:
     void paint (Graphics&) override;
     void resized() override;
 
-    const bool getStateOfViewButton() const { return bts[view]->getToggleState(); }
+    const bool getStateOfViewButton() const { return bts[viewBt]->getToggleState(); }
     void enableEditPreviewBt (const bool enableIt, const bool toggleState);
 
     /** for change the background-color and the UI text color in realtime */
@@ -96,7 +96,7 @@ private:
     enum BtIndex 
     {
         searchPrev = 0, searchNext, 
-        view, system, width, 
+        viewBt, systemBt, layoutBt, 
         totalBts
     };
 

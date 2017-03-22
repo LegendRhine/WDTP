@@ -24,7 +24,8 @@ RecordComp::RecordComp (const File& docFile) :
     needSaveToMediaDir (false),
     mediaDir (docFile.getSiblingFile ("media")),
     player (new AudioDataPlayer()), 
-    audioReader (nullptr)
+    startSample (0),
+    samplesNum(0)
 {
     // buttons
     for (int i = 0; i < totalButtons; ++i)
@@ -136,8 +137,8 @@ void RecordComp::resized()
     const int centerX = (getWidth() - 150) / 2;
     buttons[playBt]->setBounds (centerX, getHeight() - 40, 32, 32);
     buttons[recBt]->setBounds (buttons[playBt]->getX() - 57, buttons[playBt]->getY(), 32, 32);
-    buttons[cutBt]->setBounds (buttons[playBt]->getRight () + 25, buttons[playBt]->getY(), 32, 30);
-    buttons[delBt]->setBounds (buttons[cutBt]->getRight () + 25, buttons[playBt]->getY(), 32, 32);
+    buttons[cutBt]->setBounds (buttons[playBt]->getRight() + 25, buttons[playBt]->getY(), 32, 30);
+    buttons[delBt]->setBounds (buttons[cutBt]->getRight() + 25, buttons[playBt]->getY(), 32, 32);
     buttons[doneBt]->setBounds (buttons[delBt]->getRight() + 25, buttons[playBt]->getY(), 32, 32);
 
     grabKeyboardFocus();
@@ -165,17 +166,44 @@ void RecordComp::buttonClicked (Button* button)
             startTimer (33);
         }
     }
+
+    // cut by pointer
+    else if (buttons[cutBt] == button && player->getReaderOfCuurentHold() != nullptr)
+    {
+        int64 position = int64 (player->getCurrentPosition() * player->getReaderOfCuurentHold()->sampleRate);
+        int64 currentSamples = player->getReaderOfCuurentHold()->lengthInSamples;
+
+        if (position < 480 || position > currentSamples - 480)
+            return;
+
+        const bool cutFrontPart = (position < currentSamples / 2);
+        AudioFormatReader* formatReader = formatManager->createReaderFor (recorder->getTempFile());
+
+        if (cutFrontPart)
+        {
+            startSample += position;
+            samplesNum = currentSamples - position;
+        }
+        else
+        {
+            samplesNum = position;
+        }
+
+        AudioSubsectionReader* subReader = new AudioSubsectionReader (formatReader, startSample, samplesNum, true);
+        recordThumbnail->setReader (new AudioSubsectionReader (formatReader, startSample, samplesNum, false));
+        
+        setAudioReader (subReader);
+    }
     
     // delete current audio file which was in the attach dir
     else if (buttons[delBt] == button)
     {
         setAudioReader (nullptr);        
+        needSaveToMediaDir = false;
 
         currentPositionMarker.setRectangle (Rectangle<float> (0.0f, 
             (getHeight() - 40) / 4.0f + 5.0f, 1.5f, (getHeight() - 40) / 2.0f - 8.0f));
 
-        audioReader = nullptr;
-        needSaveToMediaDir = false;
         repaint();
     }
 
@@ -185,7 +213,7 @@ void RecordComp::buttonClicked (Button* button)
         player->removeListener (this);
         player->stop();
 
-        if (needSaveToMediaDir && audioReader != nullptr)
+        if (needSaveToMediaDir && player->getReaderOfCuurentHold() != nullptr)
         {
             const String& audioName (SwingUtilities::getCurrentTimeString() + ".mp3");
             writeMp3AudioToMediaDir (audioName);
@@ -201,16 +229,16 @@ void RecordComp::buttonClicked (Button* button)
 //=================================================================================================
 void RecordComp::setAudioReader (AudioFormatReader* reader)
 {
-    audioReader = reader;
-    player->setAudioSource (audioReader);
+    player->setAudioSource (reader);
 
-    if (audioReader != nullptr)
+    if (reader != nullptr)
     {
         recordThumbnail->setDisplayFullThumbnail (true);
 
         buttons[recBt]->setEnabled (false);
         buttons[playBt]->setEnabled (true);
         buttons[delBt]->setEnabled (true);
+        buttons[cutBt]->setEnabled (true);
         buttons[doneBt]->setEnabled (true);
     }
     else
@@ -220,6 +248,7 @@ void RecordComp::setAudioReader (AudioFormatReader* reader)
 
         buttons[recBt]->setEnabled (true);
         buttons[playBt]->setEnabled (false);
+        buttons[cutBt]->setEnabled (false);
         buttons[delBt]->setEnabled (false);
         buttons[doneBt]->setEnabled (true);
     }
@@ -227,11 +256,11 @@ void RecordComp::setAudioReader (AudioFormatReader* reader)
     currentTimeLabel->setText ("0:00.0", dontSendNotification);
     totalTimeLabel->setText (SwingUtilities::doubleToString (player->getLengthInSeconds()), dontSendNotification);
 
-    const float labelHeight = (getHeight() - 40) / 4.0f;
+    const float labelHeight = (getHeight() - 40) / 6.0f;
     currentPositionMarker.setRectangle (Rectangle<float> (
         0.0f, 
         labelHeight + 5.0f,
-        1.5f, labelHeight * 2.0f - 8.0f));
+        1.5f, labelHeight * 4.0f - 2.0f));
 }
 //=================================================================================================
 void RecordComp::playFinished (AudioDataPlayer* player_)
@@ -244,9 +273,16 @@ void RecordComp::playFinished (AudioDataPlayer* player_)
 
     buttons[delBt]->setEnabled (true);
     buttons[doneBt]->setEnabled (true);
+    buttons[cutBt]->setEnabled (true);
 
     player_->setPosition (0.0);
     stopTimer();
+
+    const float labelHeight = (getHeight() - 40) / 6.0f;
+    currentPositionMarker.setRectangle (Rectangle<float> (
+        0.0f,
+        labelHeight + 5.0f,
+        1.5f, labelHeight * 4.0f - 2.0f));
 }
 //=================================================================================================
 void RecordComp::playerStarted (AudioDataPlayer* /*player*/)
@@ -258,6 +294,7 @@ void RecordComp::playerStarted (AudioDataPlayer* /*player*/)
         Image::null, 1.000f, Colour (0x00));
 
     buttons[delBt]->setEnabled (false);
+    buttons[cutBt]->setEnabled (false);
     buttons[doneBt]->setEnabled (false);
 }
 //=================================================================================================
@@ -271,6 +308,7 @@ void RecordComp::playerStopped (AudioDataPlayer* /*player*/)
 
     buttons[delBt]->setEnabled (true);
     buttons[doneBt]->setEnabled (true);
+    buttons[cutBt]->setEnabled (true);
 }
 
 //=================================================================================================
@@ -289,11 +327,11 @@ void RecordComp::writeMp3AudioToMediaDir (const String& fileName)
     LAMEEncoderAudioFormat mp3Format (lameEncoder);
     FileOutputStream* outputStream (audioFile.createOutputStream());
     ScopedPointer<AudioFormatWriter> writer = mp3Format.createWriterFor (outputStream,
-                                audioReader->sampleRate, 1, 16, StringPairArray(), 6);
+                                              player->getReaderOfCuurentHold()->sampleRate, 1, 16, StringPairArray(), 6);
 
     jassert (writer != nullptr);
 
-    if (writer->writeFromAudioReader (*audioReader, 0, -1))
+    if (writer->writeFromAudioReader (*player->getReaderOfCuurentHold(), 0, -1))
         sendActionMessage (fileName);
     else
         SHOW_MESSAGE (TRANS ("Can't save this audio."));
@@ -367,7 +405,7 @@ void RecordComp::mouseUp (const MouseEvent& e)
 //=================================================================================================
 void RecordComp::startRecord()
 {
-    if (audioReader == nullptr)
+    if (player->getReaderOfCuurentHold() == nullptr)
         beginRecord();
 }
 //=================================================================================================
@@ -389,6 +427,7 @@ void RecordComp::beginRecord()
 
     buttons[recBt]->setEnabled (true);
     buttons[playBt]->setEnabled (false);
+    buttons[cutBt]->setEnabled (false);
     buttons[delBt]->setEnabled (false);
     buttons[doneBt]->setEnabled (false);
 }
@@ -397,8 +436,13 @@ void RecordComp::stopRecord()
 {
     stopTimer();
     recorder->stop();
-    audioReader = formatManager->createReaderFor (recorder->getTempFile());
-    player->setAudioSource (audioReader);
+    
+    AudioFormatReader* formatReader = formatManager->createReaderFor (recorder->getTempFile());
+    AudioSubsectionReader* subReader = new AudioSubsectionReader (formatReader, 0, formatReader->lengthInSamples, true);
+
+    startSample = 0;
+    samplesNum = formatReader->lengthInSamples;
+    player->setAudioSource (subReader);
 
     recordThumbnail->setDisplayFullThumbnail (true);
     totalTimeLabel->setText (SwingUtilities::doubleToString (player->getLengthInSeconds()), dontSendNotification);
@@ -412,6 +456,7 @@ void RecordComp::stopRecord()
 
     buttons[recBt]->setEnabled (false);
     buttons[playBt]->setEnabled (true);
+    buttons[cutBt]->setEnabled (true);
     buttons[delBt]->setEnabled (true);
     buttons[doneBt]->setEnabled (true);
 }

@@ -37,8 +37,6 @@ public:
     void mouseDrag (const MouseEvent& event) override;
     void mouseUp (const MouseEvent& event) override;
 
-    AudioFormatReader* getAudioReader()        { return audioReader; }
-
 private:
     //=========================================================================
     enum Buttons  { recBt = 0, playBt, cutBt, delBt, doneBt, totalButtons };
@@ -66,13 +64,13 @@ private:
 
     AudioRecorder* recorder;
     AudioDataPlayer* player;
-    AudioFormatReader* audioReader;
     RecordingThumbnail* recordThumbnail;
     DrawableRectangle currentPositionMarker;
 
     OwnedArray<ImageButton> buttons;
     ScopedPointer<Label> currentTimeLabel;
     ScopedPointer<Label> totalTimeLabel;
+    int64 startSample, samplesNum;  // for cut at current play position
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RecordComp)        
 

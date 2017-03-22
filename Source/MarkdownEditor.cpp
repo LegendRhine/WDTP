@@ -123,6 +123,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (insertToc, TRANS ("Table of Contents"));
         insertMenu.addItem (insertEndnote, TRANS ("Endnote"));
         insertMenu.addItem (insertIdentifier, TRANS ("Identifier"));
+        insertMenu.addItem (insertBackToTop, TRANS ("Back to Top"));
         insertMenu.addSeparator();
 
         insertMenu.addItem (insertCaption, TRANS ("Image/Table Caption") + ctrlStr + "P)");
@@ -234,6 +235,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (insertQuota == index)          quotaInsert();
     else if (antiIndent == index)           insertIndent (false);
     else if (forceIndent == index)          insertIndent (true);
+    else if (insertBackToTop == index)      insertTextAtCaret (newLine + "[TOP]" + newLine);
     else if (insertAlignCenter == index)    alignCenterInsert();
     else if (insertAlignRight == index)     alignRightInsert();
     else if (insertUnoerderList == index)   unorderListInsert();

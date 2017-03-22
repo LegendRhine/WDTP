@@ -299,8 +299,7 @@ void EditAndPreview::projectClosed()
 
     editor->removeListener (this);
     editor->setText (String(), false);
-    editor->setVisible (true);
-    editor->setEnabled (false);
+    editor->setVisible (false);
     editor->setPopupMenuEnabled (false);
 
     docOrDirFile = File::nonexistent;

@@ -422,34 +422,20 @@ void TopToolBar::switchSilentMode (const bool enterSilent)
 void TopToolBar::createNewProject()
 {
     // popup native file save dialog
-    FileChooser fc (TRANS ("New Project..."), File::nonexistent, "*.wdtp", true);
+    FileChooser fc (TRANS ("New Project..."), File::nonexistent, String(), true);
 
-    if (!fc.browseForFileToSave (false))
+    if (!fc.browseForFileToSave (true))
         return;
 
-    File projectFile (fc.getResult());
+    File projectDir (fc.getResult().getNonexistentSibling (true));
+    const File projectFile (projectDir.getChildFile (projectDir.getFileNameWithoutExtension() + ".wdtp"));
 
-    if (!projectFile.hasFileExtension (".wdtp"))
-        projectFile = projectFile.withFileExtension ("wdtp");
-
-    // overwrite or not if it has been there
-    if (projectFile.existsAsFile() &&
-        !AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon,
-                                       TRANS ("Message"),
-                                       TRANS ("This project already exists, want to overwrite it?")))
+    if (projectFile.create() != Result::ok())
     {
+        SHOW_MESSAGE (TRANS ("Cannot create this project!"));
         return;
     }
-
-    // create and initial project file
-    if (!projectFile.deleteFile())
-    {
-        SHOW_MESSAGE (TRANS ("Can't overwrite this project! "));
-        return;
-    }
-
-    projectFile.create();
-
+    
     ValueTree p ("wdtpProject");
     p.setProperty ("name", "site", nullptr);
     p.setProperty ("title", projectFile.getFileNameWithoutExtension(), nullptr);
@@ -463,9 +449,11 @@ void TopToolBar::createNewProject()
     p.setProperty ("render", "blog", nullptr);
     p.setProperty ("tplFile", "index.html", nullptr);
     p.setProperty ("ad", "ad-1.jpg http://underwaySoft.com", nullptr);
-    p.setProperty ("contact", "Email: yourEmail-1@xxx.com, yourEmail-2@xxx.com<br>QQ: 123456789 (QQ Name) WeChat: yourWeChat", nullptr);
-    p.setProperty ("copyright", "&copy; 2017 " + SystemStats::getLogonName() + " All Right Reserved", nullptr);
     p.setProperty ("needCreateHtml", true, nullptr);
+    p.setProperty ("copyright", "&copy; 2017 " + SystemStats::getLogonName() 
+                   + " All Right Reserved", nullptr);
+    p.setProperty ("contact", "Email: yourEmail-1@xxx.com, yourEmail-2@xxx.com<br>"
+                   "QQ: 123456789 (QQ Name) WeChat: yourWeChat", nullptr);
 
     // create 'docs' dir 
     projectFile.getSiblingFile ("docs").createDirectory();

@@ -19,7 +19,7 @@ EditAndPreview::EditAndPreview (MainContentComponent* mainComp_)
     showPropertiesPanel (true)
 {
     addAndMakeVisible (webView = new WebBrowserComp (this));
-    webView->setWantsKeyboardFocus (false);
+    webView->setVisible (false);
 
     // stretched layout, arg: index, min-width, max-width，default x%
     layoutManager.setItemLayout (0, -0.5, -1.0, -0.74);  // editor，
@@ -45,7 +45,7 @@ EditAndPreview::EditAndPreview (MainContentComponent* mainComp_)
 
     editor->setScrollBarThickness (10);
     editor->setIndents (10, 10);
-    editor->setEnabled (false);
+    editor->setVisible (false);
     editor->setBorder (BorderSize<int> (1, 1, 1, 1));
     editor->setPopupMenuEnabled (false);
 }
@@ -177,7 +177,7 @@ void EditAndPreview::switchMode (const bool switchToPreview)
 void EditAndPreview::editCurrentDoc()
 {
     webView->setVisible (false);
-    editor->setEnabled (true);
+    editor->setVisible (true);
     editor->grabKeyboardFocus();
     editor->setPopupMenuEnabled (true);
 
@@ -200,7 +200,7 @@ void EditAndPreview::editCurrentDoc()
 //=================================================================================================
 void EditAndPreview::previewCurrentDoc()
 {
-    editor->setEnabled (false);
+    editor->setVisible (false);
     webView->setVisible (true);
     webView->stop();
 

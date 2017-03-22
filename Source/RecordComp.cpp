@@ -190,8 +190,7 @@ void RecordComp::buttonClicked (Button* button)
         }
 
         AudioSubsectionReader* subReader = new AudioSubsectionReader (formatReader, startSample, samplesNum, true);
-        recordThumbnail->setReader (new AudioSubsectionReader (formatReader, startSample, samplesNum, false));
-        
+        recordThumbnail->setReader (new AudioSubsectionReader (formatReader, startSample, samplesNum, false));        
         setAudioReader (subReader);
     }
     

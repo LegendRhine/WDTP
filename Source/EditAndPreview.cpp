@@ -111,11 +111,6 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
             currentContent = editor->getText();
             editor->addListener (this);
         }
-
-        else if (!docOrDirFile.exists())
-        {
-            return;
-        }
     }
 
     // prevent auto-enter preview mode when created a new document
@@ -233,7 +228,7 @@ void EditAndPreview::previewCurrentDoc()
                               "  <head>\n"
                               "    <meta charset=\"UTF-8\">\n"
                               "  </head>\n"
-                              "  <body bgcolor=\"#dedede\">\n"
+                              "  <body bgcolor=\"#a1a1a1\">\n"
                               "<p>\n &emsp;");
 
         File urlFile (File::getSpecialLocation (File::tempDirectory).getSiblingFile ("404.html"));

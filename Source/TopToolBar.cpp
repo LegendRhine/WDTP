@@ -180,7 +180,7 @@ void TopToolBar::keywordSearch (const bool next)
 {
     const String& keyword (searchInput->getText());
 
-    if (keyword.isEmpty())
+    if (keyword.isEmpty() || !fileTreeContainer->projectTree.isValid())
         return;
 
     TreeView& treeView (fileTreeContainer->getTreeView());

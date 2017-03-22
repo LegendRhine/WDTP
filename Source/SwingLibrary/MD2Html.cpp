@@ -1116,7 +1116,7 @@ const String Md2Html::cleanUp (const String& mdString)
 
     // parse [TOP]: a html-button on page for 'back to top'
     resultStr = resultStr.replace ("[TOP]", "<div class=page_navi id=right><a href=\"#top\">" 
-                                   + TRANS ("Back To Top") + "</a></div>");
+                                   + TRANS ("Back to Top") + "</a></div>");
     resultStr = resultStr.replace ("@@##ToTOPOfThePage##@@", "[TOP]");
 
     // for scroll to bottom

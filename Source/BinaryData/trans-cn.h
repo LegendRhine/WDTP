@@ -124,7 +124,7 @@ countries: cn
 "Something wrong during create this document\'s html file." = "生成此文档的网页时出现错误."
 "Can\'t generate these media-files:" = "无法生成以下媒体文件:"
 "Something wrong during create this folder\'s index.html." = "生成此目录的index网页时出现错误."
-"Back To Top" = "返回顶部"
+"Back to Top" = "返回顶部"
 "Upper Level" = "返回上一级"
 "Create Time: " = "创建时间: "
 "Last Modified: " = "最后修改: "

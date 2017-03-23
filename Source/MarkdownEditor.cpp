@@ -20,6 +20,8 @@ MarkdownEditor::MarkdownEditor (EditAndPreview* parent_)
     fontSizeSlider.setRange (15.0, 35.0, 1.0);
     fontSizeSlider.setDoubleClickReturnValue (true, 20.0);
     fontSizeSlider.setSize (300, 60);
+
+    //setLineSpacing (1.35f);
 }
 
 //=================================================================================================

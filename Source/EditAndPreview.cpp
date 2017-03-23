@@ -246,12 +246,6 @@ void EditAndPreview::previewCurrentDoc()
 }
 
 //=================================================================================================
-const bool EditAndPreview::getCureentState() const
-{
-    return webView->isVisible();
-}
-
-//=================================================================================================
 void EditAndPreview::outlineGoto (const StringArray& titleStrs, const int itemIndex)
 {
     if (itemIndex == 1)

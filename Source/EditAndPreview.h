@@ -50,7 +50,7 @@ public:
     SetupPanel* getSetupPanel() const           { return setupPanel; }
 
     /** return true if preview state at the present, flase for edit state. */
-    const bool getCureentState() const;
+    const bool getCureentState() const          { return webView->isVisible(); }
 
     /** see DocTreeViewItem::itemClicked() left-click */
     void outlineGoto (const StringArray& titleStrs, const int itemIndex);

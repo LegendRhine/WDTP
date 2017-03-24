@@ -466,6 +466,7 @@ void DocTreeViewItem::menuPerform (const int index)
 void DocTreeViewItem::packSiteData (const bool includeHtmls, const bool includeMedias)
 {
     jassert (includeHtmls || includeMedias);  // pack nothing?
+    tree.setProperty ("needCreateHtml", true, nullptr);
     TopToolBar::generateHtmlFilesIfNeeded (tree);
 
     const File thisDir (getHtmlFileOrDir (tree).getParentDirectory());

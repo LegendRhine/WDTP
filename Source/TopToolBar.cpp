@@ -37,10 +37,7 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
     searchInput->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha (0.6f));
     searchInput->setScrollBarThickness (10);
     searchInput->setFont (SwingUtilities::getFontSize() - 3.f);
-    searchInput->setSelectAllWhenFocused (true);
-
-    // ui language
-    setUiLanguage ((LanguageID)systemFile->getIntValue ("language"));
+    searchInput->setSelectAllWhenFocused (true);    
 
     // image buttons...
     for (int i = totalBts; --i >= 0; )
@@ -53,7 +50,6 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
         addAndMakeVisible (bt);
     }
 
-    bts[searchPrev]->setTooltip (TRANS ("Find Previous"));
     bts[searchPrev]->setImages (false, true, true,
                              ImageCache::getFromMemory (BinaryData::prev_png,
                                                         BinaryData::prev_pngSize),
@@ -61,7 +57,6 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
                              Image::null, 1.0f, Colours::darkcyan,
                              Image::null, 1.0f, Colours::darkcyan);
 
-    bts[searchNext]->setTooltip (TRANS ("Find Next"));
     bts[searchNext]->setImages (false, true, true,
                              ImageCache::getFromMemory (BinaryData::next_png,
                                                         BinaryData::next_pngSize),
@@ -69,23 +64,14 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
                              Image::null, 1.0f, Colours::darkcyan,
                              Image::null, 1.0f, Colours::darkcyan);
 
-    String ctrlStr ("Ctrl");
-
-#if JUCE_MAC
-    ctrlStr = "Cmd";
-#endif
-
-    bts[viewBt]->setTooltip (TRANS ("Switch Preview / Edit Mode") + "  (" + ctrlStr + " + S)");
     bts[viewBt]->setImages (false, true, true,
                           ImageCache::getFromMemory (BinaryData::view_png,
                                                      BinaryData::view_pngSize),
                           imageTrans, Colour (0x00),
                           Image::null, 1.0f, Colour (0x00),
                           Image::null, 1.0f, Colours::darkcyan);
-
     bts[viewBt]->setToggleState (true, dontSendNotification);
-
-    bts[systemBt]->setTooltip (TRANS ("Popup System Menu"));
+    
     bts[systemBt]->setImages (false, true, true,
                             ImageCache::getFromMemory (BinaryData::system_png,
                                                        BinaryData::system_pngSize),
@@ -93,13 +79,15 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
                             Image::null, 1.000f, Colour (0x00),
                             Image::null, 1.000f, Colours::darkcyan);
 
-    bts[layoutBt]->setTooltip (TRANS ("Popup Layout Menu"));
     bts[layoutBt]->setImages (false, true, true,
                               ImageCache::getFromMemory (BinaryData::width_png,
                                                          BinaryData::width_pngSize),
                               imageTrans, Colour (0x00),
                               Image::null, 1.0f, Colour (0x00),
                               Image::null, 1.0f, Colours::darkcyan);
+
+    // ui language
+    setUiLanguage ((LanguageID)systemFile->getIntValue ("language"));
 
     // progressBar
     progressBar.setColour (ProgressBar::backgroundColourId, Colour (0x00));
@@ -647,6 +635,22 @@ void TopToolBar::setUiColour()
 }
 
 //=================================================================================================
+void TopToolBar::setTooltips ()
+{
+    String ctrlStr ("Ctrl");
+
+#if JUCE_MAC
+    ctrlStr = "Cmd";
+#endif
+
+    bts[searchPrev]->setTooltip (TRANS ("Find Previous"));
+    bts[searchNext]->setTooltip (TRANS ("Find Next"));
+    bts[viewBt]->setTooltip (TRANS ("Switch Preview / Edit Mode") + "  (" + ctrlStr + " + S)");
+    bts[systemBt]->setTooltip (TRANS ("Popup System Menu"));
+    bts[layoutBt]->setTooltip (TRANS ("Popup Layout Menu"));
+}
+
+//=================================================================================================
 void TopToolBar::changeListenerCallback (ChangeBroadcaster* source)
 {
     if (source == bgColourSelector)
@@ -1009,6 +1013,8 @@ void TopToolBar::setUiLanguage (const LanguageID& id)
 
     fileTreeContainer->getTreeView().moveSelectedRow (1);
     fileTreeContainer->getTreeView().moveSelectedRow (-1);
+
+    setTooltips();
 }
 
 //=================================================================================================

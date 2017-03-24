@@ -80,6 +80,7 @@ private:
     void generateCurrentPage();
 
     void setUiColour();
+    void setTooltips();
     void resetUiColour();
     void setupAudioDevice();
 

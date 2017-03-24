@@ -76,7 +76,7 @@ private:
     static int totalItems;
     static int accumulator;
 
-    void generateHtmlsIfNeeded();
+    static void generateHtmlsIfNeeded();
     void generateCurrentPage();
 
     void setUiColour();

@@ -550,8 +550,8 @@ void TopToolBar::generateHtmlFiles (ValueTree tree)
 //=================================================================================================
 void TopToolBar::generateHtmlsIfNeeded()
 {
-    fileTreeContainer->projectTree.setProperty ("needCreateHtml", true, nullptr);
-    generateHtmlFilesIfNeeded (fileTreeContainer->projectTree);
+    FileTreeContainer::projectTree.setProperty ("needCreateHtml", true, nullptr);
+    generateHtmlFilesIfNeeded (FileTreeContainer::projectTree);
     FileTreeContainer::saveProject();
 
     SHOW_MESSAGE (TRANS ("All changed items regenerate successful!"));

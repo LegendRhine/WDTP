@@ -1389,8 +1389,6 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items,
     if (items.size() < 1)
         return;
 
-#define CHOICE_BOX AlertWindow::showYesNoCancelBox
-
     for (int i = items.size(); --i >= 0;)
     {
         ValueTree& v = *items.getUnchecked (i);
@@ -1406,7 +1404,7 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items,
 
             if (targetFile.exists())
             {
-                const int choice = CHOICE_BOX (AlertWindow::QuestionIcon, TRANS ("Message"),
+                const int choice = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon, TRANS ("Message"),
                                                "\"" + targetFile.getFullPathName() + "\"\n" +
                                                TRANS ("already exists. So what do you want? "),
                                                TRANS ("Keep Both"), TRANS ("Overwrite"));
@@ -1417,23 +1415,28 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items,
                     targetFile = targetFile.getNonexistentSibling (true);
             }
 
-            if (thisFile.copyFileTo (targetFile)) // here must copy!
+            // here must copy!
+            if ((thisFile.existsAsFile() && targetFile.create() && thisFile.copyFileTo (targetFile))
+                || (thisFile.isDirectory() && targetFile.createDirectory() && thisFile.copyDirectoryTo (targetFile)))
             {
                 // move its media files first
-                Array<File> medias;
-
-                for (int j = getMdMediaFiles (thisFile, medias); --j >= 0; )
+                if (thisFile.existsAsFile())
                 {
-                    const File& targetMediaFile (targetFile.getSiblingFile ("media")
-                                                 .getChildFile (medias[j].getFileName())
-                                                 .getNonexistentSibling (true));
-                    targetMediaFile.create();
-                    medias[j].moveFileTo (targetMediaFile);
+                    Array<File> medias;
 
-                    // prevent same file name, so here need rename the media name of the doc
-                    const String& content (thisFile.loadFileAsString()
-                                           .replaceCharacters (medias[j].getFileName(), targetMediaFile.getFileName()));
-                    thisFile.replaceWithText (content);
+                    for (int j = getMdMediaFiles (thisFile, medias); --j >= 0; )
+                    {
+                        const File& targetMediaFile (targetFile.getSiblingFile ("media")
+                                                     .getChildFile (medias[j].getFileName ())
+                                                     .getNonexistentSibling (true));
+                        targetMediaFile.create ();
+                        medias[j].moveFileTo (targetMediaFile);
+
+                        // prevent same file name, so here need rename the media name of the doc
+                        const String& content (thisFile.loadFileAsString ()
+                                               .replaceCharacters (medias[j].getFileName (), targetMediaFile.getFileName ()));
+                        thisFile.replaceWithText (content);
+                    }
                 }
 
                 thisFile.deleteRecursively();
@@ -1451,8 +1454,6 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items,
             }
         }
     }
-
-#undef CHOICE_BOX
 
     FileTreeContainer::saveProject();
 }

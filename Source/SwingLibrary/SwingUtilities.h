@@ -72,6 +72,9 @@ struct SwingUtilities
     static const ValueTree readValueTreeFromFile (const File& fileToReadFrom,
                                                   const bool usingGZipCompressData = false);
 
+    /** get the arg-1 tree's all children number (include all the sub-children). the result is arg-2 */
+    static void getAllChildrenNumbers (const ValueTree& tree, int& number);
+
     /** rename a file or dir */
     static bool renameFile (const File& file, const String& newName)
     {

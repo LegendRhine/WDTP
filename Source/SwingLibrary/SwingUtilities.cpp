@@ -164,6 +164,15 @@ const ValueTree SwingUtilities::readValueTreeFromFile (const File& fileToReadFro
 }
 
 //=================================================================================================
+void SwingUtilities::getAllChildrenNumbers (const ValueTree& tree, int& number)
+{
+    ++number;
+
+    for (int i = tree.getNumChildren(); --i >= 0; )
+        getAllChildrenNumbers (tree.getChild (i), number);
+}
+
+//=================================================================================================
 const String SwingUtilities::getTimeString (const Time& time)
 {
     String s;

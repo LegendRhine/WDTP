@@ -172,14 +172,17 @@ void TopToolBar::keywordSearch (const bool next)
         return;
 
     TreeView& treeView (fileTreeContainer->getTreeView());
-    treeView.setDefaultOpenness (true);
-    int startIndex = treeView.getSelectedItem (0)->getRowNumberInTree();
+    int startIndex = 0;
+    
+    if (treeView.getSelectedItem (0) != nullptr)
+        startIndex = treeView.getSelectedItem (0)->getRowNumberInTree ();
 
     for (int i = startIndex;
          next ? (i < treeView.getNumRowsInTree()) : (i >= 0);
          next ? ++i : --i)
     {
         DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (treeView.getItemOnRow (i));
+        item->setOpen (true);
 
         if (item == nullptr || item->getTree().getType().toString() != "doc")
             continue;
@@ -219,9 +222,8 @@ void TopToolBar::keywordSearch (const bool next)
                 rangeArray.add (Range<int> (startIndexInDoc, startIndexInDoc + keyword.length()));
 
                 editor->setCaretPosition (startIndexInDoc + keyword.length());
-                //editor->setHighlightedRegion (rangeArray[0]);
-                editor->setTemporaryUnderlining (rangeArray);
-
+                editor->setTemporaryUnderlining (rangeArray);                
+                
                 return;
             }             
         }

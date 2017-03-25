@@ -132,18 +132,18 @@ void FileTreeContainer::openProject (const File& project)
     projectFile = realProject;
     sorter = new ItemSorter (projectTree);
     docTreeItem = new DocTreeViewItem (projectTree, this, sorter);
-    sorter->setTreeViewItem (docTreeItem);
 
+    sorter->setTreeViewItem (docTreeItem);
     fileTree.setRootItem (docTreeItem);
     
-    // select the last item
-    const String& lastItem = projectTree.getProperty ("identityOfLastSelectedItem").toString();
-    TreeViewItem* item = fileTree.findItemFromIdentifierString (lastItem);
+    // restore the treeView's openness and select state
+    ScopedPointer<XmlElement> stateXml = XmlDocument::parse (
+        projectTree.getProperty ("stateAndSelect").toString ());
 
-    if (item == nullptr)
-        item = fileTree.getRootItem();
+    if (stateXml != nullptr)
+        fileTree.restoreOpennessState (*stateXml, true);
 
-    item->setSelected (true, true);
+    fileTree.scrollToKeepItemVisible (fileTree.getSelectedItem (0));
 
     // change the text of main window's title-bar
     MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent());
@@ -158,40 +158,40 @@ void FileTreeContainer::openProject (const File& project)
     recentFiles.removeNonExistentFiles();
     recentFiles.restoreFromString (systemFile->getValue ("recentFiles"));
     recentFiles.addFile (realProject);
-
     systemFile->setValue ("recentFiles", recentFiles.toString());
-    fileTree.scrollToKeepItemVisible (item);
 }
 
 //=================================================================================================
 void FileTreeContainer::closeProject()
 {
-    if (hasLoadedProject())
+    if (hasLoadedProject() && saveOpenSateAndSelect (false) && saveDocAndProject())
     {
-        // store the main-window's size and position
+        fileTree.setRootItem (nullptr);
+        docTreeItem = nullptr;
+        sorter = nullptr;
+        projectTree = ValueTree::invalid;
+        projectFile = File::nonexistent;
+        editAndPreview->projectClosed();
+
+        // change the text of main window's title-bar
         MainWindow* mainWindow = dynamic_cast<MainWindow*>(getTopLevelComponent());
         jassert (mainWindow != nullptr);
 
-        const String& sizeAndPosition (mainWindow->getWindowStateAsString());
-        projectTree.setProperty ("mainWindowSizeAndPosition", sizeAndPosition, nullptr);
-
-        // store the last select item
-        if (fileTree.getSelectedItem (0) != nullptr)
-            setIdentityOfLastSelectedItem (fileTree.getSelectedItem (0)->getItemIdentifierString());
-        
-        if (saveDocAndProject())
-        {
-            fileTree.setRootItem (nullptr);
-            docTreeItem = nullptr;
-            sorter = nullptr;
-            projectTree = ValueTree::invalid;
-            projectFile = File::nonexistent;
-            editAndPreview->projectClosed();
-
-            // change the text of main window's title-bar           
-            mainWindow->setName (JUCEApplication::getInstance()->getApplicationName());
-        }
+        mainWindow->setName (JUCEApplication::getInstance()->getApplicationName());
     }
+}
+
+//=================================================================================================
+const bool FileTreeContainer::saveOpenSateAndSelect (const bool alsoSaveProject)
+{
+    ScopedPointer<XmlElement> stateAndSelect = fileTree.getOpennessState (true);
+    const String& stateStr (stateAndSelect->createDocument (String(), false, false));
+    projectTree.setProperty ("stateAndSelect", stateStr, nullptr);
+
+    if (alsoSaveProject)
+        return saveProject();
+
+    return true;
 }
 
 //=================================================================================================
@@ -337,13 +337,6 @@ void ItemSorter::valueChanged (Value& value)
 
     // save the project file
     FileTreeContainer::saveProject();
-}
-
-//=================================================================================================
-void FileTreeContainer::setIdentityOfLastSelectedItem (const String& str)
-{
-    projectTree.setProperty ("identityOfLastSelectedItem", str, nullptr);
-    saveProject();
 }
 
 //=================================================================================================

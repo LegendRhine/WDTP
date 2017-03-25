@@ -55,7 +55,7 @@
 	- ad: The form should be: 'Image-file-name (whitespace) Link-address', one for pre line. It matched the {{ad}} tag from within a tpl.
     - modifyDate
 	- needCreateHtml
-	- identityOfLastSelectedItem: the last selected item in fileTree. 
+	- stateAndSelect: the file tree's openness and selected state
 
 - Properities of Dir
     - name: the name of this dir, it doesn't include any parent's name (path).

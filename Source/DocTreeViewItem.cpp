@@ -292,7 +292,6 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
         nonUnderline.add (Range<int> (0, 0));
         editArea->getEditor()->setTemporaryUnderlining ((nonUnderline));
 
-        treeContainer->setIdentityOfLastSelectedItem (getItemIdentifierString());
         selectTime = Time::getMillisecondCounter();
         allowShowMenu = true;
     }

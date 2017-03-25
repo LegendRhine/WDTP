@@ -70,13 +70,14 @@ public:
 
     void openProject (const File& projectFile);
     void closeProject();
+
+    const bool saveOpenSateAndSelect (const bool alsoSaveProject);
     const bool saveDocAndProject();
 
     const bool hasLoadedProject() const                    { return projectTree.isValid(); }
     TreeView& getTreeView()                                { return fileTree; }
     EditAndPreview* getEditAndPreview() const              { return editAndPreview; }
 
-    void setIdentityOfLastSelectedItem (const String& str);
     const bool aDocSelectedCurrently() const;
     void reloadCurrentDoc();
 

@@ -211,16 +211,17 @@ MainWindow::~MainWindow()
 void MainWindow::closeButtonPressed()
 {
     // save and exit
-    if (mainComp->getEditAndPreview()->saveCurrentDocIfChanged())
+    if (mainComp->getFileTree()->saveOpenSateAndSelect (true) 
+        && mainComp->getEditAndPreview()->saveCurrentDocIfChanged())
     {
         JUCEApplication::getInstance()->systemRequestedQuit();
     }
     else
     {
         if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Message"),
-                                          TRANS ("Something wrong during saving this project.") +
-                                          newLine + newLine +
-                                          TRANS ("Do you really want to quit?")))
+                                TRANS ("Something wrong during saving this project.") +
+                                newLine + newLine +
+                                TRANS ("Do you really want to quit?")))
         {
             JUCEApplication::getInstance()->systemRequestedQuit();
         }

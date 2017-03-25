@@ -492,8 +492,9 @@ void TopToolBar::cleanAndGenerateAll()
             htmls[i].deleteFile();
 
         // initial progress value
-        fileTreeContainer->getTreeView().getRootItem()->setOpen (true);
-        totalItems = fileTreeContainer->getTreeView().getNumRowsInTree();
+        totalItems = 0;
+        SwingUtilities::getAllChildrenNumbers (FileTreeContainer::projectTree, totalItems);
+
         accumulator = 0;
         progressValue = 0.0;
 

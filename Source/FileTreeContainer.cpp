@@ -184,12 +184,15 @@ void FileTreeContainer::closeProject()
 //=================================================================================================
 const bool FileTreeContainer::saveOpenSateAndSelect (const bool alsoSaveProject)
 {
-    ScopedPointer<XmlElement> stateAndSelect = fileTree.getOpennessState (true);
-    const String& stateStr (stateAndSelect->createDocument (String(), false, false));
-    projectTree.setProperty ("stateAndSelect", stateStr, nullptr);
+    if (projectTree.isValid())
+    {
+        ScopedPointer<XmlElement> stateAndSelect = fileTree.getOpennessState (true);
+        const String& stateStr (stateAndSelect->createDocument (String(), false, false));
+        projectTree.setProperty ("stateAndSelect", stateStr, nullptr);
 
-    if (alsoSaveProject)
-        return saveProject();
+        if (alsoSaveProject)
+            return saveProject();
+    }
 
     return true;
 }

@@ -171,8 +171,16 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)", docFile.existsAsFile());
         menu.addSeparator();
 
+        // search
         menu.addItem (searchNext, TRANS ("Search Next Selection") + "  F3", getHighlightedText().isNotEmpty());
         menu.addItem (searchPrev, TRANS ("Search Prev Selection") + "  Shift + F3", getHighlightedText().isNotEmpty());
+
+        PopupMenu exSearch;
+        exSearch.addItem (searchByGoogle, "Google...", getHighlightedText().isNotEmpty());
+        exSearch.addItem (searchByGoogle, TRANS ("Bing..."), getHighlightedText().isNotEmpty());
+        exSearch.addItem (searchByGoogle, TRANS ("Wikipedia..."), getHighlightedText().isNotEmpty());
+
+        menu.addSubMenu (TRANS ("External Search"), exSearch, docFile.existsAsFile());
         menu.addSeparator();
 
         TextEditor::addPopupMenuItems (menu, e);

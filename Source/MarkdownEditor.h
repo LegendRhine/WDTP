@@ -68,7 +68,7 @@ private:
         audioRecord,
         latestPublish, latestModify, featuredArticle, 
         allKeywords, randomArticle, allPublish, allModify,
-        searchNext, searchPrev,
+        searchNext, searchPrev, searchByGoogle, searchByBing, searchByWiki,
         fontSize, fontColor, setBackground, resetDefault,
         outlineMenu
     };

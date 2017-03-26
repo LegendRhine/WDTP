@@ -140,7 +140,7 @@
 
 	// for lineSpacing backup
 	/* g.fillRoundedRectangle (startX - 1.f, baselineY - lineHeight + 4.f,
-                                endX - startX + 2.f, lineHeight + 1.f, 5.f);*/
+                            endX - startX + 2.f, lineHeight + 1.f, 5.f);*/
 ```
 
 ### Shortcut Assign

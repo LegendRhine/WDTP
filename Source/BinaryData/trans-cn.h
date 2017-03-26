@@ -313,7 +313,7 @@ countries: cn
 "Can\'t import a file which more than 256K :)" = "无法导入大小超过256K的文件 :)"
 "No neeed to import a file which can't/no need to read :)" = "没必要导入无法阅读或缺乏实际内容的文件。"
 "Identifier" = "标识符"
-" WDTP is GPL(v2) licensed." =" WDTP遵循GPL(v2)开源协议."
+" WDTP is GPL (v2) licensed." =" WDTP遵循GPL (v2)开源协议."
 "Total replaced: " = "共替换了 "
 " matched in " = " 处, 修改了 "
 " file(s)." = " 个文件."

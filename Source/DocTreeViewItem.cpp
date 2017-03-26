@@ -1426,14 +1426,14 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items,
                     for (int j = getMdMediaFiles (thisFile, medias); --j >= 0; )
                     {
                         const File& targetMediaFile (targetFile.getSiblingFile ("media")
-                                                     .getChildFile (medias[j].getFileName ())
+                                                     .getChildFile (medias[j].getFileName())
                                                      .getNonexistentSibling (true));
-                        targetMediaFile.create ();
+                        targetMediaFile.create();
                         medias[j].moveFileTo (targetMediaFile);
 
                         // prevent same file name, so here need rename the media name of the doc
-                        const String& content (thisFile.loadFileAsString ()
-                                               .replaceCharacters (medias[j].getFileName (), targetMediaFile.getFileName ()));
+                        const String& content (thisFile.loadFileAsString()
+                                               .replaceCharacters (medias[j].getFileName(), targetMediaFile.getFileName()));
                         thisFile.replaceWithText (content);
                     }
                 }

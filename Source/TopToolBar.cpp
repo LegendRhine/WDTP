@@ -175,7 +175,7 @@ void TopToolBar::keywordSearch (const bool next)
     int startIndex = 0;
     
     if (treeView.getSelectedItem (0) != nullptr)
-        startIndex = treeView.getSelectedItem (0)->getRowNumberInTree ();
+        startIndex = treeView.getSelectedItem (0)->getRowNumberInTree();
 
     for (int i = startIndex;
          next ? (i < treeView.getNumRowsInTree()) : (i >= 0);
@@ -638,7 +638,7 @@ void TopToolBar::setUiColour()
 }
 
 //=================================================================================================
-void TopToolBar::setTooltips ()
+void TopToolBar::setTooltips()
 {
     String ctrlStr ("Ctrl");
 

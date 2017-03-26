@@ -138,7 +138,7 @@ void FileTreeContainer::openProject (const File& project)
     
     // restore the treeView's openness and select state
     ScopedPointer<XmlElement> stateXml = XmlDocument::parse (
-        projectTree.getProperty ("stateAndSelect").toString ());
+        projectTree.getProperty ("stateAndSelect").toString());
 
     if (stateXml != nullptr)
         fileTree.restoreOpennessState (*stateXml, true);

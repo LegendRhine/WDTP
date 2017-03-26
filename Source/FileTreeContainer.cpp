@@ -404,15 +404,12 @@ const bool FileTreeContainer::selectItemFromHtmlFile (const File& htmlFile)
 
     //DBGX(htmlPath);
 
-    // find match item and select it
-    // here must shrink it first and then open it to make sure it'll open totally
-    fileTree.getRootItem()->setOpen (false);
-    fileTree.getRootItem()->setOpen (true);
-
     for (int i = fileTree.getNumRowsInTree(); --i >= 1; )  // 0 is root, see above
     {
         DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*>(fileTree.getItemOnRow (i));
         jassert (item != nullptr);
+
+        item->setOpen (true);
         ValueTree v = item->getTree();
 
         // get the tree's full path

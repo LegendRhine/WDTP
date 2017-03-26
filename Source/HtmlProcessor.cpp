@@ -46,7 +46,7 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
     const String& htmlContentStr (Md2Html::mdStringToHtml (mdStrWithoutAbbrev));
 
     // process code
-    if (htmlContentStr.contains ("<pre><code>"))
+    if (htmlContentStr.contains ("<pre><code"))
     {
         tplStr = tplStr.replace ("\n  <title>",
                                  "\n  <script src = \""

@@ -338,12 +338,17 @@ const String Md2Html::codeBlockParse (const String& mdString)
         if (indexEnd == -1)
             break;
 
-        const String mdCode (resultStr.substring (indexStart, indexEnd + 3));
-        const String htmlStr ("<pre><code>"
-                              + mdCode.replace ("```", String())
-                              .replace ("*", "_%5x|z%!##!_") // see cleanup(), prevent bold and italic parse it
-                              .replace ("<", "&lt;").replace (">", "&gt;")  // escape html code
-                              + "</code></pre>");
+        const String& mdCode (resultStr.substring (indexStart, indexEnd + 3));
+
+        const int codeStyleIndexEnd = mdCode.indexOf (0, "\n");
+        const String& highlightStyle (mdCode.substring (3, codeStyleIndexEnd).trim());
+        const String& mdCodeNew = mdCode.substring (codeStyleIndexEnd);
+
+        const String& htmlStr ("<pre><code class=\"" + highlightStyle + "\">"
+                               + mdCodeNew.replace ("```", String())
+                               .replace ("*", "_%5x|z%!##!_") // see cleanup(), prevent bold and italic parse it
+                               .replace ("<", "&lt;").replace (">", "&gt;")  // escape html code
+                               + "</code></pre>");
 
         //DBG (htmlStr);
         resultStr = resultStr.replaceSection (indexStart, mdCode.length(), htmlStr);
@@ -1034,18 +1039,20 @@ const String Md2Html::cleanUp (const String& mdString)
 
     while (indexBr != -1)
     {
-        if (resultStr.substring (indexBr - 1, indexBr) == ">")
+        if (resultStr.substring (indexBr - 1, indexBr) == ">"
+            // prevent extra empty row of code-block (the first row of it)
+            && resultStr.substring (indexBr - 2, indexBr) != "\">")
             resultStr = resultStr.replaceSection (indexBr, 4, newLine);
 
         indexBr = resultStr.indexOfIgnoreCase (indexBr + 4, "<br>");
     }
 
-    // clean extra <p> and <br> which is in code-block(s)
-    int indexCodeStart = resultStr.indexOfIgnoreCase (0, "<pre><code>");
+    // clean extra <p> and <br> of code-block(s)
+    int indexCodeStart = resultStr.indexOfIgnoreCase (0, "<pre><code class=");
 
-    while (indexCodeStart != -1 && indexCodeStart + 16 <= resultStr.length())
+    while (indexCodeStart != -1 && indexCodeStart + 20 <= resultStr.length())
     {
-        const int indexCodeEnd = resultStr.indexOfIgnoreCase (indexCodeStart + 16, "</code></pre>");
+        const int indexCodeEnd = resultStr.indexOfIgnoreCase (indexCodeStart + 20, "</code></pre>");
 
         if (indexCodeEnd == -1)
             break;
@@ -1054,10 +1061,10 @@ const String Md2Html::cleanUp (const String& mdString)
         const String codeHtml (mdCode.replace ("<p>", newLine).replace ("<br>", String()));
 
         resultStr = resultStr.replaceSection (indexCodeStart, mdCode.length(), codeHtml);
-        indexCodeStart = resultStr.indexOfIgnoreCase (indexCodeStart + 16, "<pre><code>");
+        indexCodeStart = resultStr.indexOfIgnoreCase (indexCodeStart + 33, "<pre><code class=");
     }
 
-    // clean extra <p> and <br> which is in page's js-code (inside <body/>)
+    // clean extra <p> and <br> of page's js-code (inside <body/>)
     indexCodeStart = resultStr.indexOfIgnoreCase (0, "<script");
 
     while (indexCodeStart != -1 && indexCodeStart + 8 <= resultStr.length())
@@ -1079,9 +1086,6 @@ const String Md2Html::cleanUp (const String& mdString)
         .replace ("\n<tr>", "<tr>")
         .replace ("</tr>\n", "<tr>")
         .replace ("\n</table>", "</table>");
-
-    // somehow, there's this ugly thing. dont know why.
-    resultStr = resultStr.replace ("<pre><code>				", "<pre><code>");
 
     // clean extra <br> and <p> which before <pre><code>
     resultStr = resultStr.replace ("<br>\n<pre>", newLine + "<pre>")

@@ -177,10 +177,10 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 
         PopupMenu exSearch;
         exSearch.addItem (searchByGoogle, "Google...", getHighlightedText().isNotEmpty());
-        exSearch.addItem (searchByGoogle, TRANS ("Bing..."), getHighlightedText().isNotEmpty());
-        exSearch.addItem (searchByGoogle, TRANS ("Wikipedia..."), getHighlightedText().isNotEmpty());
+        exSearch.addItem (searchByBing, TRANS ("Bing..."), getHighlightedText().isNotEmpty());
+        exSearch.addItem (searchByWiki, TRANS ("Wikipedia..."), getHighlightedText().isNotEmpty());
 
-        menu.addSubMenu (TRANS ("External Search"), exSearch, docFile.existsAsFile());
+        menu.addSubMenu (TRANS ("External Search Selection"), exSearch, docFile.existsAsFile());
         menu.addSeparator();
 
         TextEditor::addPopupMenuItems (menu, e);
@@ -236,6 +236,9 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (pickFromAllKeywords == index)  showAllKeywords();
     else if (searchPrev == index)           searchPrevious();
     else if (searchNext == index)           searchForNext();
+    else if (searchByGoogle == index)       externalSearch (searchByGoogle);
+    else if (searchByBing == index)         externalSearch (searchByBing);
+    else if (searchByWiki == index)         externalSearch (searchByWiki);
 
     else if (insertMedia == index)          insertMedias();
     else if (insertHyperlink == index)      hyperlinkInsert();
@@ -1211,6 +1214,29 @@ const bool MarkdownEditor::puncMatchingForChinese (const KeyPress& key)
     startTimer (5);    
 
     return returnValue;
+}
+
+//=================================================================================================
+void MarkdownEditor::externalSearch (const int searchType)
+{
+    const String& content (getHighlightedText().trim());
+    URL url;
+
+    if (searchType == searchByGoogle)
+        url = "https://www.google.com/#q=" + content + "&*";
+        
+    else if (searchType == searchByBing)
+        url = "https://www.bing.com/search?q=" + content;
+
+    else if (searchType == searchByWiki)
+    {
+        if (TRANS ("Wikipedia...") == "Wikipedia...")
+            url = "https://en.wikipedia.org/wiki/" + content;
+        else
+            url = "https://zh.wikipedia.org/wiki/" + content;
+    }
+
+    url.launchInDefaultBrowser();
 }
 
 //=================================================================================================

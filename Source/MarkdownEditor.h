@@ -113,6 +113,7 @@ private:
 
     void searchPrevious();
     void searchForNext();
+    void externalSearch (const int searchType);
 
     void setFontSize();
     void setFontColour();

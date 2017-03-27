@@ -1130,3 +1130,60 @@ const String Md2Html::cleanUp (const String& mdString)
     return resultStr;
 }
 
+//=================================================================================================
+const ValueTree FrontMatterParser::processIfHasFrontMatter (String& content)
+{
+    if (content.trimStart().substring (0, 3) == "+++" || content.trimStart().substring (0, 3) == "---")
+    {
+        content = content.trimStart();
+        const String frontMark ((content.substring (0, 3) == "---") ? "---" : "+++");
+
+        int indexEnd = content.indexOf (3, frontMark);
+        indexEnd = content.indexOf (indexEnd + 3, "\n");
+
+        if (indexEnd != -1)
+        {
+            StringArray frontStrs;
+            frontStrs.addTokens (content.substring (0, indexEnd).replace (" ", String()), newLine, String());
+
+            frontStrs.removeEmptyStrings (true);
+            frontStrs.remove (0);
+            frontStrs.remove (frontStrs.size() - 1);
+
+            ValueTree tree ("doc");
+
+            for (auto str : frontStrs)
+            {
+                if (str.substring (0, 4) == "date")
+                {
+                    // ="2013-06-21T11:27:27
+                    const String& dateStr (str.substring (6, 25).replace ("T", " ").replace ("-", "."));
+                    tree.setProperty ("createDate", dateStr, nullptr);
+                }
+
+                else if (str.substring (0, 5) == "title")
+                {
+                    const String& titleStr (str.substring (7).replace ("\"", String()));
+                    tree.setProperty ("title", titleStr.trimEnd(), nullptr);
+                }
+
+                else if (str.substring (0, 11) == "description")
+                {
+                    const String& descStr (str.substring (13).replace ("\"", String()));
+                    tree.setProperty ("description", descStr.trimEnd(), nullptr);
+                }
+
+                else if (str.substring (0, 4) == "tags")
+                {
+                    const String& tagStr (str.substring (7).replace ("\"", String()).replace ("]", String()));
+                    tree.setProperty ("keywords", tagStr.trimEnd(), nullptr);
+                }
+            }
+
+            content = content.substring (indexEnd).trimStart();
+            return tree;
+        }
+    }
+
+    return ValueTree();
+}

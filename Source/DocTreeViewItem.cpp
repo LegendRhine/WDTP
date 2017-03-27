@@ -749,7 +749,7 @@ void DocTreeViewItem::createNewDocument()
     if (0 == dialog.runModalLoop())
     {
         const String& docName (SwingUtilities::getValidFileName (dialog.getTextEditor ("name")->getText()));
-        createDoc (docName, "# ", true);
+        createDoc (docName, "# ", ValueTree(), true);
         FileTreeContainer::saveProject();
     }
 }
@@ -757,6 +757,7 @@ void DocTreeViewItem::createNewDocument()
 //=================================================================================================
 const File DocTreeViewItem::createDoc (const String& docName, 
                                        const String& content, 
+                                       const ValueTree& docProperties,
                                        const bool selectAfterCreated)
 {
     String docFileName (docName);
@@ -776,18 +777,36 @@ const File DocTreeViewItem::createDoc (const String& docName,
     thisDoc.create();
     thisDoc.appendText (content);
 
+    String titleStr (thisDoc.getFileNameWithoutExtension());
+    String dateStr (SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), true));
+    String descStr (TRANS ("Description of this doc..."));
+    String keywordStr;
+
+    if (docProperties.isValid())
+    {
+        if (docProperties.getProperty ("title").toString().isNotEmpty())
+            titleStr = docProperties.getProperty ("title").toString();
+
+        if (docProperties.getProperty ("createDate").toString().isNotEmpty())
+            dateStr = docProperties.getProperty ("createDate").toString();
+
+        if (docProperties.getProperty ("description").toString().isNotEmpty())
+            descStr = docProperties.getProperty ("description").toString();
+
+        if (docProperties.getProperty ("keywords").toString().isNotEmpty())
+            keywordStr = docProperties.getProperty ("keywords").toString();
+    }
+
     // valueTree of this doc
     ValueTree docTree ("doc");
     docTree.setProperty ("name", thisDoc.getFileNameWithoutExtension(), nullptr);
-    docTree.setProperty ("title", thisDoc.getFileNameWithoutExtension(), nullptr);
-    docTree.setProperty ("description", TRANS ("Description of this doc..."), nullptr);
-    docTree.setProperty ("keywords", String(), nullptr);
+    docTree.setProperty ("title", titleStr, nullptr);
+    docTree.setProperty ("description", descStr, nullptr);
+    docTree.setProperty ("keywords", keywordStr, nullptr);
     docTree.setProperty ("isMenu", false, nullptr);
     docTree.setProperty ("thumb", true, nullptr);
     docTree.setProperty ("tplFile", "article.html", nullptr);
-    docTree.setProperty ("createDate",
-                         SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), true),
-                         nullptr);
+    docTree.setProperty ("createDate", dateStr, nullptr);
     docTree.setProperty ("reviewDate",
                          SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (2), true),
                          nullptr);
@@ -1161,7 +1180,7 @@ void DocTreeViewItem::importExternalDocs()
 
 //=================================================================================================
 const bool DocTreeViewItem::importExternalDocs (const Array<File>& docs,
-                                          const bool selectOneByOneAfterImport)
+                                                const bool selectOneByOneAfterImport)
 {
     // can't import docs under a doc!
     jassert (tree.getType().toString() != "doc");
@@ -1183,11 +1202,14 @@ const bool DocTreeViewItem::importExternalDocs (const Array<File>& docs,
         // doesn't import any big file
         if (docs[i].getSize() / 1024 <= 256)  
         {
-            const String& content (docs[i].loadFileAsString());
+            String content (docs[i].loadFileAsString());
+
+            // processs the string if it has any front matter (YAML/TOML md file)
+            const ValueTree& docTree (FrontMatterParser::processIfHasFrontMatter (content));
 
             if (content.length() > 4)
             {
-                createDoc (docs[i].getFileNameWithoutExtension(), content, selectOneByOneAfterImport);
+                createDoc (docs[i].getFileNameWithoutExtension(), content, docTree, selectOneByOneAfterImport);
                 needSaveProject = true;
             }
             else

@@ -127,7 +127,10 @@ private:
     void exportAsHtml(); 
     void renameSelectedItem();
     void createNewDocument();
-    const File createDoc (const String &docName, const String& content, const bool selectAfterCreated);
+    const File createDoc (const String &docName, 
+                          const String& content, 
+                          const ValueTree& docProperties,
+                          const bool selectAfterCreated);
 
     void createNewFolder();
     void deleteSelected();

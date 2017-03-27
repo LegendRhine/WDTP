@@ -1133,6 +1133,8 @@ const String Md2Html::cleanUp (const String& mdString)
 //=================================================================================================
 const ValueTree FrontMatterParser::processIfHasFrontMatter (String& content)
 {
+    ValueTree tree ("doc");
+
     if (content.trimStart().substring (0, 3) == "+++" || content.trimStart().substring (0, 3) == "---")
     {
         content = content.trimStart();
@@ -1150,7 +1152,6 @@ const ValueTree FrontMatterParser::processIfHasFrontMatter (String& content)
             frontStrs.remove (0);
             frontStrs.remove (frontStrs.size() - 1);
 
-            ValueTree tree ("doc");
 
             for (auto str : frontStrs)
             {
@@ -1181,9 +1182,8 @@ const ValueTree FrontMatterParser::processIfHasFrontMatter (String& content)
             }
 
             content = content.substring (indexEnd).trimStart();
-            return tree;
         }
     }
 
-    return ValueTree();
+    return tree;
 }

@@ -310,7 +310,7 @@ countries: cn
 "Description of this doc..." = "此文档的描述……"
 "Can\'t import doc(s) inside the current project!" = "无需导入本项目内部的文档。"
 "Can\'t import media file(s) inside the current project!" = "无需导入本项目内部的媒体文件。"
-"Can\'t import a file which more than 256K :)" = "无法导入大小超过256K的文件 :)"
+"Can\'t import a file which more than 512K :)" = "无法导入大小超过512K的文件 :)"
 "No neeed to import a file which can't/no need to read :)" = "没必要导入无法阅读或缺乏实际内容的文件。"
 "Identifier" = "标识符"
 " WDTP is GPL (v2) licensed." =" WDTP遵循GPL (v2)开源协议."

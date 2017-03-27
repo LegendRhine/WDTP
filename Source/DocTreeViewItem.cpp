@@ -1200,7 +1200,7 @@ const bool DocTreeViewItem::importExternalDocs (const Array<File>& docs,
     for (int i = docs.size(); --i >= 0; )
     {
         // doesn't import any big file
-        if (docs[i].getSize() / 1024 <= 256)  
+        if (docs[i].getSize() / 1024 <= 512)  
         {
             String content (docs[i].loadFileAsString());
 
@@ -1224,7 +1224,7 @@ const bool DocTreeViewItem::importExternalDocs (const Array<File>& docs,
         }
         else
         {
-            SHOW_MESSAGE (TRANS ("Can't import a file which more than 256K :)") 
+            SHOW_MESSAGE (TRANS ("Can't import a file which more than 512K :)") 
                           + newLine + newLine + docs[i].getFullPathName());
         }
     }

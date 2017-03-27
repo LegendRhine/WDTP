@@ -1135,7 +1135,8 @@ const ValueTree FrontMatterParser::processIfHasFrontMatter (String& content)
 {
     ValueTree tree ("doc");
 
-    if (content.trimStart().substring (0, 3) == "+++" || content.trimStart().substring (0, 3) == "---")
+    if (content.trimStart().substring (0, 3) == "+++" 
+        || content.trimStart().substring (0, 3) == "---")
     {
         content = content.trimStart();
         const String frontMark ((content.substring (0, 3) == "---") ? "---" : "+++");
@@ -1159,8 +1160,9 @@ const ValueTree FrontMatterParser::processIfHasFrontMatter (String& content)
 
                 if (str.substring (0, 4) == "date")
                 {
-                    // ="2013-06-21T11:27:27
-                    const String& dateStr (str.replace (" ", String()).substring (6, 25).replace ("T", " ").replace ("-", "."));
+                    // ="2017-03-27T11:27:27
+                    const String& dateStr (str.replace (" ", String()).substring (6, 25).
+                                           replace ("T", " ").replace ("-", "."));
                     tree.setProperty ("createDate", dateStr, nullptr);
                 }
 
@@ -1187,15 +1189,18 @@ const ValueTree FrontMatterParser::processIfHasFrontMatter (String& content)
                     int quteIndex = str.indexOf (0, "\"");
                     quteIndex = (quteIndex == -1) ? 0 : quteIndex + 1;
 
-                    const String& tagStr (str.substring (quteIndex).replace ("\"", String()).replace ("]", String()));
+                    const String& tagStr (str.substring (quteIndex).replace ("\"", String())
+                                          .replace ("]", String()));
                     tree.setProperty ("keywords", tagStr.trim(), nullptr);
                 }
             }
 
             content = content.substring (indexEnd).trimStart();
-            content = "# " + tree.getProperty ("title").toString() + newLine + newLine + content;
+            content = "# " + tree.getProperty ("title").toString() + newLine 
+                + newLine + content;
         }
     }
 
     return tree;
 }
+

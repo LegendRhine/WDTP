@@ -145,7 +145,7 @@ struct FrontMatterParser
     /** this method may process and change the arg 'content' and 
     return a valueTreee that perhaps include some useful properties. 
     
-    the format see: https://gohugo.io/content/example/
+    about the front matter format, see: https://gohugo.io/content/example/
     */
     static const ValueTree processIfHasFrontMatter (String& content);
 };

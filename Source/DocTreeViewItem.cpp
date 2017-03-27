@@ -1207,6 +1207,10 @@ const bool DocTreeViewItem::importExternalDocs (const Array<File>& docs,
             // processs the string if it has any front matter (YAML/TOML md file)
             const ValueTree& docTree (FrontMatterParser::processIfHasFrontMatter (content));
 
+            // for normal text file
+            if (content.substring (0, 1) != "#")
+                content = "# " + content;
+
             if (content.length() > 4)
             {
                 createDoc (docs[i].getFileNameWithoutExtension(), content, docTree, selectOneByOneAfterImport);

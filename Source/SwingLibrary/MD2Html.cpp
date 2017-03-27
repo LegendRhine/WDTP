@@ -1146,42 +1146,54 @@ const ValueTree FrontMatterParser::processIfHasFrontMatter (String& content)
         if (indexEnd != -1)
         {
             StringArray frontStrs;
-            frontStrs.addTokens (content.substring (0, indexEnd).replace (" ", String()), newLine, String());
+            frontStrs.addTokens (content.substring (0, indexEnd), newLine, String());
 
             frontStrs.removeEmptyStrings (true);
+            frontStrs.trim();
             frontStrs.remove (0);
             frontStrs.remove (frontStrs.size() - 1);
 
-
-            for (auto str : frontStrs)
+            for (int i = frontStrs.size(); --i >= 0; )
             {
+                const String& str (frontStrs[i]);
+
                 if (str.substring (0, 4) == "date")
                 {
                     // ="2013-06-21T11:27:27
-                    const String& dateStr (str.substring (6, 25).replace ("T", " ").replace ("-", "."));
+                    const String& dateStr (str.replace (" ", String()).substring (6, 25).replace ("T", " ").replace ("-", "."));
                     tree.setProperty ("createDate", dateStr, nullptr);
                 }
 
                 else if (str.substring (0, 5) == "title")
                 {
-                    const String& titleStr (str.substring (7).replace ("\"", String()));
-                    tree.setProperty ("title", titleStr.trimEnd(), nullptr);
+                    int quteIndex = str.indexOf (0, "\"");
+                    quteIndex = (quteIndex == -1) ? 0 : quteIndex + 1;
+
+                    const String& titleStr (str.substring (quteIndex).trim().dropLastCharacters(1));
+                    tree.setProperty ("title", titleStr, nullptr);
                 }
 
                 else if (str.substring (0, 11) == "description")
                 {
-                    const String& descStr (str.substring (13).replace ("\"", String()));
-                    tree.setProperty ("description", descStr.trimEnd(), nullptr);
+                    int quteIndex = str.indexOf (0, "\"");
+                    quteIndex = (quteIndex == -1) ? 0 : quteIndex + 1;
+
+                    const String& descStr (str.substring (quteIndex).trim().dropLastCharacters (1));
+                    tree.setProperty ("description", descStr, nullptr);
                 }
 
                 else if (str.substring (0, 4) == "tags")
                 {
-                    const String& tagStr (str.substring (7).replace ("\"", String()).replace ("]", String()));
-                    tree.setProperty ("keywords", tagStr.trimEnd(), nullptr);
+                    int quteIndex = str.indexOf (0, "\"");
+                    quteIndex = (quteIndex == -1) ? 0 : quteIndex + 1;
+
+                    const String& tagStr (str.substring (quteIndex).replace ("\"", String()).replace ("]", String()));
+                    tree.setProperty ("keywords", tagStr.trim(), nullptr);
                 }
             }
 
             content = content.substring (indexEnd).trimStart();
+            content = "# " + tree.getProperty ("title").toString() + newLine + newLine + content;
         }
     }
 

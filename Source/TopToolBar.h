@@ -109,7 +109,7 @@ public:
         exportTpl, importTpl, releaseSystemTpl, /*rebuildKeywords,*/
         uiEnglish, uiChinese, setupAudio,
         setUiColor, resetUiColor, checkNewVersion, 
-        gettingStarted, syntax, demoPage, faq, feedback, 
+        gettingStarted, syntax, faq, feedback, 
         showAboutDialog,
         switchEdit, switchWidth, activeSearch
     };

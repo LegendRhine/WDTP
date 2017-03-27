@@ -302,8 +302,7 @@ void TopToolBar::popupSystemMenu()
     // site url..
     PopupMenu siteUrls;
     siteUrls.addItem (gettingStarted, TRANS ("Getting Started..."), true);
-    siteUrls.addItem (syntax, TRANS ("WDTP Text Mark Syntax..."), true);
-    siteUrls.addItem (demoPage, TRANS ("WDTP Demo Page..."), true);
+    siteUrls.addItem (syntax, TRANS ("Text Mark Syntax and Demo..."), true);
     siteUrls.addItem (faq, TRANS ("FAQ..."), true);
     siteUrls.addItem (feedback, TRANS ("Feedback/Discuss/Interflow..."), true);
 
@@ -338,7 +337,6 @@ void TopToolBar::systemMenuPerform (const int index)
     else if (index == checkNewVersion)  URL ("http://underwaySoft.com/works/wdtp/download.html").launchInDefaultBrowser();
     else if (index == gettingStarted)   URL ("http://underwaysoft.com/works/wdtp/gettingStarted.html").launchInDefaultBrowser();
     else if (index == syntax)           URL ("http://underwaysoft.com/works/wdtp/syntaxMark.html").launchInDefaultBrowser();
-    else if (index == demoPage)         URL ("http://underwaysoft.com/works/wdtp/mdDemo.html").launchInDefaultBrowser();
     else if (index == faq)              URL ("http://underwaysoft.com/works/wdtp/faq.html").launchInDefaultBrowser();
     else if (index == feedback)         URL ("http://underwaysoft.com/guestBook.html").launchInDefaultBrowser();
     else if (index == showAboutDialog)  SwingUtilities::showAbout (TRANS ("Write Down, Then Publish"), "2017");

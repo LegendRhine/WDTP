@@ -143,6 +143,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addItem (formatBoldAndItalic, TRANS ("Bold + Italic"));
         formatMenu.addSeparator();
         formatMenu.addItem (formatHighlight, TRANS ("Highlight") + ctrlStr + "U)");
+        formatMenu.addItem (formatPostil, TRANS ("Postil"));
         formatMenu.addSeparator();
         formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
@@ -267,6 +268,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (formatItalic == index)         inlineFormat (formatItalic);
     else if (formatBoldAndItalic == index)  inlineFormat (formatBoldAndItalic);
     else if (formatHighlight == index)      inlineFormat (formatHighlight);
+    else if (formatPostil == index)         inlineFormat (formatPostil);
     else if (inlineCode == index)           inlineFormat (inlineCode);
     else if (codeBlock == index)            codeBlockFormat();
     else if (hybridLayout == index)         hybridFormat();
@@ -414,6 +416,8 @@ void MarkdownEditor::inlineFormat (const int format)
         content = "***" + content + "***";
     else if (format == formatHighlight)
         content = "~~" + content + "~~";
+    else if (format == formatPostil)
+        content = "(" + content + ")[]";
     else if (format == inlineCode)
         content = "`" + content + "`";
 
@@ -423,12 +427,18 @@ void MarkdownEditor::inlineFormat (const int format)
     {
         moveCaretLeft (false, false);
 
-        if (format == formatBold || format == formatHighlight || format == formatBoldAndItalic)
+        if (format == formatBold || format == formatHighlight 
+            || format == formatBoldAndItalic || format == formatPostil)
             moveCaretLeft (false, false);
 
         // here must another 'if' instead of 'else if' because 
-        // the caret should move left thrice for '***' (bold + italic)
-        if (format == formatBoldAndItalic)
+        // the caret should move left thrice for '***' and '()[]' (postil)
+        if (format == formatBoldAndItalic || format == formatPostil)
+            moveCaretLeft (false, false);
+    }
+    else
+    {
+        if (format == formatPostil)
             moveCaretLeft (false, false);
     }
 }

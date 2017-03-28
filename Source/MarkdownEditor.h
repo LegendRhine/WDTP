@@ -60,7 +60,7 @@ private:
         insertAlignCenter, insertAlignRight, 
         insertUnoerderList, insertOrderList,
         insertFirstTitle, insertSecondTitle, insertThirdTitle, 
-        insertToc, insertEndnote, insertBackToTop,
+        insertToc, insertEndnote, insertBackToTop, formatPostil,
         insertIdentifier,
         insertCaption, insertSeparator, insertAuthor, insertInterLink,
         formatBold, formatItalic, formatBoldAndItalic, formatHighlight,        

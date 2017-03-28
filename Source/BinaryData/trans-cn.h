@@ -98,6 +98,7 @@ countries: cn
 "Italic" = "斜体"
 "Bold + Italic" = "加粗并倾斜"
 "Highlight" = "高亮"
+"Postil" = "批注"
 "Code Block" = "代码块"
 "Hybrid Layout" = "图文混排"
 "Comment Block" = "注释"

@@ -22,6 +22,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     String htmlContent (mdString);
 
     htmlContent = identifierParse (htmlContent);
+    htmlContent = postilParse (htmlContent);
     htmlContent = commentParse (htmlContent);
     htmlContent = tableParse (htmlContent);
     htmlContent = hybridParse (htmlContent);
@@ -409,6 +410,44 @@ const String Md2Html::endnoteParse (const String& mdString)
 
         resultStr = resultStr.trimEnd() + newLine + "----" + newLine;
         resultStr = resultStr + notes.joinIntoString (newLine);
+    }
+
+    return resultStr;
+}
+
+//=================================================================================================
+const String Md2Html::postilParse (const String& mdString)
+{
+    String resultStr (mdString);
+    int indexStart = resultStr.indexOfIgnoreCase (0, ")[");
+    
+    while (indexStart != -1)
+    {
+        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart, "]");
+
+        if (indexEnd == -1)
+            break;
+
+        const int postilStart = resultStr.substring (0, indexStart).lastIndexOfIgnoreCase ("(");
+
+        if (postilStart == -1 
+            || resultStr.substring (postilStart - 1, postilStart) == "\\"
+            || indexEnd - postilStart > 200)
+        {
+            indexStart = resultStr.indexOfIgnoreCase (indexStart + 2, ")[");
+            continue;
+        }        
+
+        // get the content that need to be postiled and postil text
+        const String& contentNeedPostil (resultStr.substring (postilStart + 1, indexStart));
+        const String& postilStr (resultStr.substring (indexStart + 2, indexEnd));
+
+        // get the html string
+        const String htmlStr ("<span title=\"" + postilStr + "\" class=postil>" 
+                              + contentNeedPostil + "</span>");
+
+        resultStr = resultStr.replaceSection (postilStart, indexEnd + 1 - postilStart, htmlStr);
+        indexStart = resultStr.indexOfIgnoreCase (indexStart + htmlStr.length(), ")[");
     }
 
     return resultStr;
@@ -1102,6 +1141,7 @@ const String Md2Html::cleanUp (const String& mdString)
 
     // for escape
     resultStr = resultStr.replace ("\\*", "*");
+    resultStr = resultStr.replace ("\\(", "(");
     resultStr = resultStr.replace ("\\~", "~");
     resultStr = resultStr.replace ("\\`", "`");
     resultStr = resultStr.replace ("\\```", "```");

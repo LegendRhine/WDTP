@@ -27,6 +27,9 @@ private:
     /** comment mark ////// content need to be commented //////. at least 6 '/'s. */
     static const String commentParse (const String& mdString);
 
+    /** (Text need postil)[postil]. Note: the postil's text length must less than 200 */
+    static const String postilParse (const String& mdString);
+
     /** process table. support align mark and 3 styles.
         It must at least 2 rows and 2 columns.
 

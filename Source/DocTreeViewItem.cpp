@@ -8,6 +8,7 @@
   ==============================================================================
 */
 
+
 #include "WdtpHeader.h"
 
 extern PropertiesFile* systemFile;
@@ -320,7 +321,8 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
         // import various external data...
         PopupMenu importMenu;
-        importMenu.addItem (importTextDocs, TRANS ("Text Doc(s)..."), exist && !isDoc && onlyOneSelected);
+        importMenu.addItem (importUTF8Docs, TRANS ("UTF-8 Text Doc(s)..."), exist && !isDoc && onlyOneSelected);
+        importMenu.addItem (importANSIDocs, TRANS ("ANSI Text Doc(s)..."), exist && !isDoc && onlyOneSelected);
 
         m.addSubMenu (TRANS ("Import External Data"), importMenu);
         m.addSeparator();
@@ -434,7 +436,8 @@ void DocTreeViewItem::menuPerform (const int index)
 
          if (index == newDir)                   createNewFolder();
     else if (index == newDoc)                   createNewDocument();
-    else if (index == importTextDocs)           importExternalDocs();
+    else if (index == importUTF8Docs)           importExternalDocs (true);
+    else if (index == importANSIDocs)           importExternalDocs (false);
     else if (index == packHtmls)                packSiteData (true, false);
     else if (index == packMedias)               packSiteData (false, true);
     else if (index == packWholeSite)            packSiteData (true, true);
@@ -1080,7 +1083,7 @@ void DocTreeViewItem::crossProjectPaste()
     Array<File> files;
     files.add (docFile);
 
-    if (importExternalDocs (files, true))
+    if (importExternalDocs (files, true, true))
     {
         DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (getOwnerView()->getSelectedItem (0));
 
@@ -1168,18 +1171,19 @@ void DocTreeViewItem::selectChildren (DocTreeViewItem* currentItem, const String
 }
 
 //=================================================================================================
-void DocTreeViewItem::importExternalDocs()
+void DocTreeViewItem::importExternalDocs (const bool isUTF8Format)
 {
     FileChooser fc (TRANS ("Import External Data"), File::nonexistent,
                     "*.txt;*.md;*.html;*.htm;*.markdown;*.mkd;*.ini", true);
 
     if (fc.browseForMultipleFilesToOpen())
-        importExternalDocs (fc.getResults(), false);
+        importExternalDocs (fc.getResults(), false, isUTF8Format);
 }
 
 //=================================================================================================
 const bool DocTreeViewItem::importExternalDocs (const Array<File>& docs,
-                                                const bool selectOneByOneAfterImport)
+                                                const bool selectOneByOneAfterImport,
+                                                const bool isUTF8Format)
 {
     // can't import docs under a doc!
     jassert (tree.getType().toString() != "doc");
@@ -1201,7 +1205,9 @@ const bool DocTreeViewItem::importExternalDocs (const Array<File>& docs,
         // doesn't import any big file
         if (docs[i].getSize() / 1024 <= 512)  
         {
-            String content (docs[i].loadFileAsString());
+            String content (isUTF8Format ? docs[i].loadFileAsString()  // UTF-8
+                            : SwingUtilities::convertANSIString (docs[i])); // ANSI
+            //DBGX (content);
 
             // processs the string if it has any front matter (YAML/TOML md file)
             const ValueTree& docTree (FrontMatterParser::processIfHasFrontMatter (content));
@@ -1398,11 +1404,11 @@ void DocTreeViewItem::filesDropped (const StringArray& pathes, int /*insertIndex
         DocTreeViewItem* dirItem = static_cast<DocTreeViewItem*> (getParentItem());
 
         if (dirItem != nullptr)
-            dirItem->importExternalDocs (files, false);
+            dirItem->importExternalDocs (files, false, true);
     }
     else
     {
-        importExternalDocs (files, false);
+        importExternalDocs (files, false, true);
     }
 }
 

@@ -79,7 +79,9 @@ public:
     virtual bool isInterestedInFileDrag (const StringArray&	files) override;
     virtual void filesDropped (const StringArray& files, int insertIndex) override;
 
-    const bool importExternalDocs (const Array<File>& docs, const bool selectOneByOneAfterImport);
+    const bool importExternalDocs (const Array<File>& docs, 
+                                   const bool selectOneByOneAfterImport,
+                                   const bool isUTF8Format);
 
     /** draw lines from within the file-tree panel.. */
     virtual void paintHorizontalConnectingLine (Graphics&, const Line<float>& line) override;
@@ -111,7 +113,7 @@ private:
     //=========================================================================
     enum MenuIndex
     {
-        newDir = 1, newDoc, importTextDocs,
+        newDir = 1, newDoc, importUTF8Docs, importANSIDocs, 
         packWholeSite, packHtmls, packMedias,
         exportTextDoc, exportDocs, dataStatis, keywordsTable, getItemPath,
         copyForAnotherProject, pasteFromAnotherProject,
@@ -121,7 +123,7 @@ private:
 
     void menuPerform (const int menuIndex);
     
-    void importExternalDocs();
+    void importExternalDocs (const bool isUTF8Format);
     void packSiteData (const bool includeHtmls, const bool includeMedias);
     void exportAsTextDoc();
     void exportAsHtml(); 

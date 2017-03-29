@@ -654,14 +654,14 @@ const String Md2Html::tocParse (const String& mdString)
         else if (lines[i].substring (0, 3) == "## ")
             lines.getReference (i) = " &emsp;&emsp;"
             + String (CharPointer_UTF8 ("\xc2\xb7"))
-            + " <a href=\"#" + lines[i].substring (3) + "\">"
+            + " <a href=\"#" + extractLinkText (lines[i].substring (3)) + "\">"
             + lines[i].substring (3) + "</a><br>";
 
         else if (lines[i].substring (0, 4) == "### ")
             lines.getReference (i) = " &emsp;&emsp;&emsp;&emsp;"
             + String (CharPointer_UTF8 ("\xc2\xb7"))
             + " <a href=\"#"
-            + lines[i].substring (4) + "\">"
+            + extractLinkText (lines[i].substring (4)) + "\">"
             + lines[i].substring (4) + "</a><br>";
 
         else
@@ -713,14 +713,14 @@ const String Md2Html::processByLine (const String& mdString)
         else if (currentLine.trimStart().substring (0, 4) == "### "
                  || currentLine.trimStart().substring (0, 4) ==
                  CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83 "))
-            currentLine = "<h3 id=\"" + currentLine.trimStart().substring (4) + "\">"
+            currentLine = "<h3 id=\"" + extractLinkText (currentLine.trimStart().substring (4)) + "\">"
                 + currentLine.trimStart().substring (4) + "</h3>";
 
         // <h2> anchor
         else if (currentLine.trimStart().substring (0, 3) == "## "
                  || currentLine.trimStart().substring (0, 3) ==
                  CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83 "))
-            currentLine = "<h2 id=\"" + currentLine.trimStart().substring (3) + "\">"
+            currentLine = "<h2 id=\"" + extractLinkText (currentLine.trimStart().substring (3)) + "\">"
                 + currentLine.trimStart().substring (3) + "</h2>";
 
         // <h1> anchor

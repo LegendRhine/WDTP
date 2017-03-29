@@ -714,14 +714,14 @@ const String Md2Html::processByLine (const String& mdString)
                  || currentLine.trimStart().substring (0, 4) ==
                  CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83 "))
             currentLine = "<h3 id=\"" + currentLine.trimStart().substring (4) + "\">"
-            + currentLine.trimStart().substring (4) + "</h3>";
+                + currentLine.trimStart().substring (4) + "</h3>";
 
         // <h2> anchor
         else if (currentLine.trimStart().substring (0, 3) == "## "
                  || currentLine.trimStart().substring (0, 3) ==
                  CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83 "))
             currentLine = "<h2 id=\"" + currentLine.trimStart().substring (3) + "\">"
-            + currentLine.trimStart().substring (3) + "</h2>";
+                + currentLine.trimStart().substring (3) + "</h2>";
 
         // <h1> anchor
         else if (currentLine.trimStart().substring (0, 2) == "# "
@@ -1168,6 +1168,24 @@ const String Md2Html::cleanUp (const String& mdString)
 
     //DBG (resultStr);
     return resultStr;
+}
+
+//=================================================================================================
+const String Md2Html::extractLinkText (const String& titleStr)
+{
+    String result (titleStr);
+
+    if (result.containsIgnoreCase ("[") && result.containsIgnoreCase ("]")
+        && result.containsIgnoreCase ("(") && result.containsIgnoreCase (")"))
+    {
+        int indexStart = result.indexOfIgnoreCase ("[");
+        int indexEnd = result.indexOfIgnoreCase ("]");
+
+        result = result.substring (indexStart + 1, indexEnd);
+        result = result.isEmpty() ? titleStr : result;
+    }
+
+    return result;
 }
 
 //=================================================================================================

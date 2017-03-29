@@ -140,6 +140,10 @@ private:
     /** include [TOP] parse */
     static const String cleanUp (const String& mdString);
 
+    /** extract the text which first encountered in '[]'. 
+        This method could be used for title parse and outline extract    */
+    static const String extractLinkText (const String& titleStr);
+
 };
 
 /** for YAML and TOML markdown file.  */

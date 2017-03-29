@@ -270,9 +270,10 @@ void EditAndPreview::outlineGoto (const StringArray& titleStrs, const int itemIn
         editor->setCaretPosition (positionIndex);
         editor->pageDown (false);
         editor->setCaretPosition (positionIndex);
-        editor->setHighlightedRegion (Range<int> (positionIndex, positionIndex + titleStrs[itemIndex].length()));
+        editor->moveCaretToEndOfLine (true);
 
-        const String& jumpTo (titleStrs[itemIndex].fromFirstOccurrenceOf ("## ", false, false));
+        const String& jumpTo (Md2Html::extractLinkText (titleStrs[itemIndex]
+                                                        .fromFirstOccurrenceOf ("## ", false, false)));
         webView->goToURL (currentUrl + "#" + jumpTo);
     }
 

@@ -655,14 +655,14 @@ const String Md2Html::tocParse (const String& mdString)
             lines.getReference (i) = " &emsp;&emsp;"
             + String (CharPointer_UTF8 ("\xc2\xb7"))
             + " <a href=\"#" + extractLinkText (lines[i].substring (3)) + "\">"
-            + lines[i].substring (3) + "</a><br>";
+            + extractLinkText (lines[i].substring (3)) + "</a><br>";
 
         else if (lines[i].substring (0, 4) == "### ")
             lines.getReference (i) = " &emsp;&emsp;&emsp;&emsp;"
             + String (CharPointer_UTF8 ("\xc2\xb7"))
             + " <a href=\"#"
             + extractLinkText (lines[i].substring (4)) + "\">"
-            + lines[i].substring (4) + "</a><br>";
+            + extractLinkText (lines[i].substring (4)) + "</a><br>";
 
         else
             lines.remove (i);

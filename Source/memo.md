@@ -1,4 +1,4 @@
-﻿# Write Down, Then Publish (WDTP)
+﻿# Walden Tips (山湖录)
  
 ### System Setup
 - PropertiesFile (systemFile, the file of system properties) is place in the local 'user-documents/wdtp.sys'.

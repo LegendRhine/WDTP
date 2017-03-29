@@ -1513,7 +1513,7 @@ const String HtmlProcessor::getCopyrightInfo()
         FileTreeContainer::projectTree.getProperty ("copyright").toString() +
         "</td><td id=\"copyright\" align=\"right\">Powered by "
         "<a href=\"http://underwaySoft.com/works/wdtp/index.html\""
-        " target=\"_blank\">WDTP</a> </td></tr></table>";
+        " target=\"_blank\">" + TRANS ("WDTP") + "</a> </td></tr></table>";
 }
 
 //=================================================================================================

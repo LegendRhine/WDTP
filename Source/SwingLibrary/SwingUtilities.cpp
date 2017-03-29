@@ -56,12 +56,11 @@ void SwingUtilities::showAbout (const String& shortDescription,
                           "underwaySoft@gmail.com" + newLine + newLine +
                           String (CharPointer_UTF8 ("\xc2\xa9")) + copyrightYear + " UnderwaySoft " +
                           TRANS ("All Right Reserved.") + newLine  +
-                          TRANS (" WDTP is GPL (v2) licensed.") + newLine +
+                          TRANS (" Walden Tips is GPL (v2) licensed.") + newLine +
                           "=================================\n" +
                           TRANS ("Acknowledgements:") + newLine +
                           "  - Framework: JUCE (https://juce.com)\n" +
                           //"  - Library: cURL (https://curl.haxx.se)\n" +
-                          //"  - Mr. Chen Ping: (http://cpww601.blog.163.com)\n" +
                           "  - Highlight.js (https://highlightjs.org)");
 
     Component* linkButton = new HyperlinkButton ("UnderwaySoft", URL ("http://underwaySoft.com"));

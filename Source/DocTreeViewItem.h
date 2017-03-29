@@ -63,7 +63,7 @@ public:
     /** core method, it'll call the edit/preview area's startWork()*/
     virtual void itemSelectionChanged (bool isNowSelected) override;
 
-    /** right-click popup-menu is here */
+    /** popup-menu is here */
     virtual void itemClicked (const MouseEvent& e) override;
 
     /** double click for rename it */

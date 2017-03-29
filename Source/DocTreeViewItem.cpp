@@ -298,7 +298,6 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
 }
 
 //=================================================================================================
-// for right-click menu
 void DocTreeViewItem::itemClicked (const MouseEvent& e)
 {
     const bool exist = getMdFileOrDir (tree).exists();

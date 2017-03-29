@@ -131,6 +131,14 @@ struct SwingUtilities
     /** provide 00:00.0 (min:sec:x) base on double seconds */
     static const String doubleToString (const double& seconds);
 
+    /** convert the content of a Windows ANSI text file to UTF-8 string.
+
+        NOTE 1: the arg should come from File::loadFileAsData().
+        NOTE 2: if the file isn't ANSI format, the result will be messy code.
+        NOTE 3: this method is only for Windows OS.
+    */
+    static const String convertANSIString (const File& ansiTextFile);
+
 };
 
 //=========================================================================

@@ -11,6 +11,11 @@
 #include "JuceHeader.h"
 #include "SwingUtilities.h"
 
+#if JUCE_WINDOWS
+#include "windows.h"
+#pragma warning (disable: 4800)
+#endif
+
 //=================================================================================================
 const float SwingUtilities::getFontSize()
 {
@@ -297,6 +302,30 @@ const String SwingUtilities::doubleToString (const double& seconds)
     return String (cs / 600).paddedLeft ('0', 2) + ":" +
         String (cs / 10 % 60).paddedLeft ('0', 2) + "." +
         String (cs % 10);
+}
+
+//=================================================================================================
+const String SwingUtilities::convertANSIString (const File& ansiTextFile)
+{
+    MemoryBlock mb;
+    ansiTextFile.loadFileAsData (mb);
+
+#if JUCE_WINDOWS
+    const char* chars = (char*)mb.getData();
+    int charSize = MultiByteToWideChar (CP_ACP, 0, chars, -1, NULL, 0);
+
+    wchar_t* chars_t = new wchar_t[charSize];
+    MultiByteToWideChar (CP_ACP, 0, chars, -1, chars_t, charSize);
+
+    const String resultStr = String (CharPointer_UTF16 (chars_t));
+    delete[] chars_t;
+
+    return resultStr;
+
+#else
+    return mbStr.toString();
+
+#endif
 }
 
 //==============================================================================

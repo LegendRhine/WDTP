@@ -63,9 +63,13 @@ void MarkdownEditor::popupOutlineMenu (EditAndPreview* editAndPreview,
     for (int i = 0; i < sentences.size(); ++i)
     {
         if (sentences[i].trimStart().substring (0, 3) == "## ")
-            outlineMenu.addItem (i + 1, sentences[i].trimStart().substring (3), true, false);
+            outlineMenu.addItem (i + 1, 
+                                 Md2Html::extractLinkText (sentences[i].trimStart().substring (3)), 
+                                 true, false);
         else if (sentences[i].trimStart().substring (0, 4) == "### ")
-            outlineMenu.addItem (i + 1, ".   " + sentences[i].trimStart().substring (4), true, false);
+            outlineMenu.addItem (i + 1, ".   " 
+                                 + Md2Html::extractLinkText (sentences[i].trimStart().substring (4)), 
+                                 true, false);
         else
             outlineMenu.addItem (i + 1, sentences[i], true, false);
     }

@@ -57,7 +57,7 @@
 	- needCreateHtml
 	- stateAndSelect: the file tree's openness and selected state
 
-- Properities of Dir
+- Properities of Dir 
     - name: the name of this dir, it doesn't include any parent's name (path).
 	- title: it also be the menu-text if it was set to a site menu
 	- keywords
@@ -69,7 +69,7 @@
 	- js: see above
 	- needCreateHtml
 
-- Properities of Doc
+- Properities of Doc (if a doc's name is 'tips' and belong to the root-item/project-item, it'll be the think-bank source and auto 'hide')
     - name: file name, it doesn't include file-extension and any parent path.
 	- title
 	- keywords

@@ -980,7 +980,7 @@ const String Md2Html::mdLinkParse (const String& mdString)
 const String Md2Html::listParse (const String& mdString, const bool isOrdered)
 {
     StringArray contentByLine;
-    contentByLine.addLines (mdString);
+    contentByLine.addLines (mdString.replace ("\\- ", "%^&listEscape&^%")); // escape
 
     contentByLine.insert (0, "%%__ordered@List@Parse__%%");
     contentByLine.add ("%%__ordered@List@Parse__%%");
@@ -1154,6 +1154,7 @@ const String Md2Html::cleanUp (const String& mdString)
     resultStr = resultStr.replace ("\\[^", "[^");
     resultStr = resultStr.replace ("\\]", "]");
     resultStr = resultStr.replace ("\\/", "/");
+    resultStr = resultStr.replace ("%^&listEscape&^%", "- ");    
     resultStr = resultStr.replace ("<p><br>", "<p>"); 
     resultStr = resultStr.replace ("<!--<br>", "<!--");
     resultStr = resultStr.replace ("<!--<p>", "<!--");

@@ -128,11 +128,10 @@ void FileTreeContainer::openProject (const File& project)
         return;
     }
     
-    // using backgroud thread to build the tips bank
+    // load the project and build tips bank
+    projectFile = realProject;
     TipsBank().rebuildTipsBank();
 
-    // load the project
-    projectFile = realProject;
     sorter = new ItemSorter (projectTree);
     docTreeItem = new DocTreeViewItem (projectTree, this, sorter);
 

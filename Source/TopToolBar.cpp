@@ -327,7 +327,6 @@ void TopToolBar::systemMenuPerform (const int index)
     if (index == newPjt)                createNewProject();
     else if (index == packPjt)          packProject();
     else if (index == closePjt)         closeProject();
-    else if (index == rebuildTips)      TipsBank::getInstance()->rebuildTipsBank();
     else if (index == openPjt)          openProject();
     else if (index == generateWhole)    cleanAndGenerateAll();
     else if (index == cleanUpLocal)     cleanNeedlessMedias (true);
@@ -345,6 +344,13 @@ void TopToolBar::systemMenuPerform (const int index)
     else if (index == showAboutDialog)  SwingUtilities::showAbout ( "Walden Tips (" 
                                             + String (CharPointer_UTF8 ("\xe5\xb1\xb1\xe6\xb9\x96\xe5\xbd\x95")) 
                                             + ")", "2017");
+
+    else if (index == rebuildTips)
+    {
+        editAndPreview->saveCurrentDocIfChanged();
+        TipsBank::getInstance()->rebuildTipsBank();
+    }
+
 
     // switch ui-language in realtime
     else if (index == uiEnglish)

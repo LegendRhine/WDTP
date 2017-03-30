@@ -12,8 +12,6 @@
 #define TIPSBANK_H_INCLUDED
 
 /** Extrct the content of 'project/docs/tips.md' and build/process the tips bank.
-    
-    Usage: create object, then call rebuid() 
 */
 class TipsBank : private Thread
 {

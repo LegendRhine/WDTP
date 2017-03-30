@@ -268,7 +268,8 @@ void TopToolBar::popupSystemMenu()
     m.addSeparator();
 
     m.addItem (closePjt, TRANS ("Close Project"), fileTreeContainer->hasLoadedProject());
-    m.addItem (rebuildTips, TRANS ("Rebuild Tips Bank"), fileTreeContainer->hasLoadedProject());
+    m.addItem (rebuildTips, TRANS ("Rebuild Tips Bank"), fileTreeContainer->hasLoadedProject() 
+               && !TipsBank::getInstance()->isRebuilding());
     m.addSeparator();
 
     m.addCommandItem (cmdManager, generateCurrent);
@@ -326,7 +327,7 @@ void TopToolBar::systemMenuPerform (const int index)
     if (index == newPjt)                createNewProject();
     else if (index == packPjt)          packProject();
     else if (index == closePjt)         closeProject();
-    else if (index == rebuildTips)      TipsBank().rebuildTipsBank();
+    else if (index == rebuildTips)      TipsBank::getInstance()->rebuildTipsBank();
     else if (index == openPjt)          openProject();
     else if (index == generateWhole)    cleanAndGenerateAll();
     else if (index == cleanUpLocal)     cleanNeedlessMedias (true);

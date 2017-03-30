@@ -92,7 +92,9 @@ public:
         // must destroy all guis first since they're using the systemFile object
         PopupMenu::dismissAllActiveMenus();
         mainWindow = nullptr;
+
         systemFile->saveIfNeeded();
+        TipsBank::deleteInstance();
 
         deleteAndZero (systemFile);
         deleteAndZero (cmdManager);

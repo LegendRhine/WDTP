@@ -12,6 +12,14 @@
 #define TIPSBANK_H_INCLUDED
 
 /** Extrct the content of 'project/docs/tips.md' and build/process the tips bank.
+
+    Tips format:
+
+    - key string 1
+        - value string 1
+    - key string 2
+        - value string 2
+    ...
 */
 class TipsBank : private Thread
 {

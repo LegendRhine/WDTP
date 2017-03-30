@@ -46,24 +46,28 @@ void TipsBank::run()
         strs.addTokens (tipsFile.loadFileAsString(), newLine, String());
         strs.removeEmptyStrings (true);
         strs.trim();
-
-        // note: is more than one of tips has the same key
-        // it'll remain the first only
+        
+        // remain tips
         for (int i = strs.size(); --i >= 0; )
         {
-            if (!strs[i].contains ("=")
-                || strs[i].substring (0, 1) == "#"
-                || strs[i].substring (0, 3) == "***")
-            {
+            if (strs[i].substring (0, 6) != "    - " && strs[i].substring (0, 2) != "- ")
                 strs.remove (i);
-            }
-            else
-            {
-                const String& key (strs[i].upToFirstOccurrenceOf ("=", false, false).trimEnd());
-                const String& value (strs[i].fromFirstOccurrenceOf ("=", false, false).trimStart());
 
-                tipsBank.set (key, value);
-            }
+            else if (strs[i].substring (0, 6) == "    - ")
+                strs.getReference (i) = strs[i].substring (6);
+
+            else if (strs[i].substring (0, 2) == "- ")
+                strs.getReference (i) = strs[i].substring (2);
+        }
+
+        // note: if more than one of tips has the same key
+        // it'll only keep the last one
+        for (int i = 0; i < strs.size() - 1; i += 2)
+        {
+            const String& key (strs[i]);
+            const String& value (strs[i + 1]);
+
+            tipsBank.set (key, value);
         }
 
         /*for (HashMap<String, String>::Iterator i (tipsBank); i.next();)

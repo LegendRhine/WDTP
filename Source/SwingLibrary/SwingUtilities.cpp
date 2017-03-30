@@ -322,7 +322,7 @@ const String SwingUtilities::convertANSIString (const File& ansiTextFile)
     return resultStr;
 
 #else
-    return mbStr.toString();
+    return mb.toString();
 
 #endif
 }

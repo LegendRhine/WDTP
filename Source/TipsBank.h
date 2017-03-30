@@ -11,16 +11,23 @@
 #ifndef TIPSBANK_H_INCLUDED
 #define TIPSBANK_H_INCLUDED
 
-/** Usage: create object, then call rebuid() */
+/** Extrct the content of 'project/docs/tips.md' and build/process the tips bank.
+    
+    Usage: create object, then call rebuid() 
+*/
 class TipsBank : private Thread
 {
 public:
-    TipsBank();
     ~TipsBank();
+    
+    juce_DeclareSingleton (TipsBank, true);
 
-    void rebuild();
+    void rebuildTipsBank();
+    const bool isRebuilding()           { return isThreadRunning(); }
     
 private:
+    TipsBank();
+
     /** build tips bank */
     virtual void run() override;
 

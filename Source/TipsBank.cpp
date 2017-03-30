@@ -20,17 +20,28 @@ TipsBank::TipsBank()
 TipsBank::~TipsBank()
 {
     stopThread (3000);
+    clearSingletonInstance();
 }
 
+juce_ImplementSingleton (TipsBank);
+
 //=================================================================================================
-void TipsBank::rebuild()
+void TipsBank::rebuildTipsBank()
 {
-    jassert (FileTreeContainer::projectTree.isValid());
-    startThread();
+    if (FileTreeContainer::projectTree.isValid() 
+        && FileTreeContainer::projectFile.existsAsFile()
+        && !isThreadRunning())
+        startThread();
 }
 
 //=================================================================================================
 void TipsBank::run()
 {
+    tipsBank.clear();
+    const File& tipsFile (FileTreeContainer::projectFile.getChildFile ("docs").getChildFile ("tips.md"));
 
+    if (tipsFile.existsAsFile())
+    {
+        StringArray strs;
+    }
 }

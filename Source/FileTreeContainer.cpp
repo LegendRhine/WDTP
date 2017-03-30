@@ -107,7 +107,7 @@ void FileTreeContainer::openProject (const File& project)
         return;
     }
 
-    // for backward compatibility (0.9.170217)
+    // for backward compatibility (before 0.9.170217)
     // check the file has been gziped or not
     MemoryBlock mb;
     realProject.loadFileAsData (mb);
@@ -127,6 +127,9 @@ void FileTreeContainer::openProject (const File& project)
                                      TRANS ("An invalid project file."));
         return;
     }
+    
+    // using backgroud thread to build the tips bank
+
 
     // load the project
     projectFile = realProject;

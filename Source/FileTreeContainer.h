@@ -84,7 +84,7 @@ public:
     static bool saveProject();
     const bool selectItemFromHtmlFile (const File& html);
 
-    // 2 core static objects. this's a BAD design I totally know that but it's handy :)
+    // core static objects. this's a BAD design I totally know that but it's handy :)
     static File projectFile;
     static ValueTree projectTree;
 

@@ -605,7 +605,7 @@ void DocTreeViewItem::renameSelectedItem()
             tree.setProperty ("name", newDocFile.getFileNameWithoutExtension(), nullptr);
 
             // tips bank
-            if (newDocFile.getFileNameWithoutExtension() == "tips"
+            if (newDocFile.getFileName() == "tips.md"
                 && newDocFile.getParentDirectory().getFileName() == "docs")
                 tree.setProperty ("hide", true, nullptr);
 

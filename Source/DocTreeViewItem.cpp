@@ -813,6 +813,14 @@ const File DocTreeViewItem::createDoc (const String& docName,
                          SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString (2), true),
                          nullptr);
 
+    // tipsBank
+    if (thisDoc.getFileNameWithoutExtension() == "tips"
+        && thisDoc.getParentDirectory().getFileName() == "docs")
+    {
+        docTree.setProperty ("title", TRANS ("Tips Bank"), nullptr);
+        docTree.setProperty ("hide", true, nullptr);
+    }
+
     // must update this tree before show this new item
     tree.removeListener (this);
     tree.addChild (docTree, 0, nullptr);

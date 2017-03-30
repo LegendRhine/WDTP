@@ -19,7 +19,7 @@ class MarkdownEditor :  public TextEditor,
                         public Slider::Listener,
                         public ChangeListener,
                         public FileDragAndDropTarget,
-                        public Timer,
+                        public MultiTimer,
                         private ActionListener
 {
 public:
@@ -47,8 +47,9 @@ public:
     virtual bool isInterestedInFileDrag (const StringArray& files) override;
     virtual void filesDropped (const StringArray& files, int x, int y) override;
     
-    /** for Chinese punc-matching */
-    virtual void timerCallback() override;
+    /** for Chinese punc-matching and show real-time tips */
+    virtual void timerCallback (int timerID) override;
+    enum TimerId { chinesePunc = 1, showTipsBank };
 
 private:
     //=============================================================================================

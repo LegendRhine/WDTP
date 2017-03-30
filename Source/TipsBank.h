@@ -15,7 +15,7 @@
 
     Tips format:
 
-    - key string 1
+    - key string 1 (must more than one character)
         - value string 1
     - key string 2
         - value string 2
@@ -29,7 +29,9 @@ public:
     juce_DeclareSingleton (TipsBank, true);
 
     void rebuildTipsBank();
-    const bool isRebuilding()           { return isThreadRunning(); }
+    const bool isRebuilding()                               { return isThreadRunning(); }
+
+    const HashMap<String, String>& getTipsBank() const      { return tipsBank; }
     
 private:
     TipsBank();

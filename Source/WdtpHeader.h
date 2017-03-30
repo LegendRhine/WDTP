@@ -29,6 +29,6 @@
 #include "StatisComp.h"
 #include "KeywordsComp.h"
 #include "RecordComp.h"
-
+#include "TipsBank.h"
 
 #endif  // HEADERGUA

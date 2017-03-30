@@ -129,7 +129,7 @@ void FileTreeContainer::openProject (const File& project)
     }
     
     // using backgroud thread to build the tips bank
-
+    TipsBank().rebuildTipsBank();
 
     // load the project
     projectFile = realProject;

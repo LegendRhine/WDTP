@@ -603,6 +603,12 @@ void DocTreeViewItem::renameSelectedItem()
         {
             // save the project file
             tree.setProperty ("name", newDocFile.getFileNameWithoutExtension(), nullptr);
+
+            // tips bank
+            if (newDocFile.getFileNameWithoutExtension() == "tips"
+                && newDocFile.getParentDirectory().getFileName() == "docs")
+                tree.setProperty ("hide", true, nullptr);
+
             needCreate (tree.getType().toString() == "doc" ? tree : FileTreeContainer::projectTree);
 
             // rename the site dir or html-file

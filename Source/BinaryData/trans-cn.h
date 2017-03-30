@@ -406,3 +406,5 @@ countries: cn
 "External Search Selection" = "外部搜索所选内容"
 "Bing..." = "必应..."
 "Wikipedia..." = "维基百科..."
+"Tips Bank" = "智库"
+"Rebuild Tips Bank" = "重建智库"

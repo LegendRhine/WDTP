@@ -75,7 +75,7 @@ void SetupPanel::showProjectProperties (const ValueTree& pTree)
         }
     }
 
-    projectProperties.add (new ChoicePropertyComponent (*values[renderDir], TRANS ("Template: "),
+    projectProperties.add (new ChoicePropertyComponent (*values[renderDir], TRANS ("Theme: "),
                                                         themeDirsSa, themeDirsVar));
 
     // render tpl-file

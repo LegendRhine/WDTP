@@ -278,9 +278,9 @@ void TopToolBar::popupSystemMenu()
     m.addItem (cleanUpLocal, TRANS ("Cleanup Needless Medias"), fileTreeContainer->hasLoadedProject());
     m.addSeparator();
 
-    m.addItem (exportTpl, TRANS ("Export Current Templates"), fileTreeContainer->hasLoadedProject());
-    m.addItem (importTpl, TRANS ("Import External Templates..."), fileTreeContainer->hasLoadedProject());
-    m.addItem (releaseSystemTpl, TRANS ("Reset/Repair Default Templates"), fileTreeContainer->hasLoadedProject());
+    m.addItem (exportTpl, TRANS ("Export Current Theme"), fileTreeContainer->hasLoadedProject());
+    m.addItem (importTpl, TRANS ("Import External Theme..."), fileTreeContainer->hasLoadedProject());
+    m.addItem (releaseSystemTpl, TRANS ("Reset/Repair Default Theme"), fileTreeContainer->hasLoadedProject());
     m.addSeparator();
 
     PopupMenu lanMenu;
@@ -934,7 +934,7 @@ void TopToolBar::exportCurrentTpls()
 //=================================================================================================
 void TopToolBar::importExternalTpls()
 {
-    FileChooser fc (TRANS ("Open Template File..."), File::nonexistent, "*.wtpl", true);
+    FileChooser fc (TRANS ("Open Theme File..."), File::nonexistent, "*.wtpl", true);
 
     if (fc.browseForFileToOpen())
     {
@@ -944,7 +944,7 @@ void TopToolBar::importExternalTpls()
         String message (zip.uncompressTo (FileTreeContainer::projectFile.getParentDirectory()).getErrorMessage());
 
         if (notZip)
-            message = TRANS ("Invalid templates file.");
+            message = TRANS ("Invalid theme file.");
 
         if (message.isNotEmpty() || notZip)
         {
@@ -998,9 +998,9 @@ void TopToolBar::releaseSystemTpls (const File& projectFile, const bool askAndSh
     if (askAndShowMessage)
     {
         if (Result::ok() == unzip && releaseLogo)
-            SHOW_MESSAGE (TRANS ("System TPLs reset/repair successful!"));
+            SHOW_MESSAGE (TRANS ("System theme reset/repair successful!"));
         else
-            SHOW_MESSAGE (TRANS ("System TPLs reset/repair failed!"));
+            SHOW_MESSAGE (TRANS ("System theme reset/repair failed!"));
     }
 }
 

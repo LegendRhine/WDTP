@@ -188,7 +188,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSubMenu (TRANS ("External Search Selection"), exSearch, docFile.existsAsFile());
         menu.addSeparator();
 
-        menu.addItem (showTips, TRANS ("Intelligence Tips/Replace") + "..." + ctrlStr + "G)", getHighlightedText().isNotEmpty());
+        menu.addItem (showTips, TRANS ("Tips/Replace") + "..." + ctrlStr + "G)", getHighlightedText().isNotEmpty());
         menu.addItem (joinTips, TRANS ("Add to Tips Bank") + "...", getHighlightedText().isNotEmpty());
         menu.addSeparator();
 
@@ -249,6 +249,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (searchByBing == index)         externalSearch (searchByBing);
     else if (searchByWiki == index)         externalSearch (searchByWiki);
     else if (showTips == index)             startTimer (showTipsBank, 50);
+    //else if (joinTips == index)             selectedAddToTipsBank ();
 
     else if (insertMedia == index)          insertMedias();
     else if (insertHyperlink == index)      hyperlinkInsert();

@@ -1402,17 +1402,16 @@ void MarkdownEditor::timerCallback (int timerID)
     else if (showTipsBank == timerID)
     {
         stopTimer (showTipsBank);
-
-        // get the last 2 characters if nothing has been selected
-        String chars (getTextInRange (Range<int> (getCaretPosition() - 2, getCaretPosition())));
-
-        if (getHighlightedText().isNotEmpty())
-            chars = getHighlightedText().trim();
-
         const HashMap<String, String>& tips (TipsBank::getInstance()->getTipsBank());
         
         if (tips.size() > 0)
         {
+            // get the last 2 characters if nothing has been selected
+            String chars (getTextInRange (Range<int> (getCaretPosition() - 2, getCaretPosition())));
+
+            if (getHighlightedText().isNotEmpty())
+                chars = getHighlightedText().trim();
+
             PopupMenu tipsMenu;
             StringArray menuItems;
             menuItems.add (String());
@@ -1446,7 +1445,6 @@ void MarkdownEditor::timerCallback (int timerID)
                 }
             }
         }
-
     }
 }
 

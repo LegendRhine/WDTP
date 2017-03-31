@@ -939,6 +939,13 @@ void DocTreeViewItem::deleteSelected()
                     File (mediaFileName.replace ("site", "docs")).moveToTrash();
                 }
 
+                // cleanup tips bank if it is
+                if (mdFile.getFileName() == "tips.md"
+                    && mdFile.getParentDirectory().getFileName() == "docs")
+                { 
+                    TipsBank::getInstance()->cleanupTipsBank();
+                }
+
                 // delete the two-files
                 mdFile.moveToTrash();
                 siteFile.deleteRecursively();

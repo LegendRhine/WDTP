@@ -1203,7 +1203,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key.getKeyCode() == 0)
     {
         puncMatchingForChinese (key);
-        //startTimer (showTipsBank, 100);
+        startTimer (showTipsBank, 100);
         return true;
     }
 
@@ -1219,7 +1219,13 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
     //DBGX (key.getKeyCode());
     const bool returnValue = TextEditor::keyPressed (key);
-    //startTimer (showTipsBank, 100);
+
+    if (key != KeyPress::deleteKey && key != KeyPress::backspaceKey
+        && key != KeyPress::upKey && key != KeyPress::downKey
+        && key != KeyPress::leftKey && key != KeyPress::rightKey
+        && key != KeyPress::pageUpKey && key != KeyPress::pageDownKey
+        && key != KeyPress::spaceKey)
+        startTimer (showTipsBank, 100);
 
     return returnValue;
 }
@@ -1337,6 +1343,9 @@ void MarkdownEditor::timerCallback (int timerID)
         if (tips.size() > 0)
         {
             PopupMenu tipsMenu;
+            StringArray menuItems;
+            menuItems.add (String());
+
             int i = 1;
 
             for (HashMap<String, String>::Iterator itr (tips); itr.next(); )
@@ -1344,13 +1353,23 @@ void MarkdownEditor::timerCallback (int timerID)
                 if (itr.getKey().containsIgnoreCase (last2Chars))
                 {
                     tipsMenu.addItem (i, itr.getValue());
+                    menuItems.add (itr.getValue());
                     ++i;
                 }
             }
 
             if (tipsMenu.getNumItems() > 0)
             {
-                tipsMenu.show();
+                const int index = tipsMenu.showAt (getCaretRectangle()
+                                                   .translated (getScreenBounds().getX() + 12,
+                                                                getScreenBounds().getY() + 12));
+
+                if (index != 0)
+                {
+                    const int currentPos = getCaretPosition();
+                    insertTextAtCaret (menuItems[index]);
+                    setCaretPosition (currentPos);
+                }
             }
         }
 

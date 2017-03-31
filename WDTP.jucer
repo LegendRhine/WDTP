@@ -10,7 +10,7 @@
       <GROUP id="{5C5311BB-5266-DB1B-DE96-35AA97A1E8E3}" name="BinaryData">
         <FILE id="m7JCCc" name="close.png" compile="0" resource="1" file="Source/BinaryData/close.png"/>
         <FILE id="XtkbJO" name="cut.png" compile="0" resource="1" file="Source/BinaryData/cut.png"/>
-        <FILE id="mzR42T" name="icon.jpg" compile="0" resource="1" file="Source/BinaryData/icon.jpg"/>
+        <FILE id="aUWz9M" name="icon.png" compile="0" resource="1" file="Source/BinaryData/icon.png"/>
         <FILE id="UJVgtK" name="logo.png" compile="0" resource="1" file="Source/BinaryData/logo.png"/>
         <FILE id="BxDKu0" name="mic.png" compile="0" resource="1" file="Source/BinaryData/mic.png"/>
         <FILE id="y5tJ2y" name="next.png" compile="0" resource="1" file="Source/BinaryData/next.png"/>
@@ -90,7 +90,7 @@
     </GROUP>
   </MAINGROUP>
   <EXPORTFORMATS>
-    <VS2015 targetFolder="Builds/VisualStudio2015" smallIcon="mzR42T" bigIcon="mzR42T"
+    <VS2015 targetFolder="Builds/VisualStudio2015" smallIcon="aUWz9M" bigIcon="aUWz9M"
             externalLibraries="" toolset="v140_xp" extraDefs="" extraLinkerFlags=""
             userNotes="This for Windows 10 x64">
       <CONFIGURATIONS>
@@ -115,7 +115,7 @@
         <MODULEPATH id="juce_audio_processors" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </VS2015>
-    <XCODE_MAC targetFolder="Builds/MacOSX" smallIcon="mzR42T" bigIcon="mzR42T"
+    <XCODE_MAC targetFolder="Builds/MacOSX" smallIcon="aUWz9M" bigIcon="aUWz9M"
                extraLinkerFlags="">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/Debug"
@@ -138,7 +138,7 @@
         <MODULEPATH id="juce_audio_processors" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <VS2012 targetFolder="Builds/VisualStudio2012" smallIcon="mzR42T" bigIcon="mzR42T"
+    <VS2012 targetFolder="Builds/VisualStudio2012" smallIcon="aUWz9M" bigIcon="aUWz9M"
             toolset="v110_xp" extraDefs="" extraCompilerFlags="">
       <CONFIGURATIONS>
         <CONFIGURATION name="w32-Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"

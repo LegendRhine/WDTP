@@ -1203,7 +1203,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key.getKeyCode() == 0)
     {
         puncMatchingForChinese (key);
-        startTimer (showTipsBank, 20);
+        //startTimer (showTipsBank, 100);
         return true;
     }
 
@@ -1219,7 +1219,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
     //DBGX (key.getKeyCode());
     const bool returnValue = TextEditor::keyPressed (key);
-    startTimer (showTipsBank, 20);
+    //startTimer (showTipsBank, 100);
 
     return returnValue;
 }

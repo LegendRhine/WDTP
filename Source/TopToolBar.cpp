@@ -268,8 +268,8 @@ void TopToolBar::popupSystemMenu()
     m.addSeparator();
 
     m.addItem (closePjt, TRANS ("Close Project"), fileTreeContainer->hasLoadedProject());
-    m.addItem (rebuildTips, TRANS ("Rebuild Tips Bank"), fileTreeContainer->hasLoadedProject() 
-               && !TipsBank::getInstance()->isRebuilding());
+    /*m.addItem (rebuildTips, TRANS ("Rebuild Tips Bank"), fileTreeContainer->hasLoadedProject() 
+               && !TipsBank::getInstance()->isRebuilding());*/
     m.addSeparator();
 
     m.addCommandItem (cmdManager, generateCurrent);

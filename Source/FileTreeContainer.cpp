@@ -130,7 +130,7 @@ void FileTreeContainer::openProject (const File& project)
     
     // load the project and build tips bank
     projectFile = realProject;
-    //TipsBank::getInstance()->rebuildTipsBank();
+    TipsBank::getInstance()->rebuildTipsBank();
 
     sorter = new ItemSorter (projectTree);
     docTreeItem = new DocTreeViewItem (projectTree, this, sorter);

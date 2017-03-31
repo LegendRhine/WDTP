@@ -408,3 +408,6 @@ countries: cn
 "Wikipedia..." = "维基百科..."
 "Tips Bank" = "智库"
 "Rebuild Tips Bank" = "重建智库"
+"Tips bank rebuild successful!" ="智库重建成功！"
+"You haven't define any tips." = "尚未定义任何提示条目。"
+"The root/tips doc hasn't been created." = "尚未创建项目根目录下的tips智库文档。"

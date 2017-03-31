@@ -268,8 +268,8 @@ void TopToolBar::popupSystemMenu()
     m.addSeparator();
 
     m.addItem (closePjt, TRANS ("Close Project"), fileTreeContainer->hasLoadedProject());
-    /*m.addItem (rebuildTips, TRANS ("Rebuild Tips Bank"), fileTreeContainer->hasLoadedProject() 
-               && !TipsBank::getInstance()->isRebuilding());*/
+    m.addItem (rebuildTips, TRANS ("Rebuild Tips Bank"), fileTreeContainer->hasLoadedProject() 
+               && !TipsBank::getInstance()->isRebuilding());
     m.addSeparator();
 
     m.addCommandItem (cmdManager, generateCurrent);
@@ -345,10 +345,25 @@ void TopToolBar::systemMenuPerform (const int index)
                                             + String (CharPointer_UTF8 ("\xe5\xb1\xb1\xe6\xb9\x96\xe5\xbd\x95")) 
                                             + ")", "2017");
 
+    // rebuild tips bank
     else if (index == rebuildTips)
     {
         editAndPreview->saveCurrentDocIfChanged();
-        TipsBank::getInstance()->rebuildTipsBank();
+        const File& tipsFile (FileTreeContainer::projectFile.getSiblingFile ("docs").getChildFile ("tips.md"));
+
+        if (tipsFile.existsAsFile())
+        {
+            TipsBank::getInstance()->rebuildTipsBank();
+
+            if (TipsBank::getInstance()->getTipsBank().size() > 0)
+                SHOW_MESSAGE (TRANS ("Tips bank rebuild successful!"));
+            else
+                SHOW_MESSAGE (TRANS ("You haven't define any tips."));
+        }
+        else
+        {
+            SHOW_MESSAGE (TRANS ("The root/tips doc hasn't been created."));
+        }
     }
 
 

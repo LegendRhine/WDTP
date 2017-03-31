@@ -33,7 +33,7 @@ public:
     const HashMap<String, String>& getTipsBank() const      { return tipsBank; }
     void cleanupTipsBank()                                  { tipsBank.clear(); }
 
-    /** if the tip's name has been there, it will not add and return false. */
+    /** Will do nothing and return false if the name (key) has been there already. */
     const bool addNewTip (const String& name, const String& content);
     
 private:

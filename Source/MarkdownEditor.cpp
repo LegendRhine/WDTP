@@ -249,7 +249,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (searchByBing == index)         externalSearch (searchByBing);
     else if (searchByWiki == index)         externalSearch (searchByWiki);
     else if (showTips == index)             startTimer (showTipsBank, 50);
-    //else if (joinTips == index)             selectedAddToTipsBank ();
+    else if (joinTips == index)             selectedAddToTipsBank();
 
     else if (insertMedia == index)          insertMedias();
     else if (insertHyperlink == index)      hyperlinkInsert();
@@ -1262,6 +1262,49 @@ const bool MarkdownEditor::puncMatchingForChinese (const KeyPress& key)
     startTimer (chinesePunc, 5);    
 
     return returnValue;
+}
+
+//=================================================================================================
+void MarkdownEditor::selectedAddToTipsBank()
+{
+    if (parent->getCurrentDocFile().getFileName() == "tips.md"
+        && parent->getCurrentDocFile().getParentDirectory().getFileName() == "docs")
+        return;
+
+    const File& tipsFile (FileTreeContainer::projectFile.getSiblingFile ("docs").getChildFile ("tips.md"));
+
+    if (tipsFile.existsAsFile())
+    {
+        AlertWindow dialog (TRANS ("Addd a new tip"), TRANS ("Please input the new tip's name."),
+                            AlertWindow::InfoIcon);
+
+        dialog.addTextEditor ("name", String());
+        dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
+        dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
+
+        if (0 == dialog.runModalLoop())
+        {
+            const String& tipName (dialog.getTextEditor ("name")->getText().trim());
+            
+            if (tipsFile.appendText (newLine 
+                                     + "- " + tipName + newLine 
+                                     + "    - " + getHighlightedText().trim()))
+            {
+                if (TipsBank::getInstance()->addNewTip (tipName, getHighlightedText().trim()))
+                    SHOW_MESSAGE (TRANS ("A new tip has been added successful!"));
+                else
+                    SHOW_MESSAGE (TRANS ("This tip has been there already."));
+            }
+            else
+            {
+                SHOW_MESSAGE (TRANS ("Shomehow this tip added failed."));
+            }
+        }
+    }
+    else
+    {
+        SHOW_MESSAGE (TRANS ("Cannot find 'root/tips'!\nPlease create the tips doc first."));
+    }
 }
 
 //=================================================================================================

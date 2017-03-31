@@ -126,6 +126,7 @@ private:
     void inlineFormat (const int formatIndex);
 
     const bool puncMatchingForChinese (const KeyPress& key);
+    void selectedAddToTipsBank();
 
     //=============================================================================================
     EditAndPreview* parent;

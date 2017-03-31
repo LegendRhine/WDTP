@@ -228,7 +228,7 @@ void EditAndPreview::previewCurrentDoc()
                               "  <head>\n"
                               "    <meta charset=\"UTF-8\">\n"
                               "  </head>\n"
-                              "  <body bgcolor=\"#a1a1a1\">\n"
+                              "  <body bgcolor=\"#cccccc\">\n"
                               "<p>\n &emsp;");
 
         File urlFile (File::getSpecialLocation (File::tempDirectory).getSiblingFile ("404.html"));
@@ -363,6 +363,13 @@ const bool EditAndPreview::saveCurrentDocIfChanged()
             docHasChanged = false;
             setupPanel->showDocProperties (false, docOrDirTree);
             returnValue = FileTreeContainer::saveProject();
+
+            // rebuild tips bank
+            if (docOrDirFile.getFileName() == "tips.md" 
+                && docOrDirFile.getParentDirectory().getFileName() == "docs")
+            {
+                TipsBank::getInstance()->rebuildTipsBank();
+            }
         }
         else
         {

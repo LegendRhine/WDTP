@@ -408,3 +408,5 @@ countries: cn
 "Wikipedia..." = "维基百科..."
 "Tips Bank" = "智库"
 "Rebuild Tips Bank" = "重建智库"
+"Intelligence Tips/Replace" = "智能提示与替换"
+"Add to Tips Bank" = "加入智库"

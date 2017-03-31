@@ -177,8 +177,8 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSeparator();
 
         // search
-        menu.addItem (searchNext, TRANS ("Search Next Selection") + "  F3", getHighlightedText().isNotEmpty());
-        menu.addItem (searchPrev, TRANS ("Search Prev Selection") + "  Shift + F3", getHighlightedText().isNotEmpty());
+        menu.addItem (searchNext, TRANS ("Search Next Selection") + "  (F3)", getHighlightedText().isNotEmpty());
+        menu.addItem (searchPrev, TRANS ("Search Prev Selection") + "  (Shift + F3)", getHighlightedText().isNotEmpty());
 
         PopupMenu exSearch;
         exSearch.addItem (searchByGoogle, "Google...", getHighlightedText().isNotEmpty());
@@ -186,6 +186,10 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         exSearch.addItem (searchByWiki, TRANS ("Wikipedia..."), getHighlightedText().isNotEmpty());
 
         menu.addSubMenu (TRANS ("External Search Selection"), exSearch, docFile.existsAsFile());
+        menu.addSeparator();
+
+        menu.addItem (showTips, TRANS ("Intelligence Tips/Replace") + "..." + ctrlStr + "G)", getHighlightedText().isNotEmpty());
+        menu.addItem (joinTips, TRANS ("Add to Tips Bank") + "...", getHighlightedText().isNotEmpty());
         menu.addSeparator();
 
         TextEditor::addPopupMenuItems (menu, e);
@@ -244,6 +248,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (searchByGoogle == index)       externalSearch (searchByGoogle);
     else if (searchByBing == index)         externalSearch (searchByBing);
     else if (searchByWiki == index)         externalSearch (searchByWiki);
+    else if (showTips == index)             startTimer (showTipsBank, 50);
 
     else if (insertMedia == index)          insertMedias();
     else if (insertHyperlink == index)      hyperlinkInsert();
@@ -1001,6 +1006,13 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         return true;
     }
 
+    // ctrl + G for show tips
+    else if (key == KeyPress (KeyPress::returnKey, ModifierKeys::commandModifier, 0))
+    {
+        if (getHighlightedText().isNotEmpty())
+            startTimer (showTipsBank, 50);
+    }
+
     // return-key 
     else if (key == KeyPress (KeyPress::returnKey))
     {
@@ -1220,12 +1232,23 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     //DBGX (key.getKeyCode());
     const bool returnValue = TextEditor::keyPressed (key);
 
+    // show tips
     if (key != KeyPress::deleteKey && key != KeyPress::backspaceKey
         && key != KeyPress::upKey && key != KeyPress::downKey
         && key != KeyPress::leftKey && key != KeyPress::rightKey
         && key != KeyPress::pageUpKey && key != KeyPress::pageDownKey
-        && key != KeyPress::spaceKey)
+        && key != KeyPress::spaceKey
+        && key != KeyPress (KeyPress::leftKey, ModifierKeys::shiftModifier, 0)
+        && key != KeyPress (KeyPress::rightKey, ModifierKeys::shiftModifier, 0)
+        && key != KeyPress (KeyPress::upKey, ModifierKeys::shiftModifier, 0)
+        && key != KeyPress (KeyPress::downKey, ModifierKeys::shiftModifier, 0)
+        && key != KeyPress (KeyPress::pageUpKey, ModifierKeys::shiftModifier, 0)
+        && key != KeyPress (KeyPress::pageDownKey, ModifierKeys::shiftModifier, 0)
+        && key != KeyPress ('z', ModifierKeys::commandModifier, 0)
+        && key != KeyPress ('y', ModifierKeys::commandModifier, 0))
+    {
         startTimer (showTipsBank, 100);
+    }
 
     return returnValue;
 }
@@ -1336,8 +1359,12 @@ void MarkdownEditor::timerCallback (int timerID)
     {
         stopTimer (showTipsBank);
 
-        // get the last 2 characters
-        const String& last2Chars (getTextInRange (Range<int> (getCaretPosition() - 2, getCaretPosition())));
+        // get the last 2 characters if nothing has been selected
+        String chars (getTextInRange (Range<int> (getCaretPosition() - 2, getCaretPosition())));
+
+        if (getHighlightedText().isNotEmpty())
+            chars = getHighlightedText().trim();
+
         const HashMap<String, String>& tips (TipsBank::getInstance()->getTipsBank());
         
         if (tips.size() > 0)
@@ -1350,7 +1377,7 @@ void MarkdownEditor::timerCallback (int timerID)
 
             for (HashMap<String, String>::Iterator itr (tips); itr.next(); )
             {
-                if (itr.getKey().containsIgnoreCase (last2Chars))
+                if (itr.getKey().containsIgnoreCase (chars))
                 {
                     tipsMenu.addItem (i, itr.getValue());
                     menuItems.add (itr.getValue());
@@ -1367,8 +1394,11 @@ void MarkdownEditor::timerCallback (int timerID)
                 if (index != 0)
                 {
                     const int currentPos = getCaretPosition();
+                    const bool isSelectSomething = getHighlightedText().isNotEmpty();
                     insertTextAtCaret (menuItems[index]);
-                    setCaretPosition (currentPos);
+
+                    if (!isSelectSomething)
+                        setCaretPosition (currentPos);
                 }
             }
         }

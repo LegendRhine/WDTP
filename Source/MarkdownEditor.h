@@ -70,6 +70,7 @@ private:
         latestPublish, latestModify, featuredArticle, 
         allKeywords, randomArticle, allPublish, allModify,
         searchNext, searchPrev, searchByGoogle, searchByBing, searchByWiki,
+        showTips, joinTips,
         fontSize, fontColor, setBackground, resetDefault,
         outlineMenu
     };

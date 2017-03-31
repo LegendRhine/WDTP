@@ -15,8 +15,16 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
                                        const File& tplFile,
                                        const File& htmlFile)
 {
-    String tplStr (tplFile.existsAsFile() ? tplFile.loadFileAsString()
-                   : TRANS ("Please specify a template file. "));
+    const String noTplStr ("<!doctype html>\n"
+                          "<html lang=\"en\">\n"
+                          "  <head>\n"
+                          "    <meta charset=\"UTF-8\">\n"
+                          "  </head>\n"
+                          "  <body bgcolor=\"#cccccc\">\n"
+                          "<p>\n &emsp;" + TRANS ("Please specify a template file. ")
+                          + "\n  </body>\n</html>");
+
+    String tplStr (tplFile.existsAsFile() ? tplFile.loadFileAsString() : noTplStr);
 
     // md to html
     const File mdDoc (DocTreeViewItem::getMdFileOrDir (docTree));
@@ -476,7 +484,14 @@ const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
             if (tplStr.isEmpty())
             {
                 indexHtml.create();
-                indexHtml.appendText (TRANS ("Please specify a template file. "));
+                indexHtml.appendText ("<!doctype html>\n"
+                                       "<html lang=\"en\">\n"
+                                       "  <head>\n"
+                                       "    <meta charset=\"UTF-8\">\n"
+                                       "  </head>\n"
+                                       "  <body bgcolor=\"#cccccc\">\n"
+                                       "<p>\n &emsp;" + TRANS ("Please specify a template file. ")
+                                       + "\n  </body>\n</html>");
 
                 return indexHtml;
             }

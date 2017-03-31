@@ -104,7 +104,7 @@ private:
 public:
     enum MenuAndCmdIndex 
     {
-        newPjt = 1, openPjt, closePjt, rebuildTips, 
+        newPjt = 1, openPjt, closePjt,  
         packPjt, unpackPjt,
         generateCurrent, generateNeeded, generateWhole, cleanUpLocal,
         exportTpl, importTpl, releaseSystemTpl, /*rebuildKeywords,*/

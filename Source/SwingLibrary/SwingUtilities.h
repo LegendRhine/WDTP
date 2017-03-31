@@ -299,7 +299,7 @@ public:
     {
         addAndMakeVisible (label = new Label());
 
-        label->setFont (SwingUtilities::getFontSize() - 1.0f);
+        label->setFont (SwingUtilities::getFontSize() - 2.0f);
         label->setColour (Label::textColourId, Colours::whitesmoke.withAlpha (0.85f));
         label->setJustificationType (Justification::centred);
         label->setBounds (5, 5, getWidth() - 10, getHeight() - 10);

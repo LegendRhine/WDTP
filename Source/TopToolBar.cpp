@@ -301,6 +301,7 @@ void TopToolBar::popupSystemMenu()
 
     // site url..
     PopupMenu siteUrls;
+    siteUrls.addItem (updateList, TRANS ("Update List..."), true);
     siteUrls.addItem (gettingStarted, TRANS ("Getting Started..."), true);
     siteUrls.addItem (syntax, TRANS ("Text Mark Syntax and Demo..."), true);
     siteUrls.addItem (faq, TRANS ("FAQ..."), true);
@@ -335,6 +336,7 @@ void TopToolBar::systemMenuPerform (const int index)
     else if (index == resetUiColor)     resetUiColour();
     else if (index == setupAudio)       setupAudioDevice();
     else if (index == checkNewVersion)  URL ("http://underwaySoft.com/works/wdtp/download.html").launchInDefaultBrowser();
+    else if (index == updateList)       URL ("http://underwaysoft.com/works/wdtp/updateList.html").launchInDefaultBrowser();
     else if (index == gettingStarted)   URL ("http://underwaysoft.com/works/wdtp/gettingStarted.html").launchInDefaultBrowser();
     else if (index == syntax)           URL ("http://underwaysoft.com/works/wdtp/syntaxMark.html").launchInDefaultBrowser();
     else if (index == faq)              URL ("http://underwaysoft.com/works/wdtp/faq.html").launchInDefaultBrowser();

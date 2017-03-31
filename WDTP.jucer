@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="iAHZG1" name="WDTP" projectType="guiapp" version="0.9.0324"
+<JUCERPROJECT id="iAHZG1" name="WDTP" projectType="guiapp" version="0.9.0331"
               bundleIdentifier="com.yourcompany.WDTP" includeBinaryInAppConfig="1"
               jucerVersion="4.3.1" userNotes="Start:        2016.09.03&#10;0.9 Alpha: 2017.01.31"
               companyName="UnderwaySoft" companyWebsite="http://www.underwaySoft.com"
@@ -91,7 +91,7 @@
   </MAINGROUP>
   <EXPORTFORMATS>
     <VS2015 targetFolder="Builds/VisualStudio2015" smallIcon="mzR42T" bigIcon="mzR42T"
-            externalLibraries="" toolset="v140" extraDefs="" extraLinkerFlags=""
+            externalLibraries="" toolset="v140_xp" extraDefs="" extraLinkerFlags=""
             userNotes="This for Windows 10 x64">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"

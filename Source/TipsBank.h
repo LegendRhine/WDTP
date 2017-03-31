@@ -11,7 +11,7 @@
 #ifndef TIPSBANK_H_INCLUDED
 #define TIPSBANK_H_INCLUDED
 
-/** Extrct the content of 'project/docs/tips.md' and build/process the tips bank.
+/** Extract the content of 'project/docs/tips.md' and build/process the tips bank.
 
     Tips format:
 
@@ -37,7 +37,7 @@ public:
     const bool addNewTip (const String& name, const String& content);
     
 private:
-    TipsBank();    
+    TipsBank();
     virtual void run() override;
 
     HashMap<String, String> tipsBank;

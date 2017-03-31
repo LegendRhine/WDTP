@@ -416,3 +416,4 @@ countries: cn
 "A new tip has been added successful!" = "新提示添加成功！"
 "Shomehow this tip added failed." = "不知为何，没能添加此提示."
 "This tip has been there already." = "此提示已经存在，未能添加。"
+"bit" = "位"

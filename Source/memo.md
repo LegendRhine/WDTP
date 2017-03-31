@@ -12,7 +12,7 @@
 	- editorBackground
 
 ### Project File
-- '.wdtp' for the normal project file, the packed project is '.wpck', '.wtpl' is the templates when it has been exported.
+- '.wdtp' for the normal project file, the packed project is '.wpck', '.wtpl' is the theme when it has been exported.
 - It uses ValueTree (data-model), TreeView (UI) and TreeViewItems (controller) to manage/display/operate all the items which recorded in the project file.
 - The structure of project is same as the structure of local-disk file system, however it doesn't include any 'media' or other folder/files.
 

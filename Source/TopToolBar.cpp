@@ -966,12 +966,12 @@ void TopToolBar::releaseSystemTpls (const File& projectFile, const bool askAndSh
     if (askAndShowMessage)
     {
         if (!AlertWindow::showOkCancelBox (AlertWindow::WarningIcon, TRANS ("Confirm"),
-                                           TRANS ("This operate will overwrite your current templates!\n"
+                                           TRANS ("This operate will overwrite your current theme!\n"
                                                   "Do you really want to do it?")))
             return;
     }
 
-    // release templates in 'themes/..' and css/js, image files in 'site/add-in'
+    // release default themes in 'themes/..' and css/js, image files in 'site/add-in'
     const File projectRoot (projectFile.getParentDirectory());
     MemoryInputStream inputSteam (BinaryData::SiteData_zip, BinaryData::SiteData_zipSize, false);
     ZipFile zip (inputSteam);

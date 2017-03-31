@@ -35,6 +35,16 @@ void TipsBank::rebuildTipsBank()
 }
 
 //=================================================================================================
+const bool TipsBank::addNewTip (const String& name, const String& content)
+{
+    if (tipsBank.contains (name))
+        return false;
+
+    tipsBank.set (name, content);
+    return true;
+}
+
+//=================================================================================================
 void TipsBank::run()
 {
     tipsBank.clear();

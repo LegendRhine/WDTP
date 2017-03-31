@@ -27,11 +27,13 @@ public:
     ~TipsBank();
     
     juce_DeclareSingleton (TipsBank, true);
-
     void rebuildTipsBank();
-    const bool isRebuilding()                               { return isThreadRunning(); }
 
+    const bool isRebuilding()                               { return isThreadRunning(); }
     const HashMap<String, String>& getTipsBank() const      { return tipsBank; }
+
+    /** if the tip's name has been there, it will not add and return false. */
+    const bool addNewTip (const String& name, const String& content);
     
 private:
     TipsBank();

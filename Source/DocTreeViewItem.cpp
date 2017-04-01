@@ -377,6 +377,12 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addSeparator();
 
         m.addItem (replaceIn, TRANS ("Replace Content..."), exist && onlyOneSelected);
+
+        // remind items
+        PopupMenu remindMenu;
+        remindMenu.addItem (setRemind, TRANS ("Postpone/Advance") + "...");
+        remindMenu.addItem (setRemind, TRANS ("Clear All") + "...");
+        m.addSubMenu (TRANS ("Remind/Review"), remindMenu);
         m.addSeparator();
 
         m.addItem (rename, TRANS ("Rename..."), !isRoot && onlyOneSelected);

@@ -117,7 +117,8 @@ private:
         packWholeSite, packHtmls, packMedias,
         exportTextDoc, exportDocs, dataStatis, keywordsTable, getItemPath,
         copyForAnotherProject, pasteFromAnotherProject,
-        replaceIn, rename, deleteThis, 
+        replaceIn, setRemind, clearRemind,
+        rename, deleteThis, 
         viewInFinder, openInExEditor, browseInEx
     };
 

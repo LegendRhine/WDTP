@@ -184,6 +184,17 @@ void FileTreeContainer::closeProject()
 }
 
 //=================================================================================================
+const Array<TreeViewItem*> FileTreeContainer::getSelectedItems() const
+{
+    Array<TreeViewItem*> items;
+
+    for (int i = fileTree.getNumSelectedItems(); --i >= 0; )
+        items.add (fileTree.getSelectedItem (i));
+
+    return items;
+}
+
+//=================================================================================================
 const bool FileTreeContainer::saveOpenSateAndSelect (const bool alsoSaveProject)
 {
     if (projectTree.isValid())

@@ -71,6 +71,7 @@ public:
     void openProject (const File& projectFile);
     void closeProject();
 
+    const Array<TreeViewItem*> getSelectedItems() const;
     const bool saveOpenSateAndSelect (const bool alsoSaveProject);
     const bool saveDocAndProject();
 

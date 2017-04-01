@@ -156,7 +156,7 @@
 - Ctrl + D: switch silent/full mode
 - Ctrl + E: 
 - Ctrl + F: active search
-- Ctrl + G: 
+- Ctrl + G: popup tips for the selected text (if it has)
 - Ctrl + H: insert text hyper link (text mark syntax)
 - Ctrl + I: italic (text mark syntax)
 - Ctrl + J: popup outline menu of editor

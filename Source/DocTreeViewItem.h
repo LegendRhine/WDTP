@@ -145,8 +145,9 @@ private:
     void crossProjectCopy();  // only for single doc
     void crossProjectPaste();
 
-    void setRemind();
-    void setRemind (ValueTree thisTree, const int days);
+    void setRemind() const;
+    static void setRemind (ValueTree thisTree, const int days);
+    static void getRemindNumbers (ValueTree treeForCheck, int& nums);
 
     //=========================================================================
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;

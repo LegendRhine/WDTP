@@ -306,6 +306,10 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
     const bool isRoot = (tree.getType().toString() == "wdtpProject");
     const bool onlyOneSelected = getOwnerView()->getNumSelectedItems() == 1;
     const bool isCrossPaste = File::getSpecialLocation (File::tempDirectory).getChildFile ("wdtpCrossCopy").existsAsFile();
+    
+    int remindNumbers = 0;
+    getRemindNumbers (tree, remindNumbers);
+    const bool hasRemind = (remindNumbers > 0);
 
     jassert (sorter != nullptr);
 
@@ -377,7 +381,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addSeparator();
 
         m.addItem (replaceIn, TRANS ("Replace Content..."), exist && onlyOneSelected);
-        m.addItem (remindSet, TRANS ("Set Remind Date") + "...", !isDoc && onlyOneSelected);
+        m.addItem (remindSet, TRANS ("Set Remind Date") + "...", !isDoc && onlyOneSelected && hasRemind);
         m.addSeparator();
 
         m.addItem (rename, TRANS ("Rename..."), !isRoot && onlyOneSelected);
@@ -1073,7 +1077,7 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
 }
 
 //=================================================================================================
-void DocTreeViewItem::setRemind()
+void DocTreeViewItem::setRemind() const
 {
     AlertWindow dialog (TRANS ("Please input a day number"), 
                         TRANS ("Positive for postpone, negative for advance,") + newLine
@@ -1111,7 +1115,6 @@ void DocTreeViewItem::setRemind (ValueTree thisTree, const int days)
                                                                 .replace (" ", String())));
             remindDate += RelativeTime::days (days);
             dateStr = SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getTimeString (remindDate), true);
-            DBGX (dateStr);
             thisTree.setProperty ("reviewDate", dateStr, nullptr);
         }
     }
@@ -1119,6 +1122,21 @@ void DocTreeViewItem::setRemind (ValueTree thisTree, const int days)
     {
         for (int i = thisTree.getNumChildren(); --i >= 0; )
             setRemind (thisTree.getChild (i), days);
+    }
+}
+
+//=================================================================================================
+void DocTreeViewItem::getRemindNumbers (ValueTree treeForCheck, int& nums)
+{
+    if (treeForCheck.getType().toString() == "doc")
+    {
+        if (treeForCheck.getProperty ("reviewDate").toString().isNotEmpty())
+            ++nums;
+    }
+    else
+    {
+        for (auto v : treeForCheck)
+            getRemindNumbers (v, nums);
     }
 }
 

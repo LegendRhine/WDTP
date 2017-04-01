@@ -381,7 +381,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addSeparator();
 
         m.addItem (replaceIn, TRANS ("Replace Content..."), exist && onlyOneSelected);
-        m.addItem (remindSet, TRANS ("Set Remind Date") + "...", !isDoc && onlyOneSelected && hasRemind);
+        m.addItem (remindSet, TRANS ("Batch set Remind Date") + "...", !isDoc && onlyOneSelected && hasRemind);
         m.addSeparator();
 
         m.addItem (rename, TRANS ("Rename..."), !isRoot && onlyOneSelected);

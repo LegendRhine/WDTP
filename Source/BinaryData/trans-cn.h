@@ -418,3 +418,8 @@ countries: cn
 "This tip has been there already." = "此提示已经存在，未能添加。"
 "bit" = "位"
 "Update List..." = "更新记录..."
+"Set Remind Date" = "设置提醒日期"
+"Please input a day number" = "请输入一个数字（天数）"
+"Positive for postpone, negative for advance," = "正数为推迟的天数，负数为提前的天数，"
+"0 or non numeric for clear." = "0或非数字则清除已设置的提醒日期。"
+"If a doc have no remind date, it will not be effected." = "如果某个文档未设置提醒日期，则不受此操作影响。"

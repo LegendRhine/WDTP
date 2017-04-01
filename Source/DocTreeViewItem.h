@@ -117,7 +117,7 @@ private:
         packWholeSite, packHtmls, packMedias,
         exportTextDoc, exportDocs, dataStatis, keywordsTable, getItemPath,
         copyForAnotherProject, pasteFromAnotherProject,
-        replaceIn, setRemind, clearRemind,
+        replaceIn, remindSet,
         rename, deleteThis, 
         viewInFinder, openInExEditor, browseInEx
     };
@@ -145,6 +145,9 @@ private:
     void crossProjectCopy();  // only for single doc
     void crossProjectPaste();
 
+    void setRemind();
+    void setRemind (ValueTree thisTree, const int days);
+
     //=========================================================================
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
     void valueTreeChildAdded (ValueTree& parentTree, ValueTree&) override;
@@ -161,7 +164,7 @@ private:
     bool allowShowMenu;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DocTreeViewItem)
-
+        
 };
 
 

@@ -377,12 +377,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addSeparator();
 
         m.addItem (replaceIn, TRANS ("Replace Content..."), exist && onlyOneSelected);
-
-        // remind items
-        PopupMenu remindMenu;
-        remindMenu.addItem (setRemind, TRANS ("Postpone/Advance") + "...");
-        remindMenu.addItem (setRemind, TRANS ("Clear All") + "...");
-        m.addSubMenu (TRANS ("Remind/Review"), remindMenu);
+        m.addItem (remindSet, TRANS ("Set Remind Date") + "...", !isDoc && onlyOneSelected);
         m.addSeparator();
 
         m.addItem (rename, TRANS ("Rename..."), !isRoot && onlyOneSelected);
@@ -449,12 +444,15 @@ void DocTreeViewItem::menuPerform (const int index)
     else if (index == packWholeSite)            packSiteData (true, true);
     else if (index == exportTextDoc)            exportAsTextDoc();
     else if (index == exportDocs)               exportAsHtml();
+
     else if (index == dataStatis)               statistics();
     else if (index == keywordsTable)            showKeywordsTable();
     else if (index == getItemPath)              getPath();
     else if (index == copyForAnotherProject)    crossProjectCopy();
     else if (index == pasteFromAnotherProject)  crossProjectPaste();
     else if (index == replaceIn)                replaceContent();
+    else if (index == remindSet)                setRemind();
+
     else if (index == rename)                   renameSelectedItem();
     else if (index == deleteThis)               deleteSelected();
     else if (index == viewInFinder)             getMdFileOrDir (tree).revealToUser();
@@ -1071,6 +1069,56 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
         refreshDisplay();
         treeHasChanged();
         setOpen (true);
+    }
+}
+
+//=================================================================================================
+void DocTreeViewItem::setRemind()
+{
+    AlertWindow dialog (TRANS ("Please input a day number"), 
+                        TRANS ("Positive for postpone, negative for advance,") + newLine
+                        + TRANS ("0 or non numeric for clear.") 
+                        + newLine + newLine
+                        + TRANS ("If a doc have no remind date, it will not be effected."),
+                        AlertWindow::InfoIcon);
+
+    dialog.addTextEditor ("days", String());
+    dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
+    dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
+
+    if (0 == dialog.runModalLoop())
+    {
+        setRemind (tree, dialog.getTextEditor ("days")->getText().getIntValue());
+        FileTreeContainer::saveProject();
+    }
+}
+
+//=================================================================================================
+void DocTreeViewItem::setRemind (ValueTree thisTree, const int days)
+{
+    if (thisTree.getType().toString() == "doc"
+        && thisTree.getProperty ("reviewDate").toString().isNotEmpty())
+    {
+        if (days == 0)
+        {
+            thisTree.setProperty ("reviewDate", String(), nullptr);
+        }
+        else
+        {
+            String dateStr (thisTree.getProperty ("reviewDate").toString());
+            Time remindDate (SwingUtilities::getTimeFromString (dateStr.replace (".", String())
+                                                                .replace (":", String())
+                                                                .replace (" ", String())));
+            remindDate += RelativeTime::days (days);
+            dateStr = SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getTimeString (remindDate), true);
+            DBGX (dateStr);
+            thisTree.setProperty ("reviewDate", dateStr, nullptr);
+        }
+    }
+    else
+    {
+        for (int i = thisTree.getNumChildren(); --i >= 0; )
+            setRemind (thisTree.getChild (i), days);
     }
 }
 

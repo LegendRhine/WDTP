@@ -14,7 +14,7 @@ extern ApplicationCommandManager* cmdManager;
 
 //==============================================================================
 SetupPanel::SetupPanel (EditAndPreview* ed) 
-    : editor (ed),
+    : editorAndPreView (ed),
 	projectHasChanged (false)
 {
     addAndMakeVisible (panel = new PropertyPanel());
@@ -508,7 +508,7 @@ void SetupPanel::valueChanged (Value& value)
     projectHasChanged = true;
 
     // regenarate the current page
-    if (editor->getCureentState())
+    if (editorAndPreView->getCureentState())
         cmdManager->invokeDirectly (TopToolBar::generateCurrent, true);
 
     // update the panel

@@ -58,7 +58,7 @@ private:
 
     ScopedPointer<PropertyPanel> panel;
     OwnedArray<Value> values;
-    EditAndPreview* editor;
+    EditAndPreview* editorAndPreView;
 
     ValueTree currentTree;
     bool projectHasChanged;

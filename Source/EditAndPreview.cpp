@@ -18,15 +18,15 @@ EditAndPreview::EditAndPreview (MainContentComponent* mainComp_)
     mainComp (mainComp_),
     showPropertiesPanel (true)
 {
-    addAndMakeVisible (webView = new WebBrowserComp (this));
-    webView->setVisible (false);
-
     // stretched layout, arg: index, min-width, max-width，default x%
     layoutManager.setItemLayout (0, -0.5, -1.0, -0.74);  // editor，
     layoutManager.setItemLayout (1, 2, 2, 2);            // layoutBar
     layoutManager.setItemLayout (2, 2, -0.5, -0.26);     // propertiesPanel
 
     addAndMakeVisible (editor = new MarkdownEditor (this));
+    addAndMakeVisible (webView = new WebBrowserComp (this));
+    webView->setVisible (false);
+
     addAndMakeVisible (setupPanel = new SetupPanel (this));
     addAndMakeVisible (layoutBar = new StrechableBar (&layoutManager, 1, true));
 

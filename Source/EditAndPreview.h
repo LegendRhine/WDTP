@@ -27,8 +27,9 @@ public:
     EditAndPreview (MainContentComponent* mainComp);
     ~EditAndPreview();
 
-    void startWork (ValueTree& newDocTree);
+    void workAreaStartWork (ValueTree& newDocTree);
     void updateEditorContent();
+    void editThemeFile (const File& themeFile);
 
     /** false for switch to edit mode. true is preview mode */
     void switchMode (const bool switchToPreview);
@@ -37,7 +38,7 @@ public:
     void paint (Graphics&) override {}
     void resized() override;
 
-    void setLayout (const bool showProperties);
+    void setLayout (const bool showSetupArea, const bool showSetupPanel);
     const bool propertiesIsShowing();
 
     TextEditor* getEditor() const               { return mdEditor; }
@@ -88,7 +89,7 @@ private:
 
     StretchableLayoutManager layoutManager;
     ScopedPointer<StrechableBar> layoutBar;
-    bool showPropertiesPanel;
+    bool showSetupArea;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (EditAndPreview)
 };

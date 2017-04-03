@@ -16,7 +16,7 @@ extern PropertiesFile* systemFile;
 EditAndPreview::EditAndPreview (MainContentComponent* mainComp_) 
     : docHasChanged (false),
     mainComp (mainComp_),
-    showPropertiesPanel (true)
+    showSetupArea (true)
 {
     // stretched layout, arg: index, min-width, max-width，default x%
     layoutManager.setItemLayout (0, -0.5, -1.0, -0.74);  // editor，
@@ -59,31 +59,37 @@ EditAndPreview::~EditAndPreview()
 //=========================================================================
 void EditAndPreview::resized()
 {
-    Component* wordArea = (webView->isVisible() ? (Component*)(webView.get())
+    Component* workArea = (webView->isVisible() ? (Component*)(webView.get())
                            : (Component*)(mdEditor.get()));
 
-    jassert (wordArea != nullptr);
+    Component* setupArea = (setupPanel->isVisible() ? (Component*)(setupPanel.get())
+                           : (Component*)(themeEditor.get()));
 
-    if (getParentComponent()->getWidth() > 1020 && showPropertiesPanel)  // stretched layout
+    jassert (workArea != nullptr && setupArea != nullptr);
+
+    if (getParentComponent()->getWidth() > 1020 && showSetupArea)  // full-mode
     {
-        setupPanel->setVisible (true);
+        setupArea->setVisible (true);
         layoutBar->setVisible (true);
 
-        Component* comps[] = { wordArea, layoutBar, setupPanel };
+        Component* comps[] = { workArea, layoutBar, setupArea };
         layoutManager.layOutComponents (comps, 3, 0, 0, getWidth(), getHeight(), false, true);
     }
     else  // silent-mode (only makes the editor visable)
     {
-        setupPanel->setVisible (false);
+        setupArea->setVisible (false);
         layoutBar->setVisible (false);
-        wordArea->setBounds (0, 0, getWidth(), getHeight());
+        workArea->setBounds (0, 0, getWidth(), getHeight());
     }
 }
 
 //=================================================================================================
-void EditAndPreview::setLayout (const bool showProperties)
+void EditAndPreview::setLayout (const bool showSetupArea_, const bool showSetupPanel)
 {
-    showPropertiesPanel = showProperties;
+    showSetupArea = showSetupArea_;
+    setupPanel->setVisible (showSetupPanel);
+    themeEditor->setVisible (!showSetupPanel);
+
     resized();
 }
 
@@ -94,7 +100,7 @@ const bool EditAndPreview::propertiesIsShowing()
 }
 
 //=================================================================================================
-void EditAndPreview::startWork (ValueTree& newDocTree)
+void EditAndPreview::workAreaStartWork (ValueTree& newDocTree)
 {
     jassert (newDocTree.isValid());
     saveCurrentDocIfChanged();
@@ -142,6 +148,13 @@ void EditAndPreview::updateEditorContent()
         switchMode (false);
         docOrDirTree.setProperty ("needCreateHtml", true, nullptr);
     }
+}
+
+//=================================================================================================
+void EditAndPreview::editThemeFile (const File& themeFile)
+{
+    themeEditor->setFileToEdit (themeFile);
+    setLayout (true, false);
 }
 
 //=================================================================================================

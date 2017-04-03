@@ -285,7 +285,7 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
 
         // this must after setTreeProperties() since
         // startWork() will update the word count of this doc to setup-panel
-        editArea->startWork (tree);
+        editArea->workAreaStartWork (tree);
         
         // cancel existed temp-underline of the editor 
         // the lines will still remain after ran 'statistics' and then switched to another doc

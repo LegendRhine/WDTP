@@ -72,7 +72,6 @@ void ThemeEditor::setFileToEdit (const File& file)
     jassert (currentFile.existsAsFile());
 
     editor->loadContent (currentFile.loadFileAsString());
-    this->setVisible (true);
 }
 
 //=================================================================================================
@@ -88,7 +87,7 @@ void ThemeEditor::buttonClicked (Button* bt)
     {
         editor->loadContent (String());
         currentFile == File();
-        this->setVisible (false);
+        editAndPreview->setLayout (true, true);
     }
     else if (bt == bts[saveAsBt])
     {

@@ -33,6 +33,7 @@ private:
     EditAndPreview* editAndPreview;
     File currentFile;
 
+    CodeDocument codeDoc;
     ScopedPointer<XmlTokeniser> colorToken;
     ScopedPointer<CodeEditorComponent> editor;
 

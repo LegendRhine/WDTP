@@ -24,13 +24,13 @@ EditAndPreview::EditAndPreview (MainContentComponent* mainComp_)
     layoutManager.setItemLayout (2, 2, -0.5, -0.26);     // propertiesPanel
 
     addAndMakeVisible (mdEditor = new MarkdownEditor (this));
-    addAndMakeVisible (webView = new WebBrowserComp (this));
-    webView->setVisible (false);
+    addChildComponent (webView = new WebBrowserComp (this));
 
     addAndMakeVisible (setupPanel = new SetupPanel (this));
+    addChildComponent (themeEditor = new ThemeEditor (this));
     addAndMakeVisible (layoutBar = new StrechableBar (&layoutManager, 1, true));
 
-    // editor
+    // markdown editor
     mdEditor->setMultiLine (true);
     mdEditor->setReturnKeyStartsNewLine (true);
     mdEditor->setTabKeyUsedAsCharacter (true);
@@ -59,8 +59,8 @@ EditAndPreview::~EditAndPreview()
 //=========================================================================
 void EditAndPreview::resized()
 {
-    Component* wordArea = (webView->isVisible() ? dynamic_cast<Component*>(webView.get())
-                           : dynamic_cast<Component*>(mdEditor.get()));
+    Component* wordArea = (webView->isVisible() ? (Component*)(webView.get())
+                           : (Component*)(mdEditor.get()));
 
     jassert (wordArea != nullptr);
 

@@ -36,7 +36,6 @@ ThemeEditor::ThemeEditor (EditAndPreview* parent) :
     bts[saveAsBt]->setTooltip (TRANS ("Save to Another File"));
 
     // editor
-    CodeDocument codeDoc;
     colorToken = new XmlTokeniser();
 
     addAndMakeVisible (editor = new CodeEditorComponent (codeDoc, colorToken));
@@ -81,7 +80,7 @@ void ThemeEditor::buttonClicked (Button* bt)
 {
     if (bt == bts[applyBt])
     {
-        currentFile.replaceWithText (editor->getDocument().getAllContent());
+        currentFile.replaceWithText (codeDoc.getAllContent());
         editAndPreview->getCurrentTree().setProperty ("needCreateHtml", true, nullptr);
         cmdManager->invokeDirectly (TopToolBar::MenuAndCmdIndex::generateCurrent, false);
     }

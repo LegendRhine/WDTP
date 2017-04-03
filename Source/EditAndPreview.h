@@ -14,6 +14,7 @@
 class SetupPanel;
 class MarkdownEditor;
 class WebBrowserComp;
+class ThemeEditor;
 
 //==============================================================================
 /** For edit a doc or preview the selected item's html and setup its properties.

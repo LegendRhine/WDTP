@@ -107,7 +107,7 @@ public:
         newPjt = 1, openPjt, closePjt,  
         packPjt, unpackPjt,
         generateCurrent, generateNeeded, generateWhole, cleanUpLocal,
-        exportTpl, importTpl, releaseSystemTpl, /*rebuildKeywords,*/
+        exportTpl, importTpl, releaseSystemTpl, 
         uiEnglish, uiChinese, setupAudio,
         setUiColor, resetUiColor, checkNewVersion, 
         updateList, gettingStarted, syntax, faq, feedback, 

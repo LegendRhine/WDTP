@@ -87,10 +87,12 @@ void EditAndPreview::resized()
 void EditAndPreview::setLayout (const bool showSetupArea_, const bool showSetupPanel)
 {
     showSetupArea = showSetupArea_;
+
     setupPanel->setVisible (showSetupPanel);
     themeEditor->setVisible (!showSetupPanel);
+    mainComp->setLayout (!showSetupPanel);
 
-    resized();
+    //resized();
 }
 
 //=================================================================================================

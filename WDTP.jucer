@@ -81,6 +81,8 @@
       <FILE id="BBKmUd" name="SetupPanel.h" compile="0" resource="0" file="Source/SetupPanel.h"/>
       <FILE id="v1zP1A" name="StatisComp.cpp" compile="1" resource="0" file="Source/StatisComp.cpp"/>
       <FILE id="C3qaR2" name="StatisComp.h" compile="0" resource="0" file="Source/StatisComp.h"/>
+      <FILE id="Qon0QW" name="ThemeEditor.cpp" compile="1" resource="0" file="Source/ThemeEditor.cpp"/>
+      <FILE id="SVIhLX" name="ThemeEditor.h" compile="0" resource="0" file="Source/ThemeEditor.h"/>
       <FILE id="XP6Nki" name="TipsBank.cpp" compile="1" resource="0" file="Source/TipsBank.cpp"/>
       <FILE id="Li8eb8" name="TipsBank.h" compile="0" resource="0" file="Source/TipsBank.h"/>
       <FILE id="pSSMLr" name="TopToolBar.cpp" compile="1" resource="0" file="Source/TopToolBar.cpp"/>

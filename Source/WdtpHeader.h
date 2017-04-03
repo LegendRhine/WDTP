@@ -22,6 +22,7 @@
 #include "MarkdownEditor.h"
 #include "EditAndPreview.h"
 #include "SetupPanel.h"
+#include "ThemeEditor.h"
 #include "HtmlProcessor.h"
 #include "FileTreeContainer.h"
 #include "DocTreeViewItem.h"

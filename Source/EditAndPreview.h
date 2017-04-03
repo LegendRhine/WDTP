@@ -39,7 +39,7 @@ public:
     void resized() override;
 
     void setLayout (const bool showSetupArea, const bool showSetupPanel);
-    const bool propertiesIsShowing();
+    const bool setupAreaIsShowing() const;
 
     TextEditor* getEditor() const               { return mdEditor; }
     WebBrowserComponent* getWebBrowser() const  { return webView; }

@@ -373,7 +373,7 @@ void TopToolBar::popupLayoutMenu()
     menu.addItem (1, TRANS ("Show File Tree Panel"), !isSilentMode && hasProject, 
                   fileTreeContainer->isVisible());
     menu.addItem (2, TRANS ("Show Properties Panel"), !isSilentMode && hasProject, 
-                  editAndPreview->propertiesIsShowing() && hasProject);
+                  editAndPreview->setupAreaIsShowing() && hasProject);
 
     menu.addSeparator();
     menu.addItem (3, TRANS ("Silent Mode") + ctrlStr + "D)", true, isSilentMode);
@@ -385,7 +385,7 @@ void TopToolBar::popupLayoutMenu()
         main->setLayout (!fileTreeContainer->isVisible());
 
     else if (index == 2)
-        editAndPreview->setLayout (!editAndPreview->propertiesIsShowing());
+        editAndPreview->setLayout (!editAndPreview->setupAreaIsShowing(), true);
     
     else if (index == 3)
         switchSilentMode (!isSilentMode);

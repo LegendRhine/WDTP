@@ -90,15 +90,14 @@ void EditAndPreview::setLayout (const bool showSetupArea_, const bool showSetupP
 
     setupPanel->setVisible (showSetupPanel);
     themeEditor->setVisible (!showSetupPanel);
-    mainComp->setLayout (!showSetupPanel);
 
-    //resized();
+    resized();
 }
 
 //=================================================================================================
-const bool EditAndPreview::propertiesIsShowing()
+const bool EditAndPreview::setupAreaIsShowing() const
 {
-    return setupPanel->isVisible();
+    return (setupPanel->isVisible() || themeEditor->isVisible());
 }
 
 //=================================================================================================

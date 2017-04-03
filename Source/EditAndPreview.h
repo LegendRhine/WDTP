@@ -39,7 +39,7 @@ public:
     void setLayout (const bool showProperties);
     const bool propertiesIsShowing();
 
-    TextEditor* getEditor() const               { return editor; }
+    TextEditor* getEditor() const               { return mdEditor; }
     WebBrowserComponent* getWebBrowser() const  { return webView; }
     const String& getCurrentUrl() const         { return currentUrl; }
 
@@ -80,9 +80,10 @@ private:
 
     MainContentComponent* mainComp;
 
-    ScopedPointer<TextEditor> editor;
+    ScopedPointer<TextEditor> mdEditor;
     ScopedPointer<WebBrowserComponent> webView;
     ScopedPointer<SetupPanel> setupPanel;
+    ScopedPointer<ThemeEditor> themeEditor;
 
     StretchableLayoutManager layoutManager;
     ScopedPointer<StrechableBar> layoutBar;

@@ -23,7 +23,7 @@ EditAndPreview::EditAndPreview (MainContentComponent* mainComp_)
     layoutManager.setItemLayout (1, 2, 2, 2);            // layoutBar
     layoutManager.setItemLayout (2, 2, -0.5, -0.26);     // propertiesPanel
 
-    addAndMakeVisible (editor = new MarkdownEditor (this));
+    addAndMakeVisible (mdEditor = new MarkdownEditor (this));
     addAndMakeVisible (webView = new WebBrowserComp (this));
     webView->setVisible (false);
 
@@ -31,23 +31,23 @@ EditAndPreview::EditAndPreview (MainContentComponent* mainComp_)
     addAndMakeVisible (layoutBar = new StrechableBar (&layoutManager, 1, true));
 
     // editor
-    editor->setMultiLine (true);
-    editor->setReturnKeyStartsNewLine (true);
-    editor->setTabKeyUsedAsCharacter (true);
+    mdEditor->setMultiLine (true);
+    mdEditor->setReturnKeyStartsNewLine (true);
+    mdEditor->setTabKeyUsedAsCharacter (true);
 
     Colour textClr = Colour::fromString (systemFile->getValue ("editorFontColour"));
 
-    editor->setColour (TextEditor::focusedOutlineColourId, Colour (0x000));
-    editor->setColour (TextEditor::textColourId, textClr);
-    editor->setColour (CaretComponent::caretColourId, textClr.withAlpha (0.6f));
-    editor->setColour (TextEditor::backgroundColourId, Colour::fromString (systemFile->getValue ("editorBackground")));
-    editor->setFont (systemFile->getValue ("fontSize").getFloatValue());
+    mdEditor->setColour (TextEditor::focusedOutlineColourId, Colour (0x000));
+    mdEditor->setColour (TextEditor::textColourId, textClr);
+    mdEditor->setColour (CaretComponent::caretColourId, textClr.withAlpha (0.6f));
+    mdEditor->setColour (TextEditor::backgroundColourId, Colour::fromString (systemFile->getValue ("editorBackground")));
+    mdEditor->setFont (systemFile->getValue ("fontSize").getFloatValue());
 
-    editor->setScrollBarThickness (10);
-    editor->setIndents (10, 10);
-    editor->setVisible (false);
-    editor->setBorder (BorderSize<int> (1, 1, 1, 1));
-    editor->setPopupMenuEnabled (false);
+    mdEditor->setScrollBarThickness (10);
+    mdEditor->setIndents (10, 10);
+    mdEditor->setVisible (false);
+    mdEditor->setBorder (BorderSize<int> (1, 1, 1, 1));
+    mdEditor->setPopupMenuEnabled (false);
 }
 
 //=========================================================================
@@ -60,7 +60,7 @@ EditAndPreview::~EditAndPreview()
 void EditAndPreview::resized()
 {
     Component* wordArea = (webView->isVisible() ? dynamic_cast<Component*>(webView.get())
-                           : dynamic_cast<Component*>(editor.get()));
+                           : dynamic_cast<Component*>(mdEditor.get()));
 
     jassert (wordArea != nullptr);
 
@@ -101,15 +101,15 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
 
     if (newDocTree != docOrDirTree || docOrDirFile != DocTreeViewItem::getMdFileOrDir (newDocTree))
     {
-        editor->removeListener (this);
+        mdEditor->removeListener (this);
         docOrDirTree = newDocTree;
         docOrDirFile = DocTreeViewItem::getMdFileOrDir (docOrDirTree);
 
         if (docOrDirFile.existsAsFile())
         {
-            editor->setText (docOrDirFile.loadFileAsString(), false);
-            currentContent = editor->getText();
-            editor->addListener (this);
+            mdEditor->setText (docOrDirFile.loadFileAsString(), false);
+            currentContent = mdEditor->getText();
+            mdEditor->addListener (this);
         }
     }
 
@@ -117,9 +117,9 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
     switchMode (!(docOrDirFile.exists() && currentContent.length() < 3));
 
     if (currentContent.length() < 3)
-        editor->moveCaretToEnd (false);
+        mdEditor->moveCaretToEnd (false);
     else
-        editor->moveCaretToTop (false);
+        mdEditor->moveCaretToTop (false);
 
     // word count doesn't include the ' ' and newLine of current content 
     setupPanel->updateWordCount (currentContent.removeCharacters (" ")
@@ -129,14 +129,14 @@ void EditAndPreview::startWork (ValueTree& newDocTree)
 //=================================================================================================
 void EditAndPreview::updateEditorContent()
 {
-    editor->removeListener (this);
+    mdEditor->removeListener (this);
     docOrDirFile = DocTreeViewItem::getMdFileOrDir (docOrDirTree);
 
     if (docOrDirFile.existsAsFile())
     {
-        editor->setText (docOrDirFile.loadFileAsString(), false);
-        currentContent = editor->getText();
-        editor->addListener (this);
+        mdEditor->setText (docOrDirFile.loadFileAsString(), false);
+        currentContent = mdEditor->getText();
+        mdEditor->addListener (this);
 
         // update web page
         switchMode (false);
@@ -172,9 +172,9 @@ void EditAndPreview::switchMode (const bool switchToPreview)
 void EditAndPreview::editCurrentDoc()
 {
     webView->setVisible (false);
-    editor->setVisible (true);
-    editor->grabKeyboardFocus();
-    editor->setPopupMenuEnabled (true);
+    mdEditor->setVisible (true);
+    mdEditor->grabKeyboardFocus();
+    mdEditor->setPopupMenuEnabled (true);
 
     // here must goto the html url of the doc on osx, although the broswer doesn't visible.
     // otherwise, it'll load the previous page when switch to preview another doc,
@@ -195,7 +195,7 @@ void EditAndPreview::editCurrentDoc()
 //=================================================================================================
 void EditAndPreview::previewCurrentDoc()
 {
-    editor->setVisible (false);
+    mdEditor->setVisible (false);
     webView->setVisible (true);
     webView->stop();
 
@@ -250,12 +250,12 @@ void EditAndPreview::outlineGoto (const StringArray& titleStrs, const int itemIn
 {
     if (itemIndex == 1)
     {
-        editor->moveCaretToTop (false);
+        mdEditor->moveCaretToTop (false);
         webView->goToURL (currentUrl + "#top");
     }
     else if (itemIndex == titleStrs.size() - 1)
     {
-        editor->moveCaretToEnd (false);
+        mdEditor->moveCaretToEnd (false);
         webView->goToURL (currentUrl + "#wdtpPageBottom");
     }
     else if (itemIndex > 0 && itemIndex < titleStrs.size() - 1)
@@ -267,17 +267,17 @@ void EditAndPreview::outlineGoto (const StringArray& titleStrs, const int itemIn
         // this'll make sure the scroll position is on top of the editor-view
         // instead of at the bottom when place downward
         int positionIndex = content.indexOf (titleStrs[itemIndex]);
-        editor->setCaretPosition (positionIndex);
-        editor->pageDown (false);
-        editor->setCaretPosition (positionIndex);
-        editor->moveCaretToEndOfLine (true);
+        mdEditor->setCaretPosition (positionIndex);
+        mdEditor->pageDown (false);
+        mdEditor->setCaretPosition (positionIndex);
+        mdEditor->moveCaretToEndOfLine (true);
 
         const String& jumpTo (Md2Html::extractLinkText (titleStrs[itemIndex]
                                                         .fromFirstOccurrenceOf ("## ", false, false)));
         webView->goToURL (currentUrl + "#" + jumpTo);
     }
 
-    editor->grabKeyboardFocus();
+    mdEditor->grabKeyboardFocus();
 }
 
 //=================================================================================================
@@ -287,10 +287,10 @@ void EditAndPreview::projectClosed()
     webView->setVisible (false);
     setupPanel->projectClosed();
 
-    editor->removeListener (this);
-    editor->setText (String(), false);
-    editor->setVisible (false);
-    editor->setPopupMenuEnabled (false);
+    mdEditor->removeListener (this);
+    mdEditor->setText (String(), false);
+    mdEditor->setVisible (false);
+    mdEditor->setPopupMenuEnabled (false);
 
     docOrDirFile = File::nonexistent;
     docOrDirTree = ValueTree::invalid;
@@ -331,9 +331,9 @@ void EditAndPreview::textEditorTextChanged (TextEditor&)
 {
     // somehow, this method always be called when about to load a doc, 
     // so this ugly judge has to be here...
-    if (currentContent.compare (editor->getText()) != 0)
+    if (currentContent.compare (mdEditor->getText()) != 0)
     {
-        currentContent = editor->getText();
+        currentContent = mdEditor->getText();
         docHasChanged = true;
         DocTreeViewItem::needCreate (docOrDirTree);
 

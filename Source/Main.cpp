@@ -45,7 +45,9 @@ public:
         // when first run this application...
         if (!f.existsAsFile())
         {
-            systemFile->setValue ("language", 0);  // 0 for English
+            // 0 for English, 1 for Chinese
+            systemFile->setValue ("language", (SystemStats::getUserRegion() == "CN") ? 1 : 0);
+
             systemFile->setValue ("uiBackground", Colour (0xff202020).toString());
             systemFile->setValue ("uiTextColour", Colour (0xffe8e8e8).toString());
             systemFile->setValue ("editorFontColour", Colour (0xff181818).toString());

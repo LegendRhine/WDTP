@@ -36,6 +36,7 @@ public:
     /** 加载准备播放的音频文件。 */
     void setAudioSource (const File& audioFile);
 
+    void setGain (const float newGain)              { audioTransportSource.setGain (newGain); }
     //=================================================================================================
     /** 播放当前所加载的音频数据。*/
     void start();

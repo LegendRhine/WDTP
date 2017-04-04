@@ -426,5 +426,6 @@ countries: cn
 "Save and Apply" = "保存并应用"
 "Close without Save" = "不保存并关闭"
 "Overwrite and Save to" = "覆盖式另存为"
+"Line Wrap" = "自动换行"
 "Edit Current Theme" = "编辑当前主题"
 "Global Stylesheet" = "全局样式表"

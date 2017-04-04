@@ -17,7 +17,7 @@ ThemeEditor::ThemeEditor (EditAndPreview* parent) :
     editAndPreview (parent)
 {
     setFont (SwingUtilities::getFontSize());    
-    setMultiLine (true, false);
+    setMultiLine (true, true);
     setReturnKeyStartsNewLine (true);
     setTabKeyUsedAsCharacter (true);
 
@@ -54,6 +54,9 @@ void ThemeEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addItem (applyIndex, TRANS ("Save and Apply"));
         menu.addItem (closeIndex, TRANS ("Close without Save"));
         menu.addItem (saveAsIndex, TRANS ("Overwrite and Save to") + "...");
+
+        /*menu.addSeparator();
+        menu.addItem (autoReturn, TRANS ("Line Wrap"), true, isWordWrap());*/
     }
 }
 
@@ -87,6 +90,11 @@ void ThemeEditor::performPopupMenuAction (int index)
             currentFile.copyFileTo (file);
         }
     }
+
+    /*else if (autoReturn == index)
+    {
+        setMultiLine (true, !isWordWrap());
+    }*/
 }
 
 //=================================================================================================

@@ -467,7 +467,7 @@ void MarkdownEditor::interLinkInsert()
     linkPath = linkPath.fromFirstOccurrenceOf (siteRoot, false, false);
 
     const String currentHtmlRelativeToRoot (HtmlProcessor::getRelativePathToRoot (
-        DocTreeViewItem::getHtmlFileOrDir (parent->getCurrentTree())));
+        DocTreeViewItem::getHtmlFile (parent->getCurrentTree())));
 
     String content;
     content << "[" << titleStr << "](" << currentHtmlRelativeToRoot << linkPath.replace ("\\", "/") << ")";

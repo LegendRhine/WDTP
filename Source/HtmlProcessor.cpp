@@ -455,7 +455,7 @@ void HtmlProcessor::copyDocMediasToSite (const File& mdFile,
 //=================================================================================================
 const File HtmlProcessor::createIndexHtml (ValueTree& dirTree, bool saveProject)
 {
-    const File& indexHtml (DocTreeViewItem::getHtmlFileOrDir (dirTree));
+    const File& indexHtml (DocTreeViewItem::getHtmlFile (dirTree));
     jassert (indexHtml.getFileName() == "index.html");
 
     // if there is a doc named 'index', then using it as the dir's index.html
@@ -651,7 +651,7 @@ const String HtmlProcessor::getKeywordsLinks (const String& rootPath)
 
         if (trees.size() == 1)
         {
-            String htmlPath (DocTreeViewItem::getHtmlFileOrDir (trees[0]).getFullPathName());
+            String htmlPath (DocTreeViewItem::getHtmlFile (trees[0]).getFullPathName());
             htmlPath = htmlPath.replace (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName()
                                          + File::separatorString, rootPath);
             htmlPath = htmlPath.replace (File::separatorString, "/");
@@ -672,7 +672,7 @@ const String HtmlProcessor::getKeywordsLinks (const String& rootPath)
 
             for (int j = trees.size(); --j >= 0; )
             {
-                String htmlPath (DocTreeViewItem::getHtmlFileOrDir (trees[j]).getFullPathName());
+                String htmlPath (DocTreeViewItem::getHtmlFile (trees[j]).getFullPathName());
                 htmlPath = htmlPath.replace (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName()
                                              + File::separatorString, rootPath);
 
@@ -993,7 +993,7 @@ void HtmlProcessor::getAllArticleLinksOfGivenTree (const ValueTree& tree,
         const String& title (tree.getProperty ("title").toString());
 
         const String rootFullPath (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName());
-        const String docFullPath (DocTreeViewItem::getHtmlFileOrDir (tree).getFullPathName());
+        const String docFullPath (DocTreeViewItem::getHtmlFile (tree).getFullPathName());
         const String& relativePath (rootRelativePath + 
                                     docFullPath.fromFirstOccurrenceOf (rootFullPath, false, false)
                                     .substring (1).replace ("\\", "/"));
@@ -1036,18 +1036,18 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
             && DocTreeViewItem::getMdFileOrDir (fd).exists()
             && !(bool)fd.getProperty ("hide"))
         {
-            const File& dirIndex (DocTreeViewItem::getHtmlFileOrDir (fd));
+            const File& dirIndex (DocTreeViewItem::getHtmlFile (fd));
             const String& menuName (fd.getProperty ("title").toString());
             String path;
 
             if (fd.getType().toString() == "doc")
             {
-                path = getRelativePathToRoot (DocTreeViewItem::getHtmlFileOrDir (tree))
+                path = getRelativePathToRoot (DocTreeViewItem::getHtmlFile (tree))
                     + fd.getProperty ("name").toString() + ".html";
             }
             else
             {
-                path = getRelativePathToRoot (DocTreeViewItem::getHtmlFileOrDir (tree))
+                path = getRelativePathToRoot (DocTreeViewItem::getHtmlFile (tree))
                     + dirIndex.getParentDirectory().getFileName() + "/index.html";
             }
 
@@ -1066,19 +1066,19 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
                         && (bool)sd.getProperty ("isMenu")
                         && !(bool)sd.getProperty ("hide"))
                     {
-                        const File& sDirIndex (DocTreeViewItem::getHtmlFileOrDir (sd));
+                        const File& sDirIndex (DocTreeViewItem::getHtmlFile (sd));
                         const String& sMenuName (sd.getProperty ("title").toString());
                         String sPath;
 
                         if (sd.getType().toString() == "doc")
                         {
-                            sPath = getRelativePathToRoot (DocTreeViewItem::getHtmlFileOrDir (tree))
+                            sPath = getRelativePathToRoot (DocTreeViewItem::getHtmlFile (tree))
                                 + dirIndex.getParentDirectory().getFileName() + "/"
                                 + sd.getProperty ("name").toString() + ".html";
                         }
                         else
                         {
-                            sPath = getRelativePathToRoot (DocTreeViewItem::getHtmlFileOrDir (tree))
+                            sPath = getRelativePathToRoot (DocTreeViewItem::getHtmlFile (tree))
                                 + dirIndex.getParentDirectory().getFileName() + "/"
                                 + sDirIndex.getParentDirectory().getFileName() + "/index.html";
                         }
@@ -1147,9 +1147,9 @@ const String HtmlProcessor::getPrevAndNextArticel (const ValueTree& tree)
 
     if (prevName.isNotEmpty())
     {
-        String prevPath = DocTreeViewItem::getHtmlFileOrDir (prevTree).getFullPathName();
+        String prevPath = DocTreeViewItem::getHtmlFile (prevTree).getFullPathName();
         prevPath = prevPath.replace (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName(), String());
-        prevPath = getRelativePathToRoot (DocTreeViewItem::getHtmlFileOrDir (tree)) + prevPath.substring (1);
+        prevPath = getRelativePathToRoot (DocTreeViewItem::getHtmlFile (tree)) + prevPath.substring (1);
         prevPath = prevPath.replace ("\\", "/");
         prevStr = TRANS ("Prev: ") + "<a href=\"" + prevPath + "\">" + prevName + "</a><br>";
     }
@@ -1160,9 +1160,9 @@ const String HtmlProcessor::getPrevAndNextArticel (const ValueTree& tree)
 
     if (nextName.isNotEmpty())
     {
-        String nextPath = DocTreeViewItem::getHtmlFileOrDir (nextTree).getFullPathName();
+        String nextPath = DocTreeViewItem::getHtmlFile (nextTree).getFullPathName();
         nextPath = nextPath.replace (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName(), String());
-        nextPath = getRelativePathToRoot (DocTreeViewItem::getHtmlFileOrDir (tree)) + nextPath.substring (1);
+        nextPath = getRelativePathToRoot (DocTreeViewItem::getHtmlFile (tree)) + nextPath.substring (1);
         nextPath = nextPath.replace ("\\", "/");
         nextStr = TRANS ("Next: ") + "<a href=\"" + nextPath + "\">" + nextName + "</a>";
     }
@@ -1320,9 +1320,9 @@ void HtmlProcessor::getLinkStrOfAlllDocTrees (const ValueTree& fromThisTree,
         {
             const String text = fromThisTree.getProperty ("title").toString();
 
-            String path = DocTreeViewItem::getHtmlFileOrDir (fromThisTree).getFullPathName();
+            String path = DocTreeViewItem::getHtmlFile (fromThisTree).getFullPathName();
             path = path.replace (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName(), String());
-            path = getRelativePathToRoot (DocTreeViewItem::getHtmlFileOrDir (baseOnThisTree)) + path.substring (1);
+            path = getRelativePathToRoot (DocTreeViewItem::getHtmlFile (baseOnThisTree)) + path.substring (1);
             path = path.replace ("\\", "/");
 
             linkStr.add ("<a href=\"" + path + "\">" + text + "</a>");
@@ -1343,7 +1343,7 @@ void HtmlProcessor::getBookListLinks (const ValueTree& tree,
     if ((bool)tree.getProperty ("hide"))
         return;
 
-    const String filePath (DocTreeViewItem::getHtmlFileOrDir (tree).getFullPathName());
+    const String filePath (DocTreeViewItem::getHtmlFile (tree).getFullPathName());
     const String rootPath (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName());
     String path (filePath.fromFirstOccurrenceOf (rootPath, false, false).substring (1));
     path = path.replace ("\\", "/");
@@ -1375,12 +1375,12 @@ void HtmlProcessor::getBlogListHtmlStr (const ValueTree& tree,
                                         StringArray& linkStr)
 {
     const String& rootPath (getRelativePathToRoot (baseOnthisFile));
-    String path = DocTreeViewItem::getHtmlFileOrDir (tree).getFullPathName();
+    String path = DocTreeViewItem::getHtmlFile (tree).getFullPathName();
     path = path.replace (FileTreeContainer::projectFile.getSiblingFile ("site").getFullPathName(), String());
     path = rootPath + path.substring (1);
     path = path.replace ("\\", "/");
 
-    if (DocTreeViewItem::getHtmlFileOrDir (tree) != baseOnthisFile)
+    if (DocTreeViewItem::getHtmlFile (tree) != baseOnthisFile)
     {
         if (!(bool)tree.getProperty ("isMenu") && !(bool)tree.getProperty ("hide"))
         {
@@ -1452,7 +1452,7 @@ void HtmlProcessor::getBlogListHtmlStr (const ValueTree& tree,
 const StringArray HtmlProcessor::getBlogList (const ValueTree& dirTree)
 {
     jassert (dirTree.getType().toString() != "doc");
-    const File& indexFile (DocTreeViewItem::getHtmlFileOrDir (dirTree));
+    const File& indexFile (DocTreeViewItem::getHtmlFile (dirTree));
     StringArray filesLinkStr;
 
     getBlogListHtmlStr (dirTree, indexFile, filesLinkStr);

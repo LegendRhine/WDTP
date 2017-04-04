@@ -450,7 +450,7 @@ bool WebBrowserComp::pageAboutToLoad (const String& newURL)
     urlStr = URL::removeEscapeChars (urlStr);
 #endif
     
-    String currentTreeUrl (DocTreeViewItem::getHtmlFileOrDir (parent->getCurrentTree()).getFullPathName());
+    String currentTreeUrl (DocTreeViewItem::getHtmlFile (parent->getCurrentTree()).getFullPathName());
 
     //DBGX (urlStr);
     //DBGX (currentTreeUrl);

@@ -185,14 +185,23 @@ void EditAndPreview::switchMode (const bool switchToPreview)
     else if ((docOrDirTree.getType().toString() != "doc") 
              || (switchToPreview && toolBar->getStateOfViewButton()))
     {
-        previewCurrentDoc();
-        toolBar->enableEditPreviewBt (!docOrDirFile.isDirectory(), true);
+        forcePreview();
     }
     else
     {
         editCurrentDoc();
         toolBar->enableEditPreviewBt (true, false);
     }
+}
+
+//=================================================================================================
+void EditAndPreview::forcePreview()
+{
+    TopToolBar* toolBar = findParentComponentOfClass<MainContentComponent>()->getToolbar();
+    jassert (toolBar != nullptr);
+
+    previewCurrentDoc();
+    toolBar->enableEditPreviewBt (!docOrDirFile.isDirectory(), true);
 }
 
 //=================================================================================================

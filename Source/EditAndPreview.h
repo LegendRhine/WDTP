@@ -33,6 +33,7 @@ public:
 
     /** false for switch to edit mode. true is preview mode */
     void switchMode (const bool switchToPreview);
+    void forcePreview();
     void refreshCurrentPage()                   { webView->refresh(); }
 
     void paint (Graphics&) override {}

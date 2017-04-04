@@ -68,6 +68,7 @@ void ThemeEditor::performPopupMenuAction (int index)
         currentFile.replaceWithText (getText());
         editAndPreview->getCurrentTree().setProperty ("needCreateHtml", true, nullptr);
         cmdManager->invokeDirectly (TopToolBar::MenuAndCmdIndex::generateCurrent, false);
+        editAndPreview->forcePreview();
     }
 
     else if (closeIndex == index)

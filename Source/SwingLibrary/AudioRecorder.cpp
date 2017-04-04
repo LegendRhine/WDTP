@@ -127,7 +127,8 @@ RecordingThumbnail::RecordingThumbnail() :
                             thumbnailCache (3),
                             thumbnail (512, *formatManager, thumbnailCache),
                             thumbColour (Colours::green),
-                            displayFullThumb (false)
+                            displayFullThumb (false),
+                            zoomFactor (1.f)
 {
     thumbnail.addChangeListener (this);
 }
@@ -147,7 +148,7 @@ void RecordingThumbnail::paint (Graphics& g)
         const double endTime = displayFullThumb ? thumbnail.getTotalLength()
                                                 : jmax (30.0, thumbnail.getTotalLength());
 
-        thumbnail.drawChannels (g, getLocalBounds().reduced (2), 0.0, endTime, 1.0f);
+        thumbnail.drawChannels (g, getLocalBounds().reduced (2), 0.0, endTime, zoomFactor);
     }
 }
 //=================================================================================================

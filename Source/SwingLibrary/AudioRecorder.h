@@ -120,7 +120,8 @@ public:
 
     /** 返回本类创建并持有的 AudioThumbnail 对象。 */
     AudioThumbnail& getAudioThumbnail()           { return thumbnail; }
-
+    
+    void setZoomFactor (const float newValue)     { zoomFactor = newValue; repaint(); }
     //=================================================================================================
     /** 本类所绘制的波形缩略图的颜色。 */
     void setThumbColour (const Colour& colour)    { thumbColour = colour; }
@@ -138,6 +139,7 @@ private:
 
     Colour thumbColour;     /**< 本类所绘制的缩略图颜色 */
     bool displayFullThumb;
+    float zoomFactor;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RecordingThumbnail)
 

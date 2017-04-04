@@ -62,7 +62,7 @@ void ThemeEditor::resized()
     editor->setBounds (2, 2, getWidth() - 4, getHeight() - 37);
 
     for (int i = totalBts; --i >= 0; )
-        bts[i]->setTopRightPosition (i * 60 + 15, getHeight() - 30);
+        bts[i]->setTopLeftPosition (i * 75 + (getWidth() - totalBts * 85), getHeight() - 30);
 }
 
 //=================================================================================================

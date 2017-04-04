@@ -23,7 +23,6 @@
 #include "EditAndPreview.h"
 #include "SetupPanel.h"
 #include "ThemeEditor.h"
-#include "ImageEditor.h"
 #include "HtmlProcessor.h"
 #include "FileTreeContainer.h"
 #include "DocTreeViewItem.h"

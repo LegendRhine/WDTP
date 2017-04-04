@@ -429,3 +429,4 @@ countries: cn
 "Line Wrap" = "自动换行"
 "Edit Current Theme" = "编辑当前主题"
 "Global Stylesheet" = "全局样式表"
+"Click here to start your journey of WDTP" = "点击此处，开启您的山湖录之旅"

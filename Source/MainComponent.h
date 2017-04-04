@@ -43,6 +43,9 @@ public:
     virtual void timerCallback() override;
     virtual void run() override;
 
+    /** show some info after launch the app and no project has been loaded  */
+    void showStartTip();
+
 private:
     //=========================================================================
     ScopedPointer<TopToolBar> toolBar;

@@ -39,7 +39,7 @@ MainContentComponent::MainContentComponent() :
     setSize (1260, 780);
 
     // check new version and download mp3-encoder if it's not there
-    startTimer (2000);
+    startTimer (1000);
 }
 
 //=======================================================================
@@ -106,7 +106,9 @@ const bool MainContentComponent::selectItemFromHtmlFile (const File& html)
 void MainContentComponent::timerCallback()
 {
     stopTimer();
-    startThread();  // to connect internet must using background thread on Android
+
+    showStartTip();
+    startThread();  // must using background thread on Android when connect internet
 }
 
 //=================================================================================================
@@ -181,6 +183,22 @@ void MainContentComponent::run()
 }
 
 //=================================================================================================
+void MainContentComponent::showStartTip()
+{
+    if (!fileTree->hasLoadedProject())
+    {
+        Label info (String(), TRANS ("Click here to start your journey of WDTP"));
+        info.setColour (Label::textColourId, Colours::lightgrey);
+        info.setFont (SwingUtilities::getFontSize() - 2.f);
+        info.setJustificationType (Justification::centred);
+        info.setSize (280, 30);
+
+        CallOutBox callOut (info, toolBar->getScreenBounds(), nullptr);
+        callOut.runModalLoop();
+    }
+}
+
+//=================================================================================================
 MainWindow::MainWindow (const String& name) :
     DocumentWindow (name, Colours::lightgrey, DocumentWindow::allButtons)
 {
@@ -240,3 +258,4 @@ void MainWindow::activeWindowStatusChanged()
     if (isActiveWindow())
         mainComp->reloadCurrentDoc();
 }
+

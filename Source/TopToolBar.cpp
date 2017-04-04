@@ -325,6 +325,9 @@ void TopToolBar::popupSystemMenu()
         
     else if (index >= 200 && index < 300)  // edit theme file
     {
+        MainContentComponent* main = dynamic_cast<MainContentComponent*>(getParentComponent());
+        main->setLayout (false);
+
         if (index == 200)
         {
             editAndPreview->editThemeFile (fileTreeContainer->projectFile.getSiblingFile ("site")

@@ -22,7 +22,7 @@ public:
 
     void setFileToEdit (const File& file);
     const File& getCurrentFile() const                  { return currentFile; }
-    void projectClosed();
+    void exitEditMode();
 
     virtual void addPopupMenuItems (PopupMenu& menuToAddTo, 
                                     const MouseEvent* mouseClickEvent) override;

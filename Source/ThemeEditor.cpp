@@ -72,7 +72,7 @@ void ThemeEditor::performPopupMenuAction (int index)
 
     else if (closeIndex == index)
     {
-        projectClosed();
+        exitEditMode();
     }
     
     else if (saveAsIndex == index)
@@ -96,7 +96,7 @@ void ThemeEditor::performPopupMenuAction (int index)
 }
 
 //=================================================================================================
-void ThemeEditor::projectClosed()
+void ThemeEditor::exitEditMode()
 {
     setText (String(), false);
     currentFile == File();

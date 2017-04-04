@@ -117,6 +117,7 @@ void EditAndPreview::workAreaStartWork (ValueTree& newDocTree)
 {
     jassert (newDocTree.isValid());
     saveCurrentDocIfChanged();
+    themeEditor->exitEditMode();
 
     if (newDocTree != docOrDirTree || docOrDirFile != DocTreeViewItem::getMdFileOrDir (newDocTree))
     {
@@ -313,7 +314,7 @@ void EditAndPreview::projectClosed()
     webView->setVisible (false);
 
     setupPanel->projectClosed();
-    themeEditor->projectClosed();
+    themeEditor->exitEditMode();
 
     mdEditor->removeListener (this);
     mdEditor->setText (String(), false);

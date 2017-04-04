@@ -914,7 +914,8 @@ void DocTreeViewItem::deleteSelected()
         const DocTreeViewItem* item = dynamic_cast<DocTreeViewItem*> (treeView->getSelectedItem (i));
         jassert (item != nullptr);
 
-        selectedTrees.add (new ValueTree (item->tree));
+        if (item->tree.getType().toString() != "wdtpProject")
+            selectedTrees.add (new ValueTree (item->tree));
     }
 
     if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),

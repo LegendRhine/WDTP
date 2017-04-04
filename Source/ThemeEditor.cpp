@@ -16,32 +16,15 @@ extern ApplicationCommandManager* cmdManager;
 ThemeEditor::ThemeEditor (EditAndPreview* parent) :
     editAndPreview (parent)
 {
-    // buttons
-    for (int i = totalBts; --i >= 0; )
-    {
-        TextButton* bt = new TextButton();
-        addAndMakeVisible (bt);
-        bt->addListener (this);
-        bt->setSize (60, 25);
-        bts.add (bt);
-    }
+    setFont (SwingUtilities::getFontSize());    
+    setMultiLine (true, false);
+    setReturnKeyStartsNewLine (true);
+    setTabKeyUsedAsCharacter (true);
 
-    bts[applyBt]->setButtonText (TRANS ("Apply"));
-    bts[applyBt]->setTooltip (TRANS ("Save and Apply the Change"));
-
-    bts[closeBt]->setButtonText (TRANS ("Close"));
-    bts[closeBt]->setTooltip (TRANS ("Close Theme Editor Without Saving"));
-    
-    bts[saveAsBt]->setButtonText (TRANS ("Save As"));
-    bts[saveAsBt]->setTooltip (TRANS ("Save to Another File"));
-
-    // editor
-    colorToken = new XmlTokeniser();
-
-    addAndMakeVisible (editor = new CodeEditorComponent (codeDoc, colorToken));
-    editor->setFont (SwingUtilities::getFontSize() - 3.f);
-    editor->setLineNumbersShown (true);
-    editor->setScrollbarThickness (10);
+    setColour (TextEditor::focusedOutlineColourId, Colour (0x000));
+    setColour (TextEditor::textColourId, Colour (0xffd7d079));
+    setColour (CaretComponent::caretColourId, Colour (0xffd7d079).withAlpha (0.6f));
+    setColour (TextEditor::backgroundColourId, Colour (0xff202020));
 }
 
 //=================================================================================================
@@ -50,57 +33,121 @@ ThemeEditor::~ThemeEditor()
 }
 
 //=================================================================================================
-void ThemeEditor::paint (Graphics& g)
-{
-    g.setColour (Colours::grey);
-    g.drawLine (1.0f, getHeight() - 35.f, getWidth() - 2.0f, 35.f, 0.6f);
-}
-
-//=================================================================================================
-void ThemeEditor::resized()
-{
-    editor->setBounds (2, 2, getWidth() - 4, getHeight() - 37);
-
-    for (int i = totalBts; --i >= 0; )
-        bts[i]->setTopLeftPosition (i * 75 + (getWidth() - totalBts * 85), getHeight() - 30);
-}
-
-//=================================================================================================
 void ThemeEditor::setFileToEdit (const File& file)
 {
     currentFile = file;
     jassert (currentFile.existsAsFile());
-
-    editor->loadContent (currentFile.loadFileAsString());
+    setText (currentFile.loadFileAsString(), false);
 }
 
 //=================================================================================================
-void ThemeEditor::buttonClicked (Button* bt)
+void ThemeEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 {
-    if (bt == bts[applyBt])
+    const bool fileExists = currentFile.existsAsFile();
+
+    if (e->mods.isPopupMenu() && fileExists)
     {
-        currentFile.replaceWithText (codeDoc.getAllContent());
+        TextEditor::addPopupMenuItems (menu, e);
+        menu.addSeparator();
+
+        menu.addItem (applyIndex, TRANS ("Save and Apply"));
+        menu.addItem (closeIndex, TRANS ("Close without Save"));
+        menu.addItem (saveAsIndex, TRANS ("Overwrite and Save to") + "...");
+    }
+}
+
+//=================================================================================================
+void ThemeEditor::performPopupMenuAction (int index)
+{
+    if (applyIndex == index)
+    {
+        currentFile.replaceWithText (getText());
         editAndPreview->getCurrentTree().setProperty ("needCreateHtml", true, nullptr);
         cmdManager->invokeDirectly (TopToolBar::MenuAndCmdIndex::generateCurrent, false);
     }
-    else if (bt == bts[closeBt])
+
+    else if (closeIndex == index)
     {
-        editor->loadContent (String());
+        setText (String(), false);
         currentFile == File();
         editAndPreview->setLayout (true, true);
     }
-    else if (bt == bts[saveAsBt])
+    
+    else if (saveAsIndex == index)
     {
-        FileChooser fc (TRANS ("Save As") + "...", File::nonexistent, currentFile.getFileName(), true);
+        FileChooser fc (TRANS ("Save As") + "...", File(), "*", true);
 
-        if (fc.browseForFileToSave (true))
+        if (fc.browseForDirectory())
         {
-            File file (fc.getResult());
+            const File& file (fc.getResult().getChildFile (currentFile.getFileName()));
 
             file.deleteFile();
             file.create();
-            file.appendText (editor->getDocument().getAllContent());
+            currentFile.copyFileTo (file);
         }
     }
 }
+
+//=================================================================================================
+bool ThemeEditor::keyPressed (const KeyPress& key)
+{
+    // English punctuation matching...
+    if (key == KeyPress ('\'', ModifierKeys::shiftModifier, 0)) // "..."
+    {
+        const String& selectedStr (getHighlightedText());
+        insertTextAtCaret ("\"" + selectedStr + "\"");
+
+        if (selectedStr.isEmpty())
+            moveCaretLeft (false, false);
+
+        return true;
+    }
+
+    else if (key == KeyPress ('\'')) // '...'
+    {
+        const String& selectedStr (getHighlightedText());
+        insertTextAtCaret ("\'" + selectedStr + "\'");
+
+        if (selectedStr.isEmpty())
+            moveCaretLeft (false, false);
+
+        return true;
+    }
+    
+    else if (key == KeyPress ('[', ModifierKeys::shiftModifier, 0)) // '{}'
+    {
+        const String& selectedStr (getHighlightedText());
+        insertTextAtCaret ("{" + selectedStr + "}");
+
+        if (selectedStr.isEmpty())
+            moveCaretLeft (false, false);
+
+        return true;
+    }
+
+    else if (key == KeyPress ('9', ModifierKeys::shiftModifier, 0)) // '()'
+    {
+        const String& selectedStr (getHighlightedText());
+        insertTextAtCaret ("(" + selectedStr + ")");
+
+        if (selectedStr.isEmpty())
+            moveCaretLeft (false, false);
+
+        return true;
+    }
+
+    else if (key == KeyPress (',', ModifierKeys::shiftModifier, 0)) // '<>'
+    {
+        const String& selectedStr (getHighlightedText());
+        insertTextAtCaret ("<" + selectedStr + ">");
+
+        if (selectedStr.isEmpty())
+            moveCaretLeft (false, false);
+
+        return true;
+    }
+
+    return TextEditor::keyPressed (key);
+}
+
 

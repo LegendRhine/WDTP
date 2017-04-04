@@ -14,31 +14,26 @@
 //==============================================================================
 /** for edit css, html-tpl file
 */
-class ThemeEditor : public Component,
-                    public Button::Listener
+class ThemeEditor : public TextEditor
 {
 public:
     ThemeEditor (EditAndPreview* parent);
     ~ThemeEditor();
 
-    void paint (Graphics&) override;
-    void resized() override;
-
     void setFileToEdit (const File& file);
     const File& getCurrentFile() const                  { return currentFile; }
 
-    virtual void buttonClicked (Button*) override;
+    virtual void addPopupMenuItems (PopupMenu& menuToAddTo, 
+                                    const MouseEvent* mouseClickEvent) override;
+
+    virtual void performPopupMenuAction (int menuItemID) override;
+    virtual bool keyPressed (const KeyPress& key) override;
 
 private:
+    enum { applyIndex = 1, closeIndex, saveAsIndex };
+
     EditAndPreview* editAndPreview;
     File currentFile;
-
-    CodeDocument codeDoc;
-    ScopedPointer<XmlTokeniser> colorToken;
-    ScopedPointer<CodeEditorComponent> editor;
-
-    enum { applyBt = 0, closeBt, saveAsBt, totalBts };
-    OwnedArray<TextButton> bts;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThemeEditor)
 };

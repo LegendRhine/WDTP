@@ -152,7 +152,7 @@ const File DocTreeViewItem::getMdFileOrDir (const ValueTree& tree)
 }
 
 //=================================================================================================
-const File DocTreeViewItem::getHtmlFileOrDir (const File& mdFileOrDir)
+const File DocTreeViewItem::getHtmlFile (const File& mdFileOrDir)
 {
     if (mdFileOrDir.isDirectory())
         return File (mdFileOrDir.getFullPathName().replace ("docs", "site")).getChildFile ("index.html");
@@ -161,9 +161,9 @@ const File DocTreeViewItem::getHtmlFileOrDir (const File& mdFileOrDir)
 }
 
 //=================================================================================================
-const File DocTreeViewItem::getHtmlFileOrDir (const ValueTree& tree)
+const File DocTreeViewItem::getHtmlFile (const ValueTree& tree)
 {
-    return getHtmlFileOrDir (getMdFileOrDir (tree));
+    return getHtmlFile (getMdFileOrDir (tree));
 }
 
 //=================================================================================================
@@ -461,7 +461,7 @@ void DocTreeViewItem::menuPerform (const int index)
     else if (index == deleteThis)               deleteSelected();
     else if (index == viewInFinder)             getMdFileOrDir (tree).revealToUser();
     else if (index == openInExEditor)           getMdFileOrDir (tree).startAsProcess();
-    else if (index == browseInEx)               getHtmlFileOrDir (tree).startAsProcess();
+    else if (index == browseInEx)               getHtmlFile (tree).startAsProcess();
 
     // sort and show what...
     else if (index >= 100 && index <= 105)  sorter->setOrder (index - 100);
@@ -478,7 +478,7 @@ void DocTreeViewItem::packSiteData (const bool includeHtmls, const bool includeM
     tree.setProperty ("needCreateHtml", true, nullptr);
     TopToolBar::generateHtmlFilesIfNeeded (tree);
 
-    const File thisDir (getHtmlFileOrDir (tree).getParentDirectory());
+    const File thisDir (getHtmlFile (tree).getParentDirectory());
     ZipFile::Builder builder;
     Array<File> htmlFiles;
     thisDir.findChildFiles (htmlFiles, File::findFiles, true, "*");
@@ -935,16 +935,23 @@ void DocTreeViewItem::deleteSelected()
             if (v.getParent().isValid())
             {
                 const File mdFile (getMdFileOrDir (v));
-                const File siteFile (getHtmlFileOrDir (mdFile));
+                File siteFile (getHtmlFile (mdFile));
 
-                // here should delete its media-file(s) first
-                Array<File> htmlMedias;
-
-                for (int j = getHtmlMediaFiles (siteFile, htmlMedias); --j >= 0; )
+                if (mdFile.isDirectory())
                 {
-                    const String mediaFileName (htmlMedias[j].getFullPathName());
-                    htmlMedias[j].moveToTrash();
-                    File (mediaFileName.replace ("site", "docs")).moveToTrash();
+                    siteFile = File (mdFile.getFullPathName().replace ("docs", "site"));
+                }
+                else
+                {
+                    // here should delete its media-file(s) if it's a html file instead of dir
+                    Array<File> htmlMedias;
+
+                    for (int j = getHtmlMediaFiles (siteFile, htmlMedias); --j >= 0; )
+                    {
+                        const String mediaFileName (htmlMedias[j].getFullPathName());
+                        htmlMedias[j].moveToTrash();
+                        File (mediaFileName.replace ("site", "docs")).moveToTrash();
+                    }
                 }
 
                 // cleanup tips bank if it is
@@ -1013,7 +1020,7 @@ void DocTreeViewItem::getPath()
 {      
     SystemClipboard::copyTextToClipboard ("*_wdtpGetPath_*" + tree.getProperty ("title").toString()
                                           + "@_=#_itemPath_#=_@" 
-                                          + getHtmlFileOrDir (tree).getFullPathName());
+                                          + getHtmlFile (tree).getFullPathName());
 }
 
 //=================================================================================================

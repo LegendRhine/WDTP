@@ -93,6 +93,8 @@ private:
     enum LanguageID { English = 0, Chinese = 1 };
     void setUiLanguage (const LanguageID& id);
 
+    void createThemeFilesMenu (PopupMenu& menu, const int baseId);
+
     //==========================================================================
     enum BtIndex 
     {

@@ -278,6 +278,9 @@ void TopToolBar::popupSystemMenu()
     m.addItem (cleanUpLocal, TRANS ("Cleanup Needless Medias"), fileTreeContainer->hasLoadedProject());
     m.addSeparator();
 
+    // theme files
+
+
     m.addItem (exportTpl, TRANS ("Export Current Theme"), fileTreeContainer->hasLoadedProject());
     m.addItem (importTpl, TRANS ("Import External Theme..."), fileTreeContainer->hasLoadedProject());
     m.addItem (releaseSystemTpl, TRANS ("Reset/Repair Default Theme"), fileTreeContainer->hasLoadedProject());
@@ -1020,6 +1023,22 @@ void TopToolBar::setUiLanguage (const LanguageID& id)
     fileTreeContainer->getTreeView().moveSelectedRow (-1);
 
     setTooltips();
+}
+
+//=================================================================================================
+void TopToolBar::createThemeFilesMenu (PopupMenu& menu, const int baseId)
+{
+    Array<File> files;
+
+    files.add (FileTreeContainer::projectFile.getSiblingFile ("site")
+               .getChildFile ("add-in").getChildFile ("style.css"));
+
+    const String currentRender (FileTreeContainer::projectTree.getProperty ("render").toString());
+    const File& dirOfRender (FileTreeContainer::projectFile.getSiblingFile ("themes").getChildFile (currentRender));
+    dirOfRender.findChildFiles (files, File::findFiles, false, "*.html");
+
+    for (int i = files.size(); --i >= 0; )
+        menu.addItem (baseId + i, files[i].getFileName(), true, editAndPreview->getEditingThemeFile() == files[i]);
 }
 
 //=================================================================================================

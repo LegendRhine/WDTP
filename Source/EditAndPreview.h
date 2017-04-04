@@ -40,6 +40,7 @@ public:
 
     void setLayout (const bool showSetupArea, const bool showSetupPanel);
     const bool setupAreaIsShowing() const;
+    const File& getEditingThemeFile() const     { return themeEditor->getCurrentFile(); }
 
     TextEditor* getEditor() const               { return mdEditor; }
     WebBrowserComponent* getWebBrowser() const  { return webView; }

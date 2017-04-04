@@ -117,7 +117,9 @@ void EditAndPreview::workAreaStartWork (ValueTree& newDocTree)
 {
     jassert (newDocTree.isValid());
     saveCurrentDocIfChanged();
-    themeEditor->exitEditMode();
+
+    if (themeEditorIsShowing())
+        themeEditor->exitEditMode();
 
     if (newDocTree != docOrDirTree || docOrDirFile != DocTreeViewItem::getMdFileOrDir (newDocTree))
     {

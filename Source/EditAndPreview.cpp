@@ -311,7 +311,9 @@ void EditAndPreview::projectClosed()
 {
     saveCurrentDocIfChanged();
     webView->setVisible (false);
+
     setupPanel->projectClosed();
+    themeEditor->projectClosed();
 
     mdEditor->removeListener (this);
     mdEditor->setText (String(), false);

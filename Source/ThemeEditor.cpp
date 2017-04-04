@@ -72,9 +72,7 @@ void ThemeEditor::performPopupMenuAction (int index)
 
     else if (closeIndex == index)
     {
-        setText (String(), false);
-        currentFile == File();
-        editAndPreview->setLayout (true, true);
+        projectClosed();
     }
     
     else if (saveAsIndex == index)
@@ -95,6 +93,14 @@ void ThemeEditor::performPopupMenuAction (int index)
     {
         setMultiLine (true, !isWordWrap());
     }*/
+}
+
+//=================================================================================================
+void ThemeEditor::projectClosed()
+{
+    setText (String(), false);
+    currentFile == File();
+    editAndPreview->setLayout (true, true);
 }
 
 //=================================================================================================

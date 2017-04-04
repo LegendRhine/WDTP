@@ -59,8 +59,6 @@
       <FILE id="PSfeQz" name="HtmlProcessor.cpp" compile="1" resource="0"
             file="Source/HtmlProcessor.cpp"/>
       <FILE id="LCCa8k" name="HtmlProcessor.h" compile="0" resource="0" file="Source/HtmlProcessor.h"/>
-      <FILE id="IyTkNn" name="ImageEditor.cpp" compile="1" resource="0" file="Source/ImageEditor.cpp"/>
-      <FILE id="NG00z6" name="ImageEditor.h" compile="0" resource="0" file="Source/ImageEditor.h"/>
       <FILE id="wNFuBe" name="KeywordsComp.cpp" compile="1" resource="0"
             file="Source/KeywordsComp.cpp"/>
       <FILE id="ckhYZY" name="KeywordsComp.h" compile="0" resource="0" file="Source/KeywordsComp.h"/>

@@ -104,6 +104,12 @@ const bool EditAndPreview::setupAreaIsShowing() const
 }
 
 //=================================================================================================
+const File& EditAndPreview::getEditingThemeFile() const
+{
+    return themeEditor->getCurrentFile();
+}
+
+//=================================================================================================
 void EditAndPreview::workAreaStartWork (ValueTree& newDocTree)
 {
     jassert (newDocTree.isValid());

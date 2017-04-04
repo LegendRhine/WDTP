@@ -279,7 +279,9 @@ void TopToolBar::popupSystemMenu()
     m.addSeparator();
 
     // theme files
-
+    PopupMenu themeFilesMenu;
+    createThemeFilesMenu (themeFilesMenu, 200);
+    m.addSubMenu (TRANS ("Edit Current Theme"), themeFilesMenu, fileTreeContainer->hasLoadedProject());
 
     m.addItem (exportTpl, TRANS ("Export Current Theme"), fileTreeContainer->hasLoadedProject());
     m.addItem (importTpl, TRANS ("Import External Theme..."), fileTreeContainer->hasLoadedProject());
@@ -1028,17 +1030,20 @@ void TopToolBar::setUiLanguage (const LanguageID& id)
 //=================================================================================================
 void TopToolBar::createThemeFilesMenu (PopupMenu& menu, const int baseId)
 {
-    Array<File> files;
+    if (fileTreeContainer->hasLoadedProject())
+    {
+        menu.addItem (baseId, TRANS ("Global Stylesheet"), true, 
+                      editAndPreview->getEditingThemeFile().getFileName() == "style.css");
+        menu.addSeparator();
 
-    files.add (FileTreeContainer::projectFile.getSiblingFile ("site")
-               .getChildFile ("add-in").getChildFile ("style.css"));
+        Array<File> files;
+        const String currentRender (FileTreeContainer::projectTree.getProperty ("render").toString());
+        const File& dirOfRender (FileTreeContainer::projectFile.getSiblingFile ("themes").getChildFile (currentRender));
+        dirOfRender.findChildFiles (files, File::findFiles, false, "*.html");
 
-    const String currentRender (FileTreeContainer::projectTree.getProperty ("render").toString());
-    const File& dirOfRender (FileTreeContainer::projectFile.getSiblingFile ("themes").getChildFile (currentRender));
-    dirOfRender.findChildFiles (files, File::findFiles, false, "*.html");
-
-    for (int i = files.size(); --i >= 0; )
-        menu.addItem (baseId + i, files[i].getFileName(), true, editAndPreview->getEditingThemeFile() == files[i]);
+        for (int i = 0; i < files.size(); ++i)
+            menu.addItem (baseId + i + 1, files[i].getFileName(), true, editAndPreview->getEditingThemeFile() == files[i]);
+    }
 }
 
 //=================================================================================================

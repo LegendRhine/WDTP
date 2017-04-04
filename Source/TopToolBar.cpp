@@ -316,13 +316,35 @@ void TopToolBar::popupSystemMenu()
     m.addItem (showAboutDialog, TRANS ("About..."), true);
 
     // display the menu
-    const int index = m.show();
+    const int index = m.show();    
     
-    // recently opened files..
-    if (index >= 100 && index < 200)   
+    if (index >= 100 && index < 200)    // recently opened files..
+    {
         fileTreeContainer->openProject (recentFiles.getFile (index - 100));
+    }
+        
+    else if (index >= 200 && index < 300)  // edit theme file
+    {
+        if (index == 200)
+        {
+            editAndPreview->editThemeFile (fileTreeContainer->projectFile.getSiblingFile ("site")
+                                           .getChildFile ("add-in").getChildFile ("style.css"));
+        }
+        else
+        {
+            Array<File> files;
+            const String currentRender (FileTreeContainer::projectTree.getProperty ("render").toString());
+            const File& dirOfRender (FileTreeContainer::projectFile.getSiblingFile ("themes").getChildFile (currentRender));
+            dirOfRender.findChildFiles (files, File::findFiles, false, "*.html");
+
+            editAndPreview->editThemeFile (files[index - 200 - 1]);
+        }
+    }
+
     else
+    {
         systemMenuPerform (index);
+    }
 }
 
 //=================================================================================================

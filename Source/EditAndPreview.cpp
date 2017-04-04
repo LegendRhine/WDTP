@@ -29,10 +29,7 @@ EditAndPreview::EditAndPreview (MainContentComponent* mainComp_)
     addAndMakeVisible (setupPanel = new SetupPanel (this));
     addChildComponent (themeEditor = new ThemeEditor (this));
     addAndMakeVisible (layoutBar = new StrechableBar (&layoutManager, 1, true));
-
-    themeEditor->setVisible (true);
-    setupPanel->setVisible (false);
-
+        
     // markdown editor
     mdEditor->setMultiLine (true);
     mdEditor->setReturnKeyStartsNewLine (true);

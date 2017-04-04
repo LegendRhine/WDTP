@@ -347,7 +347,17 @@ void RecordComp::writeMp3AudioToMediaDir (const String& fileName)
 
     jassert (writer != nullptr);
 
-    if (writer->writeFromAudioReader (*player->getReaderOfCuurentHold(), 0, -1))
+    // gain ramp process
+    AudioFormatReader* reader = player->getReaderOfCuurentHold();
+    AudioSampleBuffer buffer (reader->numChannels, (int)reader->lengthInSamples);
+    reader->read (&buffer, 0, (int)reader->lengthInSamples, 0, true, true);
+
+    buffer.applyGain (0, (int)reader->lengthInSamples, volGain);
+    buffer.applyGainRamp (0, 4410, 0.f, 1.f);
+    buffer.applyGainRamp ((int)reader->lengthInSamples - 4410, 4410, 1.f, 0.f);
+
+    // write to mp3
+    if (writer->writeFromAudioSampleBuffer (buffer, 0, (int)reader->lengthInSamples))
         sendActionMessage (fileName);
     else
         SHOW_MESSAGE (TRANS ("Can't save this audio."));

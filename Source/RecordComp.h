@@ -18,7 +18,8 @@ class RecordingThumbnail;
 */
 class RecordComp : public Component,
                    public ActionBroadcaster,
-                   public ButtonListener,
+                   public Button::Listener,
+                   public Slider::Listener,
                    private AudioDataPlayer::Listener,
                    private Timer
 {
@@ -30,7 +31,9 @@ public:
 
     void paint (Graphics&) override;
     void resized() override;
+
     void buttonClicked (Button* button) override;
+    virtual void sliderValueChanged (Slider* slider) override;
 
     // click to position the play line
     void mouseDown (const MouseEvent& event) override;
@@ -70,7 +73,9 @@ private:
     OwnedArray<ImageButton> buttons;
     ScopedPointer<Label> currentTimeLabel;
     ScopedPointer<Label> totalTimeLabel;
+    ScopedPointer<Slider> volSlider;
     int64 startSample, samplesNum;  // for cut at current play position
+    float volGain;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (RecordComp)        
 

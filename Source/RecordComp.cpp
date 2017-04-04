@@ -25,7 +25,8 @@ RecordComp::RecordComp (const File& docFile) :
     mediaDir (docFile.getSiblingFile ("media")),
     player (new AudioDataPlayer()), 
     startSample (0),
-    samplesNum(0)
+    samplesNum(0),
+    volGain (1.f)
 {
     // buttons
     for (int i = 0; i < totalButtons; ++i)
@@ -89,6 +90,14 @@ RecordComp::RecordComp (const File& docFile) :
     addAndMakeVisible (currentPositionMarker);
     recordThumbnail->setInterceptsMouseClicks (false, false);
 
+    // volume slider
+    addAndMakeVisible (volSlider = new Slider (Slider::LinearHorizontal, Slider::NoTextBox));
+    volSlider->setRange (0.2, 10.0, 0.1);
+    volSlider->setDoubleClickReturnValue (true, 1.0);
+
+    volSlider->setValue (1.0, dontSendNotification);
+    volSlider->addListener (this);
+
     setSize (580, 350);
 
     player->addListener (this);
@@ -141,6 +150,7 @@ void RecordComp::resized()
     buttons[delBt]->setBounds (buttons[cutBt]->getRight() + 25, buttons[playBt]->getY(), 32, 32);
     buttons[doneBt]->setBounds (buttons[delBt]->getRight() + 25, buttons[playBt]->getY(), 32, 32);
 
+    volSlider->setBounds (getWidth() - 160, 12, 140, 30);
     grabKeyboardFocus();
 }
 //=================================================================================================
@@ -233,12 +243,16 @@ void RecordComp::setAudioReader (AudioFormatReader* reader)
     if (reader != nullptr)
     {
         recordThumbnail->setDisplayFullThumbnail (true);
+        recordThumbnail->setZoomFactor (volGain);
 
         buttons[recBt]->setEnabled (false);
         buttons[playBt]->setEnabled (true);
         buttons[delBt]->setEnabled (true);
         buttons[cutBt]->setEnabled (true);
         buttons[doneBt]->setEnabled (true);
+
+        volSlider->setEnabled (true);
+        player->setGain (volGain);
     }
     else
     {
@@ -250,6 +264,9 @@ void RecordComp::setAudioReader (AudioFormatReader* reader)
         buttons[cutBt]->setEnabled (false);
         buttons[delBt]->setEnabled (false);
         buttons[doneBt]->setEnabled (true);
+
+        volSlider->setValue (1.0);
+        volSlider->setEnabled (false);
     }
 
     currentTimeLabel->setText ("0:00.0", dontSendNotification);
@@ -401,6 +418,18 @@ void RecordComp::mouseUp (const MouseEvent& e)
             startTimer (33);
     }
 }
+
+//=================================================================================================
+void RecordComp::sliderValueChanged (Slider* slider)
+{
+    if (slider == volSlider)
+    {
+        volGain = (float)volSlider->getValue();
+        player->setGain (volGain);
+        recordThumbnail->setZoomFactor (volGain);
+    }
+}
+
 //=================================================================================================
 void RecordComp::startRecord()
 {
@@ -429,6 +458,7 @@ void RecordComp::beginRecord()
     buttons[cutBt]->setEnabled (false);
     buttons[delBt]->setEnabled (false);
     buttons[doneBt]->setEnabled (false);
+    volSlider->setEnabled (false);
 }
 //=================================================================================================
 void RecordComp::stopRecord()
@@ -458,5 +488,6 @@ void RecordComp::stopRecord()
     buttons[cutBt]->setEnabled (true);
     buttons[delBt]->setEnabled (true);
     buttons[doneBt]->setEnabled (true);
+    volSlider->setEnabled (true);
 }
 

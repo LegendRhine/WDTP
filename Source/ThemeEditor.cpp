@@ -25,6 +25,7 @@ ThemeEditor::ThemeEditor (EditAndPreview* parent) :
     setColour (TextEditor::textColourId, Colour (0xffd7d079));
     setColour (CaretComponent::caretColourId, Colour (0xffd7d079).withAlpha (0.6f));
     setColour (TextEditor::backgroundColourId, Colour (0xff202020));
+    setColour (TextEditor::highlightColourId, Colours::lightskyblue);
 }
 
 //=================================================================================================

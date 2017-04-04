@@ -40,6 +40,7 @@ public:
 
     void setLayout (const bool showSetupArea, const bool showSetupPanel);
     const bool setupAreaIsShowing() const;
+    const bool themeEditorIsShowing() const;
     const File& getEditingThemeFile() const;
 
     TextEditor* getEditor() const               { return mdEditor; }

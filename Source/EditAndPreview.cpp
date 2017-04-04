@@ -101,6 +101,12 @@ const bool EditAndPreview::setupAreaIsShowing() const
 }
 
 //=================================================================================================
+const bool EditAndPreview::themeEditorIsShowing() const
+{
+    return themeEditor->isVisible();
+}
+
+//=================================================================================================
 const File& EditAndPreview::getEditingThemeFile() const
 {
     return themeEditor->getCurrentFile();

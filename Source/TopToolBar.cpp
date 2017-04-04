@@ -1055,7 +1055,8 @@ void TopToolBar::createThemeFilesMenu (PopupMenu& menu, const int baseId)
     if (fileTreeContainer->hasLoadedProject())
     {
         menu.addItem (baseId, TRANS ("Global Stylesheet"), true, 
-                      editAndPreview->getEditingThemeFile().getFileName() == "style.css");
+                      (editAndPreview->themeEditorIsShowing() && 
+                      editAndPreview->getEditingThemeFile().getFileName() == "style.css"));
         menu.addSeparator();
 
         Array<File> files;
@@ -1064,7 +1065,8 @@ void TopToolBar::createThemeFilesMenu (PopupMenu& menu, const int baseId)
         dirOfRender.findChildFiles (files, File::findFiles, false, "*.html");
 
         for (int i = 0; i < files.size(); ++i)
-            menu.addItem (baseId + i + 1, files[i].getFileName(), true, editAndPreview->getEditingThemeFile() == files[i]);
+            menu.addItem (baseId + i + 1, files[i].getFileName(), true, 
+                          (editAndPreview->themeEditorIsShowing() && editAndPreview->getEditingThemeFile() == files[i]));
     }
 }
 

@@ -430,3 +430,6 @@ countries: cn
 "Edit Current Theme" = "编辑当前主题"
 "Global Stylesheet" = "全局样式表"
 "Click here to start your journey of WDTP" = "点击此处，开启您的山湖录之旅"
+"Edit by External Editor" = "用外部编辑器打开"
+"Specify External Editor" = "指定默认的编辑器"
+"Edit Media File" = "编辑媒体文件"

@@ -206,6 +206,17 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 
         menu.addSeparator();
         menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)", docFile.existsAsFile());
+
+        PopupMenu exEdit;
+        const bool selectedMediaFile = (getHighlightedText().containsIgnoreCase (".jpg")
+                                        || getHighlightedText().containsIgnoreCase (".png")
+                                        || getHighlightedText().containsIgnoreCase (".gif")
+                                        || getHighlightedText().containsIgnoreCase (".mp3")
+                                        || getHighlightedText().containsIgnoreCase (".jpeg"));
+
+        exEdit.addItem (editMediaByExEditor, TRANS ("Edit by External Editor") + "...", selectedMediaFile);
+        exEdit.addItem (setExEditorForMedia, TRANS ("Specify External Editor") + "...", selectedMediaFile);
+        menu.addSubMenu (TRANS ("Edit Media File"), exEdit, docFile.existsAsFile());
     }
 }
 

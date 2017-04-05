@@ -72,7 +72,7 @@ private:
         searchNext, searchPrev, searchByGoogle, searchByBing, searchByWiki,
         showTips, joinTips,
         fontSize, fontColor, setBackground, resetDefault,
-        outlineMenu
+        outlineMenu, setExEditorForMedia, editMediaByExEditor
     };
 
     /** for click to select/unselect a keyword from keywords-table component.

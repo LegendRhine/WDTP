@@ -186,6 +186,18 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         exSearch.addItem (searchByWiki, TRANS ("Wikipedia..."), getHighlightedText().isNotEmpty());
 
         menu.addSubMenu (TRANS ("External Search Selection"), exSearch, docFile.existsAsFile());
+
+        PopupMenu exEdit;
+        const bool selectedMediaFile = (getHighlightedText().containsIgnoreCase (".jpg")
+                                        || getHighlightedText().containsIgnoreCase (".png")
+                                        || getHighlightedText().containsIgnoreCase (".gif")
+                                        || getHighlightedText().containsIgnoreCase (".mp3")
+                                        || getHighlightedText().containsIgnoreCase (".jpeg"));
+
+        exEdit.addItem (editMediaByExEditor, TRANS ("Edit by External Editor") + "...", selectedMediaFile);
+        exEdit.addItem (setExEditorForMedia, TRANS ("Specify External Editor") + "...", selectedMediaFile);
+
+        menu.addSubMenu (TRANS ("External Edit Media File"), exEdit, docFile.existsAsFile());
         menu.addSeparator();
 
         menu.addItem (showTips, TRANS ("Tips/Replace") + "..." + ctrlStr + "G)", getHighlightedText().isNotEmpty());
@@ -205,18 +217,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docFile.existsAsFile());
 
         menu.addSeparator();
-        menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)", docFile.existsAsFile());
-
-        PopupMenu exEdit;
-        const bool selectedMediaFile = (getHighlightedText().containsIgnoreCase (".jpg")
-                                        || getHighlightedText().containsIgnoreCase (".png")
-                                        || getHighlightedText().containsIgnoreCase (".gif")
-                                        || getHighlightedText().containsIgnoreCase (".mp3")
-                                        || getHighlightedText().containsIgnoreCase (".jpeg"));
-
-        exEdit.addItem (editMediaByExEditor, TRANS ("Edit by External Editor") + "...", selectedMediaFile);
-        exEdit.addItem (setExEditorForMedia, TRANS ("Specify External Editor") + "...", selectedMediaFile);
-        menu.addSubMenu (TRANS ("Edit Media File"), exEdit, docFile.existsAsFile());
+        menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)", docFile.existsAsFile());        
     }
 }
 

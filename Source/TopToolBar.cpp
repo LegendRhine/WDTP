@@ -371,8 +371,8 @@ void TopToolBar::systemMenuPerform (const int index)
     else if (index == syntax)           URL ("http://underwaysoft.com/works/wdtp/syntaxMark.html").launchInDefaultBrowser();
     else if (index == faq)              URL ("http://underwaysoft.com/works/wdtp/faq.html").launchInDefaultBrowser();
     else if (index == feedback)         URL ("http://underwaysoft.com/guestBook.html").launchInDefaultBrowser();
-    else if (index == showAboutDialog)  SwingUtilities::showAbout ( "Walden Tips (" 
-                                            + String (CharPointer_UTF8 ("\xe5\xb1\xb1\xe6\xb9\x96\xe5\xbd\x95")) 
+    else if (index == showAboutDialog)  SwingUtilities::showAbout ( "Walden Trip (" 
+                                            + String (CharPointer_UTF8 ("\xe5\xb1\xb1\xc2\xb7\xe6\xb9\x96\xc2\xb7\xe8\xb7\xaf"))
                                             + ")", "2017");
 
     // switch ui-language in realtime

@@ -56,7 +56,7 @@ void SwingUtilities::showAbout (const String& shortDescription,
                           "underwaySoft@gmail.com" + newLine + newLine +
                           String (CharPointer_UTF8 ("\xc2\xa9")) + copyrightYear + " UnderwaySoft " +
                           TRANS ("All Right Reserved.") + newLine  +
-                          TRANS (" Walden Tips is GPL (v2) licensed.") + newLine +
+                          TRANS (" Walden Trip is GPL (v2) licensed.") + newLine +
                           "=================================\n" +
                           TRANS ("Acknowledgements:") + newLine +
                           "  - Framework: JUCE (https://juce.com)\n" +

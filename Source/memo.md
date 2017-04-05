@@ -1,4 +1,4 @@
-﻿# Walden Tips (山湖录)
+﻿# Walden Trip (山·湖·路)
  
 ### System Setup
 - PropertiesFile (systemFile, the file of system properties) is place in the local 'user-documents/wdtp.sys'.

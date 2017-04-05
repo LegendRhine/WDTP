@@ -264,6 +264,65 @@ void MarkdownEditor::performPopupMenuAction (int index)
         popupOutlineMenu (parent, getText().replace (CharPointer_UTF8 ("\xef\xbc\x83"), "#"));
     }
 
+    else if (editMediaByExEditor == index)
+    {
+        const File& mediaFile (parent->getCurrentDocFile().getSiblingFile ("media")
+                               .getChildFile (getHighlightedText()));
+
+        if (mediaFile.existsAsFile())
+        {
+            if (getHighlightedText().containsIgnoreCase (".mp3"))
+            {
+                Process::openDocument (systemFile->getValue ("audioEditor"), 
+                                       mediaFile.getFullPathName());
+            }
+            else if (getHighlightedText().containsIgnoreCase (".jpg")
+                      || getHighlightedText().containsIgnoreCase (".png")
+                      || getHighlightedText().containsIgnoreCase (".gif")
+                      || getHighlightedText().containsIgnoreCase (".jpeg"))
+            {
+                Process::openDocument (systemFile->getValue ("imageEditor"), 
+                                       mediaFile.getFullPathName());
+            }
+
+            parent->getCurrentTree().setProperty ("needCreateHtml", true, nullptr);
+        }
+        else
+        {
+            SHOW_MESSAGE (TRANS ("The selected media file doesn't inside this doc's media dir."));
+        }
+    }
+
+    else if (setExEditorForMedia == index)
+    {
+        String tipInfo;
+        String valueName;
+
+        if (getHighlightedText().containsIgnoreCase (".mp3"))
+        {
+            tipInfo = TRANS ("Please Specify an External Editor for Audio");
+            valueName = "audioEditor";
+        }
+        else if (getHighlightedText().containsIgnoreCase (".jpg")
+                  || getHighlightedText().containsIgnoreCase (".png")
+                  || getHighlightedText().containsIgnoreCase (".gif")
+                  || getHighlightedText().containsIgnoreCase (".jpeg"))
+        {
+            tipInfo = TRANS ("Please Specify an External Editor for Image");
+            valueName = "imageEditor";
+        }
+
+        FileChooser fc (tipInfo, File::getSpecialLocation (File::globalApplicationsDirectory), "*.exe");
+
+        if (fc.browseForFileToOpen())
+        {
+            systemFile->setValue (valueName, fc.getResult().getFullPathName());
+            systemFile->saveIfNeeded();
+
+            SHOW_MESSAGE (TRANS ("External editor specified successful."));
+        }
+    }
+
     else if (insertSeparator == index)      insertTextAtCaret (newLine + "---" + newLine);
     else if (pickFromAllKeywords == index)  showAllKeywords();
     else if (searchPrev == index)           searchPrevious();

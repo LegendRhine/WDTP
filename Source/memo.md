@@ -10,6 +10,8 @@
 	- fontSize: The font-size of TextEditor.
 	- editorFontColour
 	- editorBackground
+	- imageEditor: default application for edit image file
+	- audioEditor: default application for edit audiao file
 
 ### Project File
 - '.wdtp' for the normal project file, the packed project is '.wpck', '.wtpl' is the theme when it has been exported.

@@ -194,7 +194,18 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
                                         || getHighlightedText().containsIgnoreCase (".mp3")
                                         || getHighlightedText().containsIgnoreCase (".jpeg"));
 
-        exEdit.addItem (editMediaByExEditor, TRANS ("Edit by External Editor") + "...", selectedMediaFile);
+        bool canEdit = false;
+
+        if (getHighlightedText().containsIgnoreCase (".mp3") && systemFile->getValue ("audioEditor").isNotEmpty())
+            canEdit = true;
+        else if ((getHighlightedText().containsIgnoreCase (".jpg")
+                  || getHighlightedText().containsIgnoreCase (".png")
+                  || getHighlightedText().containsIgnoreCase (".gif")
+                  || getHighlightedText().containsIgnoreCase (".jpeg"))
+                 && systemFile->getValue ("imageEditor").isNotEmpty())
+            canEdit = true;
+
+        exEdit.addItem (editMediaByExEditor, TRANS ("Edit by External Editor") + "...", canEdit);
         exEdit.addItem (setExEditorForMedia, TRANS ("Specify External Editor") + "...", selectedMediaFile);
 
         menu.addSubMenu (TRANS ("External Edit Media File"), exEdit, docFile.existsAsFile());

@@ -1030,8 +1030,12 @@ void MarkdownEditor::pasteForCtrlV()
     }
 
     // internal link
-    else if (content.contains ("*_wdtpGetPath_*"))  
+    else if (content.contains ("*_wdtpGetPath_*"))
         interLinkInsert();
+
+    // include '\t'
+    else if (content.containsIgnoreCase ("\t"))
+        insertTextAtCaret (content.replace ("\t", "    "));
 
     // others
     else  

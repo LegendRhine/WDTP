@@ -433,3 +433,7 @@ countries: cn
 "Edit by External Editor" = "用外部编辑器打开"
 "Specify External Editor" = "指定默认的编辑器"
 "External Edit Media File" = "外部编辑媒体文件"
+"Please Specify an External Editor for Audio" = "请指定外部的音频编辑器"
+"Please Specify an External Editor for Image" = "请指定外部的图像编辑器"
+"External editor specified successful." = "外部编辑器设置成功。"
+"The selected media file doesn't inside this doc's media dir." = "没有在当前文档的media目录下找到所选的媒体文件。"

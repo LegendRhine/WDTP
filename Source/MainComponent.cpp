@@ -187,11 +187,11 @@ void MainContentComponent::showStartTip()
 {
     if (!fileTree->hasLoadedProject())
     {
-        Label info (String(), TRANS ("Click here to start your journey of WDTP"));
-        info.setColour (Label::textColourId, Colours::lightgrey);
+        Label info (String(), TRANS ("Click here and 'New Project...'\n\nStart your journey of WDTP!"));
+        info.setColour (Label::textColourId, Colours::greenyellow.withAlpha (0.8f));
         info.setFont (SwingUtilities::getFontSize() - 2.f);
         info.setJustificationType (Justification::centred);
-        info.setSize (280, 30);
+        info.setSize (240, 70);
 
         CallOutBox callOut (info, toolBar->getScreenBounds(), nullptr);
         callOut.runModalLoop();

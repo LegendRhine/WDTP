@@ -485,9 +485,23 @@ void TopToolBar::createNewProject()
 
     // save the new project file and load it
     if (SwingUtilities::writeValueTreeToFile (p, projectFile))
+    {
         fileTreeContainer->openProject (projectFile);
+
+        // show some tip info
+        Label info (String(), TRANS ("Right-click the root item then\n\n'New Folder' or 'New Document'..."));
+        info.setColour (Label::textColourId, Colours::greenyellow.withAlpha (0.8f));
+        info.setFont (SwingUtilities::getFontSize() - 2.f);
+        info.setJustificationType (Justification::centred);
+        info.setSize (260, 70);
+
+        CallOutBox callOut (info, fileTreeContainer->getScreenBounds().withHeight (30).withWidth (150), nullptr);
+        callOut.runModalLoop();
+    }
     else
+    {
         SHOW_MESSAGE (TRANS ("Something wrong during create this project file."));
+    }
 }
 
 //=================================================================================================

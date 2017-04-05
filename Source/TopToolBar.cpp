@@ -1083,8 +1083,16 @@ void TopToolBar::cleanNeedlessMedias (const bool showMessageWhenNoAnyNeedless)
 
     for (int i = allDirs.size(); --i >= 0; )
     {
-        if (allDirs[i].getFileName() != "media")
+        // delete extra sub-dir of media (might be backup after external edited medias)
+        if (allDirs[i].getParentDirectory().getFileName() == "media")
+        {
+            allDirs[i].setReadOnly (false, true);
+            allDirs[i].deleteRecursively();
+        }
+
+        else if (allDirs[i].getFileName() != "media")
             allDirs.remove (i);
+        
         else
             allDirs[i].findChildFiles (allMediasOnLocal, File::findFiles, false);
     }

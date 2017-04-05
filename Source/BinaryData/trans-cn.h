@@ -3,6 +3,7 @@ countries: cn
 
 "Author: " = "作者: "
 "All Right Reserved." = "版权所有."
+"bit"= "位"
 "Acknowledgements:" = "鸣谢:"
 "About " = "关于 "
 "Message" = "消息"

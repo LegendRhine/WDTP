@@ -69,7 +69,8 @@ void SwingUtilities::showAbout (const String& shortDescription,
 
     window->setSize (420, 160);
     window->showDialog (TRANS ("About ") + ProjectInfo::projectName + " "
-                        + String (ProjectInfo::versionString));
+                        + String (ProjectInfo::versionString) + " "
+                        + String (sizeof (int*) * 8) + TRANS ("bit"));
 }
 
 //=================================================================================================

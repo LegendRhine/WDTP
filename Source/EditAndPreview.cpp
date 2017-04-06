@@ -207,12 +207,37 @@ void EditAndPreview::forcePreview()
 }
 
 //=================================================================================================
+void EditAndPreview::setReadOnly (const bool onlyForRead)
+{
+    mdEditor->setReadOnly (onlyForRead);
+    
+    Colour fontClr (Colour::fromString (systemFile->getValue ("editorFontColour")));
+    Colour bgClr (Colour::fromString (systemFile->getValue ("editorBackground")));
+
+    if (onlyForRead)
+    {
+        mdEditor->setColour (TextEditor::textColourId, fontClr.contrasting (0.75f));
+        mdEditor->setColour (TextEditor::backgroundColourId, bgClr.contrasting (0.7f));
+    }
+    else
+    {
+        mdEditor->setColour (TextEditor::textColourId, fontClr);
+        mdEditor->setColour (TextEditor::backgroundColourId, bgClr);
+    }
+
+    mdEditor->applyFontToAllText (systemFile->getValue ("fontSize").getFloatValue());
+}
+
+//=================================================================================================
 void EditAndPreview::editCurrentDoc()
 {
     webView->setVisible (false);
     mdEditor->setVisible (true);
     mdEditor->grabKeyboardFocus();
     mdEditor->setPopupMenuEnabled (true);
+
+    // check if it's archived
+    setReadOnly ((bool)docOrDirTree.getProperty ("archive"));
 
     // here must goto the html url of the doc on osx, although the broswer doesn't visible.
     // otherwise, it'll load the previous page when switch to preview another doc,

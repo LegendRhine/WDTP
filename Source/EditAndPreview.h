@@ -35,6 +35,7 @@ public:
     void switchMode (const bool switchToPreview);
     void forcePreview();
     void refreshCurrentPage()                   { webView->refresh(); }
+    void setReadOnly (const bool onlyForRead);
 
     void paint (Graphics&) override {}
     void resized() override;

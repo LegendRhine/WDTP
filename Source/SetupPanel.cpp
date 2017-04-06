@@ -512,6 +512,9 @@ void SetupPanel::valueChanged (Value& value)
     DocTreeViewItem::needCreate (currentTree);
     projectHasChanged = true;
 
+    // set mdEditor read only or not base on 'archive'
+    editorAndPreView->setReadOnly (values[archiveMode]->getValue());
+
     // regenarate the current page
     if (editorAndPreView->getCureentState())
         cmdManager->invokeDirectly (TopToolBar::generateCurrent, true);

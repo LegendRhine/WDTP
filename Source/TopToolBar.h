@@ -86,9 +86,12 @@ private:
 
     /** the pack file's extension must be ".wpck" */
     static void packProject();  
-    static void exportCurrentTpls();
-    void importExternalTpls();
+    static void exportCurrentTpls();    
     static void releaseSystemTpls (const bool askAndShowMessage);
+    void importExternalTpls();
+
+    /** imgType: 0 for site ico, 1 for project logo */
+    void setSiteImgs (const int imgType);
 
     enum LanguageID { English = 0, Chinese = 1 };
     void setUiLanguage (const LanguageID& id);

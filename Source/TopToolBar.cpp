@@ -306,7 +306,7 @@ void TopToolBar::popupSystemMenu()
 
     // site url..
     PopupMenu siteUrls;
-    siteUrls.addItem (updateList, TRANS ("Update List..."), true);
+    siteUrls.addItem (wdtpUpdateList, TRANS ("Update List..."), true);
     siteUrls.addItem (gettingStarted, TRANS ("Getting Started..."), true);
     siteUrls.addItem (syntax, TRANS ("Text Mark Syntax and Demo..."), true);
     siteUrls.addItem (faq, TRANS ("FAQ..."), true);
@@ -359,7 +359,8 @@ void TopToolBar::systemMenuPerform (const int index)
     else if (index == openPjt)          openProject();
     else if (index == generateWhole)    cleanAndGenerateAll();
     else if (index == cleanUpLocal)     cleanNeedlessMedias (true);
-    
+    else if (index == importIco)        setSiteImgs (0);
+    else if (index == importLogo)       setSiteImgs (1);
     else if (index == exportTpl)        exportCurrentTpls();
     else if (index == importTpl)        importExternalTpls();
     else if (index == releaseSystemTpl) releaseSystemTpls (true);
@@ -1101,6 +1102,39 @@ void TopToolBar::createThemeFilesMenu (PopupMenu& menu, const int baseId)
         for (int i = 0; i < files.size(); ++i)
             menu.addItem (baseId + i + 1, files[i].getFileName(), true, 
                           (editAndPreview->themeEditorIsShowing() && editAndPreview->getEditingThemeFile() == files[i]));
+    }
+}
+
+//=================================================================================================
+void TopToolBar::setSiteImgs (const int imgType)
+{
+    // 0 for site ico, 1 for project logo
+    const String& imgExtension ((imgType == 0) ? "*.ico" : "*.png");
+    FileChooser fc (TRANS ("Please select an image") + "...", File::nonexistent, imgExtension, true);
+
+    if (fc.browseForFileToOpen())
+    {
+        const File& selectedImg (fc.getResult ());
+
+        if (imgType == 0)
+        {
+            if (selectedImg.getFileExtension () == ".ico"
+                && selectedImg.copyFileTo (fileTreeContainer->projectFile.getSiblingFile ("site")
+                                           .getChildFile ("favicon.ico")))
+                SHOW_MESSAGE (TRANS ("Site ico has been set successful!"));
+            else
+                SHOW_MESSAGE (TRANS ("Please select a valid ico image."));
+        }
+
+        else if (imgType == 1)
+        {
+            if (selectedImg.getFileExtension () == ".png"
+                && selectedImg.copyFileTo (fileTreeContainer->projectFile.getSiblingFile ("site/add-in")
+                                           .getChildFile ("logo.png")))
+                SHOW_MESSAGE (TRANS ("Project logo has been set successful!"));
+            else
+                SHOW_MESSAGE (TRANS ("Please select a valid png image."));
+        }
     }
 }
 

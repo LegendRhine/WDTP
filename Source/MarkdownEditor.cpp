@@ -83,16 +83,17 @@ void MarkdownEditor::popupOutlineMenu (EditAndPreview* editAndPreview,
 //=================================================================================================
 void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 {
-    const File& docFile (parent->getCurrentDocFile());
+    const bool docExists = parent->getCurrentDocFile().existsAsFile();
+    const bool selectSomething = getHighlightedText().isNotEmpty();
 
     if (e->mods.isPopupMenu())
     {
-        menu.addItem (pickTitle, TRANS ("Pickup as Title"), getHighlightedText().isNotEmpty());
-        menu.addItem (pickDesc, TRANS ("Pickup as Description"), getHighlightedText().isNotEmpty());
+        menu.addItem (pickTitle, TRANS ("Pickup as Title"), selectSomething);
+        menu.addItem (pickDesc, TRANS ("Pickup as Description"), selectSomething);
         menu.addSeparator();
 
-        menu.addItem (addKeywords, TRANS ("Add to Keywords"), getHighlightedText().isNotEmpty());
-        menu.addItem (pickFromAllKeywords, TRANS ("Keywords Table") + "...", docFile.existsAsFile());
+        menu.addItem (addKeywords, TRANS ("Add to Keywords"), selectSomething);
+        menu.addItem (pickFromAllKeywords, TRANS ("Keywords Table") + "...", docExists);
         menu.addSeparator();
 
         PopupMenu insertMenu;
@@ -139,7 +140,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 
         const String internalLinkStr (SystemClipboard::getTextFromClipboard());
         insertMenu.addItem (insertInterLink, TRANS ("Internal Link"), internalLinkStr.contains ("*_wdtpGetPath_*"));
-        menu.addSubMenu (TRANS ("Insert"), insertMenu, docFile.existsAsFile());
+        menu.addSubMenu (TRANS ("Insert"), insertMenu, docExists);
 
         PopupMenu formatMenu;
         formatMenu.addItem (formatBold, TRANS ("Bold") + ctrlStr + "B)");
@@ -158,7 +159,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addItem (antiIndent, TRANS ("Anti-Indent"));
         formatMenu.addItem (forceIndent, TRANS ("Force Indent"));
 
-        menu.addSubMenu (TRANS ("Format"), formatMenu, docFile.existsAsFile());
+        menu.addSubMenu (TRANS ("Format"), formatMenu, docExists);
 
         PopupMenu expandMark;
         expandMark.addItem (latestPublish, TRANS ("Latest Publish"));
@@ -170,22 +171,22 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         expandMark.addItem (randomArticle, TRANS ("Random Articles"));
         expandMark.addItem (allKeywords, TRANS ("All Keywords"));
 
-        menu.addSubMenu (TRANS ("Expand Mark"), expandMark, docFile.existsAsFile());
+        menu.addSubMenu (TRANS ("Expand Mark"), expandMark, docExists);
         menu.addSeparator();
 
-        menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)", docFile.existsAsFile());
+        menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)", docExists);
         menu.addSeparator();
 
         // search
-        menu.addItem (searchNext, TRANS ("Search Next Selection") + "  (F3)", getHighlightedText().isNotEmpty());
-        menu.addItem (searchPrev, TRANS ("Search Prev Selection") + "  (Shift + F3)", getHighlightedText().isNotEmpty());
+        menu.addItem (searchNext, TRANS ("Search Next Selection") + "  (F3)", selectSomething);
+        menu.addItem (searchPrev, TRANS ("Search Prev Selection") + "  (Shift + F3)", selectSomething);
 
         PopupMenu exSearch;
-        exSearch.addItem (searchByGoogle, "Google...", getHighlightedText().isNotEmpty());
-        exSearch.addItem (searchByBing, TRANS ("Bing..."), getHighlightedText().isNotEmpty());
-        exSearch.addItem (searchByWiki, TRANS ("Wikipedia..."), getHighlightedText().isNotEmpty());
+        exSearch.addItem (searchByGoogle, "Google...", selectSomething);
+        exSearch.addItem (searchByBing, TRANS ("Bing..."), selectSomething);
+        exSearch.addItem (searchByWiki, TRANS ("Wikipedia..."), selectSomething);
 
-        menu.addSubMenu (TRANS ("External Search Selection"), exSearch, docFile.existsAsFile());
+        menu.addSubMenu (TRANS ("External Search Selection"), exSearch, docExists);
 
         PopupMenu exEdit;
         const bool selectedMediaFile = (getHighlightedText().containsIgnoreCase (".jpg")
@@ -208,11 +209,11 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         exEdit.addItem (editMediaByExEditor, TRANS ("Edit by External Editor") + "...", canEdit);
         exEdit.addItem (setExEditorForMedia, TRANS ("Specify External Editor") + "...", selectedMediaFile);
 
-        menu.addSubMenu (TRANS ("External Edit Media File"), exEdit, docFile.existsAsFile());
+        menu.addSubMenu (TRANS ("External Edit Media File"), exEdit, docExists);
         menu.addSeparator();
 
-        menu.addItem (showTips, TRANS ("Tips/Replace") + "..." + ctrlStr + "G)", getHighlightedText().isNotEmpty());
-        menu.addItem (joinTips, TRANS ("Add to Tips Bank") + "...", getHighlightedText().isNotEmpty());
+        menu.addItem (showTips, TRANS ("Tips/Replace") + "..." + ctrlStr + "G)", selectSomething);
+        menu.addItem (joinTips, TRANS ("Add to Tips Bank") + "...", selectSomething);
         menu.addSeparator();
 
         TextEditor::addPopupMenuItems (menu, e);
@@ -225,10 +226,10 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         editorSetup.addSeparator();
         editorSetup.addItem (resetDefault, TRANS ("Reset to Default"));
 
-        menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docFile.existsAsFile());
+        menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docExists);
 
         menu.addSeparator();
-        menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)", docFile.existsAsFile());        
+        menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)", docExists);
     }
 }
 

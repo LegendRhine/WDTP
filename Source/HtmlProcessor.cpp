@@ -837,9 +837,12 @@ void HtmlProcessor::processTplTags (const ValueTree& docOrDirTree,
     // site logo
     if (tplStr.contains ("{{siteLogo}}"))
     {
+        const String& siteTitle (FileTreeContainer::projectTree.getProperty ("title").toString());
+
         tplStr = tplStr.replace ("{{siteLogo}}",
                                  "<div class=\"siteLogo\"><a href=\"" + rootRelativePath + "index.html\"><img src=\""
-                                 + rootRelativePath + "add-in/logo.png\"/></a></div>");
+                                 + rootRelativePath + "add-in/logo.png\" title=\"" + siteTitle 
+                                 + "\" width=165 /></a></div>");
     }
 
     // site menu

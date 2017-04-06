@@ -304,7 +304,8 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
     const bool exist = getMdFileOrDir (tree).exists();
     const bool isDoc = (tree.getType().toString() == "doc");
     const bool isRoot = (tree.getType().toString() == "wdtpProject");
-    const bool onlyOneSelected = getOwnerView()->getNumSelectedItems() == 1;
+    const bool onlyOneSelected = (getOwnerView()->getNumSelectedItems() == 1);
+    const bool notReadOnly = !(bool)tree.getProperty ("archive");
     const bool isCrossPaste = File::getSpecialLocation (File::tempDirectory).getChildFile ("wdtpCrossCopy").existsAsFile();
     
     int remindNumbers = 0;
@@ -380,12 +381,12 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu);
         m.addSeparator();
 
-        m.addItem (replaceIn, TRANS ("Replace Content..."), exist && onlyOneSelected);
+        m.addItem (replaceIn, TRANS ("Replace Content..."), exist && onlyOneSelected && notReadOnly);
         m.addItem (remindSet, TRANS ("Batch set Remind Date") + "...", !isDoc && onlyOneSelected && hasRemind);
         m.addSeparator();
 
-        m.addItem (rename, TRANS ("Rename..."), !isRoot && onlyOneSelected);
-        m.addItem (deleteThis, TRANS ("Delete..."), !isRoot);
+        m.addItem (rename, TRANS ("Rename..."), !isRoot && onlyOneSelected && notReadOnly);
+        m.addItem (deleteThis, TRANS ("Delete..."), !isRoot && notReadOnly);
         m.addSeparator();
 
         m.addItem (viewInFinder, TRANS ("View in Explorer/Finder..."), exist && onlyOneSelected);

@@ -70,7 +70,7 @@
             file="Source/MarkdownEditor.cpp"/>
       <FILE id="L8tT3N" name="MarkdownEditor.h" compile="0" resource="0"
             file="Source/MarkdownEditor.h"/>
-      <FILE id="hzPDBZ" name="memo.md" compile="0" resource="0" file="Source/memo.md"/>
+      <FILE id="hzPDBZ" name="README.md" compile="0" resource="0" file="Source/README.md"/>
       <FILE id="JPvW00" name="RecordComp.cpp" compile="1" resource="0" file="Source/RecordComp.cpp"/>
       <FILE id="Nkkczk" name="RecordComp.h" compile="0" resource="0" file="Source/RecordComp.h"/>
       <FILE id="YEZNXG" name="ReplaceComponent.cpp" compile="1" resource="0"

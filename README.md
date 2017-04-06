@@ -1,4 +1,8 @@
-﻿WDTP is GPL (v2) licensed.
+﻿# Walden Trip (山·湖·路)
+
+![WDTP](http://underwaysoft.com/works/wdtp/media/wdtp-main.jpg)
+
+WDTP is GPL (v2) licensed.
 
 See: http://www.gnu.org/licenses/old-licenses/gpl-2.0.html
 

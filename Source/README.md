@@ -1,4 +1,6 @@
 ﻿# Walden Trip (山·湖·路)
+
+![WDTP](http://underwaysoft.com/works/wdtp/media/wdtp-main.jpg)
  
 ### System Setup
 - PropertiesFile (systemFile, the file of system properties) is place in the local 'user-documents/wdtp.sys'.

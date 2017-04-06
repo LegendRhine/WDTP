@@ -1131,9 +1131,14 @@ void TopToolBar::setSiteImgs (const int imgType)
             if (selectedImg.getFileExtension () == ".png"
                 && selectedImg.copyFileTo (fileTreeContainer->projectFile.getSiblingFile ("site/add-in")
                                            .getChildFile ("logo.png")))
+            {
                 SHOW_MESSAGE (TRANS ("Project logo has been set successful!"));
+                editAndPreview->restartWebBrowser();
+            }
             else
+            {
                 SHOW_MESSAGE (TRANS ("Please select a valid png image."));
+            }
         }
     }
 }

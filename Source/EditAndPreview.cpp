@@ -207,6 +207,18 @@ void EditAndPreview::forcePreview()
 }
 
 //=================================================================================================
+void EditAndPreview::restartWebBrowser()
+{
+    const bool isPreviewing = webView->isVisible();
+    webView = nullptr;
+    addChildComponent (webView = new WebBrowserComp (this));
+
+    webView->setVisible (isPreviewing);
+    webView->goToURL (DocTreeViewItem::getHtmlFile (docOrDirTree).getFullPathName());
+    resized();
+}
+
+//=================================================================================================
 void EditAndPreview::setMdEditorReadOnly (const bool onlyForRead)
 {
     mdEditor->setReadOnly (onlyForRead);
@@ -239,7 +251,7 @@ void EditAndPreview::editCurrentDoc()
     // check if it's archived
     setMdEditorReadOnly ((bool)docOrDirTree.getProperty ("archive"));
 
-    // here must goto the html url of the doc on osx, although the broswer doesn't visible.
+    // here must goto the html url of the doc on osx, although the browser doesn't visible.
     // otherwise, it'll load the previous page when switch to preview another doc,
     // especially after created a doc, edited then preview it.
     const String urlStr ((docOrDirFile.existsAsFile()) ?

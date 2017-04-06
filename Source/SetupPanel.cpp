@@ -213,6 +213,7 @@ void SetupPanel::showDocProperties (const bool currentValuesUpdateTree,
     values[reviewDate]->setValue (currentTree.getProperty ("reviewDate"));
     values[featured]->setValue (currentTree.getProperty ("featured"));
     values[hideMode]->setValue (currentTree.getProperty ("hide"));
+    values[archiveMode]->setValue (currentTree.getProperty ("archive"));
 
     Array<PropertyComponent*> docProperties;
     docProperties.add (new TextPropertyComponent (*values[itsName], TRANS ("Name: "), 0, false));
@@ -277,6 +278,7 @@ void SetupPanel::showDocProperties (const bool currentValuesUpdateTree,
     docProperties.add (new TextPropertyComponent (*values[reviewDate], TRANS ("Remind Date: "), 0, false));
     docProperties.add (new BooleanPropertyComponent (*values[featured], TRANS ("Featured: "), TRANS ("Yes")));
     docProperties.add (new BooleanPropertyComponent (*values[hideMode], TRANS ("Hide: "), TRANS ("Yes")));
+    docProperties.add (new BooleanPropertyComponent (*values[archiveMode], TRANS ("Archive: "), TRANS ("Yes")));
 
     // set height
     for (auto p : docProperties)
@@ -290,7 +292,7 @@ void SetupPanel::showDocProperties (const bool currentValuesUpdateTree,
     docProperties[5]->setEnabled (currentTree.getParent().getType().toString() == "wdtpProject" ||
                                   currentTree.getParent().getParent().getType().toString() == "wdtpProject");
 
-    docProperties[4]->setPreferredHeight (28 * 5);
+    docProperties[4]->setPreferredHeight (28 * 4);
     docProperties[6]->setPreferredHeight (28 * 4);
     docProperties[13]->setPreferredHeight (28 * 4);
 
@@ -501,6 +503,9 @@ void SetupPanel::valueChanged (Value& value)
 
     else if (value.refersToSameSourceAs (*values[hideMode]))
         currentTree.setProperty ("hide", values[hideMode]->getValue(), nullptr);
+
+    else if (value.refersToSameSourceAs (*values[archiveMode]))
+        currentTree.setProperty ("archive", values[archiveMode]->getValue(), nullptr);
 
     values[modifyDate]->setValue (SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), true));
 

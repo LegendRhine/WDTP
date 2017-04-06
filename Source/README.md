@@ -91,6 +91,7 @@
 	- reviewDate
 	- featured
 	- hide: doesn't appear in all kinds of list, also don't put its keywords in to statis
+	- archive: can't edit anymore, can't replace anything by default
 
 ### Tags (for developer. These tags could be placed in < head >)
     - {{siteRelativeRootPath}} relative root-path of a page. eg. the page is 'site/dir/subDir/00.html', 

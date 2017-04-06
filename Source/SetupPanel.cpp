@@ -513,7 +513,7 @@ void SetupPanel::valueChanged (Value& value)
     projectHasChanged = true;
 
     // set mdEditor read only or not base on 'archive'
-    editorAndPreView->setReadOnly (values[archiveMode]->getValue());
+    editorAndPreView->setMdEditorReadOnly (values[archiveMode]->getValue());
 
     // regenarate the current page
     if (editorAndPreView->getCureentState())

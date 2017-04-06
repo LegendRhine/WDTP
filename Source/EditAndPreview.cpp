@@ -207,7 +207,7 @@ void EditAndPreview::forcePreview()
 }
 
 //=================================================================================================
-void EditAndPreview::setReadOnly (const bool onlyForRead)
+void EditAndPreview::setMdEditorReadOnly (const bool onlyForRead)
 {
     mdEditor->setReadOnly (onlyForRead);
     
@@ -237,7 +237,7 @@ void EditAndPreview::editCurrentDoc()
     mdEditor->setPopupMenuEnabled (true);
 
     // check if it's archived
-    setReadOnly ((bool)docOrDirTree.getProperty ("archive"));
+    setMdEditorReadOnly ((bool)docOrDirTree.getProperty ("archive"));
 
     // here must goto the html url of the doc on osx, although the broswer doesn't visible.
     // otherwise, it'll load the previous page when switch to preview another doc,

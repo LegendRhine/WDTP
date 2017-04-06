@@ -108,8 +108,12 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
 
             else if ((bool)tree.getProperty ("featured"))
                 markStr = CharPointer_UTF8 ("\xe2\x98\x85");  // pentagon
-            else
-                markStr = CharPointer_UTF8 ("\xe2\x97\x8f"); // solid dot
+
+            else if ((bool)tree.getProperty ("archive"))
+                markStr = CharPointer_UTF8 ("\xe2\x96\xb2");  // diamond
+
+            else    // normal doc: solid dot
+                markStr = CharPointer_UTF8 ("\xe2\x97\x8f");
         }
         else  // dir and poroject: solid block
         {

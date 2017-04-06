@@ -10,7 +10,7 @@ WDTP uses JUCE Library, Steinberg ASIO and Highlight.js, which are licensed sepa
 
 See: https://juce.com  https://steinberg.net  https://highlightjs.org 
 
-Document: https://github.com/LegendRhine/WDTP/blob/master/Source/memo.md
+Document: https://github.com/LegendRhine/WDTP/blob/master/Source/README.md
 
 Contact me: underwaySoft@gmail.com
 

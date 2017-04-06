@@ -78,7 +78,7 @@ void SwingUtilities::fixWindowsRegistry()
 {
 #ifdef JUCE_WINDOWS
 
-    // add a key which indicates our app's WebBroswerComponent will using newer IE web-core
+    // add a key which indicates our app's WebBrowserComponent will using newer IE web-core
     const String keypath = "HKEY_CURRENT_USER\\Software\\Microsoft\\Internet Explorer\\Main\\"
                      "FeatureControl\\FEATURE_BROWSER_EMULATION\\";
 

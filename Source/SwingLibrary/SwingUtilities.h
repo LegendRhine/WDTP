@@ -53,10 +53,10 @@ struct SwingUtilities
     static void showAbout (const String& shortDescription,
                            const String& copyrightYear);
 
-    /** This method will change the default WebBroswerCompoennt's core on Windows.
+    /** This method will change the default WebBrowserCompoennt's core on Windows.
 
         By default, JUCE using IE-7 web-core which cannot load any js script when
-        using WebBroswerComponent to display a html-page.
+        using WebBrowserComponent to display a html-page.
 
         After called, it will change the web-core to IE-10 on Windows (write to user's Windows register).
         This method should be called when the app is about to start (eg. first run it). */

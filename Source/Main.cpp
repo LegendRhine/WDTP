@@ -32,8 +32,8 @@ public:
     //==============================================================================
     void initialise (const String& commandLine) override
     {
-        // for WebBroswerComponent's web-core on Windows (IE7-IE11)
-        // otherwise, the embedded broswer cannot load any js (e.g. code-hightlight..)
+        // for WebBrowserComponent's web-core on Windows (IE7-IE11)
+        // otherwise, the embedded browser cannot load any js (e.g. code-hightlight..)
         SwingUtilities::fixWindowsRegistry();
 
         // initial system properties file

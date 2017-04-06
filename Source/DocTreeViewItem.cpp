@@ -1094,7 +1094,7 @@ void DocTreeViewItem::setRemind() const
                         AlertWindow::InfoIcon);
 
     dialog.addTextEditor ("days", String());
-    dialog.getTextEditor ("days")->setInputRestrictions (4, "0123456789");
+    dialog.getTextEditor ("days")->setInputRestrictions (4, "-0123456789");
     dialog.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
     dialog.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
 

@@ -88,7 +88,7 @@ private:
     static void packProject();  
     static void exportCurrentTpls();
     void importExternalTpls();
-    static void releaseSystemTpls (const File& projectFile, const bool askAndShowMessage);
+    static void releaseSystemTpls (const bool askAndShowMessage);
 
     enum LanguageID { English = 0, Chinese = 1 };
     void setUiLanguage (const LanguageID& id);

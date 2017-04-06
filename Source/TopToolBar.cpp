@@ -361,7 +361,7 @@ void TopToolBar::systemMenuPerform (const int index)
     else if (index == cleanUpLocal)     cleanNeedlessMedias (true);
     else if (index == exportTpl)        exportCurrentTpls();
     else if (index == importTpl)        importExternalTpls();
-    else if (index == releaseSystemTpl) releaseSystemTpls (FileTreeContainer::projectFile, true);
+    else if (index == releaseSystemTpl) releaseSystemTpls (true);
     else if (index == setUiColor)       setUiColour();
     else if (index == resetUiColor)     resetUiColour();
     else if (index == setupAudio)       setupAudioDevice();
@@ -481,7 +481,7 @@ void TopToolBar::createNewProject()
     projectFile.getSiblingFile ("docs").createDirectory();
 
     // release system tpls and add-in files (this also create 'themes' and 'site' dir)
-    releaseSystemTpls (projectFile, false);
+    releaseSystemTpls (false);
 
     // save the new project file and load it
     if (SwingUtilities::writeValueTreeToFile (p, projectFile))
@@ -1005,7 +1005,7 @@ void TopToolBar::importExternalTpls()
 }
 
 //=================================================================================================
-void TopToolBar::releaseSystemTpls (const File& projectFile, const bool askAndShowMessage)
+void TopToolBar::releaseSystemTpls (const bool askAndShowMessage)
 {
     if (askAndShowMessage)
     {
@@ -1015,33 +1015,45 @@ void TopToolBar::releaseSystemTpls (const File& projectFile, const bool askAndSh
             return;
     }
 
+    // doesn't overwrite favicon.ico
+    const File& originalIco (FileTreeContainer::projectFile.getSiblingFile ("site").getChildFile ("favicon.ico"));
+
+    if (originalIco.existsAsFile())
+        SwingUtilities::renameFile (originalIco, "__favicon.ico__");
+
     // release default themes in 'themes/..' and css/js, image files in 'site/add-in'
-    const File projectRoot (projectFile.getParentDirectory());
+    const File& projectRoot (FileTreeContainer::projectFile.getParentDirectory());
     MemoryInputStream inputSteam (BinaryData::SiteData_zip, BinaryData::SiteData_zipSize, false);
     ZipFile zip (inputSteam);
     Result unzip = zip.uncompressTo (projectRoot);
 
-    // release logo image to "site/add-in"
-    const File imgFile (projectFile.getSiblingFile ("site/add-in").getChildFile ("logo.png"));
-    imgFile.deleteFile();
-    imgFile.create();
+    // restore the original favicon.ico
+    const File& icoFile (FileTreeContainer::projectFile.getSiblingFile ("site").getChildFile ("__favicon.ico__"));
 
-    Image logoImg (ImageCache::getFromMemory (BinaryData::logo_png, BinaryData::logo_pngSize));
-    PNGImageFormat pngFormat;
-    ScopedPointer<FileOutputStream> imgOutStram (imgFile.createOutputStream());
+    if (icoFile.existsAsFile())
+        SwingUtilities::renameFile (icoFile, "favicon.ico");
 
-    bool releaseLogo = false;
+    // release logo image to "site/add-in" if it hasn't been there
+    const File& logoFile (FileTreeContainer::projectFile.getSiblingFile ("site/add-in").getChildFile ("logo.png"));
 
-    if (pngFormat.writeImageToStream (logoImg, *imgOutStram))
+    if (!logoFile.existsAsFile())
     {
-        imgOutStram->flush();
-        imgOutStram = nullptr;
-        releaseLogo = true;
+        logoFile.create();
+
+        Image logoImg (ImageCache::getFromMemory (BinaryData::logo_png, BinaryData::logo_pngSize));
+        PNGImageFormat pngFormat;
+        ScopedPointer<FileOutputStream> imgOutStram (logoFile.createOutputStream());
+
+        if (pngFormat.writeImageToStream (logoImg, *imgOutStram))
+        {
+            imgOutStram->flush();
+            imgOutStram = nullptr;
+        }
     }
 
     if (askAndShowMessage)
     {
-        if (Result::ok() == unzip && releaseLogo)
+        if (Result::ok() == unzip)
             SHOW_MESSAGE (TRANS ("System theme reset/repair successful!"));
         else
             SHOW_MESSAGE (TRANS ("System theme reset/repair failed!"));

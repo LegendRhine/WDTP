@@ -277,11 +277,11 @@ void TopToolBar::popupSystemMenu()
     m.addItem (generateWhole, TRANS ("Regenerate Whole Site"), fileTreeContainer->hasLoadedProject());
     m.addItem (cleanUpLocal, TRANS ("Cleanup Needless Medias"), fileTreeContainer->hasLoadedProject());
     m.addSeparator();
-
-    // theme files
+    
+    // set/edit theme files
     PopupMenu themeFilesMenu;
     createThemeFilesMenu (themeFilesMenu, 200);
-    m.addSubMenu (TRANS ("Edit Current Theme"), themeFilesMenu, fileTreeContainer->hasLoadedProject());
+    m.addSubMenu (TRANS ("Modify Current Theme"), themeFilesMenu, fileTreeContainer->hasLoadedProject());
 
     m.addItem (exportTpl, TRANS ("Export Current Theme"), fileTreeContainer->hasLoadedProject());
     m.addItem (importTpl, TRANS ("Import External Theme..."), fileTreeContainer->hasLoadedProject());
@@ -359,6 +359,7 @@ void TopToolBar::systemMenuPerform (const int index)
     else if (index == openPjt)          openProject();
     else if (index == generateWhole)    cleanAndGenerateAll();
     else if (index == cleanUpLocal)     cleanNeedlessMedias (true);
+    
     else if (index == exportTpl)        exportCurrentTpls();
     else if (index == importTpl)        importExternalTpls();
     else if (index == releaseSystemTpl) releaseSystemTpls (true);
@@ -366,7 +367,7 @@ void TopToolBar::systemMenuPerform (const int index)
     else if (index == resetUiColor)     resetUiColour();
     else if (index == setupAudio)       setupAudioDevice();
     else if (index == checkNewVersion)  URL ("http://underwaySoft.com/works/wdtp/download.html").launchInDefaultBrowser();
-    else if (index == updateList)       URL ("http://underwaysoft.com/works/wdtp/updateList.html").launchInDefaultBrowser();
+    else if (index == wdtpUpdateList)   URL ("http://underwaysoft.com/works/wdtp/updateList.html").launchInDefaultBrowser();
     else if (index == gettingStarted)   URL ("http://underwaysoft.com/works/wdtp/gettingStarted.html").launchInDefaultBrowser();
     else if (index == syntax)           URL ("http://underwaysoft.com/works/wdtp/syntaxMark.html").launchInDefaultBrowser();
     else if (index == faq)              URL ("http://underwaysoft.com/works/wdtp/faq.html").launchInDefaultBrowser();
@@ -1083,6 +1084,10 @@ void TopToolBar::createThemeFilesMenu (PopupMenu& menu, const int baseId)
 {
     if (fileTreeContainer->hasLoadedProject())
     {
+        menu.addItem (importIco, TRANS ("Set Site Icon") + "...", true);
+        menu.addItem (importLogo, TRANS ("Set Project Logo") + "...", true);
+        menu.addSeparator();
+
         menu.addItem (baseId, TRANS ("Global Stylesheet"), true, 
                       (editAndPreview->themeEditorIsShowing() && 
                       editAndPreview->getEditingThemeFile().getFileName() == "style.css"));

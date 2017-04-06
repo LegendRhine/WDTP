@@ -109,10 +109,10 @@ public:
         newPjt = 1, openPjt, closePjt,  
         packPjt, unpackPjt,
         generateCurrent, generateNeeded, generateWhole, cleanUpLocal,
-        exportTpl, importTpl, releaseSystemTpl, 
+        importIco, importLogo, exportTpl, importTpl, releaseSystemTpl, 
         uiEnglish, uiChinese, setupAudio,
         setUiColor, resetUiColor, checkNewVersion, 
-        updateList, gettingStarted, syntax, faq, feedback, 
+        wdtpUpdateList, gettingStarted, syntax, faq, feedback, 
         showAboutDialog,
         switchEdit, switchWidth, activeSearch
     };

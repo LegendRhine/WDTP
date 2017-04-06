@@ -39,6 +39,7 @@
               file="Source/SwingLibrary/SwingLookAndFeel.cpp"/>
         <FILE id="qeBKcI" name="SwingLookAndFeel.h" compile="0" resource="0"
               file="Source/SwingLibrary/SwingLookAndFeel.h"/>
+        <FILE id="Tb9kRX" name="SwingRegex.h" compile="0" resource="0" file="Source/SwingLibrary/SwingRegex.h"/>
         <FILE id="jy48p9" name="SwingUtilities.cpp" compile="1" resource="0"
               file="Source/SwingLibrary/SwingUtilities.cpp"/>
         <FILE id="FxKz0X" name="SwingUtilities.h" compile="0" resource="0"

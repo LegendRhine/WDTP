@@ -85,6 +85,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 {
     const bool docExists = parent->getCurrentDocFile().existsAsFile();
     const bool selectSomething = getHighlightedText().isNotEmpty();
+    const bool notArchived = !(bool)parent->getCurrentTree().getProperty ("archive");
 
     if (e->mods.isPopupMenu())
     {
@@ -140,7 +141,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 
         const String internalLinkStr (SystemClipboard::getTextFromClipboard());
         insertMenu.addItem (insertInterLink, TRANS ("Internal Link"), internalLinkStr.contains ("*_wdtpGetPath_*"));
-        menu.addSubMenu (TRANS ("Insert"), insertMenu, docExists);
+        menu.addSubMenu (TRANS ("Insert"), insertMenu, docExists && notArchived);
 
         PopupMenu formatMenu;
         formatMenu.addItem (formatBold, TRANS ("Bold") + ctrlStr + "B)");
@@ -159,7 +160,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addItem (antiIndent, TRANS ("Anti-Indent"));
         formatMenu.addItem (forceIndent, TRANS ("Force Indent"));
 
-        menu.addSubMenu (TRANS ("Format"), formatMenu, docExists);
+        menu.addSubMenu (TRANS ("Format"), formatMenu, docExists && notArchived);
 
         PopupMenu expandMark;
         expandMark.addItem (latestPublish, TRANS ("Latest Publish"));
@@ -171,10 +172,10 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         expandMark.addItem (randomArticle, TRANS ("Random Articles"));
         expandMark.addItem (allKeywords, TRANS ("All Keywords"));
 
-        menu.addSubMenu (TRANS ("Expand Mark"), expandMark, docExists);
+        menu.addSubMenu (TRANS ("Expand Mark"), expandMark, docExists && notArchived);
         menu.addSeparator();
 
-        menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)", docExists);
+        menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)", docExists && notArchived);
         menu.addSeparator();
 
         // search
@@ -209,7 +210,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         exEdit.addItem (editMediaByExEditor, TRANS ("Edit by External Editor") + "...", canEdit);
         exEdit.addItem (setExEditorForMedia, TRANS ("Specify External Editor") + "...", selectedMediaFile);
 
-        menu.addSubMenu (TRANS ("External Edit Media File"), exEdit, docExists);
+        menu.addSubMenu (TRANS ("External Edit Media File"), exEdit, docExists && notArchived);
         menu.addSeparator();
 
         menu.addItem (showTips, TRANS ("Tips/Replace") + "..." + ctrlStr + "G)", selectSomething);
@@ -226,7 +227,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         editorSetup.addSeparator();
         editorSetup.addItem (resetDefault, TRANS ("Reset to Default"));
 
-        menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docExists);
+        menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docExists && notArchived);
 
         menu.addSeparator();
         menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)", docExists);
@@ -1525,7 +1526,9 @@ void MarkdownEditor::timerCallback (int timerID)
                 {
                     const int currentPos = getCaretPosition();
                     const bool isSelectSomething = getHighlightedText().isNotEmpty();
-                    insertTextAtCaret (menuItems[index]);
+
+                    if (!(bool)parent->getCurrentTree().getProperty ("archive"))
+                        insertTextAtCaret (menuItems[index]);
 
                     if (!isSelectSomething)
                         setCaretPosition (currentPos);

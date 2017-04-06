@@ -721,7 +721,7 @@ const String Md2Html::processByLine (const String& mdString)
                  || currentLine.trimStart().substring (0, 3) ==
                  CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83 "))
             currentLine = "<h2 id=\"" + extractLinkText (currentLine.trimStart().substring (3)) + "\">"
-                + currentLine.trimStart().substring (3) + "</h2>";
+                + currentLine.trimStart().substring (3) + "</h2><hr>";
 
         // <h1> anchor
         else if (currentLine.trimStart().substring (0, 2) == "# "

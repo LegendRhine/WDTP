@@ -133,7 +133,8 @@ void ReplaceComponent::buttonClicked (Button* buttonThatWasClicked)
             SHOW_MESSAGE (TRANS ("Nothing could be found."));
         }
 
-        if ((numberOfReplaced > 0) && tree.getType().toString() == "doc")
+        if ((numberOfReplaced > 0) && tree.getType().toString() == "doc"
+            && !(bool)tree.getProperty ("archive"))
             editor->setText (DocTreeViewItem::getMdFileOrDir (tree).loadFileAsString());
     }
     else if (buttonThatWasClicked == cancelBt)
@@ -159,7 +160,8 @@ void ReplaceComponent::replaceContent (ValueTree treeNeedReplaced,
                                        int& numberFilesOfReplaced,
                                        int& numberOfReplaced)
 {
-    if (treeNeedReplaced.getType().toString() == "doc")
+    if (treeNeedReplaced.getType().toString() == "doc"
+        && !(bool)treeNeedReplaced.getProperty ("archive"))
     {
         const File& docFile (DocTreeViewItem::getMdFileOrDir (treeNeedReplaced));
         String content (docFile.loadFileAsString());

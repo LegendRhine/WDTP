@@ -1114,11 +1114,11 @@ void TopToolBar::setSiteImgs (const int imgType)
 
     if (fc.browseForFileToOpen())
     {
-        const File& selectedImg (fc.getResult ());
+        const File& selectedImg (fc.getResult());
 
         if (imgType == 0)
         {
-            if (selectedImg.getFileExtension () == ".ico"
+            if (selectedImg.getFileExtension() == ".ico"
                 && selectedImg.copyFileTo (fileTreeContainer->projectFile.getSiblingFile ("site")
                                            .getChildFile ("favicon.ico")))
                 SHOW_MESSAGE (TRANS ("Site ico has been set successful!"));
@@ -1128,7 +1128,7 @@ void TopToolBar::setSiteImgs (const int imgType)
 
         else if (imgType == 1)
         {
-            if (selectedImg.getFileExtension () == ".png"
+            if (selectedImg.getFileExtension() == ".png"
                 && selectedImg.copyFileTo (fileTreeContainer->projectFile.getSiblingFile ("site/add-in")
                                            .getChildFile ("logo.png")))
             {

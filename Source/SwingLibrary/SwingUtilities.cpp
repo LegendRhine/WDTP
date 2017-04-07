@@ -58,10 +58,8 @@ void SwingUtilities::showAbout (const String& shortDescription,
                           TRANS ("All Right Reserved.") + newLine  +
                           TRANS (" Walden Trip is GPL (v2) licensed.") + newLine +
                           "=================================\n" +
-                          TRANS ("Acknowledgements:") + newLine +
-                          "  - Framework: JUCE (https://juce.com)\n" +
-                          //"  - Library: cURL (https://curl.haxx.se)\n" +
-                          "  - Highlight.js (https://highlightjs.org)");
+                          "WDTP on GitHub:" + newLine +
+                          "  - https://github.com/LegendRhine/WDTP");
 
     Component* linkButton = new HyperlinkButton ("UnderwaySoft", URL ("http://underwaySoft.com"));
     linkButton->setSize (150, 25);

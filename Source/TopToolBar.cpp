@@ -482,13 +482,13 @@ void TopToolBar::createNewProject()
     // create 'docs' dir 
     projectFile.getSiblingFile ("docs").createDirectory();
 
-    // release system tpls and add-in files (this also create 'themes' and 'site' dir)
-    releaseSystemTpls (false);
-
     // save the new project file and load it
     if (SwingUtilities::writeValueTreeToFile (p, projectFile))
     {
+        // must open it first then release system tpls and add-in files
+        // also it'll create 'themes' and 'site' dir
         fileTreeContainer->openProject (projectFile);
+        releaseSystemTpls (false);
 
         // show some tip info
         Label info (String(), TRANS ("Right-click the root item then\n\n'New Folder' or 'New Document'..."));

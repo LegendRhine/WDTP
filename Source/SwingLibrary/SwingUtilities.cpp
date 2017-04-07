@@ -54,7 +54,7 @@ void SwingUtilities::showAbout (const String& shortDescription,
 
     window->addTextBlock (TRANS ("Author: ") + "SwingCoder" + newLine +
                           "underwaySoft@gmail.com" + newLine + newLine +
-                          String (CharPointer_UTF8 ("\xc2\xa9")) + copyrightYear + " UnderwaySoft " +
+                          "(c) " + copyrightYear + " UnderwaySoft " +
                           TRANS ("All Right Reserved.") + newLine  +
                           TRANS (" Walden Trip is GPL (v2) licensed.") + newLine +
                           "=================================\n" +

@@ -100,7 +100,7 @@ void ThemeEditor::performPopupMenuAction (int index)
 void ThemeEditor::exitEditMode()
 {
     setText (String(), false);
-    currentFile == File();
+    currentFile = File();
     editAndPreview->setLayout (true, true);
 }
 

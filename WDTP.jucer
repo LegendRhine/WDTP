@@ -94,7 +94,7 @@
   <EXPORTFORMATS>
     <VS2015 targetFolder="Builds/VisualStudio2015" smallIcon="cjVdY4" bigIcon="cjVdY4"
             externalLibraries="" toolset="v140" extraDefs="" extraLinkerFlags=""
-            userNotes="This for Windows 10 x64">
+            userNotes="">
       <CONFIGURATIONS>
         <CONFIGURATION name="x64-Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
                        isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/x64-Debug"
@@ -124,7 +124,7 @@
       </MODULEPATHS>
     </VS2015>
     <XCODE_MAC targetFolder="Builds/MacOSX" smallIcon="cjVdY4" bigIcon="cjVdY4"
-               extraLinkerFlags="">
+               extraLinkerFlags="" documentExtensions="wdtp,wpck">
       <CONFIGURATIONS>
         <CONFIGURATION name="Debug" isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/Debug"
                        osxSDK="default" osxCompatibility="10.9 SDK" osxArchitecture="default"/>

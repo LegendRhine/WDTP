@@ -1334,7 +1334,9 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         && key != KeyPress (KeyPress::pageUpKey, ModifierKeys::shiftModifier, 0)
         && key != KeyPress (KeyPress::pageDownKey, ModifierKeys::shiftModifier, 0)
         && key != KeyPress ('z', ModifierKeys::commandModifier, 0)
-        && key != KeyPress ('y', ModifierKeys::commandModifier, 0))
+        && key != KeyPress ('y', ModifierKeys::commandModifier, 0)
+        && key != KeyPress ('s', ModifierKeys::commandModifier, 0)
+        && key != KeyPress ('j', ModifierKeys::commandModifier, 0))
     {
         startTimer (showTipsBank, 100);
     }

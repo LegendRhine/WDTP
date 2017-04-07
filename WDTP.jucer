@@ -1,10 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="iAHZG1" name="WDTP" projectType="guiapp" version="0.9.0331"
+<JUCERPROJECT id="iAHZG1" name="WDTP" projectType="guiapp" version="0.9.0407"
               bundleIdentifier="com.yourcompany.WDTP" includeBinaryInAppConfig="1"
-              jucerVersion="4.3.1" userNotes="Start:        2016.09.03&#10;0.9 Alpha: 2017.01.31"
-              companyName="UnderwaySoft" companyWebsite="http://www.underwaySoft.com"
-              companyEmail="underwaySoft@126.com">
+              jucerVersion="4.3.1" userNotes="" companyName="UnderwaySoft"
+              companyWebsite="http://www.underwaySoft.com" companyEmail="underwaySoft@126.com">
   <MAINGROUP id="dEY4lK" name="WDTP">
     <GROUP id="{24163B05-55E9-9D57-4AF2-ACA9BBF8DA1F}" name="Source">
       <GROUP id="{5C5311BB-5266-DB1B-DE96-35AA97A1E8E3}" name="BinaryData">
@@ -97,11 +96,17 @@
             externalLibraries="" toolset="v140" extraDefs="" extraLinkerFlags=""
             userNotes="This for Windows 10 x64">
       <CONFIGURATIONS>
-        <CONFIGURATION name="Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/Debug"
+        <CONFIGURATION name="x64-Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/x64-Debug"
                        headerPath="C:\Develop\SDK\Include\asio" libraryPath="" useRuntimeLibDLL="0"/>
-        <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="wdtp" binaryPath="Application/Release"
+        <CONFIGURATION name="x64-Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
+                       isDebug="0" optimisation="3" targetName="wdtp" binaryPath="Application/x64-Release"
+                       libraryPath="" useRuntimeLibDLL="0" headerPath="C:\Develop\SDK\Include\asio"/>
+        <CONFIGURATION name="w32-Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/w32-Debug"
+                       headerPath="C:\Develop\SDK\Include\asio" libraryPath="" useRuntimeLibDLL="0"/>
+        <CONFIGURATION name="w32-Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
+                       isDebug="0" optimisation="3" targetName="wdtp" binaryPath="Application/w32-Release"
                        libraryPath="" useRuntimeLibDLL="0" headerPath="C:\Develop\SDK\Include\asio"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

@@ -773,6 +773,14 @@ const String Md2Html::spaceLinkParse (const String& mdString)
 
     while (indexStart != -1)
     {
+        if (resultStr.substring (indexStart + 5, indexStart + 8) != "://"
+            && resultStr.substring (indexStart + 5, indexStart + 9) != "s://"
+            && resultStr.substring (indexStart + 5, indexStart + 9) != "S://")
+        {
+            indexStart = resultStr.indexOfIgnoreCase (indexStart + 5, " http");
+            continue;
+        }
+
         const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 10, " ");
 
         if (indexEnd == -1)

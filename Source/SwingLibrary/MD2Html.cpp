@@ -947,13 +947,18 @@ const String Md2Html::mdLinkParse (const String& mdString)
         {
             const String altContent (resultStr.substring (altStart + 1, linkPathStart));
 
-            // get link path
-            const int pathEnd = resultStr.indexOfIgnoreCase (linkPathStart + 2, ")");
+            // for brackets in a crazy url, such as 'https://microsoft.com/hh568(v=vs.120).aspx' etc.
+            bool usingBracketForSpecialUrl = (resultStr.substring (linkPathStart + 2, linkPathStart + 3) == "\"");
+            int pathEnd = usingBracketForSpecialUrl 
+                ? resultStr.indexOfIgnoreCase (linkPathStart + 3, "\"")
+                : resultStr.indexOfIgnoreCase (linkPathStart + 2, ")");
 
             if (pathEnd == -1)
                 break;
 
-            String linkPath (resultStr.substring (linkPathStart + 2, pathEnd).trimEnd());
+            // get link path
+            const int afterStart = (usingBracketForSpecialUrl ? 3 : 2);
+            String linkPath (resultStr.substring (linkPathStart + afterStart, pathEnd).trimEnd());
 
             // [](http://xxx.com/xxx.html -), the end ' -' will open the link in new window
             if (linkPath.getLastCharacters (2) == " -")
@@ -963,7 +968,10 @@ const String Md2Html::mdLinkParse (const String& mdString)
 
             const String linkStr ("<a href=" + linkPath + ">" + altContent + "</a>");
 
-            resultStr = resultStr.replaceSection (altStart, pathEnd + 1 - altStart, linkStr);
+            resultStr = resultStr.replaceSection (altStart, 
+                                                  pathEnd + (usingBracketForSpecialUrl ? 2 : 1) - altStart,
+                                                  linkStr);
+
             linkPathStart = resultStr.indexOfIgnoreCase (altStart + linkStr.length(), "](");
         }
         else

@@ -107,8 +107,15 @@ void ThemeEditor::exitEditMode()
 //=================================================================================================
 bool ThemeEditor::keyPressed (const KeyPress& key)
 {
+    // tab
+    if (key == KeyPress (KeyPress::tabKey))
+    {
+        insertTextAtCaret ("    ");
+        return true;
+    }
+
     // English punctuation matching...
-    if (key == KeyPress ('\'', ModifierKeys::shiftModifier, 0)) // "..."
+    else if (key == KeyPress ('\'', ModifierKeys::shiftModifier, 0)) // "..."
     {
         const String& selectedStr (getHighlightedText());
         insertTextAtCaret ("\"" + selectedStr + "\"");

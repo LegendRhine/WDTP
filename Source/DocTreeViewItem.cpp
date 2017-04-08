@@ -1105,7 +1105,9 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
 void DocTreeViewItem::selectDueDocs (DocTreeViewItem* thisItem)
 {
     ValueTree thisTree (thisItem->tree);
-    thisItem->setOpen (true);
+
+    if (thisItem->dueNumber > 0)
+        thisItem->setOpen (true);
 
     if (thisTree.getType().toString() == "doc"
         && thisTree.getProperty ("reviewDate").toString().isNotEmpty())

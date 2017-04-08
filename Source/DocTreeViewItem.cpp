@@ -1248,6 +1248,7 @@ void DocTreeViewItem::showKeywordsTable()
 void DocTreeViewItem::actionListenerCallback (const String& message)
 {
     treeContainer->getTreeView().clearSelectedItems();
+    this->setOpen (true);
     selectChildren (this, message);
 }
 
@@ -1256,7 +1257,7 @@ void DocTreeViewItem::selectChildren (DocTreeViewItem* currentItem, const String
 {
     StringArray kws;
     kws.addTokens (currentItem->getTree().getProperty ("keywords").toString()
-                   .replace (CharPointer_UTF8 ("\xef\xbc\x8c"), ", "), ",", String());
+                   .replace (CharPointer_UTF8 ("\xef\xbc\x8c"), ", "), ",", String()); // ','
     kws.trim();
     kws.removeEmptyStrings (true);
 

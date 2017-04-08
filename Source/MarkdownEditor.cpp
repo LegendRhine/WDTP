@@ -1096,7 +1096,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     }
 
     // ctrl + G for show tips
-    else if (key == KeyPress (KeyPress::returnKey, ModifierKeys::commandModifier, 0))
+    else if (key == KeyPress ('g', ModifierKeys::commandModifier, 0))
     {
         if (getHighlightedText().isNotEmpty())
             startTimer (showTipsBank, 50);
@@ -1319,6 +1319,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     }
 
     //DBGX (key.getKeyCode());
+    DBGX (key.getTextDescription ());
     const bool returnValue = TextEditor::keyPressed (key);
 
     // show tips

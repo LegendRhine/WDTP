@@ -20,12 +20,11 @@ class MarkdownEditor :  public TextEditor,
                         public ChangeListener,
                         public FileDragAndDropTarget,
                         public MultiTimer,
-                        private ActionListener,
-                        private TextEditor::Listener
+                        private ActionListener
 {
 public:
     MarkdownEditor (EditAndPreview* parent_);
-    ~MarkdownEditor() { }
+    ~MarkdownEditor()  { }
 
     void paint (Graphics& g) override;
 
@@ -47,6 +46,9 @@ public:
     /** drag native images to copy and insert their mark */
     virtual bool isInterestedInFileDrag (const StringArray& files) override;
     virtual void filesDropped (const StringArray& files, int x, int y) override;
+
+    /** auto-wrap, punctuation matching, auto-complete, show tips...*/
+    virtual void insertTextAtCaret (const String& textToInsert) override;
     
     /** for Chinese punc-matching and show real-time tips */
     virtual void timerCallback (int timerID) override;
@@ -107,7 +109,6 @@ private:
     void hybridFormat();
     void commentBlockFormat();
 
-    void autoWrapSelected (const KeyPress& key);
     void tabKeyInput();
     void shiftTabInput();
     void returnKeyInput();
@@ -127,10 +128,7 @@ private:
     void inlineFormat (const int formatIndex);
 
     const bool puncMatchingForChinese (const KeyPress& key);
-    void selectedAddToTipsBank();
-
-    /** auto-wrap, punctuation matching, auto-complete, show tips...*/
-    virtual void textEditorTextChanged (TextEditor&) override;
+    void selectedAddToTipsBank();    
 
     //=============================================================================================
     EditAndPreview* parent;

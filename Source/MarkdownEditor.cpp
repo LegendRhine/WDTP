@@ -821,32 +821,6 @@ void MarkdownEditor::insertExpandMark (const int expandIndex)
 }
 
 //=================================================================================================
-void MarkdownEditor::autoWrapSelected (const KeyPress& key)
-{
-    const String& content (getHighlightedText());
-    String keyStr (key.getTextDescription().replace ("shift + 8", "*").replace ("shift + `", "~~"));
-    keyStr = keyStr.replace ("ctrl + 8", "*").replace ("ctrl + `", "~~"); // for Chinese IME
-    keyStr = keyStr.replace ("command + 8", "*").replace ("command + `", "~~"); // for Chinese IME
-    //DBGX (keyStr);
-
-    insertTextAtCaret (keyStr + content + keyStr);
-
-    if (keyStr != getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 1))
-        && keyStr != "~~"
-        && keyStr != "`")
-    {
-        setHighlightedRegion (Range<int> (getCaretPosition() - content.length() - 1, getCaretPosition() - 1));
-    }
-
-    // move the caret after input 2 '*'
-    if (String ("*") == getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 1))
-        && String ("*") == getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())))
-    {
-        setCaretPosition (getCaretPosition() + 1);
-    }
-}
-
-//=================================================================================================
 void MarkdownEditor::tabKeyInput()
 {
     if (getHighlightedText().isEmpty())
@@ -1194,20 +1168,9 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress ('o', ModifierKeys::commandModifier, 0))    authorInsert();
     else if (key == KeyPress ('w', ModifierKeys::commandModifier, 0))    recordAudio();
 
-    // auto-wrap the selected (when input '`, *, **, ~~' whilst some text was selected)
-    else if (getHighlightedText().isNotEmpty() && (key == KeyPress('`')
-                                                   || key == KeyPress ('*')
-                                                   || key == KeyPress ('8', ModifierKeys::shiftModifier, 0)
-                                                   || key == KeyPress ('8', ModifierKeys::commandModifier, 0) // for Chinese IME
-                                                   || key == KeyPress ('`', ModifierKeys::commandModifier, 0) // for Chinese IME
-                                                   || key == KeyPress ('`', ModifierKeys::shiftModifier, 0)))
-    {
-        autoWrapSelected (key);
-        return true;
-    }
 
     // English punctuation matching...
-    else if (key == KeyPress ('\'', ModifierKeys::shiftModifier, 0))
+    /*else if (key == KeyPress ('\'', ModifierKeys::shiftModifier, 0))
     {
         const String& selectedStr (getHighlightedText());
         insertTextAtCaret ("\"" + selectedStr + "\"");
@@ -1279,13 +1242,13 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         puncMatchingForChinese (key);
         startTimer (showTipsBank, 100);
         return true;
-    }
+    }*/
 
     //DBGX (key.getKeyCode() + "-" + key.getTextDescription());
     const bool returnValue = TextEditor::keyPressed (key);
 
     // show tips
-    if (key != KeyPress::deleteKey && key != KeyPress::backspaceKey
+    /*if (key != KeyPress::deleteKey && key != KeyPress::backspaceKey
         && key != KeyPress::upKey && key != KeyPress::downKey
         && key != KeyPress::leftKey && key != KeyPress::rightKey
         && key != KeyPress::pageUpKey && key != KeyPress::pageDownKey
@@ -1302,15 +1265,37 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         && key != KeyPress ('j', ModifierKeys::commandModifier, 0))
     {
         startTimer (showTipsBank, 100);
-    }
+    }*/
 
     return returnValue;
 }
 
 //=================================================================================================
-void MarkdownEditor::textEditorTextChanged (TextEditor&)
+void MarkdownEditor::insertTextAtCaret (const String& textToInsert)
 {
+    const String& selectedStr (getHighlightedText());  
+    TextEditor::insertTextAtCaret (textToInsert);
+    //DBGX (selectedStr + " - " + textToInsert);
 
+    // auto-wrap the selected
+    if (selectedStr.isNotEmpty())
+    {
+        if (textToInsert == "`")
+        {            
+            TextEditor::insertTextAtCaret (selectedStr + textToInsert);
+        }
+        else if (textToInsert == "~")
+        {
+            TextEditor::insertTextAtCaret (textToInsert + selectedStr + textToInsert + textToInsert);
+        }
+        else if (textToInsert == "*")
+        {
+            TextEditor::insertTextAtCaret (selectedStr + textToInsert);
+            setHighlightedRegion (Range<int> (getCaretPosition() - selectedStr.length() - 1, getCaretPosition() - 1));
+        }
+    }
+      
+    
 }
 
 //=================================================================================================

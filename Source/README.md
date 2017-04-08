@@ -171,7 +171,7 @@
 - Ctrl + N: align center (text mark syntax)
 - Ctrl + O: insert author (text mark syntax)
 - Ctrl + P: insert caption (text mark syntax)
-- Ctrl + Q: 
+- Ctrl + Q: exit the app
 - Ctrl + R: align right (text mark syntax)
 - Ctrl + S: switch edit/preview 
 - Ctrl + T: insert table (text mark syntax)

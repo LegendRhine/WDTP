@@ -1233,7 +1233,7 @@ void MarkdownEditor::insertTextAtCaret (const String& textToInsert)
     // chinese punctuation matching and popup tips
     else if (textToInsert.isNotEmpty())
     {
-        startTimer (chinesePunc, 50);
+        startTimer (chinesePunc, 15);
         startTimer (showTipsBank, 50);
     }
 

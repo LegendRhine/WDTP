@@ -15,7 +15,8 @@ extern PropertiesFile* systemFile;
 //=================================================================================================
 MarkdownEditor::MarkdownEditor (EditAndPreview* parent_)
     : parent (parent_),
-    fontSizeSlider (Slider::LinearHorizontal, Slider::TextBoxBelow)
+    fontSizeSlider (Slider::LinearHorizontal, Slider::TextBoxBelow),
+    delPressed (false)
 {
     fontSizeSlider.setRange (15.0, 35.0, 1.0);
     fontSizeSlider.setDoubleClickReturnValue (true, 20.0);
@@ -325,7 +326,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
         }
     }
 
-    else if (insertSeparator == index)      insertTextAtCaret (newLine + "---" + newLine);
+    else if (insertSeparator == index)      TextEditor::insertTextAtCaret (newLine + "---" + newLine);
     else if (pickFromAllKeywords == index)  showAllKeywords();
     else if (searchPrev == index)           searchPrevious();
     else if (searchNext == index)           searchForNext();
@@ -343,7 +344,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (insertQuota == index)          quotaInsert();
     else if (antiIndent == index)           insertIndent (false);
     else if (forceIndent == index)          insertIndent (true);
-    else if (insertBackToTop == index)      insertTextAtCaret (newLine + "[TOP]" + newLine);
+    else if (insertBackToTop == index)      TextEditor::insertTextAtCaret (newLine + "[TOP]" + newLine);
     else if (insertAlignCenter == index)    alignCenterInsert();
     else if (insertAlignRight == index)     alignRightInsert();
     else if (insertUnoerderList == index)   unorderListInsert();
@@ -463,7 +464,7 @@ void MarkdownEditor::codeBlockFormat()
         << getHighlightedText() << newLine
         << "```" << newLine;
 
-    insertTextAtCaret (content);
+    TextEditor::insertTextAtCaret (content);
     moveCaretUp (false);
     moveCaretUp (false);
 }
@@ -477,7 +478,7 @@ void MarkdownEditor::hybridFormat()
         << getHighlightedText() << newLine
         << "~~~" << newLine;
 
-    insertTextAtCaret (content);
+    TextEditor::insertTextAtCaret (content);
     moveCaretUp (false);
     moveCaretUp (false);
 }
@@ -491,7 +492,7 @@ void MarkdownEditor::commentBlockFormat()
         << getHighlightedText() << newLine
         << "////////////" << newLine;
 
-    insertTextAtCaret (content);
+    TextEditor::insertTextAtCaret (content);
     moveCaretUp (false);
     moveCaretUp (false);
 }
@@ -515,7 +516,7 @@ void MarkdownEditor::inlineFormat (const int format)
     else if (format == inlineCode)
         content = "`" + content + "`";
 
-    insertTextAtCaret (content);
+    TextEditor::insertTextAtCaret (content);
 
     if (selectNothing)
     {
@@ -556,7 +557,7 @@ void MarkdownEditor::interLinkInsert()
     String content;
     content << "[" << titleStr << "](" << currentHtmlRelativeToRoot << linkPath.replace ("\\", "/") << ")";
 
-    insertTextAtCaret (content);
+    TextEditor::insertTextAtCaret (content);
 }
 
 //=================================================================================================
@@ -567,13 +568,13 @@ void MarkdownEditor::authorInsert()
         << "(>) " << FileTreeContainer::projectTree.getProperty ("owner").toString() 
         << newLine;
 
-    insertTextAtCaret (content);
+    TextEditor::insertTextAtCaret (content);
 }
 
 //=================================================================================================
 void MarkdownEditor::captionInsert()
 {
-    insertTextAtCaret (newLine + "^^ ");
+    TextEditor::insertTextAtCaret (newLine + "^^ ");
 }
 
 //=================================================================================================
@@ -590,26 +591,26 @@ void MarkdownEditor::insertTitle (const int level)
     else if (3 == level)
         content << newLine << "### ";
 
-    insertTextAtCaret (content);
+    TextEditor::insertTextAtCaret (content);
 }
 
 //=================================================================================================
 void MarkdownEditor::endnoteInsert()
 {
-    insertTextAtCaret ("[^]");
+    TextEditor::insertTextAtCaret ("[^]");
     moveCaretLeft (false, false);
 }
 
 //=================================================================================================
 void MarkdownEditor::tocInsert()
 {
-    insertTextAtCaret (newLine + "[TOC]" + newLine + newLine);
+    TextEditor::insertTextAtCaret (newLine + "[TOC]" + newLine + newLine);
 }
 
 //=================================================================================================
 void MarkdownEditor::identifierInsert()
 {
-    insertTextAtCaret (newLine + "*********************************" + newLine + newLine);
+    TextEditor::insertTextAtCaret (newLine + "*********************************" + newLine + newLine);
 }
 
 //=================================================================================================
@@ -621,7 +622,7 @@ void MarkdownEditor::orderListInsert()
             << "+ " << newLine
             << "+ " << newLine;
 
-    insertTextAtCaret (content);
+    TextEditor::insertTextAtCaret (content);
 
     moveCaretUp (false);
     moveCaretUp (false);
@@ -638,7 +639,7 @@ void MarkdownEditor::unorderListInsert()
             << "- " << newLine
             << "- " << newLine;
 
-    insertTextAtCaret (content);
+    TextEditor::insertTextAtCaret (content);
 
     moveCaretUp (false);
     moveCaretUp (false);
@@ -649,26 +650,26 @@ void MarkdownEditor::unorderListInsert()
 //=================================================================================================
 void MarkdownEditor::alignRightInsert()
 {
-    insertTextAtCaret (newLine + "(>) ");
+    TextEditor::insertTextAtCaret (newLine + "(>) ");
 }
 
 //=================================================================================================
 void MarkdownEditor::alignCenterInsert()
 {
-    insertTextAtCaret (newLine + "(^) ");
+    TextEditor::insertTextAtCaret (newLine + "(^) ");
 }
 
 //=================================================================================================
 void MarkdownEditor::quotaInsert()
 {
-    insertTextAtCaret (newLine + "> ");
+    TextEditor::insertTextAtCaret (newLine + "> ");
 }
 
 //=================================================================================================
 void MarkdownEditor::insertIndent (const bool isIndent)
 {
     moveCaretToStartOfLine (false);
-    insertTextAtCaret (isIndent ? "(+) " : "(-) ");
+    TextEditor::insertTextAtCaret (isIndent ? "(+) " : "(-) ");
 }
 
 //=================================================================================================
@@ -691,7 +692,7 @@ void MarkdownEditor::tableInsert (const int tableStyle)
             << newLine
             << "^^ " << TRANS ("Table: ");
 
-    insertTextAtCaret (content);
+    TextEditor::insertTextAtCaret (content);
 }
 
 //=================================================================================================
@@ -728,7 +729,7 @@ void MarkdownEditor::hyperlinkInsert()
     {
         content << "[](" << dialog.getTextEditor ("name")->getText().trim() << ") ";
 
-        insertTextAtCaret (content);
+        TextEditor::insertTextAtCaret (content);
     }
 }
 
@@ -796,7 +797,7 @@ void MarkdownEditor::insertMedias (const Array<File>& mediaFiles)
         }
     }
 
-    insertTextAtCaret (content);
+    TextEditor::insertTextAtCaret (content);
 }
 
 //=================================================================================================
@@ -817,7 +818,7 @@ void MarkdownEditor::insertExpandMark (const int expandIndex)
     else if (expandIndex == allModify)
         markStr = "[allModify]";
     
-    insertTextAtCaret ("\n" + markStr + newLine);
+    TextEditor::insertTextAtCaret ("\n" + markStr + newLine);
 }
 
 //=================================================================================================
@@ -842,7 +843,7 @@ void MarkdownEditor::tabKeyInput()
             content += "+ ";
 
         setCaretPosition (position);
-        insertTextAtCaret (content);
+        TextEditor::insertTextAtCaret (content);
     } 
     else
     {
@@ -852,7 +853,7 @@ void MarkdownEditor::tabKeyInput()
         for (int i = content.size(); --i >= 0; )
             content.getReference (i) = "    " + content.getReference (i);
 
-        insertTextAtCaret (content.joinIntoString (newLine));
+        TextEditor::insertTextAtCaret (content.joinIntoString (newLine));
         moveCaretRight (false, false);
     }
 }
@@ -876,7 +877,7 @@ void MarkdownEditor::shiftTabInput()
         else if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 1)) == " ")
             setHighlightedRegion (Range<int> (getCaretPosition(), getCaretPosition() + 1));
 
-        insertTextAtCaret (String());
+        TextEditor::insertTextAtCaret (String());
     }
     else // let the selected anti-indent
     {
@@ -898,7 +899,7 @@ void MarkdownEditor::shiftTabInput()
                 content.getReference (i) = content[i].substring (1);
         }
 
-        insertTextAtCaret (content.joinIntoString (newLine));
+        TextEditor::insertTextAtCaret (content.joinIntoString (newLine));
     }
 }
 
@@ -919,20 +920,20 @@ void MarkdownEditor::returnKeyInput()
         && getTextInRange (Range<int> (position - 3, position - 2)) == "\n")
     {
         moveCaretToStartOfLine (true);
-        insertTextAtCaret ("    - ");
+        TextEditor::insertTextAtCaret ("    - ");
     }
     else if (getTextInRange (Range<int> (position - 2, position)) == "+ "
              && getTextInRange (Range<int> (position - 3, position - 2)) == "\n")
     {
         moveCaretToStartOfLine (true);
-        insertTextAtCaret ("    + ");
+        TextEditor::insertTextAtCaret ("    + ");
     }
     else if ((getTextInRange (Range<int> (position - 6, position)) == "    - "
              || getTextInRange (Range<int> (position - 6, position)) == "    + ")
              && getTextInRange (Range<int> (position - 7, position - 6)) == "\n")
     {
         moveCaretToStartOfLine (true);
-        insertTextAtCaret (newLine);
+        TextEditor::insertTextAtCaret (newLine);
     }
     
     else  // inherit the list mark when the previous paragraph has one
@@ -959,7 +960,7 @@ void MarkdownEditor::returnKeyInput()
 
         setCaretPosition (position);
         TextEditor::keyPressed (KeyPress (KeyPress::returnKey));
-        insertTextAtCaret (content);
+        TextEditor::insertTextAtCaret (content);
     }    
 }
 
@@ -981,17 +982,17 @@ void MarkdownEditor::pasteForCtrlV()
             || content.getLastCharacters (3).toLowerCase() == "gif"
             || content.getLastCharacters (4).toLowerCase() == "jpeg")
         {
-            insertTextAtCaret ("![](" + content + ")");
+            TextEditor::insertTextAtCaret ("![](" + content + ")");
         }
         // audio
         else if (content.getLastCharacters (3).toLowerCase() == "mp3")
         {
-            insertTextAtCaret ("~[](" + content + ")");
+            TextEditor::insertTextAtCaret ("~[](" + content + ")");
         }
         // video
         else if (content.getLastCharacters (3).toLowerCase() == "mp4")
         {
-            insertTextAtCaret ("@[](" + content + " = 680)");
+            TextEditor::insertTextAtCaret ("@[](" + content + " = 680)");
         }
         else     // url
         {
@@ -1000,7 +1001,7 @@ void MarkdownEditor::pasteForCtrlV()
             else
                 needSelectLinkText = true;
 
-            insertTextAtCaret ("[" + linkText + "](" + content + ")");
+            TextEditor::insertTextAtCaret ("[" + linkText + "](" + content + ")");
         }
 
     }
@@ -1011,7 +1012,7 @@ void MarkdownEditor::pasteForCtrlV()
 
     // include '\t'
     else if (content.containsIgnoreCase ("\t"))
-        insertTextAtCaret (content.replace ("\t", "    "));
+        TextEditor::insertTextAtCaret (content.replace ("\t", "    "));
 
     // others
     else  
@@ -1168,53 +1169,30 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress ('o', ModifierKeys::commandModifier, 0))    authorInsert();
     else if (key == KeyPress ('w', ModifierKeys::commandModifier, 0))    recordAudio();
 
+    // for Chinese punctuation matching
+    else if (key == KeyPress::deleteKey || key == KeyPress::backspaceKey) delPressed = true;
 
-    // English punctuation matching...
-    /*
-    // Chinese punctuation matching
-    else if (key.getKeyCode() == 0)
-    {
-        puncMatchingForChinese (key);
-        startTimer (showTipsBank, 100);
-        return true;
-    }*/
-
-    //DBGX (key.getKeyCode() + "-" + key.getTextDescription());
-    const bool returnValue = TextEditor::keyPressed (key);
-
-    // show tips
-    /*if (key != KeyPress::deleteKey && key != KeyPress::backspaceKey
-        && key != KeyPress::upKey && key != KeyPress::downKey
-        && key != KeyPress::leftKey && key != KeyPress::rightKey
-        && key != KeyPress::pageUpKey && key != KeyPress::pageDownKey
-        && key != KeyPress::spaceKey
-        && key != KeyPress (KeyPress::leftKey, ModifierKeys::shiftModifier, 0)
-        && key != KeyPress (KeyPress::rightKey, ModifierKeys::shiftModifier, 0)
-        && key != KeyPress (KeyPress::upKey, ModifierKeys::shiftModifier, 0)
-        && key != KeyPress (KeyPress::downKey, ModifierKeys::shiftModifier, 0)
-        && key != KeyPress (KeyPress::pageUpKey, ModifierKeys::shiftModifier, 0)
-        && key != KeyPress (KeyPress::pageDownKey, ModifierKeys::shiftModifier, 0)
-        && key != KeyPress ('z', ModifierKeys::commandModifier, 0)
-        && key != KeyPress ('y', ModifierKeys::commandModifier, 0)
-        && key != KeyPress ('s', ModifierKeys::commandModifier, 0)
-        && key != KeyPress ('j', ModifierKeys::commandModifier, 0))
-    {
-        startTimer (showTipsBank, 100);
-    }*/
-
-    return returnValue;
+    return TextEditor::keyPressed (key);
 }
 
 //=================================================================================================
 void MarkdownEditor::insertTextAtCaret (const String& textToInsert)
 {
     const String& selectedStr (getHighlightedText()); 
-    const bool sthSelected = selectedStr.isNotEmpty();
-
+    bool sthSelected = selectedStr.isNotEmpty();
     TextEditor::insertTextAtCaret (textToInsert);
     //DBGX (selectedStr + " - " + textToInsert);
 
-    // punctuation matching
+    // when IME enabled, this method will be called twice and the second is empty highlighted
+    if (selectedStr.isNotEmpty())
+        selectedForCnPunc = selectedStr;
+
+    // it'll select a char when del and backspace then highlighted will be effected. 
+    // see keyPressed() about the judge of delete and backspace key
+    if (delPressed)
+        selectedForCnPunc.clear();
+
+    // ascii punctuation matching
     if (textToInsert == "\"" || textToInsert == "\'")
     {
         TextEditor::insertTextAtCaret (selectedStr + textToInsert);
@@ -1225,11 +1203,7 @@ void MarkdownEditor::insertTextAtCaret (const String& textToInsert)
         TextEditor::insertTextAtCaret (selectedStr + "]");
         if (!sthSelected)   moveCaretLeft (false, false);
     }
-    else if (textToInsert == "{")
-    {
-        TextEditor::insertTextAtCaret (selectedStr + "}");
-        if (!sthSelected)   moveCaretLeft (false, false);
-    }
+    
     else if (textToInsert == "(")
     {
         TextEditor::insertTextAtCaret (selectedStr + ")");
@@ -1242,19 +1216,28 @@ void MarkdownEditor::insertTextAtCaret (const String& textToInsert)
     }
 
     // markup: `, ~, *
-    else if (sthSelected && textToInsert == "`")  
-            TextEditor::insertTextAtCaret (selectedStr + textToInsert);
-
+    else if (sthSelected && textToInsert == "`")
+    {
+        TextEditor::insertTextAtCaret (selectedStr + textToInsert);
+    }
     else if (sthSelected && textToInsert == "~")
+    {
         TextEditor::insertTextAtCaret (textToInsert + selectedStr + textToInsert + textToInsert);
-
+    }
     else if (sthSelected && textToInsert == "*")
     {
         TextEditor::insertTextAtCaret (selectedStr + textToInsert);
-        setHighlightedRegion (Range<int> (getCaretPosition () - selectedStr.length () - 1, getCaretPosition () - 1));
+        setHighlightedRegion (Range<int> (getCaretPosition() - selectedStr.length() - 1, getCaretPosition() - 1));
     }
 
-       
+    // chinese punctuation matching and popup tips
+    else if (textToInsert.isNotEmpty())
+    {
+        startTimer (chinesePunc, 50);
+        startTimer (showTipsBank, 50);
+    }
+
+    delPressed = false;
 }
 
 //=================================================================================================
@@ -1326,72 +1309,71 @@ void MarkdownEditor::externalSearch (const int searchType)
 //=================================================================================================
 void MarkdownEditor::timerCallback (int timerID)
 {
-    /*if (chinesePunc == timerID)
+    if (chinesePunc == timerID)
     {
+        stopTimer (chinesePunc);
         const Range<int> lastPosition (getCaretPosition() - 1, getCaretPosition());
         const String& lastChar (getTextInRange (lastPosition));
         bool puncMatched = false;
         //DBGX (lastChar);
 
-        if (lastChar == CharPointer_UTF8 ("\xe2\x80\x9c")) // 1. Chinese "
+        if (lastChar == CharPointer_UTF8 ("\xe2\x80\x9c")) // left "
         {
             puncMatched = true;
-            insertTextAtCaret (selectedForPunc + String (CharPointer_UTF8 ("\xe2\x80\x9d")));
+            TextEditor::insertTextAtCaret (selectedForCnPunc + String (CharPointer_UTF8 ("\xe2\x80\x9d")));
         }
 
-        else if (lastChar == CharPointer_UTF8 ("\xe2\x80\x9d")) // Chinese "
+        else if (lastChar == CharPointer_UTF8 ("\xe2\x80\x9d")) // right "
         {
             puncMatched = true;
             moveCaretLeft (false, true);
-            insertTextAtCaret (String (CharPointer_UTF8 ("\xe2\x80\x9c")) + selectedForPunc
+            TextEditor::insertTextAtCaret (String (CharPointer_UTF8 ("\xe2\x80\x9c")) + selectedForCnPunc
                                + String (CharPointer_UTF8 ("\xe2\x80\x9d")));
         }
 
-        else if (lastChar == CharPointer_UTF8 ("\xe2\x80\x98")) // 2. Chinese '
+        else if (lastChar == CharPointer_UTF8 ("\xe2\x80\x98")) // left '
         {
             puncMatched = true;
-            insertTextAtCaret (selectedForPunc + String (CharPointer_UTF8 ("\xe2\x80\x99")));
+            TextEditor::insertTextAtCaret (selectedForCnPunc + String (CharPointer_UTF8 ("\xe2\x80\x99")));
         }
 
-        else if (lastChar == CharPointer_UTF8 ("\xe2\x80\x99")) // Chinese '
+        else if (lastChar == CharPointer_UTF8 ("\xe2\x80\x99")) // right '
         {
             puncMatched = true;
             moveCaretLeft (false, true);
-            insertTextAtCaret (String (CharPointer_UTF8 ("\xe2\x80\x98")) + selectedForPunc
+            TextEditor::insertTextAtCaret (String (CharPointer_UTF8 ("\xe2\x80\x98")) + selectedForCnPunc
                                + String (CharPointer_UTF8 ("\xe2\x80\x99")));
         }
 
-        else if (lastChar == CharPointer_UTF8 ("\xe3\x80\x90")) // 3. Chinese [
+        else if (lastChar == CharPointer_UTF8 ("\xe3\x80\x90")) // [
         {
             puncMatched = true;
-            insertTextAtCaret (selectedForPunc + String (CharPointer_UTF8 ("\xe3\x80\x91")));
+            TextEditor::insertTextAtCaret (selectedForCnPunc + String (CharPointer_UTF8 ("\xe3\x80\x91")));
         }
 
-        else if (lastChar == CharPointer_UTF8 ("\xe3\x80\x8a")) // 4. Chinese <<
+        else if (lastChar == CharPointer_UTF8 ("\xe3\x80\x8a")) // <<
         {
             puncMatched = true;
-            insertTextAtCaret (selectedForPunc + String (CharPointer_UTF8 ("\xe3\x80\x8b")));
+            TextEditor::insertTextAtCaret (selectedForCnPunc + String (CharPointer_UTF8 ("\xe3\x80\x8b")));
         }
 
-        else if (lastChar == CharPointer_UTF8 ("\xef\xbc\x88")) // 5. Chinese (
+        else if (lastChar == CharPointer_UTF8 ("\xef\xbc\x88")) // (
         {
             puncMatched = true;
-            insertTextAtCaret (selectedForPunc + String (CharPointer_UTF8 ("\xef\xbc\x89")));
+            TextEditor::insertTextAtCaret (selectedForCnPunc + String (CharPointer_UTF8 ("\xef\xbc\x89")));
         }
 
-        else if (lastChar == "{") // 6. Chinese {
+        else if (lastChar == "{") // {
         {
             puncMatched = true;
-            insertTextAtCaret (selectedForPunc + "}");
+            TextEditor::insertTextAtCaret (selectedForCnPunc + "}");
         }
 
-        if (puncMatched && selectedForPunc.isEmpty())
+        if (puncMatched && selectedForCnPunc.isEmpty())
             moveCaretLeft (false, false);
 
-        selectedForPunc.clear();
-        stopTimer (chinesePunc);
+        selectedForCnPunc.clear();
     }
-*/
 
     if (showTipsBank == timerID)
     {
@@ -1434,7 +1416,7 @@ void MarkdownEditor::timerCallback (int timerID)
                     const bool isSelectSomething = getHighlightedText().isNotEmpty();
 
                     if (!(bool)parent->getCurrentTree().getProperty ("archive"))
-                        insertTextAtCaret (menuItems[index]);
+                        TextEditor::insertTextAtCaret (menuItems[index]);
 
                     if (!isSelectSomething)
                         setCaretPosition (currentPos);
@@ -1462,7 +1444,7 @@ void MarkdownEditor::actionListenerCallback (const String& message)
     }
     else if (postfix == "mp3")
     {
-        insertTextAtCaret (newLine + "~[](media/" + message + ")" + newLine + "^^ ");
+        TextEditor::insertTextAtCaret (newLine + "~[](media/" + message + ")" + newLine + "^^ ");
     }
 
     DocTreeViewItem::needCreate (parent->getCurrentTree());

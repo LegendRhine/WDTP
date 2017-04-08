@@ -68,11 +68,13 @@ private:
         insertIdentifier,
         insertCaption, insertSeparator, insertAuthor, insertInterLink,
         formatBold, formatItalic, formatBoldAndItalic, formatHighlight,        
-        codeBlock, hybridLayout, commentBlock, inlineCode, antiIndent, forceIndent,
+        codeBlock, hybridLayout, commentBlock, inlineCode, antiIndent, 
+        forceIndent,
         audioRecord,
         latestPublish, latestModify, featuredArticle, 
         allKeywords, randomArticle, allPublish, allModify,
-        searchNext, searchPrev, searchByGoogle, searchByBing, searchByWiki,
+        searchNext, searchPrev, 
+        searchByGoogle, searchByBing, searchByWiki,
         showTips, joinTips,
         fontSize, fontColor, setBackground, resetDefault,
         outlineMenu, setExEditorForMedia, editMediaByExEditor
@@ -98,6 +100,7 @@ private:
     void identifierInsert();
     void addSelectedToKeywords (const String& selectedStr);
     void subtractFromKeywords (const String& keyword);
+
     void alignCenterInsert();
     void alignRightInsert();
     void orderListInsert();
@@ -126,8 +129,6 @@ private:
 
     /** formatIndex: should be the menu index see above */
     void inlineFormat (const int formatIndex);
-
-    const bool puncMatchingForChinese (const KeyPress& key);
     void selectedAddToTipsBank();    
 
     //=============================================================================================
@@ -135,7 +136,9 @@ private:
     Slider fontSizeSlider;
     ScopedPointer<ColourSelectorWithPreset> fontColourSelector;
     ScopedPointer<ColourSelectorWithPreset> bgColourSelector;
-    String selectedForPunc;
+
+    String selectedForCnPunc;
+    bool delPressed;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MarkdownEditor)
 };

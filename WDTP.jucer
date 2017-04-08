@@ -146,36 +146,6 @@
         <MODULEPATH id="juce_audio_processors" path="../../JUCE/modules"/>
       </MODULEPATHS>
     </XCODE_MAC>
-    <VS2012 targetFolder="Builds/VisualStudio2012" smallIcon="cjVdY4" bigIcon="cjVdY4"
-            toolset="v110_xp" extraDefs="" extraCompilerFlags="">
-      <CONFIGURATIONS>
-        <CONFIGURATION name="w32-Debug" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/w32-Debug"
-                       headerPath="C:\Develop\SDK\Include\asio"/>
-        <CONFIGURATION name="w32-Release" winWarningLevel="4" generateManifest="1" winArchitecture="32-bit"
-                       isDebug="0" optimisation="3" targetName="wdtp" binaryPath="Application/w32-Release"
-                       headerPath="C:\Develop\SDK\Include\asio"/>
-        <CONFIGURATION name="x64-Debug" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/x64-Debug"
-                       headerPath="C:\Develop\SDK\Include\asio"/>
-        <CONFIGURATION name="x64-Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="wdtp" binaryPath="Application/x64-Release"
-                       headerPath="C:\Develop\SDK\Include\asio"/>
-      </CONFIGURATIONS>
-      <MODULEPATHS>
-        <MODULEPATH id="juce_gui_extra" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_gui_basics" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_graphics" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_events" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_data_structures" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_core" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_devices" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_basics" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_formats" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_utils" path="../../JUCE/modules"/>
-        <MODULEPATH id="juce_audio_processors" path="../../JUCE/modules"/>
-      </MODULEPATHS>
-    </VS2012>
   </EXPORTFORMATS>
   <MODULES>
     <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0"/>

@@ -184,7 +184,3 @@
 
 - Punctuation Matching...
 
-### About Compile
-
-On Windows, using VS2015 to open and compile the VS2012-project, which exported by Projucer.
-In its settings (Projucer-VS2012), the 'Platform Toolset' should be set to 'V110_XP' (for downward compatibility).

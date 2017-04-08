@@ -322,7 +322,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
     const bool onlyOneSelected = (getOwnerView()->getNumSelectedItems() == 1);
     const bool notReadOnly = !(bool)tree.getProperty ("archive");
     const bool isCrossPaste = File::getSpecialLocation (File::tempDirectory).getChildFile ("wdtpCrossCopy").existsAsFile();
-    const bool hasRemind = (remindNumber > 0);
+    const bool hasRemindDoc = (remindNumber > 0);
 
     jassert (sorter != nullptr);
 
@@ -355,6 +355,9 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
         m.addItem (exportTextDoc, TRANS ("Export Text Doc..."), exist && onlyOneSelected && isDoc);
         m.addItem (exportDocs, TRANS ("Export Single Big-Html..."), exist && onlyOneSelected && !isDoc);
+        m.addSeparator();
+
+        m.addItem (replaceIn, TRANS ("Replace Content..."), exist && onlyOneSelected && notReadOnly);
         m.addSeparator();
 
         m.addItem (dataStatis, TRANS ("Statistics..."), exist && onlyOneSelected);
@@ -393,8 +396,8 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu);
         m.addSeparator();
 
-        m.addItem (replaceIn, TRANS ("Replace Content..."), exist && onlyOneSelected && notReadOnly);
-        m.addItem (remindSet, TRANS ("Batch set Remind Date") + "...", !isDoc && onlyOneSelected && hasRemind);
+        m.addItem (selectDue, TRANS ("Highltlight Due Docs"), !isDoc && onlyOneSelected && hasRemindDoc);
+        m.addItem (remindSet, TRANS ("Batch set Remind Date") + "...", !isDoc && onlyOneSelected && hasRemindDoc);
         m.addSeparator();
 
         m.addItem (rename, TRANS ("Rename..."), !isRoot && onlyOneSelected && notReadOnly);
@@ -468,6 +471,7 @@ void DocTreeViewItem::menuPerform (const int index)
     else if (index == copyForAnotherProject)    crossProjectCopy();
     else if (index == pasteFromAnotherProject)  crossProjectPaste();
     else if (index == replaceIn)                replaceContent();
+    else if (index == selectDue)                selectDueDocs();
     else if (index == remindSet)                setRemind();
 
     else if (index == rename)                   renameSelectedItem();
@@ -1095,6 +1099,39 @@ void DocTreeViewItem::treeChildrenChanged (const ValueTree& parentTree)
         treeHasChanged();
         setOpen (true);
     }
+}
+
+//=================================================================================================
+void DocTreeViewItem::selectDueDocs (DocTreeViewItem* thisItem)
+{
+    ValueTree thisTree (thisItem->tree);
+    thisItem->setOpen (true);
+
+    if (thisTree.getType().toString() == "doc"
+        && thisTree.getProperty ("reviewDate").toString().isNotEmpty())
+    {
+        const String& remindDate (thisTree.getProperty ("reviewDate").toString()
+                                  .replace (".", String())
+                                  .replace (":", String())
+                                  .replace (" ", String()).trim());
+
+        if (SwingUtilities::earlyThanCurrentTime (remindDate))
+            thisItem->setSelected (true, false);
+    }
+    else
+    {
+        for (int i = thisItem->getNumSubItems(); --i >= 0; )
+            selectDueDocs ((DocTreeViewItem*)thisItem->getSubItem (i));
+    }
+}
+
+//=================================================================================================
+void DocTreeViewItem::selectDueDocs()
+{
+    setOpen (true);
+    setSelected (false, true, dontSendNotification);
+
+    selectDueDocs (this);
 }
 
 //=================================================================================================

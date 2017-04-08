@@ -418,6 +418,7 @@ countries: cn
 "Shomehow this tip added failed." = "不知为何，没能添加此提示."
 "This tip has been there already." = "此提示已经存在，未能添加。"
 "Update List..." = "更新记录..."
+"Highltlight Due Docs" = "高亮选择到期文档"
 "Batch set Remind Date" = "批量设置提醒日期"
 "Please input a day number" = "请输入一个数字（天数）"
 "Positive for postpone, negative for advance," = "正数为推迟的天数，负数为提前的天数，"

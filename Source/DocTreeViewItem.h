@@ -117,7 +117,7 @@ private:
         packWholeSite, packHtmls, packMedias,
         exportTextDoc, exportDocs, dataStatis, keywordsTable, getItemPath,
         copyForAnotherProject, pasteFromAnotherProject,
-        replaceIn, remindSet,
+        replaceIn, selectDue, remindSet,
         rename, deleteThis, 
         viewInFinder, openInExEditor, browseInEx
     };
@@ -148,6 +148,9 @@ private:
     void setRemind() const;
     static void setRemind (ValueTree thisTree, const int days);
     static void getRemindNumbers (ValueTree treeForCheck, int& remindNums, int& dueNums);
+
+    void selectDueDocs();
+    static void selectDueDocs (DocTreeViewItem* thisItem);
 
     //=========================================================================
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;

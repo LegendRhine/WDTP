@@ -21,6 +21,7 @@ DocTreeViewItem::DocTreeViewItem (const ValueTree& tree_,
     treeContainer (container),
     sorter (itemSorter),
     selectTime (0),
+    remindNumber (0),
     allowShowMenu (true)
 {
     jassert (treeContainer != nullptr);
@@ -29,6 +30,7 @@ DocTreeViewItem::DocTreeViewItem (const ValueTree& tree_,
     //setDrawsInLeftMargin (true); 
     setLinesDrawnForSubItems (true);
     tree.addListener (this);
+    getRemindNumbers (tree, remindNumber);
 }
 
 //=================================================================================================
@@ -91,6 +93,13 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
 
     else if (sorter->getShowWhat() == 1 || tree.getType().toString() == "wdtpProject") // title or intro
         itemName = tree.getProperty ("title").toString();
+
+    // remindNumber as the postfix
+    remindNumber = 0;
+    getRemindNumbers (tree, remindNumber);
+
+    if (remindNumber != 0 && tree.getType ().toString () != "doc")
+        itemName += " (" + String (remindNumber) + ")";
 
     // (at the begin) mark of doc and dir item
     String markStr;
@@ -311,10 +320,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
     const bool onlyOneSelected = (getOwnerView()->getNumSelectedItems() == 1);
     const bool notReadOnly = !(bool)tree.getProperty ("archive");
     const bool isCrossPaste = File::getSpecialLocation (File::tempDirectory).getChildFile ("wdtpCrossCopy").existsAsFile();
-    
-    int remindNumbers = 0;
-    getRemindNumbers (tree, remindNumbers);
-    const bool hasRemind = (remindNumbers > 0);
+    const bool hasRemind = (remindNumber > 0);
 
     jassert (sorter != nullptr);
 

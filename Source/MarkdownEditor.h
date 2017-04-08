@@ -20,7 +20,8 @@ class MarkdownEditor :  public TextEditor,
                         public ChangeListener,
                         public FileDragAndDropTarget,
                         public MultiTimer,
-                        private ActionListener
+                        private ActionListener,
+                        private TextEditor::Listener
 {
 public:
     MarkdownEditor (EditAndPreview* parent_);
@@ -127,6 +128,9 @@ private:
 
     const bool puncMatchingForChinese (const KeyPress& key);
     void selectedAddToTipsBank();
+
+    /** auto-wrap, punctuation matching, auto-complete, show tips...*/
+    virtual void textEditorTextChanged (TextEditor&) override;
 
     //=============================================================================================
     EditAndPreview* parent;

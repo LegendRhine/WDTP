@@ -1167,59 +1167,32 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         return TextEditor::keyPressed (key);
     }
 
+    // popup outline menu
+    else if (key == KeyPress ('j', ModifierKeys::commandModifier, 0))
+    {
+        parent->saveCurrentDocIfChanged();
+        HtmlProcessor::createArticleHtml (parent->getCurrentTree(), true);
+
+        popupOutlineMenu (parent, getText().replace (CharPointer_UTF8 ("\xef\xbc\x83"), "#"));
+        return true;
+    }
+
     // Markdown shortcut below...
 
-    // format bold
-    else if (key == KeyPress ('b', ModifierKeys::commandModifier, 0))
-        inlineFormat (formatBold);
-
-    // format italic
-    else if (key == KeyPress ('i', ModifierKeys::commandModifier, 0))
-        inlineFormat (formatItalic);
-
-    // format highlight
-    else if (key == KeyPress ('u', ModifierKeys::commandModifier, 0))
-        inlineFormat (formatHighlight);
-
-    // format inline-code
-    else if (key == KeyPress ('l', ModifierKeys::commandModifier, 0))
-        inlineFormat (inlineCode);
-
-    // code block
-    else if (key == KeyPress ('k', ModifierKeys::commandModifier, 0))
-        codeBlockFormat();
-
-    // insert hyperlink
-    else if (key == KeyPress ('h', ModifierKeys::ctrlModifier, 0))
-        hyperlinkInsert();
-
-    // insert images
-    else if (key == KeyPress ('m', ModifierKeys::commandModifier, 0))
-        insertMedias();
-
-    // insert table
-    else if (key == KeyPress ('t', ModifierKeys::commandModifier, 0))
-        tableInsert (insertNormalTable);
-
-    // insert align center
-    else if (key == KeyPress ('n', ModifierKeys::commandModifier, 0))
-        alignCenterInsert();
-
-    // insert align right
-    else if (key == KeyPress ('r', ModifierKeys::commandModifier, 0))
-        alignRightInsert();
-
-    // insert caption
-    else if (key == KeyPress ('p', ModifierKeys::commandModifier, 0))
-        captionInsert();
-
-    // insert author and date
-    else if (key == KeyPress ('o', ModifierKeys::commandModifier, 0))
-        authorInsert();
-
-    // audio record
-    else if (key == KeyPress ('w', ModifierKeys::commandModifier, 0))
-        recordAudio();
+    // format...
+    else if (key == KeyPress ('b', ModifierKeys::commandModifier, 0))    inlineFormat (formatBold);
+    else if (key == KeyPress ('i', ModifierKeys::commandModifier, 0))    inlineFormat (formatItalic);
+    else if (key == KeyPress ('u', ModifierKeys::commandModifier, 0))    inlineFormat (formatHighlight);
+    else if (key == KeyPress ('l', ModifierKeys::commandModifier, 0))    inlineFormat (inlineCode);
+    else if (key == KeyPress ('k', ModifierKeys::commandModifier, 0))    codeBlockFormat();
+    else if (key == KeyPress ('h', ModifierKeys::ctrlModifier, 0))       hyperlinkInsert();
+    else if (key == KeyPress ('m', ModifierKeys::commandModifier, 0))    insertMedias();
+    else if (key == KeyPress ('t', ModifierKeys::commandModifier, 0))    tableInsert (insertNormalTable);
+    else if (key == KeyPress ('n', ModifierKeys::commandModifier, 0))    alignCenterInsert();
+    else if (key == KeyPress ('r', ModifierKeys::commandModifier, 0))    alignRightInsert();
+    else if (key == KeyPress ('p', ModifierKeys::commandModifier, 0))    captionInsert();
+    else if (key == KeyPress ('o', ModifierKeys::commandModifier, 0))    authorInsert();
+    else if (key == KeyPress ('w', ModifierKeys::commandModifier, 0))    recordAudio();
 
     // auto-wrap the selected (when input '`, *, **, ~~' whilst some text was selected)
     else if (getHighlightedText().isNotEmpty() && (key == KeyPress('`')
@@ -1308,18 +1281,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         return true;
     }
 
-    // popup menu
-    else if (key == KeyPress ('j', ModifierKeys::commandModifier, 0))
-    {
-        parent->saveCurrentDocIfChanged();
-        HtmlProcessor::createArticleHtml (parent->getCurrentTree(), true);
-
-        popupOutlineMenu (parent, getText().replace (CharPointer_UTF8 ("\xef\xbc\x83"), "#"));
-        return true;
-    }
-
-    //DBGX (key.getKeyCode());
-    DBGX (key.getTextDescription ());
+    //DBGX (key.getKeyCode() + "-" + key.getTextDescription());
     const bool returnValue = TextEditor::keyPressed (key);
 
     // show tips
@@ -1343,6 +1305,12 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     }
 
     return returnValue;
+}
+
+//=================================================================================================
+void MarkdownEditor::textEditorTextChanged (TextEditor&)
+{
+
 }
 
 //=================================================================================================

@@ -22,6 +22,7 @@ DocTreeViewItem::DocTreeViewItem (const ValueTree& tree_,
     sorter (itemSorter),
     selectTime (0),
     remindNumber (0),
+    dueNumber (0),
     allowShowMenu (true)
 {
     jassert (treeContainer != nullptr);
@@ -30,7 +31,8 @@ DocTreeViewItem::DocTreeViewItem (const ValueTree& tree_,
     //setDrawsInLeftMargin (true); 
     setLinesDrawnForSubItems (true);
     tree.addListener (this);
-    getRemindNumbers (tree, remindNumber);
+
+    getRemindNumbers (tree, remindNumber, dueNumber);
 }
 
 //=================================================================================================
@@ -95,11 +97,11 @@ void DocTreeViewItem::paintItem (Graphics& g, int width, int height)
         itemName = tree.getProperty ("title").toString();
 
     // remindNumber as the postfix
-    remindNumber = 0;
-    getRemindNumbers (tree, remindNumber);
+    remindNumber = dueNumber = 0;
+    getRemindNumbers (tree, remindNumber, dueNumber);
 
-    if (remindNumber != 0 && tree.getType ().toString () != "doc")
-        itemName += " (" + String (remindNumber) + ")";
+    if (remindNumber != 0 && tree.getType().toString() != "doc")
+        itemName += " (" + String (dueNumber) + "/" + String (remindNumber) + ")";
 
     // (at the begin) mark of doc and dir item
     String markStr;
@@ -1146,17 +1148,27 @@ void DocTreeViewItem::setRemind (ValueTree thisTree, const int days)
 }
 
 //=================================================================================================
-void DocTreeViewItem::getRemindNumbers (ValueTree treeForCheck, int& nums)
+void DocTreeViewItem::getRemindNumbers (ValueTree treeForCheck, 
+                                        int& nums, int& dueNums)
 {
     if (treeForCheck.getType().toString() == "doc")
     {
         if (treeForCheck.getProperty ("reviewDate").toString().isNotEmpty())
-            ++nums;
+        {
+            ++nums;            
+            const String& remindDate (treeForCheck.getProperty ("reviewDate").toString()
+                                      .replace (".", String())
+                                      .replace (":", String())
+                                      .replace (" ", String()).trim());
+
+            if (SwingUtilities::earlyThanCurrentTime (remindDate))
+                ++dueNums;
+        }
     }
     else
     {
         for (auto v : treeForCheck)
-            getRemindNumbers (v, nums);
+            getRemindNumbers (v, nums, dueNums);
     }
 }
 

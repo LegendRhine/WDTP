@@ -147,7 +147,7 @@ private:
 
     void setRemind() const;
     static void setRemind (ValueTree thisTree, const int days);
-    static void getRemindNumbers (ValueTree treeForCheck, int& nums);
+    static void getRemindNumbers (ValueTree treeForCheck, int& remindNums, int& dueNums);
 
     //=========================================================================
     void valueTreePropertyChanged (ValueTree&, const Identifier&) override;
@@ -162,7 +162,7 @@ private:
     FileTreeContainer* treeContainer;
     ItemSorter* sorter;
     uint32 selectTime;  // for left click to popup outline menu
-    int remindNumber;
+    int remindNumber, dueNumber;
     bool allowShowMenu;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (DocTreeViewItem)

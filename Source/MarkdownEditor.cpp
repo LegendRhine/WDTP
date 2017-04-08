@@ -1171,53 +1171,6 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
     // English punctuation matching...
     /*
-
-    
-
-    else if (key == KeyPress ('['))
-    {
-        const String& selectedStr (getHighlightedText());
-        insertTextAtCaret ("[" + selectedStr + "]");
-
-        if (selectedStr.isEmpty())
-            moveCaretLeft (false, false);
-
-        return true;
-    }
-
-    else if (key == KeyPress ('[', ModifierKeys::shiftModifier, 0))
-    {
-        const String& selectedStr (getHighlightedText());
-        insertTextAtCaret ("{" + selectedStr + "}");
-
-        if (selectedStr.isEmpty())
-            moveCaretLeft (false, false);
-
-        return true;
-    }
-
-    else if (key == KeyPress ('9', ModifierKeys::shiftModifier, 0)) // '('
-    {
-        const String& selectedStr (getHighlightedText());
-        insertTextAtCaret ("(" + selectedStr + ")");
-
-        if (selectedStr.isEmpty())
-            moveCaretLeft (false, false);
-
-        return true;
-    }
-
-    else if (key == KeyPress (',', ModifierKeys::shiftModifier, 0)) // '<'
-    {
-        const String& selectedStr (getHighlightedText());
-        insertTextAtCaret ("<" + selectedStr + ">");
-
-        if (selectedStr.isEmpty())
-            moveCaretLeft (false, false);
-
-        return true;
-    }
-
     // Chinese punctuation matching
     else if (key.getKeyCode() == 0)
     {
@@ -1255,39 +1208,53 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 //=================================================================================================
 void MarkdownEditor::insertTextAtCaret (const String& textToInsert)
 {
-    const String& selectedStr (getHighlightedText());  
+    const String& selectedStr (getHighlightedText()); 
+    const bool sthSelected = selectedStr.isNotEmpty();
+
     TextEditor::insertTextAtCaret (textToInsert);
     //DBGX (selectedStr + " - " + textToInsert);
 
-    // auto-wrap the selected (markup '~, *, `' and punctuation matching)
-    if (selectedStr.isNotEmpty())
+    // punctuation matching
+    if (textToInsert == "\"" || textToInsert == "\'")
     {
-        if (textToInsert == "`" || textToInsert == "\"" || textToInsert == "\'")
-        {            
-            TextEditor::insertTextAtCaret (selectedStr + textToInsert);
-        }
-        else if (textToInsert == "~")
-        {
-            TextEditor::insertTextAtCaret (textToInsert + selectedStr + textToInsert + textToInsert);
-        }
-        else if (textToInsert == "*")
-        {
-            TextEditor::insertTextAtCaret (selectedStr + textToInsert);
-            setHighlightedRegion (Range<int> (getCaretPosition() - selectedStr.length() - 1, getCaretPosition() - 1));
-        }
+        TextEditor::insertTextAtCaret (selectedStr + textToInsert);
+        if (!sthSelected)   moveCaretLeft (false, false);
     }
-      
-    
-}
+    else if (textToInsert == "[")
+    {
+        TextEditor::insertTextAtCaret (selectedStr + "]");
+        if (!sthSelected)   moveCaretLeft (false, false);
+    }
+    else if (textToInsert == "{")
+    {
+        TextEditor::insertTextAtCaret (selectedStr + "}");
+        if (!sthSelected)   moveCaretLeft (false, false);
+    }
+    else if (textToInsert == "(")
+    {
+        TextEditor::insertTextAtCaret (selectedStr + ")");
+        if (!sthSelected)   moveCaretLeft (false, false);
+    }
+    else if (textToInsert == "<")
+    {
+        TextEditor::insertTextAtCaret (selectedStr + ">");
+        if (!sthSelected)   moveCaretLeft (false, false);
+    }
 
-//=================================================================================================
-const bool MarkdownEditor::puncMatchingForChinese (const KeyPress& key)
-{
-    selectedForPunc = getHighlightedText();
-    bool returnValue = TextEditor::keyPressed (key);
-    startTimer (chinesePunc, 5);    
+    // markup: `, ~, *
+    else if (sthSelected && textToInsert == "`")  
+            TextEditor::insertTextAtCaret (selectedStr + textToInsert);
 
-    return returnValue;
+    else if (sthSelected && textToInsert == "~")
+        TextEditor::insertTextAtCaret (textToInsert + selectedStr + textToInsert + textToInsert);
+
+    else if (sthSelected && textToInsert == "*")
+    {
+        TextEditor::insertTextAtCaret (selectedStr + textToInsert);
+        setHighlightedRegion (Range<int> (getCaretPosition () - selectedStr.length () - 1, getCaretPosition () - 1));
+    }
+
+       
 }
 
 //=================================================================================================
@@ -1359,7 +1326,7 @@ void MarkdownEditor::externalSearch (const int searchType)
 //=================================================================================================
 void MarkdownEditor::timerCallback (int timerID)
 {
-    if (chinesePunc == timerID)
+    /*if (chinesePunc == timerID)
     {
         const Range<int> lastPosition (getCaretPosition() - 1, getCaretPosition());
         const String& lastChar (getTextInRange (lastPosition));
@@ -1424,8 +1391,9 @@ void MarkdownEditor::timerCallback (int timerID)
         selectedForPunc.clear();
         stopTimer (chinesePunc);
     }
+*/
 
-    else if (showTipsBank == timerID)
+    if (showTipsBank == timerID)
     {
         stopTimer (showTipsBank);
         const HashMap<String, String>& tips (TipsBank::getInstance()->getTipsBank());

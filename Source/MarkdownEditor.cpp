@@ -1190,7 +1190,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         codeBlockFormat();
 
     // insert hyperlink
-    else if (key == KeyPress ('h', ModifierKeys::commandModifier, 0))
+    else if (key == KeyPress ('h', ModifierKeys::ctrlModifier, 0))
         hyperlinkInsert();
 
     // insert images

@@ -1170,27 +1170,9 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
 
     // English punctuation matching...
-    /*else if (key == KeyPress ('\'', ModifierKeys::shiftModifier, 0))
-    {
-        const String& selectedStr (getHighlightedText());
-        insertTextAtCaret ("\"" + selectedStr + "\"");
+    /*
 
-        if (selectedStr.isEmpty())
-            moveCaretLeft (false, false);
-
-        return true;
-    }
-
-    else if (key == KeyPress ('\''))
-    {
-        const String& selectedStr (getHighlightedText());
-        insertTextAtCaret ("\'" + selectedStr + "\'");
-
-        if (selectedStr.isEmpty())
-            moveCaretLeft (false, false);
-
-        return true;
-    }
+    
 
     else if (key == KeyPress ('['))
     {
@@ -1277,10 +1259,10 @@ void MarkdownEditor::insertTextAtCaret (const String& textToInsert)
     TextEditor::insertTextAtCaret (textToInsert);
     //DBGX (selectedStr + " - " + textToInsert);
 
-    // auto-wrap the selected
+    // auto-wrap the selected (markup '~, *, `' and punctuation matching)
     if (selectedStr.isNotEmpty())
     {
-        if (textToInsert == "`")
+        if (textToInsert == "`" || textToInsert == "\"" || textToInsert == "\'")
         {            
             TextEditor::insertTextAtCaret (selectedStr + textToInsert);
         }

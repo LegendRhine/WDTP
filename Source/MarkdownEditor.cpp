@@ -106,7 +106,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 #endif
 
         insertMenu.addItem (insertMedia, TRANS ("Image/Audio/Video...") + ctrlStr + "M)");
-        insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink...") + ctrlStr + "H)");
+        insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink...") + "  (Ctrl + H)");
         insertMenu.addSeparator();
         insertMenu.addItem (insertQuota, TRANS ("Quotation"));
         insertMenu.addSeparator();

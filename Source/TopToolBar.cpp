@@ -753,6 +753,7 @@ void TopToolBar::getAllCommands (Array<CommandID>& commands)
     commands.add (generateCurrent);
     commands.add (generateNeeded);
     commands.add (activeSearch);
+    commands.add (minimizeTheApp);
 }
 
 //=================================================================================================
@@ -786,6 +787,11 @@ void TopToolBar::getCommandInfo (CommandID commandID, ApplicationCommandInfo& re
         result.addDefaultKeypress ('f', ModifierKeys::commandModifier);
         result.setActive (fileTreeContainer->hasLoadedProject());
     }
+    else if (minimizeTheApp == commandID)
+    {
+        result.setInfo (TRANS ("Hide / Minimize"), "Hide / Minimize", String(), 0);
+        result.addDefaultKeypress ('h', ModifierKeys::commandModifier);
+    }
 }
 
 //=================================================================================================
@@ -800,6 +806,8 @@ bool TopToolBar::perform (const InvocationInfo& info)
     case generateCurrent:   generateCurrentPage();             break;
     case generateNeeded:    generateHtmlsIfNeeded();           break;
     case activeSearch:      searchInput->grabKeyboardFocus();  break;
+    case minimizeTheApp:    findParentComponentOfClass<MainWindow>()->setMinimised (true); break;
+
     default:                return false; 
     }
 

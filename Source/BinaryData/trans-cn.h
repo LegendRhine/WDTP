@@ -448,3 +448,4 @@ countries: cn
 "External editor specified successful." = "外部编辑器设置成功。"
 "The selected media file doesn't inside this doc's media dir." = "没有在当前文档的media目录下找到所选的媒体文件。"
 "View Html Code of Current Page" = "查看当前页的HTML源码"
+"Hide / Minimize" = "隐藏/最小化"

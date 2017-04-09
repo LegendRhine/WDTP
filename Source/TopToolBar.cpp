@@ -35,7 +35,6 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
     searchInput->setColour (TextEditor::textColourId, Colour (0xff303030));
     searchInput->setColour (TextEditor::focusedOutlineColourId, Colours::lightskyblue);
     searchInput->setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha (0.6f));
-    searchInput->setScrollBarThickness (10);
     searchInput->setFont (SwingUtilities::getFontSize() - 3.f);
     searchInput->setSelectAllWhenFocused (true);    
 

@@ -13,6 +13,84 @@
 extern ApplicationCommandManager* cmdManager;
 
 //==============================================================================
+/** search comp for theme editor */
+class SearchComp : public Component,
+                   private TextEditor::Listener,
+                   private Button::Listener
+{
+public:
+    SearchComp (ThemeEditor* te) : editor (te) 
+    {
+        addAndMakeVisible (searchInput);
+        searchInput.addListener (this);
+        searchInput.setText (SystemClipboard::getTextFromClipboard(), false);
+
+        searchInput.setColour (TextEditor::textColourId, Colour (0xff303030));
+        searchInput.setColour (TextEditor::focusedOutlineColourId, Colours::lightskyblue);
+        searchInput.setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha (0.6f));
+        searchInput.setFont (SwingUtilities::getFontSize () - 3.f);
+        searchInput.setSelectAllWhenFocused (true);
+  
+        addAndMakeVisible (nextBt);
+        nextBt.setButtonText (TRANS ("Find Next"));
+
+        addAndMakeVisible (prevBt);
+        nextBt.setButtonText (TRANS ("Find Previous"));
+
+        setSize (400, 260);
+    }
+
+    ~SearchComp() { }
+
+    //=================================================================================================
+    void paint (Graphics& g)
+    {
+        g.fillAll (Colour (0xffdcdbdb));
+    }
+
+    //=================================================================================================
+    void resized()
+    {
+
+    }
+
+private:
+    //=================================================================================================
+    virtual void textEditorReturnKeyPressed (TextEditor& te) override
+    {
+        if (&te == &searchInput)
+            keywordSearch (true);
+    }
+
+    //=================================================================================================
+    virtual void textEditorEscapeKeyPressed (TextEditor& te) override
+    {
+        if (&te == &searchInput)
+            searchInput.setText (String(), false);
+    }
+
+    //=================================================================================================
+    virtual void buttonClicked (Button* bt) override
+    {
+
+    }
+
+    //=================================================================================================
+    void keywordSearch (const bool next)
+    {
+
+    }
+
+    //=================================================================================================
+    ThemeEditor* editor;
+    TextEditor searchInput;
+    TextButton nextBt;
+    TextButton prevBt;
+
+    JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (SearchComp)
+};
+
+//==============================================================================
 ThemeEditor::ThemeEditor (EditAndPreview* parent) :
     editAndPreview (parent)
 {

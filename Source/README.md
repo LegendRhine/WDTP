@@ -155,29 +155,29 @@
 - F5: regenerate the current page and refresh it
 - F6: regenarate all the changed docs and dirs (not the whole site)
 
-- Ctrl + A: select all content (text mark syntax)
-- Ctrl + B: bold (text mark syntax)
+- Ctrl + A: select all content (text markup syntax)
+- Ctrl + B: bold (text markup syntax)
 - Ctrl + C: copy 
 - Ctrl + D: switch silent/full mode
 - Ctrl + E: popup a dialog to insert a text hyperlink
 - Ctrl + F: active search
 - Ctrl + G: popup tips for the selected text (if it has)
 - Ctrl + H: hide (minimize) the app
-- Ctrl + I: italic (text mark syntax)
+- Ctrl + I: italic (text markup syntax)
 - Ctrl + J: popup outline menu of editor
-- Ctrl + K: insert code block (text mark syntax)
-- Ctrl + L: insert inline code (text mark syntax)
-- Ctrl + M: insert images (text mark syntax)
-- Ctrl + N: align center (text mark syntax)
-- Ctrl + O: insert author (text mark syntax)
-- Ctrl + P: insert caption (text mark syntax)
+- Ctrl + K: insert code block (text markup syntax)
+- Ctrl + L: insert inline code (text markup syntax)
+- Ctrl + M: insert images (text markup syntax)
+- Ctrl + N: align center (text markup syntax)
+- Ctrl + O: insert author (text markup syntax)
+- Ctrl + P: insert caption (text markup syntax)
 - Ctrl + Q: exit the app
-- Ctrl + R: align right (text mark syntax)
+- Ctrl + R: align right (text markup syntax)
 - Ctrl + S: switch edit/preview 
-- Ctrl + T: insert table (text mark syntax)
-- Ctrl + U: highlight text (text mark syntax)
+- Ctrl + T: insert table (text markup syntax)
+- Ctrl + U: highlight text (text markup syntax)
 - Ctrl + V: intelligent paste
-- Ctrl + W: audio record (text mark syntax)
+- Ctrl + W: audio record (text markup syntax)
 - Ctrl + X: cut
 - Ctrl + Y: redo
 - Ctrl + Z: undo

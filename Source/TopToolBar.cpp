@@ -270,6 +270,8 @@ void TopToolBar::popupSystemMenu()
     m.addItem (closePjt, TRANS ("Close Project"), fileTreeContainer->hasLoadedProject());    
     m.addSeparator();
 
+    m.addItem (viewHtmlCode, TRANS ("View Html Code of Current Page"), 
+               bts[viewBt]->getToggleState() && editAndPreview->getCurrentDocFile().exists());
     m.addCommandItem (cmdManager, generateCurrent);
     m.addCommandItem (cmdManager, generateNeeded);
     m.addSeparator();
@@ -323,12 +325,16 @@ void TopToolBar::popupSystemMenu()
         fileTreeContainer->openProject (recentFiles.getFile (index - 100));
     }
         
-    else if (index >= 200 && index < 300)  // edit theme file
+    else if ((index == viewHtmlCode) || (index >= 200 && index < 300))  // edit theme file
     {
         MainContentComponent* main = dynamic_cast<MainContentComponent*>(getParentComponent());
         main->setLayout (false);
 
-        if (index == 200)
+        if (index == viewHtmlCode)
+        {
+            editAndPreview->editThemeFile (editAndPreview->getCurrentUrl());
+        }
+        else if (index == 200)
         {
             editAndPreview->editThemeFile (fileTreeContainer->projectFile.getSiblingFile ("site")
                                            .getChildFile ("add-in").getChildFile ("style.css"));
@@ -359,6 +365,7 @@ void TopToolBar::systemMenuPerform (const int index)
     else if (index == openPjt)          openProject();
     else if (index == generateWhole)    cleanAndGenerateAll();
     else if (index == cleanUpLocal)     cleanNeedlessMedias (true);
+    
     else if (index == importIco)        setSiteImgs (0);
     else if (index == importLogo)       setSiteImgs (1);
     else if (index == exportTpl)        exportCurrentTpls();
@@ -367,12 +374,14 @@ void TopToolBar::systemMenuPerform (const int index)
     else if (index == setUiColor)       setUiColour();
     else if (index == resetUiColor)     resetUiColour();
     else if (index == setupAudio)       setupAudioDevice();
+
     else if (index == checkNewVersion)  URL ("http://underwaySoft.com/works/wdtp/download.html").launchInDefaultBrowser();
     else if (index == wdtpUpdateList)   URL ("http://underwaysoft.com/works/wdtp/updateList.html").launchInDefaultBrowser();
     else if (index == gettingStarted)   URL ("http://underwaysoft.com/works/wdtp/gettingStarted.html").launchInDefaultBrowser();
     else if (index == syntax)           URL ("http://underwaysoft.com/works/wdtp/syntaxMark.html").launchInDefaultBrowser();
     else if (index == faq)              URL ("http://underwaysoft.com/works/wdtp/faq.html").launchInDefaultBrowser();
     else if (index == feedback)         URL ("http://underwaysoft.com/guestBook.html").launchInDefaultBrowser();
+
     else if (index == showAboutDialog)  SwingUtilities::showAbout ( "Walden Trip (" 
                                             + String (CharPointer_UTF8 ("\xe5\xb1\xb1\xc2\xb7\xe6\xb9\x96\xc2\xb7\xe8\xb7\xaf"))
                                             + ")", "2017");

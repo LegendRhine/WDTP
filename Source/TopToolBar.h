@@ -110,7 +110,7 @@ public:
     enum MenuAndCmdIndex 
     {
         newPjt = 1, openPjt, closePjt,  
-        packPjt, unpackPjt,
+        packPjt, unpackPjt, viewHtmlCode,
         generateCurrent, generateNeeded, generateWhole, cleanUpLocal,
         importIco, importLogo, exportTpl, importTpl, releaseSystemTpl, 
         uiEnglish, uiChinese, setupAudio,

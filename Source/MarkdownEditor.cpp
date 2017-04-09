@@ -804,18 +804,12 @@ void MarkdownEditor::insertExpandMark (const int expandIndex)
 {
     String markStr ("[latestPublish]");
 
-    if (expandIndex == latestModify)
-        markStr = "[latestModify]";
-    else if (expandIndex == featuredArticle)
-        markStr = "[featuredArticle]";
-    else if (expandIndex == allKeywords)
-        markStr = "[keywords]";
-    else if (expandIndex == randomArticle)
-        markStr = "[randomArticle]";
-    else if (expandIndex == allPublish)
-        markStr = "[allPublish]";
-    else if (expandIndex == allModify)
-        markStr = "[allModify]";
+    if (expandIndex == latestModify)            markStr = "[latestModify]";
+    else if (expandIndex == featuredArticle)    markStr = "[featuredArticle]";
+    else if (expandIndex == allKeywords)        markStr = "[keywords]";
+    else if (expandIndex == randomArticle)      markStr = "[randomArticle]";
+    else if (expandIndex == allPublish)         markStr = "[allPublish]";
+    else if (expandIndex == allModify)          markStr = "[allModify]";
     
     TextEditor::insertTextAtCaret ("\n" + markStr + newLine);
 }
@@ -1002,7 +996,6 @@ void MarkdownEditor::pasteForCtrlV()
 
             TextEditor::insertTextAtCaret ("[" + linkText + "](" + content + ")");
         }
-
     }
 
     // internal link
@@ -1012,9 +1005,8 @@ void MarkdownEditor::pasteForCtrlV()
     // include '\t'
     else if (content.containsIgnoreCase ("\t"))
         TextEditor::insertTextAtCaret (content.replace ("\t", "    "));
-
-    // others
-    else  
+    
+    else  // others
         TextEditor::keyPressed (KeyPress ('v', ModifierKeys::commandModifier, 0));
 
     // select 'Click here' when paste an url and selected nothing before

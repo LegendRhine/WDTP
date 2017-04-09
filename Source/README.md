@@ -159,10 +159,10 @@
 - Ctrl + B: bold (text mark syntax)
 - Ctrl + C: copy 
 - Ctrl + D: switch silent/full mode
-- Ctrl + E: 
+- Ctrl + E: popup a dialog to insert a text hyperlink
 - Ctrl + F: active search
 - Ctrl + G: popup tips for the selected text (if it has)
-- Ctrl + H: insert text hyper link (text mark syntax)
+- Ctrl + H: hide (minimize) the app
 - Ctrl + I: italic (text mark syntax)
 - Ctrl + J: popup outline menu of editor
 - Ctrl + K: insert code block (text mark syntax)

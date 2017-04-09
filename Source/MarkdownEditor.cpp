@@ -106,7 +106,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 #endif
 
         insertMenu.addItem (insertMedia, TRANS ("Image/Audio/Video...") + ctrlStr + "M)");
-        insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink...") + "  (Ctrl + H)");
+        insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink...") + ctrlStr + "E)");
         insertMenu.addSeparator();
         insertMenu.addItem (insertQuota, TRANS ("Quotation"));
         insertMenu.addSeparator();
@@ -1159,7 +1159,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress ('u', ModifierKeys::commandModifier, 0))    inlineFormat (formatHighlight);
     else if (key == KeyPress ('l', ModifierKeys::commandModifier, 0))    inlineFormat (inlineCode);
     else if (key == KeyPress ('k', ModifierKeys::commandModifier, 0))    codeBlockFormat();
-    else if (key == KeyPress ('h', ModifierKeys::ctrlModifier, 0))       hyperlinkInsert();
+    else if (key == KeyPress ('e', ModifierKeys::commandModifier, 0))    hyperlinkInsert();
     else if (key == KeyPress ('m', ModifierKeys::commandModifier, 0))    insertMedias();
     else if (key == KeyPress ('t', ModifierKeys::commandModifier, 0))    tableInsert (insertNormalTable);
     else if (key == KeyPress ('n', ModifierKeys::commandModifier, 0))    alignCenterInsert();

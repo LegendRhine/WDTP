@@ -19,7 +19,7 @@ class SearchComp : public Component,
                    private Button::Listener
 {
 public:
-    SearchComp (ThemeEditor* te) : editor (te) 
+    SearchComp (ThemeEditor* te, const String& searchFor) : editor (te) 
     {
         addAndMakeVisible (lb);
         lb.setFont (Font (17.00f, Font::plain));
@@ -29,7 +29,8 @@ public:
 
         addAndMakeVisible (searchInput);
         searchInput.addListener (this);
-        searchInput.setText (SystemClipboard::getTextFromClipboard()
+        searchInput.setText ((searchFor.isNotEmpty() ? searchFor 
+                             : SystemClipboard::getTextFromClipboard())
                              .removeCharacters ("\n")
                              .removeCharacters ("\r"), false);
 
@@ -47,7 +48,7 @@ public:
         prevBt.addListener (this);
         prevBt.setButtonText (TRANS ("Find Previous"));
 
-        setSize (360, 260);
+        setSize (320, 130);
     }
 
     ~SearchComp() { }
@@ -55,16 +56,16 @@ public:
     //=================================================================================================
     void paint (Graphics& g)
     {
-        g.fillAll (Colour (0xffdcdbdb));
+        g.fillAll (Colour (0xffacabab));
     }
 
     //=================================================================================================
     void resized()
     {
-        lb.setBounds (10, 10, getWidth() - 20, 30);
-        searchInput.setBounds (10, 50, 300, 25);
-        prevBt.setBounds (20, 90, 80, 25);
-        nextBt.setBounds (120, 90, 80, 25);
+        lb.setBounds (10, 5, getWidth() - 20, 30);
+        searchInput.setBounds (15, 40, 290, 25);
+        prevBt.setBounds (60, 90, 80, 25);
+        nextBt.setBounds (180, 90, 80, 25);
     }
 
 private:
@@ -191,7 +192,7 @@ void ThemeEditor::performPopupMenuAction (int index)
 
     else if (searchSth == index)
     {
-        ScopedPointer<SearchComp> searchComp = new SearchComp (this);
+        ScopedPointer<SearchComp> searchComp = new SearchComp (this, getHighlightedText());
 
         CallOutBox callOut (*searchComp, this->getScreenBounds(), nullptr);
         callOut.runModalLoop();        

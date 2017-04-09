@@ -29,12 +29,14 @@ public:
 
         addAndMakeVisible (searchInput);
         searchInput.addListener (this);
-        searchInput.setText (SystemClipboard::getTextFromClipboard(), false);
+        searchInput.setText (SystemClipboard::getTextFromClipboard()
+                             .removeCharacters ("\n")
+                             .removeCharacters ("\r"), false);
 
         searchInput.setColour (TextEditor::textColourId, Colour (0xff303030));
         searchInput.setColour (TextEditor::focusedOutlineColourId, Colours::lightskyblue);
         searchInput.setColour (TextEditor::backgroundColourId, Colour (0xffededed).withAlpha (0.6f));
-        searchInput.setFont (SwingUtilities::getFontSize () - 3.f);
+        searchInput.setFont (SwingUtilities::getFontSize() - 3.f);
         searchInput.setSelectAllWhenFocused (true);
   
         addAndMakeVisible (nextBt);
@@ -45,7 +47,7 @@ public:
         prevBt.addListener (this);
         prevBt.setButtonText (TRANS ("Find Previous"));
 
-        setSize (400, 260);
+        setSize (360, 260);
     }
 
     ~SearchComp() { }
@@ -59,7 +61,7 @@ public:
     //=================================================================================================
     void resized()
     {
-        lb, setBounds (10, 10, getWidth () - 20, 30);
+        lb.setBounds (10, 10, getWidth() - 20, 30);
         searchInput.setBounds (10, 50, 300, 25);
         prevBt.setBounds (20, 90, 80, 25);
         nextBt.setBounds (120, 90, 80, 25);
@@ -145,6 +147,9 @@ void ThemeEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         TextEditor::addPopupMenuItems (menu, e);
         menu.addSeparator();
 
+        menu.addItem (searchSth, TRANS ("Search Content"));
+        menu.addSeparator();
+
         menu.addItem (applyIndex, TRANS ("Save and Apply"));
         menu.addItem (closeIndex, TRANS ("Close without Save"));
         menu.addItem (saveAsIndex, TRANS ("Overwrite and Save to") + "...");
@@ -182,6 +187,14 @@ void ThemeEditor::performPopupMenuAction (int index)
             file.create();
             currentFile.copyFileTo (file);
         }
+    }
+
+    else if (searchSth == index)
+    {
+        ScopedPointer<SearchComp> searchComp = new SearchComp (this);
+
+        CallOutBox callOut (*searchComp, this->getScreenBounds(), nullptr);
+        callOut.runModalLoop();        
     }
 
     /*else if (autoReturn == index)

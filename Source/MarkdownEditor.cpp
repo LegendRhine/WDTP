@@ -383,8 +383,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (setBackground == index)        setBackgroundColour();
     else if (resetDefault == index)         resetToDefault();
 
-    else
-        TextEditor::performPopupMenuAction (index);
+    else        TextEditor::performPopupMenuAction (index);
 }
 
 //=================================================================================================

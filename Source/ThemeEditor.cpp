@@ -148,7 +148,11 @@ void ThemeEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         TextEditor::addPopupMenuItems (menu, e);
         menu.addSeparator();
 
-        menu.addItem (searchSth, TRANS ("Search Content"));
+#if JUCE_MAC
+        menu.addItem (searchSth, TRANS ("Search Content") + "  (cmd + F)");
+#else
+        menu.addItem (searchSth, TRANS ("Search Content") + "  (Ctrl + F)");
+#endif
         menu.addSeparator();
 
         menu.addItem (applyIndex, TRANS ("Save and Apply"));
@@ -202,6 +206,11 @@ void ThemeEditor::performPopupMenuAction (int index)
     {
         setMultiLine (true, !isWordWrap());
     }*/
+
+    else
+    {
+        TextEditor::performPopupMenuAction (index);
+    }
 }
 
 //=================================================================================================
@@ -220,6 +229,12 @@ bool ThemeEditor::keyPressed (const KeyPress& key)
     {
         insertTextAtCaret ("    ");
         return true;
+    }
+
+    // ctrl + f: search
+    else if (key == KeyPress ('f', ModifierKeys::commandModifier, 0))
+    {
+        performPopupMenuAction (searchSth);
     }
 
     // English punctuation matching...

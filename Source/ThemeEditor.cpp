@@ -222,13 +222,20 @@ void ThemeEditor::performPopupMenuAction (int index)
     {
         ScopedPointer<SearchComp> searchComp = new SearchComp (this, getHighlightedText());
 
-        CallOutBox callOut (*searchComp, this->getScreenBounds(), nullptr);
+        CallOutBox callOut (*searchComp, getScreenBounds(), nullptr);
         callOut.runModalLoop();        
     }
 
     else if (selectClr == index)
     {
+        clrSelector = new ColourSelectorWithPreset ();
 
+        clrSelector->setSize (450, 480);
+        clrSelector->setCurrentColour (Colour());
+        clrSelector->addChangeListener (this);
+
+        CallOutBox callOut (*clrSelector, getScreenBounds(), nullptr);
+        callOut.runModalLoop ();
     }
     /*else if (autoReturn == index)
     {
@@ -324,4 +331,8 @@ bool ThemeEditor::keyPressed (const KeyPress& key)
     return TextEditor::keyPressed (key);
 }
 
+//=================================================================================================
+void ThemeEditor::changeListenerCallback (ChangeBroadcaster* source)
+{
+}
 

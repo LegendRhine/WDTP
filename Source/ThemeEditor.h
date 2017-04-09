@@ -14,7 +14,8 @@
 //==============================================================================
 /** for edit css, html-tpl file
 */
-class ThemeEditor : public TextEditor
+class ThemeEditor : public TextEditor,
+                    public ChangeListener
 {
 public:
     ThemeEditor (EditAndPreview* parent);
@@ -30,6 +31,9 @@ public:
     virtual void performPopupMenuAction (int menuItemID) override;
     virtual bool keyPressed (const KeyPress& key) override;
 
+    /** set color in real-time */
+    virtual void changeListenerCallback (ChangeBroadcaster* source) override;
+
 private:
     enum 
     { 
@@ -39,6 +43,7 @@ private:
 
     EditAndPreview* editAndPreview;
     File currentFile;
+    ScopedPointer<ColourSelectorWithPreset> clrSelector;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThemeEditor)
 };

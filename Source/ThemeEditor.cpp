@@ -21,6 +21,12 @@ class SearchComp : public Component,
 public:
     SearchComp (ThemeEditor* te) : editor (te) 
     {
+        addAndMakeVisible (lb);
+        lb.setFont (Font (17.00f, Font::plain));
+        lb.setJustificationType (Justification::centred);
+        lb.setEditable (false, false, false);
+        lb.setText (TRANS ("Search Content"), dontSendNotification);
+
         addAndMakeVisible (searchInput);
         searchInput.addListener (this);
         searchInput.setText (SystemClipboard::getTextFromClipboard(), false);
@@ -32,10 +38,12 @@ public:
         searchInput.setSelectAllWhenFocused (true);
   
         addAndMakeVisible (nextBt);
+        nextBt.addListener (this);
         nextBt.setButtonText (TRANS ("Find Next"));
 
         addAndMakeVisible (prevBt);
-        nextBt.setButtonText (TRANS ("Find Previous"));
+        prevBt.addListener (this);
+        prevBt.setButtonText (TRANS ("Find Previous"));
 
         setSize (400, 260);
     }
@@ -51,7 +59,10 @@ public:
     //=================================================================================================
     void resized()
     {
-
+        lb, setBounds (10, 10, getWidth () - 20, 30);
+        searchInput.setBounds (10, 50, 300, 25);
+        prevBt.setBounds (20, 90, 80, 25);
+        nextBt.setBounds (120, 90, 80, 25);
     }
 
 private:
@@ -72,7 +83,11 @@ private:
     //=================================================================================================
     virtual void buttonClicked (Button* bt) override
     {
+        if (bt == &nextBt)
+            keywordSearch (true);
 
+        else if (bt == &prevBt)
+            keywordSearch (false);
     }
 
     //=================================================================================================
@@ -84,6 +99,7 @@ private:
     //=================================================================================================
     ThemeEditor* editor;
     TextEditor searchInput;
+    Label lb;
     TextButton nextBt;
     TextButton prevBt;
 

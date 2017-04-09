@@ -109,6 +109,7 @@ countries: cn
 "Format" = "格式"
 "Search Prev Selection" = "搜索上一个所选内容"
 "Search Next Selection" = "搜索下一个所选内容"
+"Search Content" = "搜索内容"
 "Font Size..." = "字体大小..."
 "Font Color..." = "字体颜色..."
 "Backgroud..." = "背景颜色..."

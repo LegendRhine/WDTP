@@ -96,12 +96,28 @@ private:
     //=================================================================================================
     void keywordSearch (const bool next)
     {
+        const String& keyword (searchInput.getText());
 
+        if (keyword.isNotEmpty() && editor->getText().isNotEmpty())
+        {
+            const int currentPos = editor->getCaretPosition();
+
+            const int startIndex = next 
+                ? editor->getText().indexOfIgnoreCase (currentPos + 1, keyword)
+                : editor->getText().substring (0, currentPos - 1).lastIndexOfIgnoreCase (keyword);
+
+            if (startIndex != -1)
+                editor->setHighlightedRegion (Range<int> (startIndex, startIndex + keyword.length()));
+
+            else
+                SHOW_MESSAGE (TRANS ("Nothing could be found."));
+        }
     }
 
     //=================================================================================================
     ThemeEditor* editor;
     TextEditor searchInput;
+
     Label lb;
     TextButton nextBt;
     TextButton prevBt;

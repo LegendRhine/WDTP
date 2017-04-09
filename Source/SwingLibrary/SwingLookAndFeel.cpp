@@ -69,7 +69,8 @@ void SwingLookAndFeel::drawPropertyPanelSectionHeader (Graphics& g, const String
     const float buttonSize = height * 0.8f;
     const float buttonIndent = (height - buttonSize) * 0.5f;
     
-    drawTreeviewPlusMinusBox (g, Rectangle<float> (buttonIndent, buttonIndent, buttonSize, buttonSize), Colours::white, isOpen, false);
+    drawTreeviewPlusMinusBox (g, Rectangle<float> (buttonIndent, buttonIndent, buttonSize, buttonSize), 
+                              Colours::white, isOpen, false);
     
     const int textX = (int) (buttonIndent * 2.0f + buttonSize + 2.0f);
     

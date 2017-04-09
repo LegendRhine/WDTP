@@ -3,7 +3,7 @@
 
     AudioRecorder.h
     Created: 19 Oct 2013 11:54:28pm
-    Author:  mit2000
+    Author:  SwingCoder
 
   ==============================================================================
 */

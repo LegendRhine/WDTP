@@ -31,7 +31,11 @@ public:
     virtual bool keyPressed (const KeyPress& key) override;
 
 private:
-    enum { applyIndex = 1, closeIndex, saveAsIndex, searchSth };
+    enum 
+    { 
+        applyIndex = 1, closeIndex, saveAsIndex, 
+        searchSth, selectClr 
+    };
 
     EditAndPreview* editAndPreview;
     File currentFile;

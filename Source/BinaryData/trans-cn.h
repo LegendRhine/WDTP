@@ -275,6 +275,7 @@ countries: cn
 "Selects all the text in the editor." = "选择编辑器中的所有文本."
 "Use this swatch as the current colour" = "使用此颜色块所显示的颜色"
 "Set this swatch to the current colour" = "将当前颜色保存到本颜色块"
+"Set Color" = "设置颜色"
 "red" = "红"
 "green" = "绿"
 "blue" = "蓝"

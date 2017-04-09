@@ -159,6 +159,11 @@ void ThemeEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 {
     const bool fileExists = currentFile.existsAsFile();
 
+    const int selectStart = getHighlightedRegion().getStart();
+    const int selectEnd = getHighlightedRegion().getEnd();
+    const String& beforeStart (getTextInRange (Range<int> (selectStart - 1, selectStart)));
+    const String& afterEnd (getTextInRange (Range<int> (selectEnd, selectEnd + 1)));
+
     if (e->mods.isPopupMenu() && fileExists)
     {
         TextEditor::addPopupMenuItems (menu, e);
@@ -169,6 +174,9 @@ void ThemeEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 #else
         menu.addItem (searchSth, TRANS ("Search Content") + "  (Ctrl + F)");
 #endif
+        menu.addSeparator();
+
+        menu.addItem (selectClr, TRANS ("Set Color") + "...", (beforeStart == "#" && afterEnd == ";"));
         menu.addSeparator();
 
         menu.addItem (applyIndex, TRANS ("Save and Apply"));
@@ -218,6 +226,10 @@ void ThemeEditor::performPopupMenuAction (int index)
         callOut.runModalLoop();        
     }
 
+    else if (selectClr == index)
+    {
+
+    }
     /*else if (autoReturn == index)
     {
         setMultiLine (true, !isWordWrap());

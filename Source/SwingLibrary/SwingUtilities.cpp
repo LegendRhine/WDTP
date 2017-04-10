@@ -561,7 +561,8 @@ void SwingDialog::showDialog (const String& windowTitle)
 Array<Colour> ColourSelectorWithPreset::colours;
 
 //=================================================================================================
-ColourSelectorWithPreset::ColourSelectorWithPreset()
+ColourSelectorWithPreset::ColourSelectorWithPreset (int flags) :
+    ColourSelector (flags)
 {
     if (colours.size() <= 0)
         setPresetDefaultColour();

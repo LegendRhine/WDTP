@@ -274,7 +274,7 @@ private:
 class ColourSelectorWithPreset : public ColourSelector
 {
 public:
-    ColourSelectorWithPreset();
+    ColourSelectorWithPreset (int flags = (showAlphaChannel | showColourAtTop | showSliders | showColourspace));
 
     int getNumSwatches() const override                 { return colours.size(); }
     Colour getSwatchColour (int index) const override   { return colours[index]; }

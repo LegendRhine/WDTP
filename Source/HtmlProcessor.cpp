@@ -840,9 +840,10 @@ void HtmlProcessor::processTplTags (const ValueTree& docOrDirTree,
         const String& siteTitle (FileTreeContainer::projectTree.getProperty ("title").toString());
 
         tplStr = tplStr.replace ("{{siteLogo}}",
-                                 "<div class=\"siteLogo\"><a href=\"" + rootRelativePath + "index.html\"><img src=\""
+                                 "<div class=\"siteLogo\">\n    <a href=\"" + rootRelativePath 
+                                 + "index.html\">\n    <img src=\""
                                  + rootRelativePath + "add-in/logo.png\" title=\"" + siteTitle 
-                                 + "\" width=165 /></a></div>");
+                                 + "\" width=165 /></a>\n  </div>");
     }
 
     // site menu

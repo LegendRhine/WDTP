@@ -174,8 +174,6 @@ void ThemeEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 #else
         menu.addItem (searchSth, TRANS ("Search Content") + "  (Ctrl + F)");
 #endif
-        menu.addSeparator();
-
         menu.addItem (selectClr, TRANS ("Set Color") 
                       + "...", (beforeStart == "#"
                                 && afterEnd == ";"

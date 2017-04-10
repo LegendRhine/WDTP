@@ -84,7 +84,7 @@ void EditAndPreview::resized()
 }
 
 //=================================================================================================
-void EditAndPreview::setLayout (const bool showSetupArea_, const bool showSetupPanel)
+void EditAndPreview::displaySetupArea (const bool showSetupArea_, const bool showSetupPanel)
 {
     showSetupArea = showSetupArea_;
 
@@ -170,7 +170,7 @@ void EditAndPreview::updateEditorContent()
 void EditAndPreview::editThemeFile (const File& themeFile)
 {
     themeEditor->setFileToEdit (themeFile);
-    setLayout (true, false);
+    displaySetupArea (true, false);
 }
 
 //=================================================================================================
@@ -241,9 +241,9 @@ void EditAndPreview::setMdEditorReadOnly (const bool onlyForRead)
 }
 
 //=================================================================================================
-void EditAndPreview::layoutForCodeEdit (const bool codeEditMode)
+void EditAndPreview::stretchThemeEditor (const bool stretchIt)
 {
-    if (codeEditMode)
+    if (stretchIt)
     {
         layoutManager.setItemLayout (0, -0.5, -1.0, -0.5);  // editor，
         layoutManager.setItemLayout (1, 2, 2, 2);           // layoutBar

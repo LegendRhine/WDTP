@@ -265,8 +265,12 @@ void ThemeEditor::exitEditMode()
     setText (String(), false);
     currentFile = File();
 
-    editAndPreview->setLayout (true, true);
-    editAndPreview->layoutForCodeEdit (false);
+    MainContentComponent* main = (MainContentComponent*)(editAndPreview->getParentComponent());
+    jassert (main != nullptr);
+    main->displayFileTree (true);
+
+    editAndPreview->displaySetupArea (true, true);
+    editAndPreview->stretchThemeEditor (false);
 }
 
 //=================================================================================================

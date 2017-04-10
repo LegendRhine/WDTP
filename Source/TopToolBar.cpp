@@ -326,9 +326,11 @@ void TopToolBar::popupSystemMenu()
         
     else if ((index == viewHtmlCode) || (index >= 200 && index < 300))  // edit theme file
     {
-        MainContentComponent* main = dynamic_cast<MainContentComponent*>(getParentComponent());
-        main->setLayout (false);
-        editAndPreview->layoutForCodeEdit (true);
+        MainContentComponent* main = (MainContentComponent*)(getParentComponent());
+        jassert (main != nullptr);
+
+        main->displayFileTree (false);
+        editAndPreview->stretchThemeEditor (true);
 
         if (index == viewHtmlCode)
         {
@@ -423,10 +425,10 @@ void TopToolBar::popupLayoutMenu()
     MainContentComponent* main = dynamic_cast<MainContentComponent*>(getParentComponent());
 
     if (index == 1 && main != nullptr)
-        main->setLayout (!fileTreeContainer->isVisible());
+        main->displayFileTree (!fileTreeContainer->isVisible());
 
     else if (index == 2)
-        editAndPreview->setLayout (!editAndPreview->setupAreaIsShowing(), true);
+        editAndPreview->displaySetupArea (!editAndPreview->setupAreaIsShowing(), true);
     
     else if (index == 3)
         switchSilentMode (!isSilentMode);

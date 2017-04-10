@@ -39,14 +39,17 @@ public:
     void restartWebBrowser();
     void setMdEditorReadOnly (const bool onlyForRead);
 
-    /** true for code edit mode, false for normal */
-    void layoutForCodeEdit (const bool codeEditMode);
+    /** true for stretch theme editor, false for normal */
+    void stretchThemeEditor (const bool stretchIt);
 
     //=================================================================================
     void paint (Graphics&) override {}
     void resized() override;
 
-    void setLayout (const bool showSetupArea, const bool showSetupPanel);
+    /** if arg 1 is true and arg 2 'showSetupPanel' is false, it'll show theme editor */
+    void displaySetupArea (const bool showSetupArea, 
+                           const bool showSetupPanel);
+
     const bool setupAreaIsShowing() const;
     const bool themeEditorIsShowing() const;
     const File& getEditingThemeFile() const;

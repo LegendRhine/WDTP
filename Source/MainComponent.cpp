@@ -78,7 +78,7 @@ void MainContentComponent::resized()
 }
 
 //=================================================================================================
-void MainContentComponent::setLayout (const bool showFileTree)
+void MainContentComponent::displayFileTree (const bool showFileTree)
 {
     showFileTreePanel = showFileTree;
     resized();

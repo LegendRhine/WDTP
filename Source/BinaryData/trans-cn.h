@@ -54,7 +54,7 @@ countries: cn
 "Create a new folder" = "新建文件夹"
 "Please input the new folder\'s name." = "请输入新文件夹的名称."
 "New folder" = "新建文件夹"
-"Confirm" = "确认"
+"Confirm" = "请确认"
 "Cannot create this project!" = "无法创建此项目！"
 "Do you really want to delete " = "确实要删除 "
 " selected item(s)? " = " 个所选的条目吗? "
@@ -470,3 +470,4 @@ countries: cn
 "Blog List" = "博客文章列表"
 "Catalogs List" = "笔记目录列表"
 "Insert Template Tags" = "插入模板标签"
+"This tag is already here, insert it in any case?" = "当前模板文件已使用此标签，要重复使用吗？"

@@ -257,7 +257,18 @@ void ThemeEditor::performPopupMenuAction (int index)
 
     else if (index >= 100 && index < 300)  // insert template tag
     {
-        insertTextAtCaret (tags.getAllKeys()[index - 100] + newLine);
+        const String& tagToInsert (tags.getAllKeys()[index - 100]);
+
+        if (getText().indexOf (0, tagToInsert) != -1)
+        {
+            if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),
+                                          TRANS ("This tag is already here, insert it in any case?")))
+                insertTextAtCaret (tagToInsert + newLine);
+        }
+        else
+        {
+            insertTextAtCaret (tagToInsert + newLine);
+        }
     }
 
     else

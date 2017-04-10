@@ -233,6 +233,7 @@ void ThemeEditor::performPopupMenuAction (int index)
     else if (selectClr == index)
     {        
         String selectedStr (getHighlightedText());
+        SystemClipboard::copyTextToClipboard (selectedStr);
 
         if (selectedStr.length() == 3)
             selectedStr += selectedStr;
@@ -251,10 +252,6 @@ void ThemeEditor::performPopupMenuAction (int index)
         CallOutBox callOut (*clrSelector, getScreenBounds(), nullptr);
         callOut.runModalLoop();
     }
-    /*else if (autoReturn == index)
-    {
-        setMultiLine (true, !isWordWrap());
-    }*/
 
     else
     {
@@ -348,5 +345,10 @@ bool ThemeEditor::keyPressed (const KeyPress& key)
 //=================================================================================================
 void ThemeEditor::changeListenerCallback (ChangeBroadcaster* source)
 {
+    if (clrSelector == source)
+    {
+        insertTextAtCaret (clrSelector->getCurrentColour().toString().substring (2));
+        setHighlightedRegion (Range<int> (getCaretPosition() - 6, getCaretPosition()));
+    }
 }
 

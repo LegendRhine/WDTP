@@ -31,10 +31,11 @@ public:
     virtual void performPopupMenuAction (int menuItemID) override;
     virtual bool keyPressed (const KeyPress& key) override;
 
-    /** set color in real-time */
+    /** set color in real-time when selected a color value. */
     virtual void changeListenerCallback (ChangeBroadcaster* source) override;
 
 private:
+    //=============================================================================
     enum 
     { 
         applyIndex = 1, closeIndex, saveAsIndex, 

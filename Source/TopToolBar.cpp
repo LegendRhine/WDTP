@@ -328,6 +328,7 @@ void TopToolBar::popupSystemMenu()
     {
         MainContentComponent* main = dynamic_cast<MainContentComponent*>(getParentComponent());
         main->setLayout (false);
+        editAndPreview->layoutForCodeEdit (true);
 
         if (index == viewHtmlCode)
         {

@@ -264,7 +264,9 @@ void ThemeEditor::exitEditMode()
 {
     setText (String(), false);
     currentFile = File();
+
     editAndPreview->setLayout (true, true);
+    editAndPreview->layoutForCodeEdit (false);
 }
 
 //=================================================================================================

@@ -139,6 +139,8 @@ ThemeEditor::ThemeEditor (EditAndPreview* parent) :
     setColour (CaretComponent::caretColourId, Colour (0xffd7d079).withAlpha (0.6f));
     setColour (TextEditor::backgroundColourId, Colour (0xff202020));
     setColour (TextEditor::highlightColourId, Colours::lightskyblue);
+
+    initializeTags();
 }
 
 //=================================================================================================
@@ -179,6 +181,8 @@ void ThemeEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
                                 && afterEnd == ";"
                                 && (getHighlightedText().length() == 3)
                                  || getHighlightedText().length() == 6));
+
+        menu.addSubMenu (TRANS ("Insert Template Tags"), tagsMenu, currentFile.getFileExtension() == ".html");
         menu.addSeparator();
 
         menu.addItem (applyIndex, TRANS ("Save and Apply"));
@@ -249,6 +253,11 @@ void ThemeEditor::performPopupMenuAction (int index)
 
         CallOutBox callOut (*clrSelector, getScreenBounds(), nullptr);
         callOut.runModalLoop();
+    }
+
+    else if (index >= 100 && index < 300)  // insert template tag
+    {
+        insertTextAtCaret (tags.getAllKeys()[index - 100] + newLine);
     }
 
     else
@@ -353,6 +362,42 @@ void ThemeEditor::changeListenerCallback (ChangeBroadcaster* source)
     {
         insertTextAtCaret (clrSelector->getCurrentColour().toString().substring (2));
         setHighlightedRegion (Range<int> (getCaretPosition() - 6, getCaretPosition()));
+    }
+}
+
+//=================================================================================================
+void ThemeEditor::initializeTags()
+{
+    // template tags in <body>
+    tags.set ("{{siteRelativeRootPath}}", TRANS ("Root Path"));
+    tags.set ("{{siteLogo}}", TRANS ("Project Logo"));
+    tags.set ("{{siteMenu}}", TRANS ("Site Menu"));
+    tags.set ("{{siteNavi}}", TRANS ("Site Navigation"));
+    tags.set ("{{siteLink}}", TRANS ("Home Text Link"));
+
+    tags.set ("{{contentTitle}}", TRANS ("Article Title"));
+    tags.set ("{{contentDesc}}", TRANS ("Article Description"));
+    tags.set ("{{content}}", TRANS ("Article Content"));
+    tags.set ("{{createAndModifyTime}}", TRANS ("Create and Modify Time"));
+    tags.set ("{{previousAndNext}}", TRANS ("Previous and Next Article"));
+    tags.set ("{{random}}", TRANS ("Five Random Articles"));
+    tags.set ("{{ad}}", TRANS ("Advertisement Images"));
+    tags.set ("{{contact}}", TRANS ("Contact Info"));
+
+    tags.set ("{{toTop}}", TRANS ("Goto Top"));
+    tags.set ("{{backPrevious}}", TRANS ("Back to Upper Level"));
+    tags.set ("{{bottomCopyright}}", TRANS ("Copyright Info"));
+
+    tags.set ("{{titleOfDir}}", TRANS ("Folder Title"));
+    tags.set ("{{blogList}}", TRANS ("Blog List"));
+    tags.set ("{{bookList}}", TRANS ("Catalogs List"));
+
+    for (int i = 0; i < tags.size(); ++i)
+    {
+        tagsMenu.addItem (100 + i, tags.getAllValues()[i]);
+
+        if (4 == i || 12 == i || 15 == i)
+            tagsMenu.addSeparator();
     }
 }
 

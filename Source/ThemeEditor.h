@@ -36,6 +36,8 @@ public:
 
 private:
     //=============================================================================
+    void initializeTags();
+
     enum 
     { 
         applyIndex = 1, closeIndex, saveAsIndex, 
@@ -44,7 +46,10 @@ private:
 
     EditAndPreview* editAndPreview;
     File currentFile;
+
     ScopedPointer<ColourSelectorWithPreset> clrSelector;
+    StringPairArray tags;
+    PopupMenu tagsMenu;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThemeEditor)
 };

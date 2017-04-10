@@ -19,6 +19,12 @@ MainContentComponent::MainContentComponent() :
     Thread ("CheckNewVersion"),
     showFileTreePanel (true)
 {
+    if (1 == systemFile->getIntValue ("language"))
+    {
+        const String& languageStr = MemoryBlock (BinaryData::transcn_h, BinaryData::transcn_hSize).toString();
+        LocalisedStrings::setCurrentMappings (new LocalisedStrings (languageStr, true));
+    }
+
     // must be these order...
     addAndMakeVisible (editAndPreview = new EditAndPreview (this));
     addAndMakeVisible (fileTree = new FileTreeContainer (editAndPreview));

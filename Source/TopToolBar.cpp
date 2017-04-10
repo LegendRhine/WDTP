@@ -85,9 +85,6 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
                               Image::null, 1.0f, Colour (0x00),
                               Image::null, 1.0f, Colours::darkcyan);
 
-    // ui language
-    setUiLanguage ((LanguageID)systemFile->getIntValue ("language"));
-
     // progressBar
     progressBar.setColour (ProgressBar::backgroundColourId, Colour (0x00));
     progressBar.setColour (ProgressBar::foregroundColourId, Colours::lightskyblue);
@@ -290,9 +287,10 @@ void TopToolBar::popupSystemMenu()
     m.addSeparator();
 
     PopupMenu lanMenu;
-    lanMenu.addItem (uiEnglish, "English", true, systemFile->getIntValue ("language") == 0);
-    lanMenu.addItem (uiChinese, CharPointer_UTF8 ("\xe4\xb8\xad\xe6\x96\x87"), true, 
-                     systemFile->getIntValue ("language") == 1);
+    const int languageID = systemFile->getIntValue ("language");
+    lanMenu.addItem (uiEnglish, "English", languageID != English, languageID == English);
+    lanMenu.addItem (uiChinese, CharPointer_UTF8 ("\xe4\xb8\xad\xe6\x96\x87"), languageID != Chinese,
+                     languageID == Chinese);
     m.addSubMenu (TRANS ("UI Language"), lanMenu);
 
     PopupMenu uiMenu;

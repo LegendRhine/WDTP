@@ -44,6 +44,9 @@ public:
     virtual bool perform (const InvocationInfo& info) override;
 
     static void generateHtmlFilesIfNeeded (ValueTree tree);
+    
+    enum LanguageID { English = 0, Chinese = 1 };
+    void setUiLanguage (const LanguageID& id);
 
     void setSearchKeyword (const String& kw);
     void hasNewVersion();
@@ -92,10 +95,6 @@ private:
 
     /** imgType: 0 for site ico, 1 for project logo */
     void setSiteImgs (const int imgType);
-
-    enum LanguageID { English = 0, Chinese = 1 };
-    void setUiLanguage (const LanguageID& id);
-
     void createThemeFilesMenu (PopupMenu& menu, const int baseId);
 
     //==========================================================================

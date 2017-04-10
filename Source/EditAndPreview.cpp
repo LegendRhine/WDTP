@@ -241,6 +241,25 @@ void EditAndPreview::setMdEditorReadOnly (const bool onlyForRead)
 }
 
 //=================================================================================================
+void EditAndPreview::layoutForCodeEdit (const bool codeEditMode)
+{
+    if (codeEditMode)
+    {
+        layoutManager.setItemLayout (0, -0.5, -1.0, -0.5);  // editor，
+        layoutManager.setItemLayout (1, 2, 2, 2);           // layoutBar
+        layoutManager.setItemLayout (2, 2, -0.5, -0.5);     // propertiesPanel
+    }
+    else
+    {
+        layoutManager.setItemLayout (0, -0.5, -1.0, -0.74);
+        layoutManager.setItemLayout (1, 2, 2, 2);
+        layoutManager.setItemLayout (2, 2, -0.5, -0.26);
+
+        resized();
+    }
+}
+
+//=================================================================================================
 void EditAndPreview::editCurrentDoc()
 {
     webView->setVisible (false);

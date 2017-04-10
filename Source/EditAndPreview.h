@@ -39,6 +39,9 @@ public:
     void restartWebBrowser();
     void setMdEditorReadOnly (const bool onlyForRead);
 
+    /** true for code edit mode, false for normal */
+    void layoutForCodeEdit (const bool codeEditMode);
+
     //=================================================================================
     void paint (Graphics&) override {}
     void resized() override;

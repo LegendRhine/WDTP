@@ -176,7 +176,11 @@ void ThemeEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 #endif
         menu.addSeparator();
 
-        menu.addItem (selectClr, TRANS ("Set Color") + "...", (beforeStart == "#" && afterEnd == ";"));
+        menu.addItem (selectClr, TRANS ("Set Color") 
+                      + "...", (beforeStart == "#"
+                                && afterEnd == ";"
+                                && (getHighlightedText().length() == 3)
+                                 || getHighlightedText().length() == 6));
         menu.addSeparator();
 
         menu.addItem (applyIndex, TRANS ("Save and Apply"));
@@ -227,15 +231,25 @@ void ThemeEditor::performPopupMenuAction (int index)
     }
 
     else if (selectClr == index)
-    {
-        clrSelector = new ColourSelectorWithPreset ();
+    {        
+        String selectedStr (getHighlightedText());
 
+        if (selectedStr.length() == 3)
+            selectedStr += selectedStr;
+
+        Colour currentClr ((uint8)selectedStr.substring (0, 2).getHexValue32(),
+                           (uint8)selectedStr.substring (2, 4).getHexValue32(),
+                           (uint8)selectedStr.substring (4, 6).getHexValue32());
+
+        clrSelector = new ColourSelectorWithPreset (ColourSelector::showColourAtTop
+                                                    | ColourSelector::showSliders
+                                                    | ColourSelector::showColourspace);
         clrSelector->setSize (450, 480);
-        clrSelector->setCurrentColour (Colour());
+        clrSelector->setCurrentColour (currentClr);
         clrSelector->addChangeListener (this);
 
         CallOutBox callOut (*clrSelector, getScreenBounds(), nullptr);
-        callOut.runModalLoop ();
+        callOut.runModalLoop();
     }
     /*else if (autoReturn == index)
     {

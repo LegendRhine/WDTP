@@ -399,11 +399,11 @@ void MarkdownEditor::resetToDefault()
         systemFile->setValue ("editorFontColour", Colour (0xff181818).toString());
         systemFile->setValue ("editorBackground", Colour (0xffafcc90).toString());
 
-        parent->getEditor()->setColour (TextEditor::textColourId, Colour (0xff181818));
-        parent->getEditor()->setColour (CaretComponent::caretColourId, Colour (0xff181818).withAlpha (0.6f));
-        parent->getEditor()->setColour (TextEditor::backgroundColourId, Colour (0xffafcc90));
-        parent->getEditor()->setFont (SwingUtilities::getFontSize() + 1.f);
-        parent->getEditor()->applyFontToAllText (SwingUtilities::getFontSize() + 1.f);
+        parent->getMdEditor()->setColour (TextEditor::textColourId, Colour (0xff181818));
+        parent->getMdEditor()->setColour (CaretComponent::caretColourId, Colour (0xff181818).withAlpha (0.6f));
+        parent->getMdEditor()->setColour (TextEditor::backgroundColourId, Colour (0xffafcc90));
+        parent->getMdEditor()->setFont (SwingUtilities::getFontSize() + 1.f);
+        parent->getMdEditor()->applyFontToAllText (SwingUtilities::getFontSize() + 1.f);
 
         systemFile->saveIfNeeded();
     }
@@ -1301,6 +1301,13 @@ void MarkdownEditor::externalSearch (const int searchType)
 }
 
 //=================================================================================================
+static void menuItemChosenCallback (int index, MarkdownEditor* mdEditor)
+{
+    if (index != 0 && mdEditor != nullptr)
+        mdEditor->autoComplete (index);
+}
+
+//=================================================================================================
 void MarkdownEditor::timerCallback (int timerID)
 {
     if (chinesePunc == timerID)
@@ -1375,7 +1382,8 @@ void MarkdownEditor::timerCallback (int timerID)
         PopupMenu::dismissAllActiveMenus();
         const HashMap<String, String>& tips (TipsBank::getInstance()->getTipsBank());
         
-        if (tips.size() < 1)  return;
+        if (tips.size() < 1)  
+            return;
         
         // get the last 2 characters if nothing has been selected
         String chars (getTextInRange (Range<int> (getCaretPosition() - 2, getCaretPosition())));
@@ -1384,7 +1392,7 @@ void MarkdownEditor::timerCallback (int timerID)
             chars = getHighlightedText().trim();
 
         PopupMenu tipsMenu;
-        StringArray menuItems;
+        menuItems.clear();
         menuItems.add (String());
 
         for (HashMap<String, String>::Iterator itr (tips); itr.next(); )
@@ -1395,26 +1403,30 @@ void MarkdownEditor::timerCallback (int timerID)
                 menuItems.add (itr.getValue());
             }
         }
-
-        if (tipsMenu.getNumItems() < 1) return;
-
-        const Rectangle<int> posOfMenu (getCaretRectangle() 
-                                        .translated (getScreenBounds().getX() + 12,
-                                                     getScreenBounds().getY() + 12));
-
-        Desktop::setMousePosition (posOfMenu.getPosition().translated (5, 32));
-        const int index = tipsMenu.showMenu (PopupMenu::Options().withTargetScreenArea (posOfMenu));
-
-        if (index != 0)
+        
+        if (tipsMenu.getNumItems() > 0) 
         {
-            if (getHighlightedText().isEmpty())
-                setHighlightedRegion (Range<int> (posBeforeInputNewText - 1, getCaretPosition()));
+            const Rectangle<int> posOfMenu (getCaretRectangle()
+                                            .translated (getScreenBounds().getX() + 12,
+                                                         getScreenBounds().getY() + 12));
 
-            if (!(bool)parent->getCurrentTree().getProperty ("archive"))
-                TextEditor::insertTextAtCaret (menuItems[index]);            
+            Desktop::getInstance().getMainMouseSource ().setScreenPosition (posOfMenu.getPosition()
+                                                                            .translated (5, 32).toFloat());
+            tipsMenu.showMenuAsync (PopupMenu::Options().withTargetScreenArea (posOfMenu),
+                                    ModalCallbackFunction::forComponent (menuItemChosenCallback, this));
+            
         }
-
     }
+}
+
+//=================================================================================================
+void MarkdownEditor::autoComplete (const int index)
+{
+    if (getHighlightedText().isEmpty())
+        setHighlightedRegion (Range<int> (posBeforeInputNewText - 1, getCaretPosition()));
+
+    if (!(bool)parent->getCurrentTree().getProperty ("archive"))
+        TextEditor::insertTextAtCaret (menuItems[index]);
 }
 
 //=================================================================================================
@@ -1446,8 +1458,8 @@ void MarkdownEditor::sliderValueChanged (Slider* slider)
 {
     if (slider == &fontSizeSlider)
     {
-        parent->getEditor()->setFont ((float)slider->getValue());
-        parent->getEditor()->applyFontToAllText ((float)slider->getValue());
+        parent->getMdEditor()->setFont ((float)slider->getValue());
+        parent->getMdEditor()->applyFontToAllText ((float)slider->getValue());
     }
 }
 
@@ -1457,13 +1469,13 @@ void MarkdownEditor::changeListenerCallback (ChangeBroadcaster* source)
     if (source == fontColourSelector)
     {
         Colour textClr (fontColourSelector->getCurrentColour());
-        parent->getEditor()->setColour (TextEditor::textColourId, textClr);
-        parent->getEditor()->setColour (CaretComponent::caretColourId, textClr.withAlpha (0.6f));
-        parent->getEditor()->applyFontToAllText (systemFile->getValue ("fontSize").getFloatValue());
+        parent->getMdEditor()->setColour (TextEditor::textColourId, textClr);
+        parent->getMdEditor()->setColour (CaretComponent::caretColourId, textClr.withAlpha (0.6f));
+        parent->getMdEditor()->applyFontToAllText (systemFile->getValue ("fontSize").getFloatValue());
     }
     else if (source == bgColourSelector)
     {
-        parent->getEditor()->setColour (TextEditor::backgroundColourId, bgColourSelector->getCurrentColour());
+        parent->getMdEditor()->setColour (TextEditor::backgroundColourId, bgColourSelector->getCurrentColour());
     }
 }
 

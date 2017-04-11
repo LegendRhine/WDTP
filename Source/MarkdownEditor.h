@@ -50,6 +50,8 @@ public:
     /** auto-wrap, punctuation matching, auto-complete, show tips...*/
     virtual void insertTextAtCaret (const String& textToInsert) override;
     
+    void autoComplete (const int index);
+
     /** for Chinese punc-matching and show real-time tips */
     virtual void timerCallback (int timerID) override;
     enum TimerId { chinesePunc = 1, showTipsBank };
@@ -129,7 +131,7 @@ private:
 
     /** formatIndex: should be the menu index see above */
     void inlineFormat (const int formatIndex);
-    void selectedAddToTipsBank();    
+    void selectedAddToTipsBank();
 
     //=============================================================================================
     EditAndPreview* parent;
@@ -137,6 +139,7 @@ private:
     ScopedPointer<ColourSelectorWithPreset> fontColourSelector;
     ScopedPointer<ColourSelectorWithPreset> bgColourSelector;
 
+    StringArray menuItems; // for popup tips
     String selectedForCnPunc;
     int posBeforeInputNewText;
     bool delPressed;

@@ -85,6 +85,10 @@ void MarkdownEditor::popupOutlineMenu (EditAndPreview* editAndPreview,
 //=================================================================================================
 void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 {
+    // here need do this since the tips-menu might be showing at the present
+    exitModalState (0);
+    PopupMenu::dismissAllActiveMenus();
+
     const bool docExists = parent->getCurrentDocFile().existsAsFile();
     const bool selectSomething = getHighlightedText().isNotEmpty();
     const bool notArchived = !(bool)parent->getCurrentTree().getProperty ("archive");
@@ -1072,7 +1076,14 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     // return-key 
     else if (key == KeyPress (KeyPress::returnKey))
     {
-        returnKeyInput();
+        // for tips-menu is showing
+        exitModalState (0);
+
+        if (Component::getCurrentlyModalComponent() != nullptr)
+            Component::getCurrentlyModalComponent()->keyPressed (key);
+        else
+            returnKeyInput();
+
         return true;
     }
 
@@ -1144,9 +1155,13 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         return true;
     }
 
-    // Markdown shortcut below...
+    // for Chinese punctuation matching
+    else if (key == KeyPress::deleteKey || key == KeyPress::backspaceKey)
+    {
+        delPressed = true;
+    }
 
-    // format...
+    // Markup shortcut below...
     else if (key == KeyPress ('b', ModifierKeys::commandModifier, 0))    inlineFormat (formatBold);
     else if (key == KeyPress ('i', ModifierKeys::commandModifier, 0))    inlineFormat (formatItalic);
     else if (key == KeyPress ('u', ModifierKeys::commandModifier, 0))    inlineFormat (formatHighlight);
@@ -1161,8 +1176,19 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress ('o', ModifierKeys::commandModifier, 0))    authorInsert();
     else if (key == KeyPress ('w', ModifierKeys::commandModifier, 0))    recordAudio();
 
-    // for Chinese punctuation matching
-    else if (key == KeyPress::deleteKey || key == KeyPress::backspaceKey) delPressed = true;
+    // transfer the key event to tips-menu if it's showing
+    else if (key == KeyPress::downKey || key == KeyPress::upKey
+             || key == KeyPress::leftKey || key == KeyPress::rightKey 
+             || key == KeyPress::escapeKey)
+    {
+        exitModalState (0);
+
+        if (Component::getCurrentlyModalComponent() != nullptr)
+        {
+            Component::getCurrentlyModalComponent()->keyPressed (key);
+            return true;
+        }
+    }
 
     return TextEditor::keyPressed (key);
 }

@@ -86,6 +86,7 @@ countries: cn
 "Interlaced Table" = "隔行换色表格"
 "Frameless Table" = "无边框表格"
 "Quotation" = "引用"
+"Time Line" = "时间轴"
 "Align Center" = "居中"
 "Align Right" = "靠右"
 "Unordered List" = "无序列表"

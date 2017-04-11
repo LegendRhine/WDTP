@@ -114,6 +114,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink...") + ctrlStr + "E)");
         insertMenu.addSeparator();
         insertMenu.addItem (insertQuota, TRANS ("Quotation"));
+        insertMenu.addItem (timeLine, TRANS ("Time Line") + "...");
         insertMenu.addSeparator();
 
         insertMenu.addItem (insertNormalTable, TRANS ("Normal Table") + ctrlStr + "T)");
@@ -346,6 +347,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (insertNormalTable == index)    tableInsert (insertNormalTable);
     else if (insertInterlaced == index)     tableInsert (insertInterlaced);
     else if (insertNoborderTable == index)  tableInsert (insertNoborderTable);
+    else if (timeLine == index)             insertTimeLine();
     else if (insertQuota == index)          quotaInsert();
     else if (antiIndent == index)           insertIndent (false);
     else if (forceIndent == index)          insertIndent (true);
@@ -735,6 +737,12 @@ void MarkdownEditor::hyperlinkInsert()
 
         TextEditor::insertTextAtCaret (content);
     }
+}
+
+//=================================================================================================
+void MarkdownEditor::insertTimeLine ()
+{
+
 }
 
 //=================================================================================================

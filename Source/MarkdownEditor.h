@@ -61,7 +61,7 @@ private:
     enum MenuIndex
     {
         pickTitle = 1, addKeywords, pickFromAllKeywords, pickDesc,
-        insertMedia, insertHyperlink, insertQuota,
+        insertMedia, insertHyperlink, insertQuota, timeLine,
         insertNormalTable, insertInterlaced, insertNoborderTable,
         insertAlignCenter, insertAlignRight, 
         insertUnoerderList, insertOrderList,
@@ -91,6 +91,7 @@ private:
     void tableInsert (const int tableStyle);
     void hyperlinkInsert();
     void insertMedias();
+    void insertTimeLine();
 
     /** expandIndex: should be the menu index see above */
     void insertExpandMark (const int expandIndex);

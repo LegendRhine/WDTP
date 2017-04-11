@@ -1387,35 +1387,33 @@ void MarkdownEditor::timerCallback (int timerID)
         StringArray menuItems;
         menuItems.add (String());
 
-        int i = 1;
-
         for (HashMap<String, String>::Iterator itr (tips); itr.next(); )
         {
             if (itr.getKey().containsIgnoreCase (chars))
             {
-                tipsMenu.addItem (i, itr.getValue());
                 menuItems.add (itr.getValue());
-                ++i;
+                tipsMenu.addItem (menuItems.size(), itr.getValue());
             }
         }
 
         if (tipsMenu.getNumItems() < 1) return;
 
-        const int index = tipsMenu.showMenu (PopupMenu::Options().withTargetScreenArea (getCaretRectangle()
-                                           .translated (getScreenBounds().getX() + 12,
-                                                        getScreenBounds().getY() + 12)));
+        const Rectangle<int> posOfMenu (getCaretRectangle() 
+                                        .translated (getScreenBounds().getX() + 12,
+                                                     getScreenBounds().getY() + 12));
+
+        Desktop::setMousePosition (posOfMenu.getPosition().translated (5, 32));
+        const int index = tipsMenu.showMenu (PopupMenu::Options().withTargetScreenArea (posOfMenu));
 
         if (index != 0)
         {
-            const int currentPos = getCaretPosition();
-            const bool isSelectSomething = getHighlightedText().isNotEmpty();
+            if (getHighlightedText().isEmpty())
+                setHighlightedRegion (Range<int> (posBeforeInputNewText - 1, getCaretPosition()));
 
             if (!(bool)parent->getCurrentTree().getProperty ("archive"))
-                TextEditor::insertTextAtCaret (menuItems[index]);
+                TextEditor::insertTextAtCaret (menuItems[index]);            
+        }
 
-            if (!isSelectSomething)
-                setHighlightedRegion (Range<int>(posBeforeInputNewText - 1, currentPos));
-        }        
     }
 }
 

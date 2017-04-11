@@ -1170,6 +1170,9 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 //=================================================================================================
 void MarkdownEditor::insertTextAtCaret (const String& textToInsert)
 {
+    if (isCurrentlyModal())
+        exitModalState (0);
+
     const String& selectedStr (getHighlightedText()); 
     bool sthSelected = selectedStr.isNotEmpty();
 
@@ -1303,6 +1306,9 @@ void MarkdownEditor::externalSearch (const int searchType)
 //=================================================================================================
 static void menuItemChosenCallback (int index, MarkdownEditor* mdEditor)
 {
+    if (mdEditor->isCurrentlyModal())
+        mdEditor->exitModalState (0);
+
     if (index != 0 && mdEditor != nullptr)
         mdEditor->autoComplete (index);
 }
@@ -1410,11 +1416,17 @@ void MarkdownEditor::timerCallback (int timerID)
                                             .translated (getScreenBounds().getX() + 12,
                                                          getScreenBounds().getY() + 12));
 
-            Desktop::getInstance().getMainMouseSource ().setScreenPosition (posOfMenu.getPosition()
+            Desktop::getInstance().getMainMouseSource().setScreenPosition (posOfMenu.getPosition()
                                                                             .translated (5, 32).toFloat());
             tipsMenu.showMenuAsync (PopupMenu::Options().withTargetScreenArea (posOfMenu),
                                     ModalCallbackFunction::forComponent (menuItemChosenCallback, this));
-            
+
+            // for ascii char input continuously, no need do this when IME enabled
+            const String& lastChar (getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())));
+
+            if (lastChar.containsOnly ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                       "0123456789`~!@#$%^&*()-=_+\\|[{]};:'\",<.>/?"))
+                enterModalState();
         }
     }
 }

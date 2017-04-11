@@ -16,6 +16,7 @@ extern PropertiesFile* systemFile;
 MarkdownEditor::MarkdownEditor (EditAndPreview* parent_)
     : parent (parent_),
     fontSizeSlider (Slider::LinearHorizontal, Slider::TextBoxBelow),
+    posBeforeInputNewText (0),
     delPressed (false)
 {
     fontSizeSlider.setRange (15.0, 35.0, 1.0);
@@ -1171,6 +1172,8 @@ void MarkdownEditor::insertTextAtCaret (const String& textToInsert)
 {
     const String& selectedStr (getHighlightedText()); 
     bool sthSelected = selectedStr.isNotEmpty();
+
+    posBeforeInputNewText = getCaretPosition();
     TextEditor::insertTextAtCaret (textToInsert);
     //DBGX (selectedStr + " - " + textToInsert);
 
@@ -1369,51 +1372,50 @@ void MarkdownEditor::timerCallback (int timerID)
     if (showTipsBank == timerID)
     {
         stopTimer (showTipsBank);
+        PopupMenu::dismissAllActiveMenus();
         const HashMap<String, String>& tips (TipsBank::getInstance()->getTipsBank());
         
-        if (tips.size() > 0)
+        if (tips.size() < 1)  return;
+        
+        // get the last 2 characters if nothing has been selected
+        String chars (getTextInRange (Range<int> (getCaretPosition() - 2, getCaretPosition())));
+
+        if (getHighlightedText().isNotEmpty())
+            chars = getHighlightedText().trim();
+
+        PopupMenu tipsMenu;
+        StringArray menuItems;
+        menuItems.add (String());
+
+        int i = 1;
+
+        for (HashMap<String, String>::Iterator itr (tips); itr.next(); )
         {
-            // get the last 2 characters if nothing has been selected
-            String chars (getTextInRange (Range<int> (getCaretPosition() - 2, getCaretPosition())));
-
-            if (getHighlightedText().isNotEmpty())
-                chars = getHighlightedText().trim();
-
-            PopupMenu tipsMenu;
-            StringArray menuItems;
-            menuItems.add (String());
-
-            int i = 1;
-
-            for (HashMap<String, String>::Iterator itr (tips); itr.next(); )
+            if (itr.getKey().containsIgnoreCase (chars))
             {
-                if (itr.getKey().containsIgnoreCase (chars))
-                {
-                    tipsMenu.addItem (i, itr.getValue());
-                    menuItems.add (itr.getValue());
-                    ++i;
-                }
-            }
-
-            if (tipsMenu.getNumItems() > 0)
-            {
-                const int index = tipsMenu.showAt (getCaretRectangle()
-                                                   .translated (getScreenBounds().getX() + 12,
-                                                                getScreenBounds().getY() + 12));
-
-                if (index != 0)
-                {
-                    const int currentPos = getCaretPosition();
-                    const bool isSelectSomething = getHighlightedText().isNotEmpty();
-
-                    if (!(bool)parent->getCurrentTree().getProperty ("archive"))
-                        TextEditor::insertTextAtCaret (menuItems[index]);
-
-                    if (!isSelectSomething)
-                        setCaretPosition (currentPos);
-                }
+                tipsMenu.addItem (i, itr.getValue());
+                menuItems.add (itr.getValue());
+                ++i;
             }
         }
+
+        if (tipsMenu.getNumItems() < 1) return;
+
+        const int index = tipsMenu.showMenu (PopupMenu::Options().withTargetScreenArea (getCaretRectangle()
+                                           .translated (getScreenBounds().getX() + 12,
+                                                        getScreenBounds().getY() + 12)));
+
+        if (index != 0)
+        {
+            const int currentPos = getCaretPosition();
+            const bool isSelectSomething = getHighlightedText().isNotEmpty();
+
+            if (!(bool)parent->getCurrentTree().getProperty ("archive"))
+                TextEditor::insertTextAtCaret (menuItems[index]);
+
+            if (!isSelectSomething)
+                setHighlightedRegion (Range<int>(posBeforeInputNewText - 1, currentPos));
+        }        
     }
 }
 

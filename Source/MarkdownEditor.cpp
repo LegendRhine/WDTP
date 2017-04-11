@@ -1391,8 +1391,8 @@ void MarkdownEditor::timerCallback (int timerID)
         {
             if (itr.getKey().containsIgnoreCase (chars))
             {
-                menuItems.add (itr.getValue());
                 tipsMenu.addItem (menuItems.size(), itr.getValue());
+                menuItems.add (itr.getValue());
             }
         }
 

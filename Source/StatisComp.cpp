@@ -185,7 +185,7 @@ void StatisComp::buttonClicked (Button* buttonThatWasClicked)
 void StatisComp::analyseDoc()
 {
     treeContainer->getEditAndPreview()->switchMode (false);
-    MarkdownEditor* editor = (MarkdownEditor*)treeContainer->getEditAndPreview()->getEditor();
+    MarkdownEditor* editor = (MarkdownEditor*)treeContainer->getEditAndPreview()->getMdEditor();
     const String& content = editor->getText();
 
     int startIndex = 0;

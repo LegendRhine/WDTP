@@ -306,7 +306,7 @@ void DocTreeViewItem::itemSelectionChanged (bool isNowSelected)
         // the lines will still remain after ran 'statistics' and then switched to another doc
         Array<Range<int>> nonUnderline;
         nonUnderline.add (Range<int> (0, 0));
-        editArea->getEditor()->setTemporaryUnderlining ((nonUnderline));
+        editArea->getMdEditor()->setTemporaryUnderlining ((nonUnderline));
 
         selectTime = Time::getMillisecondCounter();
         allowShowMenu = true;
@@ -1048,7 +1048,7 @@ void DocTreeViewItem::replaceContent()
         treeContainer->getEditAndPreview()->switchMode (false);
 
     ScopedPointer<ReplaceComponent> replaceComp = new ReplaceComponent (
-        treeContainer->getEditAndPreview()->getEditor(), tree);
+        treeContainer->getEditAndPreview()->getMdEditor(), tree);
 
     CallOutBox callOut (*replaceComp, treeContainer->getScreenBounds(), nullptr);
     callOut.runModalLoop();

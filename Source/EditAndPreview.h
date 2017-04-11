@@ -54,7 +54,7 @@ public:
     const bool themeEditorIsShowing() const;
     const File& getEditingThemeFile() const;
 
-    TextEditor* getEditor() const               { return mdEditor; }
+    TextEditor* getMdEditor() const             { return mdEditor; }
     WebBrowserComponent* getWebBrowser() const  { return webView; }
     const String& getCurrentUrl() const         { return currentUrl; }
 

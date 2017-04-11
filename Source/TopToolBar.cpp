@@ -192,7 +192,7 @@ void TopToolBar::keywordSearch (const bool next)
             treeView.scrollToKeepItemVisible (item);
 
             editAndPreview->switchMode (false);
-            MarkdownEditor* editor = (MarkdownEditor*)editAndPreview->getEditor();
+            MarkdownEditor* editor = (MarkdownEditor*)editAndPreview->getMdEditor();
             const String& content = editor->getText();
 
             int startIndexInDoc = 0;

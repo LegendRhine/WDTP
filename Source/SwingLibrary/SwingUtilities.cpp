@@ -390,7 +390,7 @@ const bool SwingUtilities::transparentImage (const File& originalImgFile,
     jassert (transprentImgFile.getFileExtension() == ".png");
     Image img (ImageFileFormat::loadFrom (originalImgFile));
 
-    if (img.isValid())
+    if (!img.isValid())
         return false;
 
     img = img.convertedToFormat (Image::ARGB);
@@ -401,7 +401,7 @@ const bool SwingUtilities::transparentImage (const File& originalImgFile,
     	for (int j = img.getHeight(); --j >= 0; )
     	{
             if (img.getPixelAt (i, j).getARGB() <= Colour (0xffffffff).getARGB()
-                && img.getPixelAt (i, j).getARGB() > Colour (0xfffdfdfd).getARGB())
+                && img.getPixelAt (i, j).getARGB() > Colour (0xffeeeeee).getARGB())
                 img.setPixelAt (i, j, Colour (0x00));
     	}
     }
@@ -419,11 +419,8 @@ const bool SwingUtilities::transparentImage (const File& originalImgFile,
 
         return true;
     }
-    else
-    {
-        return false;
-    }
-
+ 
+    return false;
 }
 
 //==============================================================================

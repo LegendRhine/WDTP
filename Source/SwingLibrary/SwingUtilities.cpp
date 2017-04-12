@@ -338,7 +338,20 @@ const bool SwingUtilities::pngConvertToJpg (const File& pngFile,
     JPEGImageFormat jpgFormat;
     jpgFormat.setQuality (jpgQuality);
 
-    if (jpgFormat.writeImageToStream (ImageFileFormat::loadFrom (pngFile), *outputStream))
+    // here must convert its transprent pixel to white
+    // otherwise, they will be black
+    Image img (ImageFileFormat::loadFrom (pngFile));
+
+    for (int i = img.getWidth(); --i >= 0; )
+    {
+        for (int j = img.getHeight(); --j >= 0; )
+        {
+            if (img.getPixelAt (i, j) == Colour (0x00))
+                img.setPixelAt (i, j, Colour (0xffffffff));
+        }
+    }
+
+    if (jpgFormat.writeImageToStream (img, *outputStream))
     {
         outputStream->flush();
         outputStream = nullptr;
@@ -393,6 +406,8 @@ const bool SwingUtilities::transparentImage (const File& originalImgFile,
     if (!img.isValid())
         return false;
 
+    // here must convert its pixel format, 
+    // otherwise the transparent color will be black
     img = img.convertedToFormat (Image::ARGB);
 
     // make the white color transprent

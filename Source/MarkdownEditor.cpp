@@ -235,8 +235,9 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         editorSetup.addItem (resetDefault, TRANS ("Reset to Default"));
 
         menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docExists && notArchived);
-
+        menu.addItem (syntax, TRANS ("Text Mark Syntax and Demo..."));
         menu.addSeparator();
+
         menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)", docExists);
     }
 }
@@ -389,6 +390,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (fontColor == index)            setFontColour();
     else if (setBackground == index)        setBackgroundColour();
     else if (resetDefault == index)         resetToDefault();
+    else if (syntax == index) URL ("http://underwaysoft.com/works/wdtp/syntaxMark.html").launchInDefaultBrowser();
 
     else        TextEditor::performPopupMenuAction (index);
 }
@@ -797,7 +799,7 @@ void MarkdownEditor::insertTimeLine()
                             + String (nextNoX) + unit
                             + "**" + newLine + "    - " + newLine);
         }
-        
+
         insertTextAtCaret (result.joinIntoString (newLine));
     }
 }

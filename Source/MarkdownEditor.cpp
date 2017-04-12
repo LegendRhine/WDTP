@@ -749,7 +749,7 @@ void MarkdownEditor::insertTimeLine()
     window.addTextEditor ("sectionNumbers", "5", TRANS ("Section Numbers") + ": ");
     window.getTextEditor ("sectionNumbers")->setInputRestrictions (2, "0123456789");
 
-    window.addTextEditor ("subNumbers", "3", TRANS ("Subsection Numbers") + ": ");
+    window.addTextEditor ("subNumbers", "3", TRANS ("Subsection per Section") + ": ");
     window.getTextEditor ("subNumbers")->setInputRestrictions (2, "0123456789");
 
     StringArray timeUnits;
@@ -774,16 +774,46 @@ void MarkdownEditor::insertTimeLine()
     window.getTextEditor ("intervalTime")->setInputRestrictions (3, "0123456789");
 
     window.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
-    window.addButton (TRANS ("Reset"), 1);
-    window.addButton (TRANS ("Cancel"), 2, KeyPress (KeyPress::escapeKey));
+    window.addButton (TRANS ("Cancel"), 1, KeyPress (KeyPress::escapeKey));
     
     if (0 == window.runModalLoop())
     {
-        ;
-    }
-    else if (1 == window.runModalLoop())
-    {
-        ;
+        const int secNum = jmax (1, window.getTextEditor ("sectionNumbers")->getText().getIntValue());
+        const int subNum = jmax (1, window.getTextEditor ("subNumbers")->getText().getIntValue() * secNum);
+        const int iniValue = window.getTextEditor ("initialValue")->getText().getIntValue();
+        const int interval = jmax (1, window.getTextEditor ("intervalTime")->getText().getIntValue());
+        const int dur = jmax (interval, window.getTextEditor ("duration")->getText().getIntValue());
+
+        const String& unit (timeUnits[window.getComboBoxComponent ("timeUnit")->getSelectedItemIndex()]);
+        const int totalNodeNum = dur / interval + (dur % interval == 0 ? 0 : 1);
+        StringArray result;
+
+        // get time points
+        int tempValue = totalNodeNum;
+
+        while (--tempValue >= 0)
+        {
+            const int noX = jmin (result.size() * interval, dur);
+
+            if (unit == TRANS ("Second") && noX % 60 >= 1)
+                result.add ("- **" + TRANS ("No.") + String (noX / 60) + " " + TRANS ("Minute")
+                            + " " + String (noX % 60) + " " + unit + "**" + newLine);
+            else
+                result.add ("- **" + String (noX) + " " + unit + "**" + newLine);
+        }
+
+        // get subsection and section
+        const int numsPerSub = totalNodeNum / subNum;
+
+        for (int i = 0, j = 0, k = 0; i < result.size(); i += numsPerSub)
+        {
+            result.insert (i, "### " + TRANS ("No.") + String (++j) + TRANS (" Subsection"));
+
+            if (k == 0 || j % (secNum + 1)== 0)
+                result.insert (i, "## " + TRANS ("No.") + String (++k) + TRANS (" Section") + newLine);
+        }
+
+        insertTextAtCaret (result.joinIntoString (newLine));
     }
 }
 

@@ -463,7 +463,7 @@ countries: cn
 "Set Time Line" = "设置时间轴"
 "You may type a new unit in 'Time Unit' combo box." = "可在'时间单位'组合框中输入一个新单位."
 "Reset" = "重置"
-"Interval Time" = "时间间隔"
+"Interval Time" = "间隔时间"
 "Time Unit" = "时间单位"
 "Duration" = "总时长"
 "Initial Value" = "初始值"

@@ -33,6 +33,7 @@ public:
 
     const bool getStateOfViewButton() const { return bts[viewBt]->getToggleState(); }
     void enableEditPreviewBt (const bool enableIt, const bool toggleState);
+    void setSearchInputVisible (const bool shouldVisible);
 
     /** for change the background-color and the UI text color in realtime */
     virtual void changeListenerCallback (ChangeBroadcaster* source) override;

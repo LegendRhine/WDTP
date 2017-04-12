@@ -145,6 +145,14 @@ void TopToolBar::enableEditPreviewBt (const bool enableIt,
     bts[viewBt]->setVisible (enableIt);
 }
 
+//=================================================================================================
+void TopToolBar::setSearchInputVisible (const bool shouldVisible)
+{
+    searchInput->setVisible (shouldVisible);
+    bts[searchPrev]->setVisible (shouldVisible);
+    bts[searchNext]->setVisible (shouldVisible);
+}
+
 //=========================================================================
 void TopToolBar::textEditorReturnKeyPressed (TextEditor& te)
 {

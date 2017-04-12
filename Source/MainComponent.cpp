@@ -84,6 +84,12 @@ void MainContentComponent::resized()
 }
 
 //=================================================================================================
+void MainContentComponent::setSearchInputVisible (const bool shouldVisible)
+{
+    toolBar->setSearchInputVisible (shouldVisible);
+}
+
+//=================================================================================================
 void MainContentComponent::displayFileTree (const bool showFileTree)
 {
     showFileTreePanel = showFileTree;
@@ -223,6 +229,7 @@ MainWindow::MainWindow (const String& name) :
     setFullScreen (true);
     setVisible (true);
 
+    mainComp->setSearchInputVisible (false);
     mainComp->grabKeyboardFocus();
 }
 

@@ -106,19 +106,19 @@ void FileTreeContainer::openProject (const File& project)
 
         return;
     }
-
+/*
     // for backward compatibility (before 0.9.170217)
     // check the file has been gziped or not
     MemoryBlock mb;
     realProject.loadFileAsData (mb);
 
-    /*DBGX (realProject.getFullPathName());
-    DBGX (mb.getSize());*/
+    / *DBGX (realProject.getFullPathName());
+    DBGX (mb.getSize());* /
     const uint8* const data = (const uint8*)mb.getData();
     const bool isGzip = ((int)data[0] == 120 && (int)data[1] == 218);
-    // should remove above at some point (backward compatibility)
+    // should remove above at some point (backward compatibility)*/
 
-    projectTree = SwingUtilities::readValueTreeFromFile (realProject, isGzip);
+    projectTree = SwingUtilities::readValueTreeFromFile (realProject, true);
 
     // check if this is an vaild project file
     if (projectTree.getType().toString() != "wdtpProject")
@@ -153,7 +153,8 @@ void FileTreeContainer::openProject (const File& project)
 
     mainWindow->setName (realProject.getFileNameWithoutExtension() + " - " 
                          + JUCEApplication::getInstance()->getApplicationName());
-    
+    mainWindow->setSearchInputVisible (true);
+
     // add the project to recent opened file list
     RecentlyOpenedFilesList  recentFiles;
     recentFiles.setMaxNumberOfItems (10);
@@ -180,6 +181,7 @@ void FileTreeContainer::closeProject()
         jassert (mainWindow != nullptr);
 
         mainWindow->setName (JUCEApplication::getInstance()->getApplicationName());
+        mainWindow->setSearchInputVisible (false);
     }
 }
 

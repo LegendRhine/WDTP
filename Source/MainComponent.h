@@ -27,8 +27,11 @@ public:
 
     void paint (Graphics&) override;
     void resized() override;
-    void displayFileTree (const bool showFileTree);
 
+    /** transfer method */
+    void setSearchInputVisible (const bool shouldVisible);
+
+    void displayFileTree (const bool showFileTree);
     FileTreeContainer* getFileTree() const          { return fileTree; }
     TopToolBar* getToolbar() const                  { return toolBar; }
     EditAndPreview* getEditAndPreview() const       { return editAndPreview; }
@@ -70,6 +73,9 @@ public:
 
     void closeButtonPressed() override;
     void openProject (const File& projectFile);
+
+    /** transfer method */
+    void setSearchInputVisible (const bool shouldVisible) { mainComp->setSearchInputVisible (shouldVisible); }
 
     /** reload the current doc which has been edited from external editor */
     virtual void activeWindowStatusChanged() override;

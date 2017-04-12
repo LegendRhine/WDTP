@@ -142,7 +142,7 @@ struct SwingUtilities
                                        const float jpgQuality = 0.75,
                                        const bool deletePngFileAfterConvert = true);
 
-    /** arg-3 should be percent value of the original image width */
+    /** arg-3 should be percent value of the original image width and must more than 0.01f */
     static const bool processImageWidth (const File& imgFile, 
                                          const float newPercentWidth);
 

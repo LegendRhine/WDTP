@@ -350,7 +350,6 @@ const bool SwingUtilities::pngConvertToJpg (const File& pngFile,
     }
     else
     {
-        SHOW_MESSAGE (TRANS ("Failed while converting this image."));
         return false;
     }
 }
@@ -359,7 +358,28 @@ const bool SwingUtilities::pngConvertToJpg (const File& pngFile,
 const bool SwingUtilities::processImageWidth (const File& imgFile, 
                                               const float newPercentWidth)
 {
-    return true;
+    jassert (newPercentWidth > 0.001f);
+
+    Image img (ImageFileFormat::loadFrom (imgFile));
+    img = img.rescaled ((int)(img.getWidth() * newPercentWidth),
+                        (int)(img.getHeight() * newPercentWidth));
+
+    if (img.isValid())
+    {
+        ImageFileFormat* imgFormat = ImageFileFormat::findImageFormatForFileExtension (imgFile);
+        const File tempFile (imgFile.withFileExtension ("tempForImg"));
+        ScopedPointer<FileOutputStream> outputStream (tempFile.createOutputStream());
+
+        if (imgFormat->writeImageToStream (img, *outputStream))
+        {
+            outputStream->flush();
+            outputStream = nullptr;
+
+            return tempFile.moveFileTo (imgFile);
+        }
+    }
+
+    return false;
 }
 
 //==============================================================================

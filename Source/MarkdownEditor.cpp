@@ -209,7 +209,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
                          || getHighlightedText().getLastCharacters (4) == ".PNG"));
 
         exEdit.addItem (threeQuarterWidth, TRANS ("Width Decrease a Quarter"), canEdit);
-        exEdit.addItem (threeQuarterWidth, TRANS ("Half Width"), canEdit);
+        exEdit.addItem (halfWidth, TRANS ("Half Width"), canEdit);
         exEdit.addSeparator();
 
         exEdit.addItem (editMediaByExEditor, TRANS ("Edit by External Editor") + "...", canEdit);
@@ -343,10 +343,20 @@ void MarkdownEditor::performPopupMenuAction (int index)
             parent->getCurrentTree().setProperty ("needCreateHtml", true, nullptr);
         }
         else
-        {
-            
+        {            
             SHOW_MESSAGE (TRANS ("Somehow the convert failed."));
         }
+    }
+
+    else if (halfWidth == index || threeQuarterWidth == index)
+    {
+        const File& imgFile (parent->getCurrentDocFile().getSiblingFile ("media")
+                             .getChildFile (getHighlightedText()));
+
+        if (SwingUtilities::processImageWidth (imgFile, (halfWidth == index ? 0.5f : 0.75f)))
+            parent->getCurrentTree().setProperty ("needCreateHtml", true, nullptr);
+        else
+            SHOW_MESSAGE (TRANS ("Somehow this operation failed."));
     }
 
     else if (insertSeparator == index)      TextEditor::insertTextAtCaret (newLine + "---" + newLine);

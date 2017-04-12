@@ -382,6 +382,50 @@ const bool SwingUtilities::processImageWidth (const File& imgFile,
     return false;
 }
 
+//=================================================================================================
+const bool SwingUtilities::transparentImage (const File& originalImgFile,
+                                             const File& transprentImgFile,
+                                             const bool deleteImgFileAfterConvert/* = true*/)
+{
+    jassert (transprentImgFile.getFileExtension() == ".png");
+    Image img (ImageFileFormat::loadFrom (originalImgFile));
+
+    if (img.isValid())
+        return false;
+
+    img = img.convertedToFormat (Image::ARGB);
+
+    // make the white color transprent
+    for (int i = img.getWidth(); --i >= 0; )
+    {
+    	for (int j = img.getHeight(); --j >= 0; )
+    	{
+            if (img.getPixelAt (i, j).getARGB() <= Colour (0xffffffff).getARGB()
+                && img.getPixelAt (i, j).getARGB() > Colour (0xfffdfdfd).getARGB())
+                img.setPixelAt (i, j, Colour (0x00));
+    	}
+    }
+
+    ScopedPointer<FileOutputStream> outputStream (transprentImgFile.createOutputStream());
+    PNGImageFormat pngFormat;
+
+    if (pngFormat.writeImageToStream (img, *outputStream))
+    {
+        outputStream->flush();
+        outputStream = nullptr;
+
+        if (deleteImgFileAfterConvert)
+            originalImgFile.deleteFile();
+
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+
+}
+
 //==============================================================================
 SwingDialog::SwingDialog (const String& description) :
     logo (ImageCache::getFromMemory (BinaryData::logo_png, BinaryData::logo_pngSize))

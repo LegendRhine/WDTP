@@ -136,6 +136,7 @@ struct SwingUtilities
     */
     static const String convertANSIString (const File& ansiTextFile);
 
+    //=================================================================================================
     /** */
     static const bool pngConvertToJpg (const File& pngFile, 
                                        const File& jpgFile,
@@ -145,6 +146,11 @@ struct SwingUtilities
     /** arg-3 should be percent value of the original image width and must more than 0.01f */
     static const bool processImageWidth (const File& imgFile, 
                                          const float newPercentWidth);
+
+    /** the process result is png format and write to arg-2 file. */
+    static const bool transparentImage (const File& originalImgFile,
+                                        const File& transprentImgFile,
+                                        const bool deleteImgFileAfterConvert = true);
 
 };
 

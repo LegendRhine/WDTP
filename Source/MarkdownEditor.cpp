@@ -298,15 +298,20 @@ void MarkdownEditor::performPopupMenuAction (int index)
 
         if (mediaFile.existsAsFile())
         {
-            if (getHighlightedText().containsIgnoreCase (".mp3"))
+            if (getHighlightedText().getLastCharacters (4) == ".mp3"
+                || getHighlightedText().getLastCharacters (4) == ".MP3")
             {
                 Process::openDocument (systemFile->getValue ("audioEditor"), 
                                        mediaFile.getFullPathName());
             }
-            else if (getHighlightedText().containsIgnoreCase (".jpg")
-                      || getHighlightedText().containsIgnoreCase (".png")
-                      || getHighlightedText().containsIgnoreCase (".gif")
-                      || getHighlightedText().containsIgnoreCase (".jpeg"))
+            else if (getHighlightedText().getLastCharacters (4) == ".jpg"
+                     || getHighlightedText().getLastCharacters (4) == ".JPG"
+                     || getHighlightedText().getLastCharacters (4) == ".png"
+                     || getHighlightedText().getLastCharacters (4) == ".PNG"
+                     || getHighlightedText().getLastCharacters (4) == ".gif"
+                     || getHighlightedText().getLastCharacters (4) == ".GIF"
+                     || getHighlightedText().getLastCharacters (5) == ".jpeg"
+                     || getHighlightedText().getLastCharacters (5) == ".JPEG")
             {
                 Process::openDocument (systemFile->getValue ("imageEditor"), 
                                        mediaFile.getFullPathName());
@@ -330,10 +335,14 @@ void MarkdownEditor::performPopupMenuAction (int index)
             tipInfo = TRANS ("Please Specify an External Editor for Audio");
             valueName = "audioEditor";
         }
-        else if (getHighlightedText().containsIgnoreCase (".jpg")
-                  || getHighlightedText().containsIgnoreCase (".png")
-                  || getHighlightedText().containsIgnoreCase (".gif")
-                  || getHighlightedText().containsIgnoreCase (".jpeg"))
+        else if (getHighlightedText().getLastCharacters (4) == ".jpg"
+                 || getHighlightedText().getLastCharacters (4) == ".JPG"
+                 || getHighlightedText().getLastCharacters (4) == ".png"
+                 || getHighlightedText().getLastCharacters (4) == ".PNG"
+                 || getHighlightedText().getLastCharacters (4) == ".gif"
+                 || getHighlightedText().getLastCharacters (4) == ".GIF"
+                 || getHighlightedText().getLastCharacters (5) == ".jpeg"
+                 || getHighlightedText().getLastCharacters (5) == ".JPEG")
         {
             tipInfo = TRANS ("Please Specify an External Editor for Image");
             valueName = "imageEditor";

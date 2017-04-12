@@ -136,6 +136,15 @@ struct SwingUtilities
     */
     static const String convertANSIString (const File& ansiTextFile);
 
+    /** */
+    static const bool pngConvertToJpg (const File& pngFile, 
+                                       const String& jpgFileName, 
+                                       const float jpgQuality = 0.75);
+
+    /** arg-3 should be percent value of the original image width */
+    static const bool processImageWidth (const File& imgFile, 
+                                         const float newPercentWidth);
+
 };
 
 //=========================================================================

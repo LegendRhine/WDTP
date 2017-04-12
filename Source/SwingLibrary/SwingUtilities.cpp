@@ -326,6 +326,21 @@ const String SwingUtilities::convertANSIString (const File& ansiTextFile)
 #endif
 }
 
+//=================================================================================================
+const bool SwingUtilities::pngConvertToJpg (const File& pngFile, 
+                                            const String& jpgFileName, 
+                                            const float jpgQuality /*= 0.75*/)
+{
+
+}
+
+//=================================================================================================
+const bool SwingUtilities::processImageWidth (const File& imgFile, 
+                                              const float newPercentWidth)
+{
+
+}
+
 //==============================================================================
 SwingDialog::SwingDialog (const String& description) :
     logo (ImageCache::getFromMemory (BinaryData::logo_png, BinaryData::logo_pngSize))

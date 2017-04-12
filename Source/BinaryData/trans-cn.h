@@ -440,7 +440,7 @@ countries: cn
 "Convert to JPG Format" = "转换为JPG格式"
 "Somehow the convert failed." = "不知为何，转换失败了。"
 "Somehow this operation failed." = "不知为何，此操作失败了。"
-"Width Decrease a Quarter" = "宽度减小1/4"
+"Width Decrease a Quarter" = "宽度减少1/4"
 "Half Width" = "宽度减少1/2"
 "View Html Code of Current Page" = "查看当前页的HTML源码"
 "Hide / Minimize" = "隐藏/最小化"

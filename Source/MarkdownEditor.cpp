@@ -337,7 +337,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
             return;
         }
             
-        if (SwingUtilities::pngConvertToJpg (pngFile, jpgFile, 0.7f))
+        if (SwingUtilities::pngConvertToJpg (pngFile, jpgFile, 0.7f, false))
         {
             insertTextAtCaret (jpgFile.getFileName());
             parent->getCurrentTree().setProperty ("needCreateHtml", true, nullptr);

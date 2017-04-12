@@ -740,9 +740,51 @@ void MarkdownEditor::hyperlinkInsert()
 }
 
 //=================================================================================================
-void MarkdownEditor::insertTimeLine ()
+void MarkdownEditor::insertTimeLine()
 {
+    AlertWindow window (TRANS ("Set Time Line"),
+                        TRANS ("You may type a new unit in 'Time Unit' combo box."),
+                        AlertWindow::NoIcon);
 
+    window.addTextEditor ("sectionNumbers", "5", TRANS ("Section Numbers") + ": ");
+    window.getTextEditor ("sectionNumbers")->setInputRestrictions (2, "0123456789");
+
+    window.addTextEditor ("subNumbers", "3", TRANS ("Subsection Numbers") + ": ");
+    window.getTextEditor ("subNumbers")->setInputRestrictions (2, "0123456789");
+
+    StringArray timeUnits;
+    timeUnits.add (TRANS ("Second"));
+    timeUnits.add (TRANS ("Minute"));
+    timeUnits.add (TRANS ("Hour"));
+    timeUnits.add (TRANS ("Day"));
+    timeUnits.add (TRANS ("Week"));
+    timeUnits.add (TRANS ("Month"));
+    timeUnits.add (TRANS ("Year"));
+
+    window.addComboBox ("timeUnit", timeUnits, TRANS ("Time Unit") + ": ");
+    window.getComboBoxComponent ("timeUnit")->setEditableText (true);
+
+    window.addTextEditor ("initialValue", "0", TRANS ("Initial Value") + ": ");
+    window.getTextEditor ("initialValue")->setInputRestrictions (3, "0123456789");
+
+    window.addTextEditor ("duration", "900", TRANS ("Duration") + ": ");
+    window.getTextEditor ("duration")->setInputRestrictions (4, "0123456789");
+
+    window.addTextEditor ("intervalTime", "6", TRANS ("Interval Time") + ": ");
+    window.getTextEditor ("intervalTime")->setInputRestrictions (3, "0123456789");
+
+    window.addButton (TRANS ("OK"), 0, KeyPress (KeyPress::returnKey));
+    window.addButton (TRANS ("Reset"), 1);
+    window.addButton (TRANS ("Cancel"), 2, KeyPress (KeyPress::escapeKey));
+    
+    if (0 == window.runModalLoop())
+    {
+        ;
+    }
+    else if (1 == window.runModalLoop())
+    {
+        ;
+    }
 }
 
 //=================================================================================================

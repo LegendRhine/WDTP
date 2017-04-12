@@ -208,6 +208,9 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
                         (getHighlightedText().getLastCharacters (4) == ".png"
                          || getHighlightedText().getLastCharacters (4) == ".PNG"));
 
+        exEdit.addItem (transparentImg, TRANS ("Transparentize Background"), canEdit);
+        exEdit.addSeparator();
+
         exEdit.addItem (threeQuarterWidth, TRANS ("Width Decrease a Quarter"), canEdit);
         exEdit.addItem (halfWidth, TRANS ("Half Width"), canEdit);
         exEdit.addSeparator();
@@ -344,6 +347,29 @@ void MarkdownEditor::performPopupMenuAction (int index)
         }
         else
         {            
+            SHOW_MESSAGE (TRANS ("Somehow the convert failed."));
+        }
+    }
+
+    else if (transparentImg == index)
+    {
+        const File& origFile (parent->getCurrentDocFile().getSiblingFile ("media")
+                             .getChildFile (getHighlightedText()));
+        const File& pngFile (origFile.withFileExtension ("png").getNonexistentSibling (false));
+
+        if (!origFile.existsAsFile())
+        {
+            SHOW_MESSAGE (TRANS ("Can't find this file in media dir."));
+            return;
+        }
+
+        if (SwingUtilities::transparentImage (origFile, pngFile, false))
+        {
+            insertTextAtCaret (pngFile.getFileName());
+            parent->getCurrentTree().setProperty ("needCreateHtml", true, nullptr);
+        }
+        else
+        {
             SHOW_MESSAGE (TRANS ("Somehow the convert failed."));
         }
     }

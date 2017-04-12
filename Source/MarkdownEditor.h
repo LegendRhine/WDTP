@@ -78,7 +78,7 @@ private:
         showTips, joinTips,
         fontSize, fontColor, setBackground, resetDefault,
         outlineMenu, setExEditorForMedia, editMediaByExEditor,
-        convertToJpg, halfWidth, threeQuarterWidth, syntax
+        convertToJpg, halfWidth, threeQuarterWidth, transparentImg, syntax
     };
 
     /** for click to select/unselect a keyword from keywords-table component.

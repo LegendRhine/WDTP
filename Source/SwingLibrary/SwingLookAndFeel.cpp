@@ -121,3 +121,9 @@ Font SwingLookAndFeel::getTextButtonFont (TextButton& bt, int buttonHeight)
     return LookAndFeel_V3::getTextButtonFont (bt, buttonHeight);
 #endif
 }
+
+//=================================================================================================
+Font SwingLookAndFeel::getAlertWindowFont()
+{
+    return getAlertWindowMessageFont().getHeight() - 0.5f;
+}

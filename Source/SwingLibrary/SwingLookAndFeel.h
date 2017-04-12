@@ -39,6 +39,7 @@ public:
     virtual Font getAlertWindowTitleFont() override;
     virtual Font getAlertWindowMessageFont() override;
     virtual Font getTextButtonFont (TextButton& bt, int buttonHeight) override;
+    virtual Font getAlertWindowFont() override;    
     
 };
 

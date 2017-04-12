@@ -780,9 +780,9 @@ void MarkdownEditor::insertTimeLine()
         StringArray result;
 
         // get time points
-        while (result.size () * interval < dur)
+        while (result.size() * interval < dur)
         {
-            const int noX = result.size () * interval + iniValue;
+            const int noX = result.size() * interval + iniValue;
             const int nextNoX = noX + interval;
 
             if (unit == TRANS (" Second"))

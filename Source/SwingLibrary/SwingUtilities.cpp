@@ -327,18 +327,39 @@ const String SwingUtilities::convertANSIString (const File& ansiTextFile)
 }
 
 //=================================================================================================
-const bool SwingUtilities::pngConvertToJpg (const File& pngFile, 
-                                            const String& jpgFileName, 
-                                            const float jpgQuality /*= 0.75*/)
+const bool SwingUtilities::pngConvertToJpg (const File& pngFile,
+                                            const File& jpgFile,
+                                            const float jpgQuality /*= 0.75*/,
+                                            const bool deletePngFileAfterConvert/* = true*/)
 {
+    jassert (pngFile.getFileExtension().toLowerCase() == ".png");
+    ScopedPointer<FileOutputStream> outputStream (jpgFile.createOutputStream());
 
+    JPEGImageFormat jpgFormat;
+    jpgFormat.setQuality (jpgQuality);
+
+    if (jpgFormat.writeImageToStream (ImageFileFormat::loadFrom (pngFile), *outputStream))
+    {
+        outputStream->flush();
+        outputStream = nullptr;
+
+        if (deletePngFileAfterConvert)
+            pngFile.deleteFile();
+
+        return true;
+    }
+    else
+    {
+        SHOW_MESSAGE (TRANS ("Failed while converting this image."));
+        return false;
+    }
 }
 
 //=================================================================================================
 const bool SwingUtilities::processImageWidth (const File& imgFile, 
                                               const float newPercentWidth)
 {
-
+    return true;
 }
 
 //==============================================================================

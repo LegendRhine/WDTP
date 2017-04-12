@@ -241,19 +241,6 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 }
 
 //=================================================================================================
-bool MarkdownEditor::selectedIsImageFile()
-{
-    return getHighlightedText().getLastCharacters (4) == ".jpg"
-        || getHighlightedText().getLastCharacters (4) == ".JPG"
-        || getHighlightedText().getLastCharacters (4) == ".png"
-        || getHighlightedText().getLastCharacters (4) == ".PNG"
-        || getHighlightedText().getLastCharacters (4) == ".gif"
-        || getHighlightedText().getLastCharacters (4) == ".GIF"
-        || getHighlightedText().getLastCharacters (5) == ".jpeg"
-        || getHighlightedText().getLastCharacters (5) == ".JPEG";
-}
-
-//=================================================================================================
 void MarkdownEditor::performPopupMenuAction (int index)
 {
     if (addKeywords == index)
@@ -338,6 +325,30 @@ void MarkdownEditor::performPopupMenuAction (int index)
         }
     }
 
+    else if (convertToJpg == index)
+    {
+        const File& pngFile (parent->getCurrentDocFile().getSiblingFile ("media")
+                               .getChildFile (getHighlightedText()));
+        const File& jpgFile (pngFile.withFileExtension ("jpg").getNonexistentSibling (false));
+
+        if (!pngFile.existsAsFile())
+        {
+            SHOW_MESSAGE (TRANS ("Can't find this file in media dir."));
+            return;
+        }
+            
+        if (SwingUtilities::pngConvertToJpg (pngFile, jpgFile, 0.7f))
+        {
+            insertTextAtCaret (jpgFile.getFileName());
+            parent->getCurrentTree().setProperty ("needCreateHtml", true, nullptr);
+        }
+        else
+        {
+            
+            SHOW_MESSAGE (TRANS ("Somehow the convert failed."));
+        }
+    }
+
     else if (insertSeparator == index)      TextEditor::insertTextAtCaret (newLine + "---" + newLine);
     else if (pickFromAllKeywords == index)  showAllKeywords();
     else if (searchPrev == index)           searchPrevious();
@@ -398,6 +409,19 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (syntax == index) URL ("http://underwaysoft.com/works/wdtp/syntaxMark.html").launchInDefaultBrowser();
 
     else        TextEditor::performPopupMenuAction (index);
+}
+
+//=================================================================================================
+bool MarkdownEditor::selectedIsImageFile()
+{
+    return getHighlightedText().getLastCharacters (4) == ".jpg"
+        || getHighlightedText().getLastCharacters (4) == ".JPG"
+        || getHighlightedText().getLastCharacters (4) == ".png"
+        || getHighlightedText().getLastCharacters (4) == ".PNG"
+        || getHighlightedText().getLastCharacters (4) == ".gif"
+        || getHighlightedText().getLastCharacters (4) == ".GIF"
+        || getHighlightedText().getLastCharacters (5) == ".jpeg"
+        || getHighlightedText().getLastCharacters (5) == ".JPEG";
 }
 
 //=================================================================================================

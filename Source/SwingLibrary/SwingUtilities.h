@@ -138,8 +138,9 @@ struct SwingUtilities
 
     /** */
     static const bool pngConvertToJpg (const File& pngFile, 
-                                       const String& jpgFileName, 
-                                       const float jpgQuality = 0.75);
+                                       const File& jpgFile,
+                                       const float jpgQuality = 0.75,
+                                       const bool deletePngFileAfterConvert = true);
 
     /** arg-3 should be percent value of the original image width */
     static const bool processImageWidth (const File& imgFile, 

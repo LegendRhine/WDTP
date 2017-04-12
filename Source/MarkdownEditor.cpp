@@ -197,36 +197,17 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSubMenu (TRANS ("External Search Selection"), exSearch, docExists);
 
         PopupMenu exEdit;
-        const bool selectedMediaFile = (getHighlightedText().getLastCharacters (4) == ".jpg"
-                                        || getHighlightedText().getLastCharacters (4) == ".JPG"
-                                        || getHighlightedText().getLastCharacters (4) == ".png"
-                                        || getHighlightedText().getLastCharacters (4) == ".PNG"
-                                        || getHighlightedText().getLastCharacters (4) == ".gif"
-                                        || getHighlightedText().getLastCharacters (4) == ".GIF"
-                                        || getHighlightedText().getLastCharacters (4) == ".mp3"
-                                        || getHighlightedText().getLastCharacters (4) == ".MP3"
-                                        || getHighlightedText().getLastCharacters (5) == ".jpeg"
-                                        || getHighlightedText().getLastCharacters (5) == ".JPEG");
-
+        const bool selectedMediaFile = (selectedIsMp3() || selectedIsImageFile());
         bool canEdit = false;
 
-        if (getHighlightedText().getLastCharacters (4) == ".mp3" && systemFile->getValue ("audioEditor").isNotEmpty())
-            canEdit = true;
-
-        else if ((getHighlightedText().getLastCharacters (4) == ".jpg"
-                  || getHighlightedText().getLastCharacters (4) == ".JPG"
-                  || getHighlightedText().getLastCharacters (4) == ".png"
-                  || getHighlightedText().getLastCharacters (4) == ".PNG"
-                  || getHighlightedText().getLastCharacters (4) == ".gif"
-                  || getHighlightedText().getLastCharacters (4) == ".GIF"
-                  || getHighlightedText().getLastCharacters (5) == ".jpeg"
-                  || getHighlightedText().getLastCharacters (5) == ".JPEG")
-                 && systemFile->getValue ("imageEditor").isNotEmpty())
+        if ((selectedIsMp3() && systemFile->getValue ("audioEditor").isNotEmpty())
+            || (selectedIsImageFile() && systemFile->getValue ("imageEditor").isNotEmpty()))
             canEdit = true;
 
         exEdit.addItem (convertToJpg, TRANS ("Convert to JPG Format"), 
                         (getHighlightedText().getLastCharacters (4) == ".png"
                          || getHighlightedText().getLastCharacters (4) == ".PNG"));
+
         exEdit.addItem (threeQuarterWidth, TRANS ("Width Decrease a Quarter"), canEdit);
         exEdit.addItem (threeQuarterWidth, TRANS ("Half Width"), canEdit);
         exEdit.addSeparator();
@@ -257,6 +238,19 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 
         menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)", docExists);
     }
+}
+
+//=================================================================================================
+bool MarkdownEditor::selectedIsImageFile()
+{
+    return getHighlightedText().getLastCharacters (4) == ".jpg"
+        || getHighlightedText().getLastCharacters (4) == ".JPG"
+        || getHighlightedText().getLastCharacters (4) == ".png"
+        || getHighlightedText().getLastCharacters (4) == ".PNG"
+        || getHighlightedText().getLastCharacters (4) == ".gif"
+        || getHighlightedText().getLastCharacters (4) == ".GIF"
+        || getHighlightedText().getLastCharacters (5) == ".jpeg"
+        || getHighlightedText().getLastCharacters (5) == ".JPEG";
 }
 
 //=================================================================================================
@@ -298,20 +292,12 @@ void MarkdownEditor::performPopupMenuAction (int index)
 
         if (mediaFile.existsAsFile())
         {
-            if (getHighlightedText().getLastCharacters (4) == ".mp3"
-                || getHighlightedText().getLastCharacters (4) == ".MP3")
+            if (selectedIsMp3())
             {
                 Process::openDocument (systemFile->getValue ("audioEditor"), 
                                        mediaFile.getFullPathName());
             }
-            else if (getHighlightedText().getLastCharacters (4) == ".jpg"
-                     || getHighlightedText().getLastCharacters (4) == ".JPG"
-                     || getHighlightedText().getLastCharacters (4) == ".png"
-                     || getHighlightedText().getLastCharacters (4) == ".PNG"
-                     || getHighlightedText().getLastCharacters (4) == ".gif"
-                     || getHighlightedText().getLastCharacters (4) == ".GIF"
-                     || getHighlightedText().getLastCharacters (5) == ".jpeg"
-                     || getHighlightedText().getLastCharacters (5) == ".JPEG")
+            else if (selectedIsImageFile())
             {
                 Process::openDocument (systemFile->getValue ("imageEditor"), 
                                        mediaFile.getFullPathName());
@@ -330,19 +316,12 @@ void MarkdownEditor::performPopupMenuAction (int index)
         String tipInfo;
         String valueName;
 
-        if (getHighlightedText().containsIgnoreCase (".mp3"))
+        if (selectedIsMp3())
         {
             tipInfo = TRANS ("Please Specify an External Editor for Audio");
             valueName = "audioEditor";
         }
-        else if (getHighlightedText().getLastCharacters (4) == ".jpg"
-                 || getHighlightedText().getLastCharacters (4) == ".JPG"
-                 || getHighlightedText().getLastCharacters (4) == ".png"
-                 || getHighlightedText().getLastCharacters (4) == ".PNG"
-                 || getHighlightedText().getLastCharacters (4) == ".gif"
-                 || getHighlightedText().getLastCharacters (4) == ".GIF"
-                 || getHighlightedText().getLastCharacters (5) == ".jpeg"
-                 || getHighlightedText().getLastCharacters (5) == ".JPEG")
+        else if (selectedIsImageFile())
         {
             tipInfo = TRANS ("Please Specify an External Editor for Image");
             valueName = "imageEditor";
@@ -419,6 +398,13 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (syntax == index) URL ("http://underwaysoft.com/works/wdtp/syntaxMark.html").launchInDefaultBrowser();
 
     else        TextEditor::performPopupMenuAction (index);
+}
+
+//=================================================================================================
+bool MarkdownEditor::selectedIsMp3()
+{
+    return getHighlightedText().getLastCharacters (4) == ".mp3"
+        || getHighlightedText().getLastCharacters (4) == ".MP3";
 }
 
 //=================================================================================================

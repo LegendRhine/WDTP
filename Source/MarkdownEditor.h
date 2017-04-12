@@ -29,14 +29,13 @@ public:
     void paint (Graphics& g) override;
 
     //=================================================================================================
-    static void popupOutlineMenu (EditAndPreview* editAndPreview, const String& editorContent);
-
+    static void popupOutlineMenu (EditAndPreview* editAndPreview, 
+                                  const String& editorContent);
     virtual void addPopupMenuItems (PopupMenu& menuToAddTo,
                                     const MouseEvent* mouseClickEvent) override;
 
-    virtual void performPopupMenuAction (int menuItemID) override;        
+    virtual void performPopupMenuAction (int menuItemID) override;
     bool keyPressed (const KeyPress& key) override;
-
     void insertMedias (const Array<File>& mediaFiles);
 
     /** for set the font-size and color of font and backgroud */
@@ -48,8 +47,7 @@ public:
     virtual void filesDropped (const StringArray& files, int x, int y) override;
 
     /** auto-wrap, punctuation matching, auto-complete, show tips...*/
-    virtual void insertTextAtCaret (const String& textToInsert) override;
-    
+    virtual void insertTextAtCaret (const String& textToInsert) override;    
     void autoComplete (const int index);
 
     /** for Chinese punc-matching and show real-time tips */
@@ -87,6 +85,9 @@ private:
         see showAllKeywords().    */
     virtual void actionListenerCallback (const String& message) override;
     void showAllKeywords();
+
+    bool selectedIsImageFile();
+    bool selectedIsMp3();
 
     /** tableStyle: should be the menu index see above */
     void tableInsert (const int tableStyle);

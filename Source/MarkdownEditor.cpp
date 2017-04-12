@@ -197,27 +197,28 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSubMenu (TRANS ("External Search Selection"), exSearch, docExists);
 
         PopupMenu exEdit;
-        const bool selectedMediaFile = (getHighlightedText().containsIgnoreCase (".jpg")
-                                        || getHighlightedText().containsIgnoreCase (".png")
-                                        || getHighlightedText().containsIgnoreCase (".gif")
-                                        || getHighlightedText().containsIgnoreCase (".mp3")
-                                        || getHighlightedText().containsIgnoreCase (".jpeg"));
+        const bool selectedMediaFile = (getHighlightedText().getLastCharacters (4) == ".jpg"
+                                        || getHighlightedText().getLastCharacters (4) == ".png"
+                                        || getHighlightedText().getLastCharacters (4) == ".gif"
+                                        || getHighlightedText().getLastCharacters (4) == ".mp3"
+                                        || getHighlightedText().getLastCharacters (5) == ".jpeg");
 
         bool canEdit = false;
 
-        if (getHighlightedText().containsIgnoreCase (".mp3") && systemFile->getValue ("audioEditor").isNotEmpty())
+        if (getHighlightedText().getLastCharacters (4) == ".mp3" && systemFile->getValue ("audioEditor").isNotEmpty())
             canEdit = true;
-        else if ((getHighlightedText().containsIgnoreCase (".jpg")
-                  || getHighlightedText().containsIgnoreCase (".png")
-                  || getHighlightedText().containsIgnoreCase (".gif")
-                  || getHighlightedText().containsIgnoreCase (".jpeg"))
+
+        else if ((getHighlightedText().getLastCharacters (4) == ".jpg"
+                  || getHighlightedText().getLastCharacters (4) == ".png"
+                  || getHighlightedText().getLastCharacters (4) == ".gif"
+                  || getHighlightedText().getLastCharacters (5) == ".jpeg")
                  && systemFile->getValue ("imageEditor").isNotEmpty())
             canEdit = true;
 
         exEdit.addItem (editMediaByExEditor, TRANS ("Edit by External Editor") + "...", canEdit);
         exEdit.addItem (setExEditorForMedia, TRANS ("Specify External Editor") + "...", selectedMediaFile);
 
-        menu.addSubMenu (TRANS ("External Edit Media File"), exEdit, docExists && notArchived);
+        menu.addSubMenu (TRANS ("Edit Media File"), exEdit, docExists && notArchived);
         menu.addSeparator();
 
         menu.addItem (showTips, TRANS ("Tips/Replace") + "..." + ctrlStr + "G)", selectSomething);
@@ -299,7 +300,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
         }
         else
         {
-            SHOW_MESSAGE (TRANS ("The selected media file doesn't inside this doc's media dir."));
+            SHOW_MESSAGE (TRANS ("Can't find this file in media dir."));
         }
     }
 

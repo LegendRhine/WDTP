@@ -198,10 +198,15 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 
         PopupMenu exEdit;
         const bool selectedMediaFile = (getHighlightedText().getLastCharacters (4) == ".jpg"
+                                        || getHighlightedText().getLastCharacters (4) == ".JPG"
                                         || getHighlightedText().getLastCharacters (4) == ".png"
+                                        || getHighlightedText().getLastCharacters (4) == ".PNG"
                                         || getHighlightedText().getLastCharacters (4) == ".gif"
+                                        || getHighlightedText().getLastCharacters (4) == ".GIF"
                                         || getHighlightedText().getLastCharacters (4) == ".mp3"
-                                        || getHighlightedText().getLastCharacters (5) == ".jpeg");
+                                        || getHighlightedText().getLastCharacters (4) == ".MP3"
+                                        || getHighlightedText().getLastCharacters (5) == ".jpeg"
+                                        || getHighlightedText().getLastCharacters (5) == ".JPEG");
 
         bool canEdit = false;
 
@@ -209,11 +214,22 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
             canEdit = true;
 
         else if ((getHighlightedText().getLastCharacters (4) == ".jpg"
+                  || getHighlightedText().getLastCharacters (4) == ".JPG"
                   || getHighlightedText().getLastCharacters (4) == ".png"
+                  || getHighlightedText().getLastCharacters (4) == ".PNG"
                   || getHighlightedText().getLastCharacters (4) == ".gif"
-                  || getHighlightedText().getLastCharacters (5) == ".jpeg")
+                  || getHighlightedText().getLastCharacters (4) == ".GIF"
+                  || getHighlightedText().getLastCharacters (5) == ".jpeg"
+                  || getHighlightedText().getLastCharacters (5) == ".JPEG")
                  && systemFile->getValue ("imageEditor").isNotEmpty())
             canEdit = true;
+
+        exEdit.addItem (convertToJpg, TRANS ("Convert to JPG Format"), 
+                        (getHighlightedText().getLastCharacters (4) == ".png"
+                         || getHighlightedText().getLastCharacters (4) == ".PNG"));
+        exEdit.addItem (threeQuarterWidth, TRANS ("Width Decrease a Quarter"), canEdit);
+        exEdit.addItem (threeQuarterWidth, TRANS ("Half Width"), canEdit);
+        exEdit.addSeparator();
 
         exEdit.addItem (editMediaByExEditor, TRANS ("Edit by External Editor") + "...", canEdit);
         exEdit.addItem (setExEditorForMedia, TRANS ("Specify External Editor") + "...", selectedMediaFile);

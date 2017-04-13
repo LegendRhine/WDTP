@@ -138,7 +138,7 @@ struct SwingUtilities
 
     //=================================================================================================
     /** */
-    static const bool pngConvertToJpg (const File& pngFile, 
+    static const bool convertPngToJpg (const File& pngFile, 
                                        const File& jpgFile,
                                        const float jpgQuality = 0.75,
                                        const bool deletePngFileAfterConvert = true);
@@ -151,6 +151,14 @@ struct SwingUtilities
     static const bool transparentImage (const File& originalImgFile,
                                         const File& transprentImgFile,
                                         const bool deleteImgFileAfterConvert = true);
+
+    /** the format of the process result is same as the original 
+        @para leftRotate false for right rotate 90'
+    */
+    static const bool rotateImage (const File& originalImgFile,
+                                   const File& targetImgFile,
+                                   const bool leftRotate,
+                                   const bool deleteOriginal = true);
 
 };
 

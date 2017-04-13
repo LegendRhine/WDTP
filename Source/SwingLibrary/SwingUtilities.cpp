@@ -327,7 +327,7 @@ const String SwingUtilities::convertANSIString (const File& ansiTextFile)
 }
 
 //=================================================================================================
-const bool SwingUtilities::pngConvertToJpg (const File& pngFile,
+const bool SwingUtilities::convertPngToJpg (const File& pngFile,
                                             const File& jpgFile,
                                             const float jpgQuality /*= 0.75*/,
                                             const bool deletePngFileAfterConvert/* = true*/)
@@ -373,7 +373,7 @@ const bool SwingUtilities::processImageWidth (const File& imgFile,
 {
     jassert (newPercentWidth > 0.001f);
 
-    Image img (ImageFileFormat::loadFrom (imgFile));
+    Image img (ImageCache::getFromFile (imgFile));
     img = img.rescaled ((int)(img.getWidth() * newPercentWidth),
                         (int)(img.getHeight() * newPercentWidth));
 
@@ -435,6 +435,43 @@ const bool SwingUtilities::transparentImage (const File& originalImgFile,
         return true;
     }
  
+    return false;
+}
+
+//=================================================================================================
+const bool SwingUtilities::rotateImage (const File& originalImgFile, 
+                                        const File& targetImgFile, 
+                                        const bool leftRotate,
+                                        const bool deleteOriginal /*= true*/)
+{
+    jassert (originalImgFile.getFileExtension() == targetImgFile.getFileExtension());
+    Image originalImg (ImageCache::getFromFile (originalImgFile));
+
+    if (!originalImg.isValid())
+        return false;
+
+    Image targetImg (originalImg.getFormat(), originalImg.getHeight(), originalImg.getWidth(), true);
+    Graphics g (targetImg);
+
+    AffineTransform aff = AffineTransform::rotation ((leftRotate ? -90 : 90) / 180.f * float_Pi,
+                                                     originalImg.getWidth() / 2.f,
+                                                     originalImg.getHeight() / 2.f);
+    g.drawImageTransformed (originalImg, aff);
+
+    ScopedPointer<FileOutputStream> outputStream (targetImgFile.createOutputStream());
+    ImageFileFormat* format = ImageFileFormat::findImageFormatForFileExtension (originalImgFile);
+
+    if (format->writeImageToStream (targetImg, *outputStream))
+    {
+        outputStream->flush();
+        outputStream = nullptr;
+
+        if (deleteOriginal)
+            originalImgFile.deleteFile();
+
+        return true;
+    }
+
     return false;
 }
 

@@ -446,7 +446,7 @@ void TopToolBar::popupLayoutMenu()
 //=================================================================================================
 void TopToolBar::switchSilentMode (const bool enterSilent)
 {
-    DocumentWindow* mainWindow = findParentComponentOfClass<DocumentWindow>();
+    MainWindow* mainWindow = findParentComponentOfClass<MainWindow>();
     jassert (mainWindow != nullptr);
 
     if (enterSilent)
@@ -459,6 +459,8 @@ void TopToolBar::switchSilentMode (const bool enterSilent)
     else
     {
         mainWindow->setFullScreen (true);
+        getTopLevelComponent()->setCentreRelative (0.5f, 0.5f);
+        editAndPreview->displaySetupArea (true, true);
     }
 }
 

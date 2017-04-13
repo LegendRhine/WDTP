@@ -213,6 +213,10 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         exEdit.addItem (transparentImg, TRANS ("Transparentize Background"), canEdit);
         exEdit.addSeparator();
 
+        exEdit.addItem (rotateImgLeft, TRANS ("Rotate Left 90 Degress"), canEdit);
+        exEdit.addItem (rotateImgRight, TRANS ("Rotate Right 90 Degress"), canEdit);
+        exEdit.addSeparator();
+
         exEdit.addItem (threeQuarterWidth, TRANS ("Width Decrease a Quarter"), canEdit);
         exEdit.addItem (halfWidth, TRANS ("Half Width"), canEdit);
         exEdit.addSeparator();
@@ -342,7 +346,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
             return;
         }
             
-        if (SwingUtilities::pngConvertToJpg (pngFile, jpgFile, 0.7f, false))
+        if (SwingUtilities::convertPngToJpg (pngFile, jpgFile, 0.7f, false))
         {
             setHighlightedRegion (Range<int> (getHighlightedRegion().getStart(),
                                               getHighlightedRegion().getEnd() + 4));

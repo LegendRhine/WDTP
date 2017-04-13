@@ -86,6 +86,11 @@ private:
     virtual void actionListenerCallback (const String& message) override;
     void showAllKeywords();
 
+    /** if the selected text is a file name without its extension, 
+        it will return its 'full' name (doesn't include its path, 
+        only the file's name with its extension) */
+    const String getSelectedFileName() const;
+
     /** return: 0 for image file, 1 for mp3 file, -1 for unknown type */
     const int getSelectedMediaType() const;
 

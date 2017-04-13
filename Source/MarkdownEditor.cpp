@@ -197,7 +197,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSubMenu (TRANS ("External Search Selection"), exSearch, docExists);
 
         PopupMenu exEdit;
-        const bool selectedMediaFile = (getSelectedMediaType() == 0 || getSelectedMediaType() == 1);
+        const bool selectedMediaFile = (getSelectedMediaType() != -1);
         bool canEdit = false;
 
         if ((getSelectedMediaType() == 1 && systemFile->getValue ("audioEditor").isNotEmpty())
@@ -205,8 +205,8 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
             canEdit = true;
 
         exEdit.addItem (convertToJpg, TRANS ("Convert to JPG Format"), 
-                        (getHighlightedText().getLastCharacters (4) == ".png"
-                         || getHighlightedText().getLastCharacters (4) == ".PNG"));
+                        (getSelectedFileName().getLastCharacters (4) == ".png"
+                         || getSelectedFileName().getLastCharacters (4) == ".PNG"));
 
         exEdit.addItem (transparentImg, TRANS ("Transparentize Background"), canEdit);
         exEdit.addSeparator();
@@ -278,7 +278,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (editMediaByExEditor == index)
     {
         const File& mediaFile (parent->getCurrentDocFile().getSiblingFile ("media")
-                               .getChildFile (getHighlightedText()));
+                               .getChildFile (getSelectedFileName()));
 
         if (mediaFile.existsAsFile())
         {
@@ -331,7 +331,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (convertToJpg == index)
     {
         const File& pngFile (parent->getCurrentDocFile().getSiblingFile ("media")
-                               .getChildFile (getHighlightedText()));
+                               .getChildFile (getSelectedFileName()));
         const File& jpgFile (pngFile.withFileExtension ("jpg").getNonexistentSibling (false));
 
         if (!pngFile.existsAsFile())
@@ -342,6 +342,9 @@ void MarkdownEditor::performPopupMenuAction (int index)
             
         if (SwingUtilities::pngConvertToJpg (pngFile, jpgFile, 0.7f, false))
         {
+            setHighlightedRegion (Range<int> (getHighlightedRegion().getStart(),
+                                              getHighlightedRegion().getEnd() + 4));
+
             insertTextAtCaret (jpgFile.getFileName());
             parent->getCurrentTree().setProperty ("needCreateHtml", true, nullptr);
         }
@@ -354,7 +357,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (transparentImg == index)
     {
         const File& origFile (parent->getCurrentDocFile().getSiblingFile ("media")
-                             .getChildFile (getHighlightedText()));
+                             .getChildFile (getSelectedFileName()));
         const File& pngFile (origFile.withFileExtension ("png").getNonexistentSibling (false));
 
         if (!origFile.existsAsFile())
@@ -365,6 +368,9 @@ void MarkdownEditor::performPopupMenuAction (int index)
 
         if (SwingUtilities::transparentImage (origFile, pngFile, false))
         {
+            setHighlightedRegion (Range<int> (getHighlightedRegion().getStart(),
+                                              getHighlightedRegion().getEnd() + 4));
+
             insertTextAtCaret (pngFile.getFileName());
             parent->getCurrentTree().setProperty ("needCreateHtml", true, nullptr);
         }
@@ -377,7 +383,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (halfWidth == index || threeQuarterWidth == index)
     {
         const File& imgFile (parent->getCurrentDocFile().getSiblingFile ("media")
-                             .getChildFile (getHighlightedText()));
+                             .getChildFile (getSelectedFileName()));
 
         if (SwingUtilities::processImageWidth (imgFile, (halfWidth == index ? 0.5f : 0.75f)))
             parent->getCurrentTree().setProperty ("needCreateHtml", true, nullptr);
@@ -444,28 +450,43 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (resetDefault == index)         resetToDefault();
     else if (syntax == index) URL ("http://underwaysoft.com/works/wdtp/syntaxMark.html").launchInDefaultBrowser();
 
-    else        TextEditor::performPopupMenuAction (index);
+    else
+        TextEditor::performPopupMenuAction (index);
+}
+
+//=================================================================================================
+const String MarkdownEditor::getSelectedFileName() const
+{
+    if (getHighlightedText().isEmpty())
+        return String();
+
+    return getTextInRange (Range<int>(getHighlightedRegion().getStart(),
+                                      getHighlightedRegion().getEnd() + 4));
 }
 
 //=================================================================================================
 const int MarkdownEditor::getSelectedMediaType() const
 {
-    if (getHighlightedText().getLastCharacters (4) == ".jpg"
-        || getHighlightedText().getLastCharacters (4) == ".JPG"
-        || getHighlightedText().getLastCharacters (4) == ".png"
-        || getHighlightedText().getLastCharacters (4) == ".PNG"
-        || getHighlightedText().getLastCharacters (4) == ".gif"
-        || getHighlightedText().getLastCharacters (4) == ".GIF"
-        || getHighlightedText().getLastCharacters (5) == ".jpeg"
-        || getHighlightedText().getLastCharacters (5) == ".JPEG")
-    {
-        return 0;
-    }
+    const String& fileName (getSelectedFileName());
+    //DBGX (fileName);
 
-    else if (getHighlightedText().getLastCharacters (4) == ".mp3"
-        || getHighlightedText().getLastCharacters (4) == ".MP3")
+    if (fileName.isNotEmpty() && fileName.length() > 4)
     {
-        return 1;
+        if (fileName.getLastCharacters (4) == ".jpg"
+            || fileName.getLastCharacters (4) == ".JPG"
+            || fileName.getLastCharacters (4) == ".png"
+            || fileName.getLastCharacters (4) == ".PNG"
+            || fileName.getLastCharacters (4) == ".gif"
+            || fileName.getLastCharacters (4) == ".GIF")
+        {
+            return 0;
+        }
+
+        else if (fileName.getLastCharacters (4) == ".mp3"
+                 || fileName.getLastCharacters (4) == ".MP3")
+        {
+            return 1;
+        }
     }
 
     return -1;
@@ -884,7 +905,7 @@ void MarkdownEditor::insertTimeLine()
 void MarkdownEditor::insertMedias()
 {
     FileChooser fc (TRANS ("Select Images/Audios/Videos..."), File::nonexistent,
-                    "*.jpg;*.jpeg;*.png;*.gif;*.mp3;*.mp4", true);
+                    "*.jpg;*.png;*.gif;*.mp3;*.mp4", true);
 
     if (!fc.browseForMultipleFilesToOpen())
         return;
@@ -901,7 +922,7 @@ void MarkdownEditor::insertMedias (const Array<File>& mediaFiles)
 
     for (int i = files.size(); --i >= 0; )
     {
-        if (!files[i].hasFileExtension (".jpg;jpeg;png;gif;mp3;mp4"))
+        if (!files[i].hasFileExtension (".jpg;png;gif;mp3;mp4"))
             files.remove (i);
     }
 
@@ -1120,8 +1141,7 @@ void MarkdownEditor::pasteForCtrlV()
         // image
         if (content.getLastCharacters (3).toLowerCase() == "jpg"
             || content.getLastCharacters (3).toLowerCase() == "png"
-            || content.getLastCharacters (3).toLowerCase() == "gif"
-            || content.getLastCharacters (4).toLowerCase() == "jpeg")
+            || content.getLastCharacters (3).toLowerCase() == "gif")
         {
             TextEditor::insertTextAtCaret ("![](" + content + ")");
         }

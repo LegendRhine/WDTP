@@ -74,7 +74,7 @@ private:
         latestPublish, latestModify, featuredArticle, 
         allKeywords, randomArticle, allPublish, allModify,
         searchNext, searchPrev, 
-        searchByGoogle, searchByBing, searchByWiki,
+        searchByGoogle, searchByBing, searchByWiki, baiduBaike,
         showTips, joinTips,
         fontSize, fontColor, setBackground, resetDefault,
         outlineMenu, setExEditorForMedia, editMediaByExEditor,

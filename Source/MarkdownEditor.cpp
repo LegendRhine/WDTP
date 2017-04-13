@@ -188,11 +188,13 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         // search
         menu.addItem (searchNext, TRANS ("Search Next Selection") + "  (F3)", selectSomething);
         menu.addItem (searchPrev, TRANS ("Search Prev Selection") + "  (Shift + F3)", selectSomething);
+        menu.addSeparator();
 
         PopupMenu exSearch;
         exSearch.addItem (searchByGoogle, "Google...", selectSomething);
         exSearch.addItem (searchByBing, TRANS ("Bing..."), selectSomething);
         exSearch.addItem (searchByWiki, TRANS ("Wikipedia..."), selectSomething);
+        exSearch.addItem (baiduBaike, TRANS ("Baidu Baike..."), selectSomething);
 
         menu.addSubMenu (TRANS ("External Search Selection"), exSearch, docExists);
 
@@ -398,6 +400,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (searchByGoogle == index)       externalSearch (searchByGoogle);
     else if (searchByBing == index)         externalSearch (searchByBing);
     else if (searchByWiki == index)         externalSearch (searchByWiki);
+    else if (baiduBaike == index)           externalSearch (baiduBaike);
     else if (showTips == index)             startTimer (showTipsBank, 50);
     else if (joinTips == index)             selectedAddToTipsBank();
 
@@ -1480,6 +1483,9 @@ void MarkdownEditor::externalSearch (const int searchType)
         
     else if (searchType == searchByBing)
         url = "https://www.bing.com/search?q=" + content;
+
+    else if (searchType == baiduBaike)
+        url = "http://baike.baidu.com/item/" + content;
 
     else if (searchType == searchByWiki)
     {

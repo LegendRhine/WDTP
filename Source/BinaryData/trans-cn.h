@@ -117,7 +117,7 @@ countries: cn
 "Backgroud..." = "背景颜色..."
 "Reset to Default" = "重置为默认"
 "Editor Setup" = "编辑器外观设置"
-"Select Images/Audios/Videos..." = "选择图片/音频/视频文件（可多选）..."
+"Select files you want to insert" = "选择您要插入的文件（可多选）"
 "Can\'t insert this media: " = "无法插入此媒体: "
 "Insert Hyperlink" = "插入超链接"
 "Please input the url." = "请输入网址."

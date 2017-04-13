@@ -36,7 +36,7 @@ public:
 
     virtual void performPopupMenuAction (int menuItemID) override;
     bool keyPressed (const KeyPress& key) override;
-    void insertMedias (const Array<File>& mediaFiles);
+    void insertExternalFiles (const Array<File>& mediaFiles);
 
     /** for set the font-size and color of font and backgroud */
     virtual void sliderValueChanged (Slider* slider) override;
@@ -97,7 +97,7 @@ private:
     /** tableStyle: should be the menu index see above */
     void tableInsert (const int tableStyle);
     void hyperlinkInsert();
-    void insertMedias();
+    void insertExternalFiles();
     void insertTimeLine();
 
     /** expandIndex: should be the menu index see above */

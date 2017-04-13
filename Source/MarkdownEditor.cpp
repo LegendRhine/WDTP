@@ -404,7 +404,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (showTips == index)             startTimer (showTipsBank, 50);
     else if (joinTips == index)             selectedAddToTipsBank();
 
-    else if (insertMedia == index)          insertMedias();
+    else if (insertMedia == index)          insertExternalFiles();
     else if (insertHyperlink == index)      hyperlinkInsert();
     else if (insertNormalTable == index)    tableInsert (insertNormalTable);
     else if (insertInterlaced == index)     tableInsert (insertInterlaced);
@@ -905,20 +905,20 @@ void MarkdownEditor::insertTimeLine()
 }
 
 //=================================================================================================
-void MarkdownEditor::insertMedias()
+void MarkdownEditor::insertExternalFiles()
 {
-    FileChooser fc (TRANS ("Select Images/Audios/Videos..."), File::nonexistent,
-                    "*.jpg;*.png;*.gif;*.mp3;*.mp4", true);
+    FileChooser fc (TRANS ("Select files you want to insert"), File::nonexistent,
+                    "*", true);
 
     if (!fc.browseForMultipleFilesToOpen())
         return;
 
     Array<File> imageFiles (fc.getResults());
-    insertMedias (imageFiles);
+    insertExternalFiles (imageFiles);
 }
 
 //=================================================================================================
-void MarkdownEditor::insertMedias (const Array<File>& mediaFiles)
+void MarkdownEditor::insertExternalFiles (const Array<File>& mediaFiles)
 {
     // remove non-media file(s)
     Array<File> files (mediaFiles);
@@ -1334,7 +1334,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress ('l', ModifierKeys::commandModifier, 0))    inlineFormat (inlineCode);
     else if (key == KeyPress ('k', ModifierKeys::commandModifier, 0))    codeBlockFormat();
     else if (key == KeyPress ('e', ModifierKeys::commandModifier, 0))    hyperlinkInsert();
-    else if (key == KeyPress ('m', ModifierKeys::commandModifier, 0))    insertMedias();
+    else if (key == KeyPress ('m', ModifierKeys::commandModifier, 0))    insertExternalFiles();
     else if (key == KeyPress ('t', ModifierKeys::commandModifier, 0))    tableInsert (insertNormalTable);
     else if (key == KeyPress ('n', ModifierKeys::commandModifier, 0))    alignCenterInsert();
     else if (key == KeyPress ('r', ModifierKeys::commandModifier, 0))    alignRightInsert();
@@ -1700,7 +1700,7 @@ void MarkdownEditor::filesDropped (const StringArray& pathes, int, int)
     for (auto path : pathes)
         files.add (File (path));
 
-    insertMedias (files);
+    insertExternalFiles (files);
 }
 
 //=================================================================================================

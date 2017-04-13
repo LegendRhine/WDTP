@@ -340,7 +340,7 @@ const bool SwingUtilities::pngConvertToJpg (const File& pngFile,
 
     // here must convert its transprent pixel to white
     // otherwise, they will be black
-    Image img (ImageFileFormat::loadFrom (pngFile));
+    Image img (ImageCache::getFromFile (pngFile));
 
     for (int i = img.getWidth(); --i >= 0; )
     {
@@ -401,7 +401,7 @@ const bool SwingUtilities::transparentImage (const File& originalImgFile,
                                              const bool deleteImgFileAfterConvert/* = true*/)
 {
     jassert (transprentImgFile.getFileExtension() == ".png");
-    Image img (ImageFileFormat::loadFrom (originalImgFile));
+    Image img (ImageCache::getFromFile (originalImgFile));
 
     if (!img.isValid())
         return false;
@@ -416,7 +416,7 @@ const bool SwingUtilities::transparentImage (const File& originalImgFile,
     	for (int j = img.getHeight(); --j >= 0; )
     	{
             if (img.getPixelAt (i, j).getARGB() <= Colour (0xffffffff).getARGB()
-                && img.getPixelAt (i, j).getARGB() > Colour (0xffeeeeee).getARGB())
+                && img.getPixelAt (i, j).getARGB() > Colour (0xfff0f0f0).getARGB())
                 img.setPixelAt (i, j, Colour (0x00));
     	}
     }

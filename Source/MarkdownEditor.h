@@ -86,8 +86,8 @@ private:
     virtual void actionListenerCallback (const String& message) override;
     void showAllKeywords();
 
-    bool selectedIsImageFile();
-    bool selectedIsMp3();
+    /** return: 0 for image file, 1 for mp3 file, -1 for unknown type */
+    const int getSelectedMediaType() const;
 
     /** tableStyle: should be the menu index see above */
     void tableInsert (const int tableStyle);

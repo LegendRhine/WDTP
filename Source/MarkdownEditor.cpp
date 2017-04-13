@@ -197,11 +197,11 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSubMenu (TRANS ("External Search Selection"), exSearch, docExists);
 
         PopupMenu exEdit;
-        const bool selectedMediaFile = (selectedIsMp3() || selectedIsImageFile());
+        const bool selectedMediaFile = (getSelectedMediaType() == 0 || getSelectedMediaType() == 1);
         bool canEdit = false;
 
-        if ((selectedIsMp3() && systemFile->getValue ("audioEditor").isNotEmpty())
-            || (selectedIsImageFile() && systemFile->getValue ("imageEditor").isNotEmpty()))
+        if ((getSelectedMediaType() == 1 && systemFile->getValue ("audioEditor").isNotEmpty())
+            || (getSelectedMediaType() == 0 && systemFile->getValue ("imageEditor").isNotEmpty()))
             canEdit = true;
 
         exEdit.addItem (convertToJpg, TRANS ("Convert to JPG Format"), 
@@ -282,12 +282,12 @@ void MarkdownEditor::performPopupMenuAction (int index)
 
         if (mediaFile.existsAsFile())
         {
-            if (selectedIsMp3())
+            if (getSelectedMediaType() == 1)
             {
                 Process::openDocument (systemFile->getValue ("audioEditor"), 
                                        mediaFile.getFullPathName());
             }
-            else if (selectedIsImageFile())
+            else if (getSelectedMediaType() == 0)
             {
                 Process::openDocument (systemFile->getValue ("imageEditor"), 
                                        mediaFile.getFullPathName());
@@ -306,12 +306,12 @@ void MarkdownEditor::performPopupMenuAction (int index)
         String tipInfo;
         String valueName;
 
-        if (selectedIsMp3())
+        if (getSelectedMediaType() == 1)
         {
             tipInfo = TRANS ("Please Specify an External Editor for Audio");
             valueName = "audioEditor";
         }
-        else if (selectedIsImageFile())
+        else if (getSelectedMediaType() == 0)
         {
             tipInfo = TRANS ("Please Specify an External Editor for Image");
             valueName = "imageEditor";
@@ -448,23 +448,27 @@ void MarkdownEditor::performPopupMenuAction (int index)
 }
 
 //=================================================================================================
-bool MarkdownEditor::selectedIsImageFile()
+const int MarkdownEditor::getSelectedMediaType() const
 {
-    return getHighlightedText().getLastCharacters (4) == ".jpg"
+    if (getHighlightedText().getLastCharacters (4) == ".jpg"
         || getHighlightedText().getLastCharacters (4) == ".JPG"
         || getHighlightedText().getLastCharacters (4) == ".png"
         || getHighlightedText().getLastCharacters (4) == ".PNG"
         || getHighlightedText().getLastCharacters (4) == ".gif"
         || getHighlightedText().getLastCharacters (4) == ".GIF"
         || getHighlightedText().getLastCharacters (5) == ".jpeg"
-        || getHighlightedText().getLastCharacters (5) == ".JPEG";
-}
+        || getHighlightedText().getLastCharacters (5) == ".JPEG")
+    {
+        return 0;
+    }
 
-//=================================================================================================
-bool MarkdownEditor::selectedIsMp3()
-{
-    return getHighlightedText().getLastCharacters (4) == ".mp3"
-        || getHighlightedText().getLastCharacters (4) == ".MP3";
+    else if (getHighlightedText().getLastCharacters (4) == ".mp3"
+        || getHighlightedText().getLastCharacters (4) == ".MP3")
+    {
+        return 1;
+    }
+
+    return -1;
 }
 
 //=================================================================================================

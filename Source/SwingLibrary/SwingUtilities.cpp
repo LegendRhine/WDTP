@@ -66,7 +66,7 @@ void SwingUtilities::showAbout (const String& shortDescription,
     window->addCustomComponent (linkButton);
 
     window->setSize (420, 160);
-    window->showDialog (TRANS ("About ") + ProjectInfo::projectName + " "
+    window->showDialog (ProjectInfo::projectName + String (" ")
                         + String (ProjectInfo::versionString) + " "
                         + String (sizeof (int*) * 8) + TRANS ("bit"));
 }

@@ -5,6 +5,7 @@ countries: cn
 "All Right Reserved." = "版权所有."
 "bit"= "位"
 "About " = "关于 "
+"Exit" = "退出"
 "Message" = "消息"
 "Congratulations" = "恭喜"
 "New Folder..." = "新建文件夹..."

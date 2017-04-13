@@ -322,6 +322,9 @@ void TopToolBar::popupSystemMenu()
     m.addSubMenu (TRANS ("Help"), siteUrls);
     m.addItem (showAboutDialog, TRANS ("About..."), true);
 
+    m.addSeparator();
+    m.addCommandItem (cmdManager, exitApp);
+
     // display the menu
     const int index = m.show();    
     
@@ -763,6 +766,7 @@ void TopToolBar::getAllCommands (Array<CommandID>& commands)
     commands.add (generateNeeded);
     commands.add (activeSearch);
     commands.add (minimizeTheApp);
+    commands.add (exitApp);
 }
 
 //=================================================================================================
@@ -801,6 +805,11 @@ void TopToolBar::getCommandInfo (CommandID commandID, ApplicationCommandInfo& re
         result.setInfo (TRANS ("Hide / Minimize"), "Hide / Minimize", String(), 0);
         result.addDefaultKeypress ('h', ModifierKeys::commandModifier);
     }
+    else if (exitApp == commandID)
+    {
+        result.setInfo (TRANS ("Exit"), "Exit", String(), 0);
+        result.addDefaultKeypress ('q', ModifierKeys::commandModifier);
+    }
 }
 
 //=================================================================================================
@@ -816,6 +825,7 @@ bool TopToolBar::perform (const InvocationInfo& info)
     case generateNeeded:    generateHtmlsIfNeeded();           break;
     case activeSearch:      searchInput->grabKeyboardFocus();  break;
     case minimizeTheApp:    findParentComponentOfClass<MainWindow>()->setMinimised (true); break;
+    case exitApp:           findParentComponentOfClass<MainWindow>()->closeButtonPressed(); break;
 
     default:                return false; 
     }

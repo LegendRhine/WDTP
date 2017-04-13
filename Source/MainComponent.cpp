@@ -218,7 +218,6 @@ MainWindow::MainWindow (const String& name) :
     
     // command manager
     cmdManager->registerAllCommandsForTarget (mainComp->getToolbar());
-    cmdManager->registerAllCommandsForTarget (JUCEApplication::getInstance());
     addKeyListener (cmdManager->getKeyMappings());
     cmdManager->setFirstCommandTarget (mainComp->getToolbar());
 

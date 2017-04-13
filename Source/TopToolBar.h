@@ -116,7 +116,7 @@ public:
         uiEnglish, uiChinese, setupAudio,
         setUiColor, resetUiColor, checkNewVersion, 
         wdtpUpdateList, gettingStarted, syntax, faq, feedback, 
-        showAboutDialog,
+        showAboutDialog, exitApp,
         switchEdit, switchWidth, activeSearch,
         minimizeTheApp
     };

@@ -1660,7 +1660,14 @@ void MarkdownEditor::timerCallback (int timerID)
 void MarkdownEditor::autoComplete (const int index)
 {
     if (getHighlightedText().isEmpty())
+    {
+#if JUCE_WINDOWS
         setHighlightedRegion (Range<int> (posBeforeInputNewText - 1, getCaretPosition()));
+#else
+        moveCaretLeft(false, true);
+        moveCaretLeft(false, true);
+#endif
+    }
 
     if (!(bool)parent->getCurrentTree().getProperty ("archive"))
         TextEditor::insertTextAtCaret (menuItems[index]);

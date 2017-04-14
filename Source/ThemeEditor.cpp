@@ -54,13 +54,13 @@ public:
     ~SearchComp() { }
 
     //=================================================================================================
-    void paint (Graphics& g)
+    void paint (Graphics& g) override
     {
         g.fillAll (Colour (0xffacabab));
     }
 
     //=================================================================================================
-    void resized()
+    void resized() override
     {
         lb.setBounds (10, 5, getWidth() - 20, 30);
         searchInput.setBounds (15, 40, 290, 25);
@@ -176,11 +176,9 @@ void ThemeEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 #else
         menu.addItem (searchSth, TRANS ("Search Content") + "  (Ctrl + F)");
 #endif
-        menu.addItem (selectClr, TRANS ("Set Color") 
-                      + "...", (beforeStart == "#"
-                                && afterEnd == ";"
-                                && (getHighlightedText().length() == 3)
-                                 || getHighlightedText().length() == 6));
+        menu.addItem (selectClr, TRANS ("Set Color") + "...",
+                      (beforeStart == "#" && afterEnd == ";" &&
+                       (getHighlightedText().length() == 3 || getHighlightedText().length() == 6)));
 
         menu.addSubMenu (TRANS ("Insert Template Tags"), tagsMenu, currentFile.getFileExtension() == ".html");
         menu.addSeparator();

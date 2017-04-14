@@ -1640,10 +1640,11 @@ void MarkdownEditor::timerCallback (int timerID)
                                             .translated (getScreenBounds().getX() + 12,
                                                          getScreenBounds().getY() + 12));
 
-            Desktop::getInstance().getMainMouseSource().setScreenPosition (posOfMenu.getPosition()
-                                                                            .translated (5, 32).toFloat());
             tipsMenu.showMenuAsync (PopupMenu::Options().withTargetScreenArea (posOfMenu),
                                     ModalCallbackFunction::forComponent (menuItemChosenCallback, this));
+            
+            Desktop::getInstance().getMainMouseSource().setScreenPosition (posOfMenu.getPosition()
+                                                                           .translated (5, 35).toFloat());
 
             // for ascii char input continuously, no need do this when IME enabled
             const String& lastChar (getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())));

@@ -136,19 +136,20 @@
 	- L540 change the original to `atomX, (float) roundToInt (lineY + lineHeight - maxDescent - 2));`
 	- L573 change the original to `atomX, (float) roundToInt (lineY + lineHeight - maxDescent - 2));`
 	- L560-561 change to (underline change to backgound highlight):
-- Get the viewport
-    - h file same class above, L661 add: `Viewport* getViewport() const { return viewport; }`
-```
-	//g.reduceClipRegion (Rectangle<int> (startX, baselineY, endX - startX, 1));
-    //g.fillCheckerBoard (Rectangle<int> (endX, baselineY + 1), 3, 1, colour, Colours::transparentBlack);
-    g.setColour (Colours::cyan.withAlpha (0.95f));
-    g.fillRoundedRectangle (startX - 1.f, baselineY - lineHeight + 10.5f, endX - startX + 2.f, lineHeight - 2.5f, 5.f);
-    drawSelectedText (g, underline, colour);
 
-	// for lineSpacing backup
-	/* g.fillRoundedRectangle (startX - 1.f, baselineY - lineHeight + 4.f,
-                            endX - startX + 2.f, lineHeight + 1.f, 5.f);*/
 ```
+//g.reduceClipRegion (Rectangle<int> (startX, baselineY, endX - startX, 1));
+//g.fillCheckerBoard (Rectangle<int> (endX, baselineY + 1), 3, 1, colour, Colours::transparentBlack);
+g.setColour (Colours::cyan.withAlpha (0.95f));
+g.fillRoundedRectangle (startX - 1.f, baselineY - lineHeight + 10.5f, endX - startX + 2.f, lineHeight - 2.5f, 5.f);
+drawSelectedText (g, underline, colour);
+
+// for lineSpacing backup
+// g.fillRoundedRectangle (startX - 1.f, baselineY - lineHeight + 4.f, endX - startX + 2.f, lineHeight + 1.f, 5.f);
+```
+
+- Get the viewport of editor
+    - h file same class above, L661 add: `Viewport* getViewport() const { return viewport; }`
 
 ### Shortcut Assign
 

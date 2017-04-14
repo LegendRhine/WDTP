@@ -1107,7 +1107,8 @@ void MarkdownEditor::shiftTabInput()
 //=================================================================================================
 void MarkdownEditor::returnKeyInput()
 {
-    if (getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())) == "\n")
+    if (getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())) == "\n"
+        || getHighlightedText().isNotEmpty())
     {
         TextEditor::keyPressed (KeyPress (KeyPress::returnKey));
         return;

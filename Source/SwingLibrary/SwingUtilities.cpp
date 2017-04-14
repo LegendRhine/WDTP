@@ -52,7 +52,7 @@ void SwingUtilities::showAbout (const String& shortDescription,
 {
     SwingDialog* window = new SwingDialog (shortDescription);
 
-    window->addTextBlock (TRANS ("Author: ") + "SwingCoder" + newLine +
+    window->addTextBlock (TRANS ("Design, Develop, Maintain: ") + "SwingCoder" + newLine +
                           "underwaySoft@gmail.com" + newLine + newLine +
                           "(c) " + copyrightYear + " UnderwaySoft " +
                           TRANS ("All Right Reserved.") + newLine  +

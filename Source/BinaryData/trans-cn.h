@@ -1,7 +1,7 @@
 ﻿language: Chinese
 countries: cn
 
-"Author: " = "作者: "
+"Design, Develop, Maintain: " = "设计、开发、维护: "
 "All Right Reserved." = "版权所有."
 "bit"= "位"
 "Exit" = "退出"

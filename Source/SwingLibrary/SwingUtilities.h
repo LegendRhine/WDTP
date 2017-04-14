@@ -149,7 +149,7 @@ struct SwingUtilities
 
     /** the process result is png format and write to arg-2 file. */
     static const bool transparentImage (const File& originalImgFile,
-                                        const File& transprentImgFile,
+                                        const File& transprentFile,
                                         const bool deleteImgFileAfterConvert = true);
 
     /** the format of the process result is same as the original 
@@ -157,7 +157,7 @@ struct SwingUtilities
     */
     static const bool rotateImage (const File& originalImgFile,
                                    const File& targetImgFile,
-                                   const bool leftRotate,
+                                   const bool leftRotate90Degress,
                                    const bool deleteOriginal = true);
 
 };
@@ -319,7 +319,7 @@ private:
 class SplashWithMessage : public SplashScreen
 {
 public:
-    SplashWithMessage (const String& message) : SplashScreen ("Splash", 280, 60, true)
+    SplashWithMessage (const String& message) : SplashScreen ("Splash", 320, 60, true)
     {
         addAndMakeVisible (label = new Label());
 

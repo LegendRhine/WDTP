@@ -67,12 +67,11 @@ private:
         insertUnoerderList, insertOrderList,
         insertFirstTitle, insertSecondTitle, insertThirdTitle, 
         insertToc, insertEndnote, insertBackToTop, formatPostil,
-        insertIdentifier,
+        insertIdentifier, insertTime,
         insertCaption, insertSeparator, insertAuthor, insertInterLink,
         formatBold, formatItalic, formatBoldAndItalic, formatHighlight,        
         codeBlock, hybridLayout, commentBlock, inlineCode, antiIndent, 
-        forceIndent,
-        audioRecord,
+        forceIndent, audioRecord,
         latestPublish, latestModify, featuredArticle, 
         allKeywords, randomArticle, allPublish, allModify,
         searchNext, searchPrev, 
@@ -121,6 +120,7 @@ private:
     void captionInsert();
     void interLinkInsert();
     void authorInsert();
+    void dateAndTimeInsert();
     void codeBlockFormat();
     void hybridFormat();
     void commentBlockFormat();

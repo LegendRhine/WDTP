@@ -155,6 +155,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (insertCaption, TRANS ("Image/Table Caption") + ctrlStr + "P)");
         insertMenu.addItem (insertSeparator, TRANS ("Separator"));
         insertMenu.addItem (insertAuthor, TRANS ("Author") + ctrlStr + "O)");
+        insertMenu.addItem (insertTime, TRANS ("Date and Time"));
         insertMenu.addSeparator();
 
         const String internalLinkStr (SystemClipboard::getTextFromClipboard());
@@ -462,6 +463,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (insertIdentifier == index)     identifierInsert();
     else if (insertCaption == index)        captionInsert();
     else if (insertAuthor == index)         authorInsert();
+    else if (insertTime == index)           dateAndTimeInsert();
     else if (insertInterLink == index)      interLinkInsert();
 
     else if (formatBold == index)           inlineFormat (formatBold);
@@ -713,6 +715,13 @@ void MarkdownEditor::authorInsert()
         << newLine;
 
     TextEditor::insertTextAtCaret (content);
+}
+
+//=================================================================================================
+void MarkdownEditor::dateAndTimeInsert()
+{
+    TextEditor::insertTextAtCaret (SwingUtilities::getTimeStringWithSeparator (
+        SwingUtilities::getCurrentTimeString(), true));
 }
 
 //=================================================================================================

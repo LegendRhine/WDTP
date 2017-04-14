@@ -363,6 +363,7 @@ countries: cn
 "Plays a test tone" = "测试音频播放"
 "Setup audio devices" = "设置音频驱动"
 "Author" = "作者"
+"Date and Time" = "当前日期和时间"
 "Audio Record" = "录音"
 "Can\'t save this audio." = "无法保存此音频。"
 "Record/Stop" = "录音/停止"

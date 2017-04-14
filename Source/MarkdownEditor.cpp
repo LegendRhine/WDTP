@@ -1629,7 +1629,14 @@ void MarkdownEditor::timerCallback (int timerID)
         {
             if (itr.getKey().containsIgnoreCase (chars))
             {
-                tipsMenu.addItem (menuItems.size(), itr.getValue());
+                String menuStr (itr.getValue());
+                
+                if (menuStr.length() > 30)
+                {
+                    menuStr = menuStr.substring(0, 30) + "...";
+                }
+                
+                tipsMenu.addItem (menuItems.size(), menuStr);
                 menuItems.add (itr.getValue());
             }
         }

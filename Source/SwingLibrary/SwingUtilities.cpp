@@ -455,9 +455,9 @@ const bool SwingUtilities::rotateImage (const File& originalImgFile,
     // process by pixel
     int tx = 0, ty = 0;
 
-    for (int x = 0; x < originalImg.getWidth(); ++x)
+    for (int x = originalImg.getWidth(); --x >= 0; )
     {
-        for (int y = 0; y < originalImg.getHeight(); ++y)
+        for (int y = originalImg.getHeight(); --y >= 0; )
         {            
             tx = (leftRotate ? y : targetImg.getWidth() - y);
             ty = (leftRotate ? targetImg.getHeight() - x : x);

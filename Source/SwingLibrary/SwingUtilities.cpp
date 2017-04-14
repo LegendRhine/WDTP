@@ -456,14 +456,11 @@ const bool SwingUtilities::rotateImage (const File& originalImgFile,
     for (int x = 0; x < originalImg.getWidth(); ++x)
     {
         for (int y = 0; y < originalImg.getHeight(); ++y)
-        {
-            Point<int> p (x, y);
-            p = p.transformedBy (AffineTransform::rotation ((leftRotate ? -90 : 90) / 180.f * float_Pi));
+        {            
+            const int tx = (leftRotate ? y : targetImg.getWidth() - y);
+            const int ty = (leftRotate ? targetImg.getHeight() - x : x);
 
-            if (leftRotate)
-                targetImg.setPixelAt (p.x, p.y + targetImg.getHeight(), originalImg.getPixelAt (x, y));
-            else            
-                targetImg.setPixelAt (targetImg.getWidth() + p.x, p.y, originalImg.getPixelAt (x, y));
+            targetImg.setPixelAt (tx, ty, originalImg.getPixelAt (x, y));
         }
     }
     

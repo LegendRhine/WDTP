@@ -451,13 +451,22 @@ const bool SwingUtilities::rotateImage (const File& originalImgFile,
         return false;
 
     Image targetImg (originalImg.getFormat(), originalImg.getHeight(), originalImg.getWidth(), true);
-    Graphics g (targetImg);
+    
+    // process by pixel
+    for (int x = 0; x < originalImg.getWidth(); ++x)
+    {
+        for (int y = 0; y < originalImg.getHeight(); ++y)
+        {
+            Point<int> p (x, y);
+            p = p.transformedBy (AffineTransform::rotation ((leftRotate ? -90 : 90) / 180.f * float_Pi));
 
-    AffineTransform aff = AffineTransform::rotation ((leftRotate ? -90 : 90) / 180.f * float_Pi,
-                                                     originalImg.getWidth() / 2.f,
-                                                     originalImg.getHeight() / 2.f);
-    g.drawImageTransformed (originalImg, aff);
-
+            if (leftRotate)
+                targetImg.setPixelAt (p.x, p.y + targetImg.getHeight(), originalImg.getPixelAt (x, y));
+            else            
+                targetImg.setPixelAt (targetImg.getWidth() + p.x, p.y, originalImg.getPixelAt (x, y));
+        }
+    }
+    
     ScopedPointer<FileOutputStream> outputStream (targetImgFile.createOutputStream());
     ImageFileFormat* format = ImageFileFormat::findImageFormatForFileExtension (originalImgFile);
 

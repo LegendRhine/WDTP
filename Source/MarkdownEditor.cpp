@@ -397,6 +397,26 @@ void MarkdownEditor::performPopupMenuAction (int index)
             SHOW_MESSAGE (TRANS ("Somehow this operation failed."));
     }
 
+    else if (rotateImgLeft == index || rotateImgRight == index)
+    {
+        const File& originalmgFile (parent->getCurrentDocFile().getSiblingFile ("media")
+                             .getChildFile (getSelectedFileName()));
+        const File& targetFile (originalmgFile.getNonexistentSibling (false));
+
+        if (SwingUtilities::rotateImage (originalmgFile, targetFile, (rotateImgLeft == index), false))
+        {
+            setHighlightedRegion (Range<int> (getHighlightedRegion().getStart(),
+                                              getHighlightedRegion().getEnd() + 4));
+
+            insertTextAtCaret (targetFile.getFileName());
+            parent->getCurrentTree().setProperty ("needCreateHtml", true, nullptr);
+        }
+        else
+        {
+            SHOW_MESSAGE (TRANS ("Somehow this operation failed."));
+        }
+    }
+
     else if (insertSeparator == index)      TextEditor::insertTextAtCaret (newLine + "---" + newLine);
     else if (pickFromAllKeywords == index)  showAllKeywords();
     else if (searchPrev == index)           searchPrevious();

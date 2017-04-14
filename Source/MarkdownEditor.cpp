@@ -205,6 +205,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 
         PopupMenu exEdit;
         const bool selectedMediaFile = (getSelectedMediaType() != -1);
+        const bool selectedImgFile = (getSelectedMediaType() == 0);
         bool canEdit = false;
 
         if ((getSelectedMediaType() == 1 && systemFile->getValue ("audioEditor").isNotEmpty())
@@ -215,15 +216,15 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
                         (getSelectedFileName().getLastCharacters (4) == ".png"
                          || getSelectedFileName().getLastCharacters (4) == ".PNG"));
 
-        exEdit.addItem (transparentImg, TRANS ("Transparentize Background"), canEdit);
+        exEdit.addItem (transparentImg, TRANS ("Transparentize Background"), selectedImgFile);
         exEdit.addSeparator();
 
-        exEdit.addItem (rotateImgLeft, TRANS ("Rotate Left 90 Degress"), canEdit);
-        exEdit.addItem (rotateImgRight, TRANS ("Rotate Right 90 Degress"), canEdit);
+        exEdit.addItem (rotateImgLeft, TRANS ("Rotate Left 90 Degress"), selectedImgFile);
+        exEdit.addItem (rotateImgRight, TRANS ("Rotate Right 90 Degress"), selectedImgFile);
         exEdit.addSeparator();
 
-        exEdit.addItem (threeQuarterWidth, TRANS ("Width Decrease a Quarter"), canEdit);
-        exEdit.addItem (halfWidth, TRANS ("Half Width"), canEdit);
+        exEdit.addItem (threeQuarterWidth, TRANS ("Width Decrease a Quarter"), selectedImgFile);
+        exEdit.addItem (halfWidth, TRANS ("Half Width"), selectedImgFile);
         exEdit.addSeparator();
 
         exEdit.addItem (editMediaByExEditor, TRANS ("Edit by External Editor") + "...", canEdit);
@@ -328,7 +329,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
             valueName = "imageEditor";
         }
 
-        FileChooser fc (tipInfo, File::getSpecialLocation (File::globalApplicationsDirectory), "*.exe");
+        FileChooser fc (tipInfo, File::getSpecialLocation (File::globalApplicationsDirectory), "*.exe;*.app");
 
         if (fc.browseForFileToOpen())
         {

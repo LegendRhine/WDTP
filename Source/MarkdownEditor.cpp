@@ -62,22 +62,22 @@ void MarkdownEditor::popupOutlineMenu (EditAndPreview* editAndPreview,
         // add menu-item from the stringArray
         PopupMenu outlineMenu;
 
-        for (int i = 0; i < sentences.size (); ++i)
+        for (int i = 0; i < sentences.size(); ++i)
         {
-            if (sentences[i].trimStart ().substring (0, 3) == "## ")
+            if (sentences[i].trimStart().substring (0, 3) == "## ")
                 outlineMenu.addItem (i + 1,
-                                     Md2Html::extractLinkText (sentences[i].trimStart ().substring (3)),
+                                     Md2Html::extractLinkText (sentences[i].trimStart().substring (3)),
                                      true, false);
-            else if (sentences[i].trimStart ().substring (0, 4) == "### ")
+            else if (sentences[i].trimStart().substring (0, 4) == "### ")
                 outlineMenu.addItem (i + 1, ".   "
-                                     + Md2Html::extractLinkText (sentences[i].trimStart ().substring (4)),
+                                     + Md2Html::extractLinkText (sentences[i].trimStart().substring (4)),
                                      true, false);
             else
                 outlineMenu.addItem (i + 1, sentences[i], true, false);
         }
 
         sentences.insert (0, "tempForMatchMenuSelectIndex");
-        const int menuItemIndex = outlineMenu.show ();  // show it here
+        const int menuItemIndex = outlineMenu.show();  // show it here
 
         editAndPreview->outlineGoto (sentences, menuItemIndex);
     }
@@ -1632,9 +1632,7 @@ void MarkdownEditor::timerCallback (int timerID)
                 String menuStr (itr.getValue());
                 
                 if (menuStr.length() > 30)
-                {
                     menuStr = menuStr.substring(0, 30) + "...";
-                }
                 
                 tipsMenu.addItem (menuItems.size(), menuStr);
                 menuItems.add (itr.getValue());
@@ -1643,9 +1641,10 @@ void MarkdownEditor::timerCallback (int timerID)
         
         if (tipsMenu.getNumItems() > 0) 
         {
-            const Rectangle<int> posOfMenu (getCaretRectangle()
-                                            .translated (getScreenBounds().getX() + 12,
-                                                         getScreenBounds().getY() + 12));
+            const Rectangle<int> posOfMenu (
+                getCaretRectangle().translated (getScreenBounds().getX() + 12,
+                                                getScreenBounds().getY() + 12
+                                                - getViewport()->getViewPositionY()));
 
             tipsMenu.showMenuAsync (PopupMenu::Options().withTargetScreenArea (posOfMenu),
                                     ModalCallbackFunction::forComponent (menuItemChosenCallback, this));

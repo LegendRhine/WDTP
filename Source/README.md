@@ -136,6 +136,8 @@
 	- L540 change the original to `atomX, (float) roundToInt (lineY + lineHeight - maxDescent - 2));`
 	- L573 change the original to `atomX, (float) roundToInt (lineY + lineHeight - maxDescent - 2));`
 	- L560-561 change to (underline change to backgound highlight):
+- Get the viewport
+    - h file same class above, L661 add: `Viewport* getViewport() const { return viewport; }`
 ```
 	//g.reduceClipRegion (Rectangle<int> (startX, baselineY, endX - startX, 1));
     //g.fillCheckerBoard (Rectangle<int> (endX, baselineY + 1), 3, 1, colour, Colours::transparentBlack);

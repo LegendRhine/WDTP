@@ -341,7 +341,7 @@ void EditAndPreview::previewCurrentDoc()
 
 //=================================================================================================
 void EditAndPreview::outlineGoto (const StringArray& titleStrs, const int itemIndex)
-{
+{ 
     if (itemIndex == 1)
     {
         mdEditor->moveCaretToTop (false);

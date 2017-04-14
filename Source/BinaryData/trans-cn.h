@@ -484,4 +484,4 @@ countries: cn
 " Month " = "月"
 " Year " = "年"
 "No." = "第"
-"This doc has no any secondary and tertiary heading" = "此文档尚未设置二级标记和三级标题"
+"This doc has no any secondary and tertiary heading" = "此文档尚未设置二级标题和三级标题"

@@ -422,7 +422,6 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
         EditAndPreview* editPreview = treeContainer->getEditAndPreview();
         editPreview->saveCurrentDocIfChanged();
-        HtmlProcessor::createArticleHtml (editPreview->getCurrentTree(), true);
 
         // here must set false to prevent popup this menu continuously 
         // when user doesn't select any menu-item and then click the doc-item 

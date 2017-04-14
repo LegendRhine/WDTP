@@ -505,7 +505,7 @@ void TopToolBar::createNewProject()
     projectFile.getSiblingFile ("docs").createDirectory();
 
     // save the new project file and load it
-    if (SwingUtilities::writeValueTreeToFile (p, projectFile))
+    if (SwingUtilities::writeValueTreeToFile (p, projectFile, true))
     {
         // must open it first then release system tpls and add-in files
         // also it'll create 'themes' and 'site' dir
@@ -1073,7 +1073,7 @@ void TopToolBar::releaseSystemTpls (const bool askAndShowMessage)
         SwingUtilities::renameFile (icoFile, "favicon.ico");
 
     // release logo image to "site/add-in" if it hasn't been there
-    const File& logoFile (FileTreeContainer::projectFile.getSiblingFile ("site/add-in").getChildFile ("logo.png"));
+    const File& logoFile (FileTreeContainer::projectFile.getSiblingFile ("site").getChildFile("add-in").getChildFile ("logo.png"));
 
     if (!logoFile.existsAsFile())
     {

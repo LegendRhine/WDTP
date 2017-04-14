@@ -1486,6 +1486,12 @@ void MarkdownEditor::selectedAddToTipsBank()
         if (0 == dialog.runModalLoop())
         {
             const String& tipName (dialog.getTextEditor ("name")->getText().trim());
+
+            if (tipName.length() < 2)
+            {
+                SHOW_MESSAGE (TRANS ("The tip's name must more than 1 character"));
+                return;
+            }
             
             if (tipsFile.appendText (newLine 
                                      + "- " + tipName + newLine 

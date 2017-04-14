@@ -485,3 +485,4 @@ countries: cn
 " Year " = "年"
 "No." = "第"
 "This doc has no any secondary and tertiary heading" = "此文档尚未设置二级标题和三级标题"
+"The tip's name must more than 1 character" = "提示名称至少需要两个字符"

@@ -30,7 +30,9 @@ public:
 
     //=================================================================================================
     static void popupOutlineMenu (EditAndPreview* editAndPreview, 
-                                  const String& editorContent);
+                                  const String& editorContent,
+                                  bool showMessageWhenNoOutline);
+
     virtual void addPopupMenuItems (PopupMenu& menuToAddTo,
                                     const MouseEvent* mouseClickEvent) override;
 

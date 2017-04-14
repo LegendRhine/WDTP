@@ -431,7 +431,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
 
         // replace Chinese '#' temporaily instead of change it in reality
         MarkdownEditor::popupOutlineMenu (editPreview, editPreview->getCurrentContent()
-                                          .replace (CharPointer_UTF8 ("\xef\xbc\x83"), "#"));
+                                          .replace (CharPointer_UTF8 ("\xef\xbc\x83"), "#"), false);
 
         // here need set to true no matter user click a menu-item or not
         allowShowMenu = true;  

@@ -171,11 +171,12 @@ void ThemeEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         TextEditor::addPopupMenuItems (menu, e);
         menu.addSeparator();
 
+        String ctrlStr ("  (Ctrl + ");
 #if JUCE_MAC
-        menu.addItem (searchSth, TRANS ("Search Content") + "  (cmd + F)");
-#else
-        menu.addItem (searchSth, TRANS ("Search Content") + "  (Ctrl + F)");
+        strlStr = "  (cmd + ";
 #endif
+
+        menu.addItem (searchSth, TRANS ("Search Content") + ctrlStr + "F)");
         menu.addItem (selectClr, TRANS ("Set Color") + "...",
                       (beforeStart == "#" && afterEnd == ";" &&
                        (getHighlightedText().length() == 3 || getHighlightedText().length() == 6)));
@@ -183,7 +184,7 @@ void ThemeEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSubMenu (TRANS ("Insert Template Tags"), tagsMenu, currentFile.getFileExtension() == ".html");
         menu.addSeparator();
 
-        menu.addItem (applyIndex, TRANS ("Save and Apply"));
+        menu.addItem (applyIndex, TRANS ("Save and Apply") + ctrlStr + "S)");
         menu.addItem (closeIndex, TRANS ("Close without Save"));
         menu.addItem (saveAsIndex, TRANS ("Overwrite and Save to") + "...");
 
@@ -303,6 +304,14 @@ bool ThemeEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress ('f', ModifierKeys::commandModifier, 0))
     {
         performPopupMenuAction (searchSth);
+        return true;
+    }
+
+    // ctrl + s: save and update the page
+    else if (key == KeyPress ('s', ModifierKeys::commandModifier, 0))
+    {
+        performPopupMenuAction (applyIndex);
+        return true;
     }
 
     // English punctuation matching...

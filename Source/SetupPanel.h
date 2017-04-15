@@ -48,7 +48,7 @@ private:
     enum
     {        
         itsName = 0, itsTitle, keywords, desc, projectOwner,
-        copyrightInfo, renderDir, tplFile, jsCode, 
+        copyrightInfo, renderDir, tplFile, jsCode, resources,
         contact, ad, isMenu, createDate, modifyDate,
         showKeys, wordCount, thumb, thumbName, 
         abbrev, reviewDate, featured, hideMode, archiveMode,

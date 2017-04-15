@@ -50,6 +50,7 @@ void SetupPanel::showProjectProperties (const ValueTree& pTree)
     values[ad]->setValue (pTree.getProperty ("ad"));
     values[contact]->setValue (pTree.getProperty ("contact"));
     values[modifyDate]->setValue (pTree.getProperty ("modifyDate"));
+    values[resources]->setValue (pTree.getProperty ("resources"));
 
     Array<PropertyComponent*> projectProperties;
 
@@ -105,6 +106,7 @@ void SetupPanel::showProjectProperties (const ValueTree& pTree)
     projectProperties.add (new TextPropertyComponent (*values[contact], TRANS ("Contact Info: "), 0, true));
     projectProperties.add (new TextPropertyComponent (*values[copyrightInfo], TRANS ("Copyright: "), 0, true));
     projectProperties.add (new TextPropertyComponent (*values[modifyDate], TRANS ("Last Modified: "), 0, false));
+    projectProperties.add (new TextPropertyComponent (*values[resources], TRANS ("Ex-resources: "), 0, true));
 
     for (auto p : projectProperties)  
         p->setPreferredHeight (28);
@@ -114,6 +116,7 @@ void SetupPanel::showProjectProperties (const ValueTree& pTree)
     projectProperties[7]->setPreferredHeight (28 * 3);
     projectProperties[8]->setPreferredHeight (28 * 3);
     projectProperties[9]->setPreferredHeight (28 * 3);
+    projectProperties[11]->setPreferredHeight (28 * 4);
     projectProperties[10]->setEnabled (false);
 
     panel->addSection (TRANS ("Project Setup"), projectProperties);
@@ -399,6 +402,13 @@ void SetupPanel::initialValues (const bool currentValuesUpdateTree,
             FileTreeContainer::saveProject();
         }
 
+        else if (currentTree.getType ().toString () == "wdtpProject"
+                 && values[resources]->getValue () != currentTree.getProperty ("resources"))
+        {
+            currentTree.setProperty ("resources", values[resources]->getValue ().toString ().trim (), nullptr);
+            FileTreeContainer::saveProject ();
+        }
+
         else if (currentTree.getType().toString() != "wdtpProject"
                  && values[createDate]->getValue() != currentTree.getProperty ("createDate"))
         {
@@ -477,6 +487,9 @@ void SetupPanel::valueChanged (Value& value)
     else if (value.refersToSameSourceAs (*values[contact]))
         currentTree.setProperty ("contact", values[contact]->getValue().toString().trim(), nullptr);
 
+    else if (value.refersToSameSourceAs (*values[resources]))
+        currentTree.setProperty ("resources", values[resources]->getValue ().toString ().trim (), nullptr);
+
     else if (value.refersToSameSourceAs (*values[isMenu]))
         currentTree.setProperty ("isMenu", values[isMenu]->getValue(), nullptr);
 
@@ -509,7 +522,13 @@ void SetupPanel::valueChanged (Value& value)
 
     values[modifyDate]->setValue (SwingUtilities::getTimeStringWithSeparator (SwingUtilities::getCurrentTimeString(), true));
 
-    DocTreeViewItem::needCreate (currentTree);
+    if (!value.refersToSameSourceAs (*values[resources])
+        && !value.refersToSameSourceAs (*values[reviewDate])
+        && !value.refersToSameSourceAs (*values[archiveMode]))
+    {
+        DocTreeViewItem::needCreate (currentTree);
+    }
+
     projectHasChanged = true;
 
     // set mdEditor read only or not base on 'archive'

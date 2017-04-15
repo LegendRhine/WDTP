@@ -325,7 +325,7 @@ void TopToolBar::popupSystemMenu()
     }
     
     exResourceMenu.addSeparator();
-    exResourceMenu.addItem (addExResource, TRANS ("Add External Resource") + "...");
+    exResourceMenu.addItem (addExResource, TRANS ("Add") + "...");
     m.addSubMenu (TRANS ("Open/Add External Resource"), exResourceMenu, projectHasLoaded);
     m.addSeparator();
 

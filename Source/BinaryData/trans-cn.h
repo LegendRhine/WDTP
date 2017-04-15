@@ -186,7 +186,7 @@ countries: cn
 "UI Color" = "界面颜色"
 "Getting Started..." = "快速上手..."
 "Download New Version..." = "下载新版本..."
-"Add External Resource" = "添加项目外源"
+"Add" = "添加"
 "Open/Add External Resource" = "打开/添加项目外源"
 "An external resource has been added successful" = "成功添加了一个项目外源"
 "Ex-resources: " = "项目外源: "

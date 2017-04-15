@@ -340,7 +340,6 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         PopupMenu importMenu;
         importMenu.addItem (importUTF8Docs, TRANS ("UTF-8 Text Doc(s)..."), exist && !isDoc && onlyOneSelected);
         importMenu.addItem (importANSIDocs, TRANS ("ANSI Text Doc(s)..."), exist && !isDoc && onlyOneSelected);
-
         m.addSubMenu (TRANS ("Import External Data"), importMenu);
         m.addSeparator();
 
@@ -349,22 +348,17 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         packMenu.addItem (packMedias, TRANS ("Pack Without Htmls"), exist && onlyOneSelected && !isDoc);
         packMenu.addSeparator();
         packMenu.addItem (packWholeSite, TRANS ("Pack All Data"), exist && onlyOneSelected && !isDoc);
-
         m.addSubMenu (TRANS ("Pack Site Data"), packMenu);
-        m.addSeparator();
 
-        m.addItem (exportTextDoc, TRANS ("Export Text Doc..."), exist && onlyOneSelected && isDoc);
         m.addItem (exportDocs, TRANS ("Export Single Big-Html..."), exist && onlyOneSelected && !isDoc);
+        m.addItem (exportTextDoc, TRANS ("Export Text Doc..."), exist && onlyOneSelected && isDoc);
         m.addSeparator();
 
-        m.addItem (replaceIn, TRANS ("Replace Content..."), exist && onlyOneSelected && notReadOnly);
-        m.addSeparator();
-
+        m.addItem (getItemPath, TRANS ("Get Path"), exist && onlyOneSelected);
         m.addItem (dataStatis, TRANS ("Statistics..."), exist && onlyOneSelected);
         m.addItem (keywordsTable, TRANS ("Keywords Table") + "...", exist && onlyOneSelected && !isDoc);
         m.addSeparator();
 
-        m.addItem (getItemPath, TRANS ("Get Path"), exist && onlyOneSelected);
         m.addItem (copyForAnotherProject, TRANS ("Copy For Another Project"), isDoc && onlyOneSelected);
         m.addItem (pasteFromAnotherProject, TRANS ("Paste From Another Project"), !isDoc && onlyOneSelected && isCrossPaste);
         m.addSeparator();
@@ -376,15 +370,14 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         sortMenu.addItem (104, TRANS ("Create Time"), true, sorter->getOrder() == 4);
         sortMenu.addItem (105, TRANS ("Last Modified"), true, sorter->getOrder() == 5);
         sortMenu.addSeparator();
+
         sortMenu.addItem (106, TRANS ("Ascending Order"), true, sorter->getAscending() == 0);
         sortMenu.addItem (107, TRANS ("Folder First"), true, sorter->getWhichFirst() == 0);
-
         m.addSubMenu (TRANS ("Sort by"), sortMenu);
 
         PopupMenu showedAsMenu;
         showedAsMenu.addItem (200, TRANS ("File Name"), true, sorter->getShowWhat() == 0);
         showedAsMenu.addItem (201, TRANS ("Title"), true, sorter->getShowWhat() == 1);
-
         m.addSubMenu (TRANS ("Showed as"), showedAsMenu);
 
         PopupMenu tooltipAsMenu;
@@ -392,7 +385,6 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         tooltipAsMenu.addItem (301, TRANS ("Title"), true, sorter->getTooltipToShow() == 1);
         tooltipAsMenu.addItem (302, TRANS ("Keywords"), true, sorter->getTooltipToShow() == 2);
         tooltipAsMenu.addItem (303, TRANS ("Description"), true, sorter->getTooltipToShow() == 3);
-
         m.addSubMenu (TRANS ("Tooltip for"), tooltipAsMenu);
         m.addSeparator();
 
@@ -400,6 +392,7 @@ void DocTreeViewItem::itemClicked (const MouseEvent& e)
         m.addItem (remindSet, TRANS ("Batch set Remind Date") + "...", !isDoc && onlyOneSelected && hasRemindDoc);
         m.addSeparator();
 
+        m.addItem (replaceIn, TRANS ("Replace Content..."), exist && onlyOneSelected && notReadOnly);
         m.addItem (rename, TRANS ("Rename..."), !isRoot && onlyOneSelected && notReadOnly);
         m.addItem (deleteThis, TRANS ("Delete..."), !isRoot && notReadOnly);
         m.addSeparator();

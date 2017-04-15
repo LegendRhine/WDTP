@@ -33,7 +33,7 @@ countries: cn
 "Keyword: " = "关键词："
 "Description" = "描述"
 "Tooltip for" = "实时提示"
-"Replace Content..." = "批量替换..."
+"Replace Content..." = "批量替换内容..."
 "Rename..." = "重命名..."
 "Delete..." = "删除..."
 "View in Explorer/Finder..." = "文件浏览器中查看..."

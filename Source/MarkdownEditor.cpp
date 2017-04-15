@@ -106,21 +106,21 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 
     if (e->mods.isPopupMenu())
     {
-        menu.addItem (pickTitle, TRANS ("Pickup as Title"), selectSomething);
-        menu.addItem (pickDesc, TRANS ("Pickup as Description"), selectSomething);
-        menu.addSeparator();
-
-        menu.addItem (addKeywords, TRANS ("Add to Keywords"), selectSomething);
-        menu.addItem (pickFromAllKeywords, TRANS ("Keywords Table") + "...", docExists);
-        menu.addSeparator();
-
-        PopupMenu insertMenu;
         String ctrlStr ("  (Ctrl + ");
 
 #if JUCE_MAC
         ctrlStr = "  (Cmd + ";
 #endif
 
+        menu.addItem (pickTitle, TRANS ("Pickup as Title"), selectSomething);
+        menu.addItem (pickDesc, TRANS ("Pickup as Description"), selectSomething);
+        menu.addItem (addKeywords, TRANS ("Add to Keywords"), selectSomething);
+        menu.addSeparator();
+        menu.addItem (pickFromAllKeywords, TRANS ("Project Keywords Table") + "...", docExists);
+        menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)", docExists);
+        menu.addSeparator();
+
+        PopupMenu insertMenu;
         insertMenu.addItem (insertMedia, TRANS ("Image/Audio/Video...") + ctrlStr + "M)");
         insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink...") + ctrlStr + "E)");
         insertMenu.addSeparator();
@@ -173,7 +173,6 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
         formatMenu.addItem (hybridLayout, TRANS ("Hybrid Layout"));
-        formatMenu.addSeparator();
         formatMenu.addItem (commentBlock, TRANS ("Comment Block"));
         formatMenu.addSeparator();
         formatMenu.addItem (antiIndent, TRANS ("Anti-Indent"));
@@ -192,23 +191,10 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         expandMark.addItem (allKeywords, TRANS ("All Keywords"));
 
         menu.addSubMenu (TRANS ("Expand Mark"), expandMark, docExists && notArchived);
+        menu.addItem (syntax, TRANS ("Text Mark Syntax and Demo..."));
         menu.addSeparator();
 
         menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)", docExists && notArchived);
-        menu.addSeparator();
-
-        // search
-        menu.addItem (searchNext, TRANS ("Search Next Selection") + "  (F3)", selectSomething);
-        menu.addItem (searchPrev, TRANS ("Search Prev Selection") + "  (Shift + F3)", selectSomething);
-        menu.addSeparator();
-
-        PopupMenu exSearch;
-        exSearch.addItem (searchByGoogle, "Google...", selectSomething);
-        exSearch.addItem (searchByBing, TRANS ("Bing..."), selectSomething);
-        exSearch.addItem (searchByWiki, TRANS ("Wikipedia..."), selectSomething);
-        exSearch.addItem (baiduBaike, TRANS ("Baidu Baike..."), selectSomething);
-
-        menu.addSubMenu (TRANS ("External Search Selection"), exSearch, docExists);
 
         PopupMenu exEdit;
         const bool selectedMediaFile = (getSelectedMediaType() != -1);
@@ -219,9 +205,9 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
             || (getSelectedMediaType() == 0 && systemFile->getValue ("imageEditor").isNotEmpty()))
             canEdit = true;
 
-        exEdit.addItem (convertToJpg, TRANS ("Convert to JPG Format"), 
-                        (getSelectedFileName().getLastCharacters (4) == ".png"
-                         || getSelectedFileName().getLastCharacters (4) == ".PNG"));
+        exEdit.addItem (convertToJpg, TRANS ("Convert to JPG Format"),
+            (getSelectedFileName().getLastCharacters (4) == ".png"
+             || getSelectedFileName().getLastCharacters (4) == ".PNG"));
 
         exEdit.addItem (transparentImg, TRANS ("Transparentize Background"), selectedImgFile);
         exEdit.addSeparator();
@@ -240,6 +226,19 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSubMenu (TRANS ("Edit Media File"), exEdit, docExists && notArchived);
         menu.addSeparator();
 
+        // search
+        menu.addItem (searchNext, TRANS ("Search Next Selection") + "  (F3)", selectSomething);
+        menu.addItem (searchPrev, TRANS ("Search Prev Selection") + "  (Shift + F3)", selectSomething);
+
+        PopupMenu exSearch;
+        exSearch.addItem (searchByGoogle, "Google...", selectSomething);
+        exSearch.addItem (searchByBing, TRANS ("Bing..."), selectSomething);
+        exSearch.addItem (searchByWiki, TRANS ("Wikipedia..."), selectSomething);
+        exSearch.addItem (baiduBaike, TRANS ("Baidu Baike..."), selectSomething);
+        menu.addSubMenu (TRANS ("External Search Selection"), exSearch, docExists); 
+        
+        menu.addSeparator();
+
         menu.addItem (showTips, TRANS ("Tips/Replace") + "..." + ctrlStr + "G)", selectSomething);
         menu.addItem (joinTips, TRANS ("Add to Tips Bank") + "...", selectSomething);
         menu.addSeparator();
@@ -255,10 +254,6 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         editorSetup.addItem (resetDefault, TRANS ("Reset to Default"));
 
         menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docExists && notArchived);
-        menu.addItem (syntax, TRANS ("Text Mark Syntax and Demo..."));
-        menu.addSeparator();
-
-        menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)", docExists);
     }
 }
 

@@ -57,14 +57,13 @@
 	- render: the dir of tpls which is placed in the 'project-dir/themes'.
 	- tplFile: for render the index.html of the site, it should be a '.html' tpl-file inside the render dir.
 	- js: JavaScript code, it'll site within < head > area of the index.html.
-	- ad: The form should be: 'Image-file-name (whitespace) Link-address', one for pre line. It matched the {{ad}} tag from within a tpl.
+	- ad: The form should be: 'Image-file-name (whitespace) Link-address', one for pre row. It matched the {{ad}} tag from within a tpl.
     - modifyDate
 	- needCreateHtml
 	- stateAndSelect: the file tree's openness and selected state
-
-- resource: child tree(s) of wdtoProject
-	- name: specified by user and will be showed in system menu
-	- path: full path of the resource
+	- resources: the form should be: 'name = path', one for pre row, allow empty line between rows.
+	  'name': specified by user and will be showed in system menu
+	  'path': full path of the resource
 
 - Dir: child tree(s) of wdtoProject
     - name: the name of this dir, it doesn't include any parent's name (path).

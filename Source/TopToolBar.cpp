@@ -307,7 +307,14 @@ void TopToolBar::popupSystemMenu()
     uiMenu.addItem (setUiColor, TRANS ("Set UI Color..."));
     uiMenu.addItem (resetUiColor, TRANS ("Reset to Default"));
     m.addSubMenu (TRANS ("UI Color"), uiMenu);
+
+    m.addSeparator();
     m.addItem (setupAudio, TRANS ("Setup Audio Device..."));
+
+    // external resources
+    PopupMenu exResourceMenu;
+    exResourceMenu.addItem (addExResource, TRANS ("Add External Resource") + "...");
+    m.addSubMenu (TRANS ("Open/Add External Resource"), exResourceMenu, projectHasLoaded);
     m.addSeparator();
 
     if (newVersionIsReady)
@@ -322,13 +329,7 @@ void TopToolBar::popupSystemMenu()
     siteUrls.addItem (feedback, TRANS ("Feedback/Discuss/Interflow..."), true);
     m.addSubMenu (TRANS ("Help"), siteUrls);
 
-    // external resources
-    PopupMenu exResourceMenu;
-    exResourceMenu.addItem (addExResource, TRANS ("Add External Resource") + "...");
-    m.addSubMenu (TRANS ("External Resource"), exResourceMenu, projectHasLoaded);
-
     m.addItem (showAboutDialog, TRANS ("About..."), true);
-
     m.addSeparator();
     m.addCommandItem (cmdManager, exitApp);
 
@@ -1161,13 +1162,19 @@ void TopToolBar::setExternalResource()
     if (fc.browseForFileToOpen())
     {
         String rs (fileTreeContainer->projectTree.getProperty ("resources").toString());
-        rs += fc.getResult().getFileName() + " = " + fc.getResult().getFullPathName() + "\n\n";
+        rs += fc.getResult().getFileName() + " = " + fc.getResult().getFullPathName() + "\n";
         fileTreeContainer->projectTree.setProperty ("resources", rs, nullptr);
+        
+        if (fileTreeContainer->saveProject())
+        {
+            if (fileTreeContainer->getTreeView().getItemOnRow (0)->isSelected())
+            {
+                fileTreeContainer->getTreeView().moveSelectedRow (1);
+                fileTreeContainer->getTreeView().moveSelectedRow (-1);
+            }
 
-        fileTreeContainer->getTreeView().moveSelectedRow (1);
-        fileTreeContainer->getTreeView().moveSelectedRow (-1);
-
-        SHOW_MESSAGE (TRANS ("An external resource has been added successful"));
+            SHOW_MESSAGE (TRANS ("An external resource has been added successful"));
+        }
     }
 }
 

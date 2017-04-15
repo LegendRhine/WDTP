@@ -187,7 +187,7 @@ countries: cn
 "Getting Started..." = "快速上手..."
 "Download New Version..." = "下载新版本..."
 "Add External Resource" = "添加外部资源"
-"External Resource" = "外部资源"
+"Open/Add External Resource" = "打开/添加外部资源"
 "An external resource has been added successful" = "成功添加了一个外部资源"
 "Ex-resources: " = "外部资源: "
 "About..." = "关于..."

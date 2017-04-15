@@ -53,7 +53,6 @@ void SetupPanel::showProjectProperties (const ValueTree& pTree)
     values[resources]->setValue (pTree.getProperty ("resources"));
 
     Array<PropertyComponent*> projectProperties;
-
     projectProperties.add (new TextPropertyComponent (*values[itsTitle], TRANS ("Title: "), 0, false));
     projectProperties.add (new TextPropertyComponent (*values[keywords], TRANS ("Keywords: "), 0, false));
     projectProperties.add (new TextPropertyComponent (*values[desc], TRANS ("Description: "), 0, true));
@@ -402,13 +401,6 @@ void SetupPanel::initialValues (const bool currentValuesUpdateTree,
             FileTreeContainer::saveProject();
         }
 
-        else if (currentTree.getType ().toString () == "wdtpProject"
-                 && values[resources]->getValue () != currentTree.getProperty ("resources"))
-        {
-            currentTree.setProperty ("resources", values[resources]->getValue ().toString ().trim (), nullptr);
-            FileTreeContainer::saveProject ();
-        }
-
         else if (currentTree.getType().toString() != "wdtpProject"
                  && values[createDate]->getValue() != currentTree.getProperty ("createDate"))
         {
@@ -488,7 +480,7 @@ void SetupPanel::valueChanged (Value& value)
         currentTree.setProperty ("contact", values[contact]->getValue().toString().trim(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[resources]))
-        currentTree.setProperty ("resources", values[resources]->getValue ().toString ().trim (), nullptr);
+        currentTree.setProperty ("resources", values[resources]->getValue().toString().trim(), nullptr);
 
     else if (value.refersToSameSourceAs (*values[isMenu]))
         currentTree.setProperty ("isMenu", values[isMenu]->getValue(), nullptr);

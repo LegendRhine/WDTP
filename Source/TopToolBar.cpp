@@ -1156,7 +1156,19 @@ void TopToolBar::createThemeFilesMenu (PopupMenu& menu, const int baseId)
 //=================================================================================================
 void TopToolBar::setExternalResource()
 {
+    FileChooser fc (TRANS ("Add External Resource"), File(), "*");
 
+    if (fc.browseForFileToOpen())
+    {
+        String rs (fileTreeContainer->projectTree.getProperty ("resources").toString());
+        rs += fc.getResult().getFileName() + " = " + fc.getResult().getFullPathName() + "\n\n";
+        fileTreeContainer->projectTree.setProperty ("resources", rs, nullptr);
+
+        fileTreeContainer->getTreeView().moveSelectedRow (1);
+        fileTreeContainer->getTreeView().moveSelectedRow (-1);
+
+        SHOW_MESSAGE (TRANS ("An external resource has been added successful"));
+    }
 }
 
 //=================================================================================================

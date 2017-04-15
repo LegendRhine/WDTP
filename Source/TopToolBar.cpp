@@ -311,8 +311,20 @@ void TopToolBar::popupSystemMenu()
     m.addSeparator();
     m.addItem (setupAudio, TRANS ("Setup Audio Device..."));
 
-    // external resources
+    // external resources. their range: 300 ~ 399
     PopupMenu exResourceMenu;
+    StringArray rs, rsPath;
+    rs.addTokens (fileTreeContainer->projectTree.getProperty ("resources").toString(), newLine, String());
+    rs.removeEmptyStrings();
+    rs.trim();
+
+    for (int i = 0; i < rs.size(); ++i)
+    {
+        exResourceMenu.addItem (300 + i, rs[i].upToFirstOccurrenceOf ("=", false, false).trim());
+        rsPath.add (rs[i].fromFirstOccurrenceOf ("=", false, false).trim());
+    }
+    
+    exResourceMenu.addSeparator();
     exResourceMenu.addItem (addExResource, TRANS ("Add External Resource") + "...");
     m.addSubMenu (TRANS ("Open/Add External Resource"), exResourceMenu, projectHasLoaded);
     m.addSeparator();
@@ -369,6 +381,12 @@ void TopToolBar::popupSystemMenu()
 
             editAndPreview->editThemeFile (files[index - 200 - 1]);
         }
+    }
+
+    // open resource
+    else if (index >= 300 && index < 400)
+    {
+        Process::openDocument (rsPath[index - 300], String());
     }
 
     else

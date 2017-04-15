@@ -188,6 +188,8 @@ countries: cn
 "Download New Version..." = "下载新版本..."
 "Add External Resource" = "添加外部资源"
 "External Resource" = "外部资源"
+"An external resource has been added successful" = "成功添加了一个外部资源"
+"Ex-resources: " = "外部资源: "
 "About..." = "关于..."
 "Silent Mode" = "安静模式"
 "Show File Tree Panel" = "文件树面板"

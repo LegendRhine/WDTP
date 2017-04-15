@@ -25,6 +25,7 @@
 #### Structure:
 
 - wdtpProject
+	- resource
 	- dir
 		- doc
 
@@ -61,7 +62,11 @@
 	- needCreateHtml
 	- stateAndSelect: the file tree's openness and selected state
 
-- Properities of Dir 
+- resource: child tree(s) of wdtoProject
+	- name: specified by user and will be showed in system menu
+	- path: full path of the resource
+
+- Dir: child tree(s) of wdtoProject
     - name: the name of this dir, it doesn't include any parent's name (path).
 	- title: it also be the menu-text if it was set to a site menu
 	- keywords
@@ -73,7 +78,7 @@
 	- js: see above
 	- needCreateHtml
 
-- Properities of Doc (if a doc's name is 'tips' and belong to the root-item/project-item, it'll be the think-bank source and auto 'hide')
+- Doc: child tree(s) of Dir (if a doc's name is 'tips' and belong to the root-item/project-item, it'll be the think-bank source and auto 'hide')
     - name: file name, it doesn't include file-extension and any parent path.
 	- title
 	- keywords
@@ -141,11 +146,13 @@
 //g.reduceClipRegion (Rectangle<int> (startX, baselineY, endX - startX, 1));
 //g.fillCheckerBoard (Rectangle<int> (endX, baselineY + 1), 3, 1, colour, Colours::transparentBlack);
 g.setColour (Colours::cyan.withAlpha (0.95f));
-g.fillRoundedRectangle (startX - 1.f, baselineY - lineHeight + 10.5f, endX - startX + 2.f, lineHeight - 2.5f, 5.f);
+g.fillRoundedRectangle (startX - 1.f, baselineY - lineHeight + 10.5f, 
+        endX - startX + 2.f, lineHeight - 2.5f, 5.f);
 drawSelectedText (g, underline, colour);
 
 // for lineSpacing backup
-// g.fillRoundedRectangle (startX - 1.f, baselineY - lineHeight + 4.f, endX - startX + 2.f, lineHeight + 1.f, 5.f);
+/* g.fillRoundedRectangle (startX - 1.f, baselineY - lineHeight + 4.f, 
+        endX - startX + 2.f, lineHeight + 1.f, 5.f); */
 ```
 
 - Get the viewport of editor

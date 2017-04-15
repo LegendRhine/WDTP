@@ -269,15 +269,29 @@ void TopToolBar::popupSystemMenu()
     recentFiles.restoreFromString (systemFile->getValue ("recentFiles"));
     PopupMenu recentFilesMenu;
     recentFiles.createPopupMenuItems (recentFilesMenu, 100, true, true);
-
     m.addSubMenu (TRANS ("Open Rcent"), recentFilesMenu);
-    m.addSeparator();
 
-    m.addItem (closePjt, TRANS ("Close Project"), projectHasLoaded);    
-    m.addSeparator();
+    // external resources. their range: 300 ~ 399
+    PopupMenu exResourceMenu;
+    StringArray rs, rsPath;
+    rs.addTokens (fileTreeContainer->projectTree.getProperty ("resources").toString(), newLine, String());
+    rs.removeEmptyStrings();
+    rs.trim();
 
-    m.addItem (viewHtmlCode, TRANS ("View Html Code of Current Page"), 
-               bts[viewBt]->getToggleState() && editAndPreview->getCurrentDocFile().exists());
+    for (int i = 0; i < rs.size(); ++i)
+    {
+        exResourceMenu.addItem (300 + i, rs[i].upToFirstOccurrenceOf ("=", false, false).trim());
+        rsPath.add (rs[i].fromFirstOccurrenceOf ("=", false, false).trim());
+    }
+
+    exResourceMenu.addSeparator();
+    exResourceMenu.addItem (addExResource, TRANS ("Add") + "...");
+    m.addSubMenu (TRANS ("Open/Add External Resource"), exResourceMenu, projectHasLoaded);
+
+    m.addSeparator();
+    m.addItem (closePjt, TRANS ("Close Project"), projectHasLoaded);
+    m.addSeparator();
+    
     m.addCommandItem (cmdManager, generateCurrent);
     m.addCommandItem (cmdManager, generateNeeded);
     m.addSeparator();
@@ -286,6 +300,10 @@ void TopToolBar::popupSystemMenu()
     m.addItem (cleanUpLocal, TRANS ("Cleanup Needless Medias"), projectHasLoaded);
     m.addSeparator();
     
+    m.addItem (viewHtmlCode, TRANS ("View Html Code of Current Page"),
+               bts[viewBt]->getToggleState() && editAndPreview->getCurrentDocFile().exists());
+    m.addSeparator();
+
     // set/edit theme files
     PopupMenu themeFilesMenu;
     createThemeFilesMenu (themeFilesMenu, 200);
@@ -307,26 +325,7 @@ void TopToolBar::popupSystemMenu()
     uiMenu.addItem (setUiColor, TRANS ("Set UI Color..."));
     uiMenu.addItem (resetUiColor, TRANS ("Reset to Default"));
     m.addSubMenu (TRANS ("UI Color"), uiMenu);
-
-    m.addSeparator();
-    m.addItem (setupAudio, TRANS ("Setup Audio Device..."));
-
-    // external resources. their range: 300 ~ 399
-    PopupMenu exResourceMenu;
-    StringArray rs, rsPath;
-    rs.addTokens (fileTreeContainer->projectTree.getProperty ("resources").toString(), newLine, String());
-    rs.removeEmptyStrings();
-    rs.trim();
-
-    for (int i = 0; i < rs.size(); ++i)
-    {
-        exResourceMenu.addItem (300 + i, rs[i].upToFirstOccurrenceOf ("=", false, false).trim());
-        rsPath.add (rs[i].fromFirstOccurrenceOf ("=", false, false).trim());
-    }
-    
-    exResourceMenu.addSeparator();
-    exResourceMenu.addItem (addExResource, TRANS ("Add") + "...");
-    m.addSubMenu (TRANS ("Open/Add External Resource"), exResourceMenu, projectHasLoaded);
+    m.addItem (setupAudio, TRANS ("Setup Audio Device..."));    
     m.addSeparator();
 
     if (newVersionIsReady)

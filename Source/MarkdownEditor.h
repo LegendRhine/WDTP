@@ -76,7 +76,7 @@ private:
         allKeywords, randomArticle, allPublish, allModify,
         searchNext, searchPrev, 
         searchByGoogle, searchByBing, searchByWiki, baiduBaike,
-        showTips, joinTips,
+        transByGoogle, transByBaidu, showTips, joinTips,
         fontSize, fontColor, setBackground, resetDefault,
         outlineMenu, setExEditorForMedia, editMediaByExEditor,
         convertToJpg, halfWidth, threeQuarterWidth, transparentImg, 

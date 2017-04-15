@@ -237,6 +237,11 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         exSearch.addItem (baiduBaike, TRANS ("Baidu Baike..."), selectSomething);
         menu.addSubMenu (TRANS ("External Search Selection"), exSearch, docExists); 
         
+        // trans
+        PopupMenu transMenu;
+        transMenu.addItem (transByGoogle, TRANS ("Google Translate") + "...", selectSomething);
+        transMenu.addItem (transByBaidu, TRANS ("Baidu Translate") + "...", selectSomething);
+        menu.addSubMenu (TRANS ("External Translate Selection"), transMenu, docExists);
         menu.addSeparator();
 
         menu.addItem (showTips, TRANS ("Tips/Replace") + "..." + ctrlStr + "G)", selectSomething);
@@ -423,6 +428,31 @@ void MarkdownEditor::performPopupMenuAction (int index)
         {
             SHOW_MESSAGE (TRANS ("Somehow this operation failed."));
         }
+    }
+
+    else if (transByGoogle == index)
+    {
+        const String& selectedStr (getHighlightedText().trim());
+
+        if (selectedStr.substring (0, 1).containsAnyOf ("abcdefghijklmnopqistuvwxyz'"
+                                                        "ABCDEFGHIJKLMNOPQRSTUVWXYZ\""))
+        {
+            URL ("http://translate.google.cn/#en/zh-CN/"
+                 + URL::addEscapeChars (selectedStr, false)).launchInDefaultBrowser();
+        }
+        else
+        {
+            URL ("http://translate.google.cn/#zh-CN/en/"
+                 + URL::addEscapeChars (selectedStr, false)).launchInDefaultBrowser();
+        }
+        
+    }
+
+    else if (transByBaidu == index)
+    {
+        URL ("http://fanyi.baidu.com/#en/zh/" 
+             + URL::addEscapeChars (getHighlightedText().trim(), false))
+            .launchInDefaultBrowser();
     }
 
     else if (insertSeparator == index)      TextEditor::insertTextAtCaret (newLine + "---" + newLine);

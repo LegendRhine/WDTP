@@ -97,6 +97,7 @@ private:
     /** imgType: 0 for site ico, 1 for project logo */
     void setSiteImgs (const int imgType);
     void createThemeFilesMenu (PopupMenu& menu, const int baseId);
+    void setExternalResource();
 
     //==========================================================================
     enum BtIndex 
@@ -116,7 +117,7 @@ public:
         uiEnglish, uiChinese, setupAudio,
         setUiColor, resetUiColor, checkNewVersion, 
         wdtpUpdateList, gettingStarted, syntax, faq, feedback, 
-        showAboutDialog, exitApp,
+        addExResource, showAboutDialog, exitApp,
         switchEdit, switchWidth, activeSearch,
         minimizeTheApp
     };

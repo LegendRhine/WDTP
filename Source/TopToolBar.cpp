@@ -255,9 +255,11 @@ void TopToolBar::buttonClicked (Button* bt)
 //=================================================================================================
 void TopToolBar::popupSystemMenu()
 {
+    const bool projectHasLoaded = fileTreeContainer->hasLoadedProject();
+
     PopupMenu m;
     m.addItem (newPjt, TRANS ("New Project..."), true);
-    m.addItem (packPjt, TRANS ("Pack Project"), fileTreeContainer->hasLoadedProject());
+    m.addItem (packPjt, TRANS ("Pack Project"), projectHasLoaded);
     m.addSeparator();
 
     m.addItem (openPjt, TRANS ("Open Project..."), true);
@@ -271,7 +273,7 @@ void TopToolBar::popupSystemMenu()
     m.addSubMenu (TRANS ("Open Rcent"), recentFilesMenu);
     m.addSeparator();
 
-    m.addItem (closePjt, TRANS ("Close Project"), fileTreeContainer->hasLoadedProject());    
+    m.addItem (closePjt, TRANS ("Close Project"), projectHasLoaded);    
     m.addSeparator();
 
     m.addItem (viewHtmlCode, TRANS ("View Html Code of Current Page"), 
@@ -280,18 +282,18 @@ void TopToolBar::popupSystemMenu()
     m.addCommandItem (cmdManager, generateNeeded);
     m.addSeparator();
 
-    m.addItem (generateWhole, TRANS ("Regenerate Whole Site"), fileTreeContainer->hasLoadedProject());
-    m.addItem (cleanUpLocal, TRANS ("Cleanup Needless Medias"), fileTreeContainer->hasLoadedProject());
+    m.addItem (generateWhole, TRANS ("Regenerate Whole Site"), projectHasLoaded);
+    m.addItem (cleanUpLocal, TRANS ("Cleanup Needless Medias"), projectHasLoaded);
     m.addSeparator();
     
     // set/edit theme files
     PopupMenu themeFilesMenu;
     createThemeFilesMenu (themeFilesMenu, 200);
-    m.addSubMenu (TRANS ("Modify Current Theme"), themeFilesMenu, fileTreeContainer->hasLoadedProject());
+    m.addSubMenu (TRANS ("Modify Current Theme"), themeFilesMenu, projectHasLoaded);
 
-    m.addItem (exportTpl, TRANS ("Export Current Theme"), fileTreeContainer->hasLoadedProject());
-    m.addItem (importTpl, TRANS ("Import External Theme..."), fileTreeContainer->hasLoadedProject());
-    m.addItem (releaseSystemTpl, TRANS ("Reset/Repair Default Theme"), fileTreeContainer->hasLoadedProject());
+    m.addItem (exportTpl, TRANS ("Export Current Theme"), projectHasLoaded);
+    m.addItem (importTpl, TRANS ("Import External Theme..."), projectHasLoaded);
+    m.addItem (releaseSystemTpl, TRANS ("Reset/Repair Default Theme"), projectHasLoaded);
     m.addSeparator();
 
     PopupMenu lanMenu;
@@ -318,22 +320,29 @@ void TopToolBar::popupSystemMenu()
     siteUrls.addItem (syntax, TRANS ("Text Mark Syntax and Demo..."), true);
     siteUrls.addItem (faq, TRANS ("FAQ..."), true);
     siteUrls.addItem (feedback, TRANS ("Feedback/Discuss/Interflow..."), true);
-
     m.addSubMenu (TRANS ("Help"), siteUrls);
+
+    // external resources
+    PopupMenu exResourceMenu;
+    exResourceMenu.addItem (addExResource, TRANS ("Add External Resource") + "...");
+    m.addSubMenu (TRANS ("External Resource"), exResourceMenu, projectHasLoaded);
+
     m.addItem (showAboutDialog, TRANS ("About..."), true);
 
     m.addSeparator();
     m.addCommandItem (cmdManager, exitApp);
 
     // display the menu
-    const int index = m.show();    
-    
-    if (index >= 100 && index < 200)    // recently opened files..
+    const int index = m.show();
+
+    // recently opened files..
+    if (index >= 100 && index < 200)    
     {
         fileTreeContainer->openProject (recentFiles.getFile (index - 100));
     }
-        
-    else if ((index == viewHtmlCode) || (index >= 200 && index < 300))  // edit theme file
+    
+    // edit theme file
+    else if ((index == viewHtmlCode) || (index >= 200 && index < 300))  
     {
         MainContentComponent* main = (MainContentComponent*)(getParentComponent());
         jassert (main != nullptr);
@@ -385,6 +394,8 @@ void TopToolBar::systemMenuPerform (const int index)
     else if (index == setUiColor)       setUiColour();
     else if (index == resetUiColor)     resetUiColour();
     else if (index == setupAudio)       setupAudioDevice();
+
+    else if (index == addExResource)    setExternalResource();
 
     else if (index == checkNewVersion)  URL ("http://underwaySoft.com/works/wdtp/download.html").launchInDefaultBrowser();
     else if (index == wdtpUpdateList)   URL ("http://underwaysoft.com/works/wdtp/updateList.html").launchInDefaultBrowser();
@@ -1140,6 +1151,12 @@ void TopToolBar::createThemeFilesMenu (PopupMenu& menu, const int baseId)
             menu.addItem (baseId + i + 1, files[i].getFileName(), true, 
                           (editAndPreview->themeEditorIsShowing() && editAndPreview->getEditingThemeFile() == files[i]));
     }
+}
+
+//=================================================================================================
+void TopToolBar::setExternalResource()
+{
+
 }
 
 //=================================================================================================

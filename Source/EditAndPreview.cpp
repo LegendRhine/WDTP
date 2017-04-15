@@ -41,6 +41,8 @@ EditAndPreview::EditAndPreview (MainContentComponent* mainComp_)
     mdEditor->setColour (TextEditor::textColourId, textClr);
     mdEditor->setColour (CaretComponent::caretColourId, textClr.withAlpha (0.6f));
     mdEditor->setColour (TextEditor::backgroundColourId, Colour::fromString (systemFile->getValue ("editorBackground")));
+    mdEditor->setColour (TextEditor::highlightedTextColourId, Colours::whitesmoke);
+    mdEditor->setColour (TextEditor::highlightColourId, Colours::darkcyan);
     mdEditor->setFont (systemFile->getValue ("fontSize").getFloatValue());
 
     mdEditor->setScrollBarThickness (10);

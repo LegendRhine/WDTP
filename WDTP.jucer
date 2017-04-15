@@ -130,7 +130,7 @@
                        osxSDK="default" osxCompatibility="10.9 SDK" osxArchitecture="default"/>
         <CONFIGURATION name="Release" isDebug="0" optimisation="3" targetName="wdtp"
                        binaryPath="Application/Release" osxSDK="default" osxCompatibility="10.9 SDK"
-                       osxArchitecture="default"/>
+                       osxArchitecture="default" linkTimeOptimisation="1" stripLocalSymbols="1"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_gui_extra" path="../../JUCE/modules"/>

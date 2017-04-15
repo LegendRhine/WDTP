@@ -39,12 +39,6 @@ void MarkdownEditor::popupOutlineMenu (EditAndPreview* editAndPreview,
                                        const String& editorContent,
                                        bool showMessageWhenNoOutline)
 {
-    ValueTree& tree (editAndPreview->getCurrentTree());
-    tree.setProperty("needCreateHtml", true, nullptr);
-    
-    HtmlProcessor::createArticleHtml (tree, true);
-    editAndPreview->refreshCurrentPage();
-    
     StringArray sentences;
     sentences.addTokens (editorContent, newLine, String());
     sentences.removeEmptyStrings (true);

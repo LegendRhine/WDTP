@@ -528,15 +528,27 @@ public:
             if (lastSection != currentSection)
             {
                 lastSection = currentSection;
-                g.setColour (currentSection->colour);
+                //g.setColour (currentSection->colour);
                 g.setFont (currentSection->font);
             }
 
             jassert (atom->getTrimmedText (passwordCharacter).isNotEmpty());
 
             GlyphArrangement ga;
+            const String& content (atom->getTrimmedText (passwordCharacter));
+
+            // simple syntax highlight
+            if (content.substring (0, 1) == "#")
+                g.setColour (Colours::darkred);
+
+            else if (content.substring (0, 1) == "*")
+                g.setColour (Colours::darkgreen);
+
+            else
+                g.setColour (currentSection->colour);
+
             ga.addLineOfText (currentSection->font,
-                              atom->getTrimmedText (passwordCharacter),
+                              content,
                               atomX, (float) roundToInt (lineY + lineHeight - maxDescent - 2));
             ga.draw (g);
         }

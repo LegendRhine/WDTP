@@ -274,7 +274,7 @@ void TopToolBar::popupSystemMenu()
     // external resources. their range: 300 ~ 399
     PopupMenu exResourceMenu;
     StringArray rs, rsPath;
-    rs.addTokens (fileTreeContainer->projectTree.getProperty ("resources").toString(), newLine, String());
+    rs.addLines (fileTreeContainer->projectTree.getProperty ("resources").toString());
     rs.removeEmptyStrings();
     rs.trim();
 

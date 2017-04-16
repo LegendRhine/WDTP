@@ -53,7 +53,7 @@ void TipsBank::run()
     if (tipsFile.existsAsFile())
     {
         StringArray strs;
-        strs.addTokens (tipsFile.loadFileAsString(), newLine, String());
+        strs.addLines (tipsFile.loadFileAsString());
         strs.removeEmptyStrings (true);
         strs.trim();
         

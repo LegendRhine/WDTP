@@ -40,7 +40,7 @@ void MarkdownEditor::popupOutlineMenu (EditAndPreview* editAndPreview,
                                        bool showMessageWhenNoOutline)
 {
     StringArray sentences;
-    sentences.addTokens (editorContent, newLine, String());
+    sentences.addLines (editorContent);
     sentences.removeEmptyStrings (true);
 
     // only remain the sencond and third title

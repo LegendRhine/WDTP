@@ -146,7 +146,6 @@ const String Md2Html::tableParse (const String& mdString)
 
                     while (alignIndex != -1)
                     {
-                        // here to prevent table-head columns less than this line's column
                         if (indexOfMarkArray < alignArray.size())
                             thisLine = thisLine.replaceSection (alignIndex + 3, 1, alignArray[indexOfMarkArray]);
                         else
@@ -207,7 +206,7 @@ const String Md2Html::hybridParse (const String& mdString)
 
         // process by line
         StringArray lines;
-        lines.addTokens (contentStr, newLine, String());
+        lines.addLines (contentStr);
 
         // remove 2 '~~~'
         lines.remove (0);
@@ -1224,7 +1223,7 @@ const ValueTree FrontMatterParser::processIfHasFrontMatter (String& content)
         if (indexEnd != -1)
         {
             StringArray frontStrs;
-            frontStrs.addTokens (content.substring (0, indexEnd), newLine, String());
+            frontStrs.addLines (content.substring (0, indexEnd));
 
             frontStrs.removeEmptyStrings (true);
             frontStrs.trim();

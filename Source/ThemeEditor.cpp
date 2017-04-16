@@ -10,8 +10,6 @@
 
 #include "WdtpHeader.h"
 
-extern ApplicationCommandManager* cmdManager;
-
 //==============================================================================
 /** search comp for theme editor */
 class SearchComp : public Component,
@@ -149,11 +147,13 @@ ThemeEditor::~ThemeEditor()
 }
 
 //=================================================================================================
-void ThemeEditor::setFileToEdit (const File& file)
+void ThemeEditor::setFileToEdit (const File& file, bool needRegeneratePage)
 {
     currentFile = file;
     jassert (currentFile.existsAsFile());
+
     setText (currentFile.loadFileAsString(), false);
+    needRegenerate = needRegeneratePage;
 }
 
 //=================================================================================================
@@ -198,10 +198,23 @@ void ThemeEditor::performPopupMenuAction (int index)
 {
     if (applyIndex == index)
     {
-        currentFile.replaceWithText (getText());
-        editAndPreview->getCurrentTree().setProperty ("needCreateHtml", true, nullptr);
-        cmdManager->invokeDirectly (TopToolBar::MenuAndCmdIndex::generateCurrent, false);
-        editAndPreview->forcePreview();
+        if (currentFile.replaceWithText (getText()))
+        {
+            if (needRegenerate)
+                editAndPreview->getCurrentTree().setProperty ("needCreateHtml", true, nullptr);
+
+            // it wont't refresh the page if nothing has changed
+            editAndPreview->forcePreview();
+
+            if (!needRegenerate) // so, here need to do this ugly judge
+                editAndPreview->refreshCurrentPage();
+
+            grabKeyboardFocus();
+        }
+        else
+        {
+            SHOW_MESSAGE (TRANS ("Something worong during saving this file."));
+        }
     }
 
     else if (closeIndex == index)
@@ -281,6 +294,7 @@ void ThemeEditor::exitEditMode()
 {
     setText (String(), false);
     currentFile = File();
+    needRegenerate = false;
 
     MainContentComponent* main = (MainContentComponent*)(editAndPreview->getParentComponent());
     jassert (main != nullptr);

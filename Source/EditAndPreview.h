@@ -29,13 +29,15 @@ public:
 
     void workAreaStartWork (ValueTree& newDocTree);
     void updateEditorContent();
-    void editThemeFile (const File& themeFile);
+    void editThemeFile (const File& themeFile, bool needRegenerate);
 
-    /** false for switch to edit mode. true is preview mode */
+    /** false for switch to edit mode. but note: 
+        true isn't make sure switch to preview mode 
+        (it depends on the state of toolbar's 'big eye' button) */
     void switchMode (const bool switchToPreview);
     void forcePreview();
-    void refreshCurrentPage()                   { webView->refresh(); }
 
+    void refreshCurrentPage()                   { webView->refresh(); }
     void restartWebBrowser();
     void setMdEditorReadOnly (const bool onlyForRead);
 

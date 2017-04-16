@@ -364,12 +364,12 @@ void TopToolBar::popupSystemMenu()
 
         if (index == viewHtmlCode)
         {
-            editAndPreview->editThemeFile (editAndPreview->getCurrentUrl());
+            editAndPreview->editThemeFile (editAndPreview->getCurrentUrl(), false);
         }
         else if (index == 200)
         {
             editAndPreview->editThemeFile (fileTreeContainer->projectFile.getSiblingFile ("site")
-                                           .getChildFile ("add-in").getChildFile ("style.css"));
+                                           .getChildFile ("add-in").getChildFile ("style.css"), false);
         }
         else
         {
@@ -378,7 +378,7 @@ void TopToolBar::popupSystemMenu()
             const File& dirOfRender (FileTreeContainer::projectFile.getSiblingFile ("themes").getChildFile (currentRender));
             dirOfRender.findChildFiles (files, File::findFiles, false, "*.html");
 
-            editAndPreview->editThemeFile (files[index - 200 - 1]);
+            editAndPreview->editThemeFile (files[index - 200 - 1], true);
         }
     }
 

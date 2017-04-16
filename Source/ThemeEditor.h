@@ -21,7 +21,7 @@ public:
     ThemeEditor (EditAndPreview* parent);
     ~ThemeEditor();
 
-    void setFileToEdit (const File& file);
+    void setFileToEdit (const File& file, bool needRegenerate);
     const File& getCurrentFile() const                  { return currentFile; }
     void exitEditMode();
 
@@ -50,6 +50,7 @@ private:
     ScopedPointer<ColourSelectorWithPreset> clrSelector;
     StringPairArray tags;
     PopupMenu tagsMenu;
+    bool needRegenerate = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (ThemeEditor)
 };

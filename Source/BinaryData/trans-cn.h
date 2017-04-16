@@ -200,6 +200,7 @@ countries: cn
 "WDTP" = "山湖路"
 "Description of this project..." = "项目描述..."
 "Something wrong during create this project file." = "创建项目期间出现错误."
+"Something worong during saving this file." = "保存文件期间出现错误."
 "Do you really want to cleanup the whole site\nand then auto-regenerate them all?" = "确实要彻底清理并重新生成整个网站吗？"
 "Site clean and regenerate successful!" = "网站清理并生成完毕!"
 "All changed items regenerate successful!" = "所有已改变的条目重新生成完毕!"

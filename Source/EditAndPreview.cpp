@@ -169,9 +169,9 @@ void EditAndPreview::updateEditorContent()
 }
 
 //=================================================================================================
-void EditAndPreview::editThemeFile (const File& themeFile)
+void EditAndPreview::editThemeFile (const File& themeFile, bool needRegenerate)
 {
-    themeEditor->setFileToEdit (themeFile);
+    themeEditor->setFileToEdit (themeFile, needRegenerate);
     displaySetupArea (true, false);
 }
 

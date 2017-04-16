@@ -1522,10 +1522,12 @@ void MarkdownEditor::selectedAddToTipsBank()
                 SHOW_MESSAGE (TRANS ("The tip's name must more than 1 character"));
                 return;
             }
-                      
-            if (TipsBank::getInstance()->addNewTip (tipName, getHighlightedText()))
+
+            const String tipContent (getHighlightedText().replace ("\r", String()).replace ("\n", "<br>"));
+
+            if (TipsBank::getInstance()->addNewTip (tipName, tipContent))
             {
-                if (tipsFile.appendText ("\n- " + tipName + "\n    - " + getHighlightedText() + "\n"))
+                if (tipsFile.appendText ("\n- " + tipName + "\n    - " + tipContent + "\n"))
                     SHOW_MESSAGE (TRANS ("A new tip has been added successful!"));
                 else
                     SHOW_MESSAGE (TRANS ("Shomehow this tip added failed."));
@@ -1670,7 +1672,7 @@ void MarkdownEditor::timerCallback (int timerID)
         {
             if (itr.getKey().containsIgnoreCase (chars))
             {
-                String menuStr (itr.getValue());
+                String menuStr (itr.getValue().replace ("<br>", " "));
                 
                 if (menuStr.length() > 35)
                     menuStr = menuStr.substring (0, 35) + "...";
@@ -1716,7 +1718,7 @@ void MarkdownEditor::autoComplete (const int index)
     }
 
     if (!(bool)parent->getCurrentTree().getProperty ("archive"))
-        TextEditor::insertTextAtCaret (menuItems[index]);
+        TextEditor::insertTextAtCaret (menuItems[index].replace ("<br>", newLine));
 }
 
 //=================================================================================================

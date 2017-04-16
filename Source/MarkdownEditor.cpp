@@ -1389,6 +1389,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     // for Chinese punctuation matching
     else if (key == KeyPress::deleteKey || key == KeyPress::backspaceKey)
     {
+        PopupMenu::dismissAllActiveMenus();
         delPressed = true;
     }
 

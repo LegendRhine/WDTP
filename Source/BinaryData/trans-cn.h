@@ -175,7 +175,7 @@ countries: cn
 "Popup Layout Menu" = "弹出布局菜单"
 "New Project..." = "新建项目..."
 "Open Project..." = "打开项目..."
-"Open Rcent" = "最近打开过的项目"
+"Open Recent" = "最近打开过的项目"
 "Close Project" = "关闭项目"
 "Update Current Page" = "重新生成并刷新当前页面"
 "Regenerate All Changed" = "重新生成所有需要生成的"

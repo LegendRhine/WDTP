@@ -269,7 +269,7 @@ void TopToolBar::popupSystemMenu()
     recentFiles.restoreFromString (systemFile->getValue ("recentFiles"));
     PopupMenu recentFilesMenu;
     recentFiles.createPopupMenuItems (recentFilesMenu, 100, true, true);
-    m.addSubMenu (TRANS ("Open Rcent"), recentFilesMenu);
+    m.addSubMenu (TRANS ("Open Recent"), recentFilesMenu);
 
     // external resources. their range: 300 ~ 399
     PopupMenu exResourceMenu;

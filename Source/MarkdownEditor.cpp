@@ -1672,8 +1672,8 @@ void MarkdownEditor::timerCallback (int timerID)
             {
                 String menuStr (itr.getValue());
                 
-                if (menuStr.length() > 30)
-                    menuStr = menuStr.substring(0, 30) + "...";
+                if (menuStr.length() > 35)
+                    menuStr = menuStr.substring (0, 35) + "...";
                 
                 tipsMenu.addItem (menuItems.size(), menuStr);
                 menuItems.add (itr.getValue());
@@ -1682,10 +1682,9 @@ void MarkdownEditor::timerCallback (int timerID)
         
         if (tipsMenu.getNumItems() > 0) 
         {
-            const Rectangle<int> posOfMenu (
-                getCaretRectangle().translated (getScreenBounds().getX() + 12,
-                                                getScreenBounds().getY() + 12
-                                                - getViewport()->getViewPositionY()));
+            const Rectangle<int> posOfMenu (getCaretRectangle()
+                .translated (getScreenBounds().getX() + 12,
+                             getScreenBounds().getY() + 12 - getViewport()->getViewPositionY()));
 
             tipsMenu.showMenuAsync (PopupMenu::Options().withTargetScreenArea (posOfMenu),
                                     ModalCallbackFunction::forComponent (menuItemChosenCallback, this));

@@ -19,33 +19,89 @@ const String Md2Html::mdStringToHtml (const String& mdString)
         return String();
 
     // parse markdown, must followed by these order
-    String htmlContent (mdString);
+    String htmlContent (mdString);    
 
-    htmlContent = identifierParse (htmlContent);
-    htmlContent = postilParse (htmlContent);
-    htmlContent = commentParse (htmlContent);
-    htmlContent = tableParse (htmlContent);
-    htmlContent = hybridParse (htmlContent);
-    htmlContent = codeBlockParse (htmlContent);
-    htmlContent = endnoteParse (htmlContent);
-    htmlContent = inlineCodeParse (htmlContent);
-    htmlContent = boldAndItalicParse (htmlContent);
-    htmlContent = boldParse (htmlContent);
-    htmlContent = italicParse (htmlContent);
-    htmlContent = highlightParse (htmlContent);
-    htmlContent = tocParse (htmlContent);
+    if (htmlContent.contains (")["))
+        htmlContent = postilParse (htmlContent);
+
+    if (htmlContent.contains ("//////"))
+        htmlContent = commentParse (htmlContent);
+
+    if ((htmlContent.contains ("------") 
+         || htmlContent.contains ("======") 
+         || htmlContent.contains ("//////"))
+        && htmlContent.contains (" | "))
+        htmlContent = tableParse (htmlContent);
+
+    if (htmlContent.contains ("[^"))
+        htmlContent = endnoteParse (htmlContent);
+
+    if (htmlContent.contains ("`"))
+    {
+        if (htmlContent.contains ("```"))
+            htmlContent = codeBlockParse (htmlContent);
+
+        htmlContent = inlineCodeParse (htmlContent);
+    }
+
+    if (htmlContent.contains ("*"))
+    {
+        if (htmlContent.contains ("**"))
+        {
+            if (htmlContent.contains ("***"))
+            {
+                if (htmlContent.contains ("******"))
+                    htmlContent = identifierParse (htmlContent);
+
+                htmlContent = boldAndItalicParse (htmlContent);
+            }
+
+            htmlContent = boldParse (htmlContent);
+        }
+
+        htmlContent = italicParse (htmlContent);
+    }
+
+    if (htmlContent.contains ("~~"))
+    {
+        if (htmlContent.contains ("~~~"))
+            htmlContent = hybridParse (htmlContent);
+
+        htmlContent = highlightParse (htmlContent);
+    }
+
+    if (htmlContent.contains ("[TOC]"))
+        htmlContent = tocParse (htmlContent);
+
     htmlContent = processByLine (htmlContent);
-    htmlContent = spaceLinkParse (htmlContent);
-    htmlContent = imageParse (htmlContent);
-    htmlContent = audioParse (htmlContent);
-    htmlContent = videoParse (htmlContent);
-    htmlContent = mdLinkParse (htmlContent);
-    htmlContent = listParse (htmlContent, true);
-    htmlContent = listParse (htmlContent, false);
-    htmlContent = cnBracketParse (htmlContent);
-    htmlContent = cleanUp (htmlContent);
 
+    if (htmlContent.contains (" http"))
+        htmlContent = spaceLinkParse (htmlContent);
+
+    if (htmlContent.contains ("!["))
+        htmlContent = imageParse (htmlContent);
+
+    if (htmlContent.contains ("~[]("))
+        htmlContent = audioParse (htmlContent);
+
+    if (htmlContent.contains ("@[]("))
+        htmlContent = videoParse (htmlContent);
+
+    if (htmlContent.contains ("]("))
+        htmlContent = mdLinkParse (htmlContent);
+
+    if (htmlContent.contains ("+ "))
+        htmlContent = listParse (htmlContent, true);
+
+    if (htmlContent.contains ("- "))
+        htmlContent = listParse (htmlContent, false);
+
+    if (htmlContent.contains (CharPointer_UTF8 ("\xef\xbc\x88")))
+        htmlContent = cnBracketParse (htmlContent);
+    
+    htmlContent = cleanUp (htmlContent);
     //DBG (htmlContent);
+
     return htmlContent;
 }
 

@@ -309,9 +309,10 @@ void TopToolBar::popupSystemMenu()
     createThemeFilesMenu (themeFilesMenu, 200);
     m.addSubMenu (TRANS ("Modify Current Theme"), themeFilesMenu, projectHasLoaded);
 
+    const bool thmeEditorIsShowing = editAndPreview->themeEditorIsShowing();
     m.addItem (exportTpl, TRANS ("Export Current Theme"), projectHasLoaded);
-    m.addItem (importTpl, TRANS ("Import External Theme..."), projectHasLoaded);
-    m.addItem (releaseSystemTpl, TRANS ("Reset/Repair Default Theme"), projectHasLoaded);
+    m.addItem (importTpl, TRANS ("Import External Theme..."), projectHasLoaded && !thmeEditorIsShowing);
+    m.addItem (releaseSystemTpl, TRANS ("Reset/Repair Default Theme"), projectHasLoaded && !thmeEditorIsShowing);
     m.addSeparator();
 
     PopupMenu lanMenu;

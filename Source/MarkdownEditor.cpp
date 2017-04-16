@@ -1521,22 +1521,20 @@ void MarkdownEditor::selectedAddToTipsBank()
                 SHOW_MESSAGE (TRANS ("The tip's name must more than 1 character"));
                 return;
             }
-            
-            if (tipsFile.appendText (newLine 
-                                     + "- " + tipName + newLine 
-                                     + "    - " + getHighlightedText().trim()))
+                      
+            if (TipsBank::getInstance()->addNewTip (tipName, getHighlightedText()))
             {
-                if (TipsBank::getInstance()->addNewTip (tipName, getHighlightedText().trim()))
+                if (tipsFile.appendText ("\n- " + tipName + "\n    - " + getHighlightedText() + "\n"))
                     SHOW_MESSAGE (TRANS ("A new tip has been added successful!"));
                 else
-                    SHOW_MESSAGE (TRANS ("This tip has been there already."));
+                    SHOW_MESSAGE (TRANS ("Shomehow this tip added failed."));
             }
             else
             {
-                SHOW_MESSAGE (TRANS ("Shomehow this tip added failed."));
+                SHOW_MESSAGE (TRANS ("This tip has been there already."));
             }
         }
-    }
+        }
     else
     {
         SHOW_MESSAGE (TRANS ("Cannot find 'root/tips'!\nPlease create the tips doc first."));

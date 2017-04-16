@@ -577,32 +577,36 @@ void TopToolBar::closeProject()
 //=================================================================================================
 void TopToolBar::cleanAndGenerateAll()
 {
-    if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon,
+    const int index = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon,
                                       TRANS ("Confirm"),
-                                      TRANS ("Do you really want to cleanup the whole site\n"
-                                             "and then auto-regenerate them all?")))
-    {
-        // cleanup needless medias
+                                      TRANS ("Cleanup all needless medias before regenerate the site?"),
+                                                       TRANS ("Regenerate Without Cleanup"),
+                                                       TRANS ("Cleanup Before Regenerate"));
+
+    if (index == 0)
+        return;
+
+    // cleanup needless medias
+    if (index == 2)
         cleanNeedlessMedias (false);
 
-        // cleanup all html but medias 
-        const File& site (FileTreeContainer::projectFile.getSiblingFile ("site"));
-        Array<File> htmls;
-        site.findChildFiles (htmls, File::findFiles, true, "*.html");
+    // cleanup all html but medias 
+    const File& site (FileTreeContainer::projectFile.getSiblingFile ("site"));
+    Array<File> htmls;
+    site.findChildFiles (htmls, File::findFiles, true, "*.html");
 
-        for (int i = htmls.size(); --i >= 0; )
-            htmls[i].deleteFile();
+    for (int i = htmls.size(); --i >= 0; )
+        htmls[i].deleteFile();
 
-        // initial progress value
-        totalItems = 0;
-        SwingUtilities::getAllChildrenNumbers (FileTreeContainer::projectTree, totalItems);
+    // initial progress value
+    totalItems = 0;
+    SwingUtilities::getAllChildrenNumbers (FileTreeContainer::projectTree, totalItems);
 
-        accumulator = 0;
-        progressValue = 0.0;
+    accumulator = 0;
+    progressValue = 0.0;
 
-        progressBar.enterModalState();
-        startThread();  // start generate..
-    }
+    progressBar.enterModalState();
+    startThread();  // start generate..
 }
 
 //=================================================================================================
@@ -613,28 +617,28 @@ int TopToolBar::accumulator = 0;
 //=================================================================================================
 void TopToolBar::generateHtmlFiles (ValueTree tree)
 {
-    if (!DocTreeViewItem::getMdFileOrDir (tree).exists())
-        return;
-
-    ++accumulator;
-    progressValue = (double)accumulator / totalItems;
-    const bool isDoc = (tree.getType().toString() == "doc");
-
+    if (DocTreeViewItem::getMdFileOrDir (tree).exists())
     {
-        // here must using messageThreadLock for item's repaint
-        const MessageManagerLock mmLock;
-        tree.setProperty ("needCreateHtml", true, nullptr);
+        ++accumulator;
+        progressValue = (double)accumulator / totalItems;
+        const bool isDoc = (tree.getType().toString() == "doc");
 
-        if (isDoc)
-            HtmlProcessor::createArticleHtml (tree, false);
-        else
-            HtmlProcessor::createIndexHtml (tree, false);
-    }
+        {
+            // here must using messageThreadLock for item's repaint
+            const MessageManagerLock mmLock;
+            tree.setProperty ("needCreateHtml", true, nullptr);
 
-    if (!isDoc)
-    {
-        for (int i = tree.getNumChildren(); --i >= 0; )
-            generateHtmlFiles (tree.getChild (i));
+            if (isDoc)
+                HtmlProcessor::createArticleHtml (tree, false);
+            else
+                HtmlProcessor::createIndexHtml (tree, false);
+        }
+
+        if (!isDoc)
+        {
+            for (int i = tree.getNumChildren(); --i >= 0; )
+                generateHtmlFiles (tree.getChild (i));
+        }
     }
 }
 
@@ -694,16 +698,15 @@ void TopToolBar::run()
     accumulator = 0;
     progressValue = 0.999;
 
-    AlertWindow::showMessageBox (AlertWindow::InfoIcon, 
+    AlertWindow::showMessageBox (AlertWindow::InfoIcon,
                                  TRANS ("Congratulations"),
-                                 TRANS ("Site clean and regenerate successful!"));
+                                 TRANS ("The site regenerate successful!"));
 
     FileTreeContainer::saveProject();
     progressValue = 0.0;
 
     const MessageManagerLock mmLock;
     progressBar.exitModalState (0);
-
     //DBGX (int (Time::getMillisecondCounter() - startTime));
 }
 

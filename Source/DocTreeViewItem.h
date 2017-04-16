@@ -105,10 +105,16 @@ private:
 
     static DocTreeViewItem* getRootItem (DocTreeViewItem* subItem);
 
-    static void statis (const ValueTree& tree, int& dirNums,
-                        int& totalWords, int& totalImgs);
+    static void statis (const ValueTree& tree, 
+                        int& dirNums,
+                        int& totalWords, 
+                        int& innerImgNums,
+                        int& exImgNums);
 
-    static void getWordsAndImgNumsInDoc (const ValueTree& tree, int& words, int& imgNums);
+    static void getWordsAndImgNumsInDoc (const ValueTree& tree, 
+                                         int& words, 
+                                         int& innerImgNums,
+                                         int& exImgNums);
 
     //=========================================================================
     enum MenuIndex

@@ -990,14 +990,14 @@ void DocTreeViewItem::statistics()
 
     if (isDoc)
     {
-        int words = 0;
-        int imgNums = 0;
-        getWordsAndImgNumsInDoc (tree, words, imgNums);
+        int words = 0, innerImgNums = 0, exImgNums = 0;
+        getWordsAndImgNumsInDoc (tree, words, innerImgNums, exImgNums);
 
         staStr = TRANS ("File: ") + tree.getProperty ("name").toString() + newLine
             + TRANS ("Title: ") + tree.getProperty ("title").toString() + newLine
             + TRANS ("Words: ") + String (words) + "  "
-            + TRANS ("Images: ") + String (imgNums);
+            + TRANS ("Inner Images: ") + String (innerImgNums) + "  "
+            + TRANS ("External Images: ") + String (exImgNums);
     }
     else
     {
@@ -1005,18 +1005,19 @@ void DocTreeViewItem::statistics()
         HtmlProcessor::getDocNumbersOfTheDir (tree, docNums);
 
         int dirNums = -1;  // non-include itself
-        int totalWords = 0;
-        int totalImgs = 0;
+        int totalWords = 0, totalInnerImgs = 0, totalExImgs = 0;
         const bool isDir = (tree.getType().toString() == "dir");
 
-        statis (tree, dirNums, totalWords, totalImgs);
+        statis (tree, dirNums, totalWords, totalInnerImgs, totalExImgs);
+
         staStr = (isDir ? (TRANS ("Dir: ") + tree.getProperty ("name").toString() + "  ") : String())
             + (isDir ? TRANS ("Title: ") : TRANS ("Project: "))
             + tree.getProperty ("title").toString() + newLine
             + TRANS ("Sub-dirs: ") + String (dirNums) + "  "
             + TRANS ("Docs: ") + String (docNums) + newLine
             + TRANS ("Total Words: ") + String (totalWords) + "  "
-            + TRANS ("Total Images: ") + String (totalImgs);
+            + TRANS ("Inner Images: ") + String (totalInnerImgs) + "  "
+            + TRANS ("External Images: ") + String (totalExImgs);
     }
 
     ScopedPointer<StatisComp> statisComp = new StatisComp (treeContainer, this, isDoc, staStr);
@@ -1398,7 +1399,10 @@ const bool DocTreeViewItem::importExternalDocs (const Array<File>& docs,
 }
 
 //=================================================================================================
-void DocTreeViewItem::getWordsAndImgNumsInDoc (const ValueTree& tree, int& words, int& imgNums)
+void DocTreeViewItem::getWordsAndImgNumsInDoc (const ValueTree& tree, 
+                                               int& words,
+                                               int& innerImgNums,
+                                               int& exImgNums)
 {
     const String& content (getMdFileOrDir (tree).loadFileAsString());
     words = content.removeCharacters (" ").removeCharacters (newLine).length() + words;
@@ -1409,17 +1413,22 @@ void DocTreeViewItem::getWordsAndImgNumsInDoc (const ValueTree& tree, int& words
     while (index != -1)
     {
         if (content.substring (index - 1, index) != "\\")
-            ++imgNums;
+        {
+            if (content.substring (index + 2, index + 6).toLowerCase() == "http")
+                ++exImgNums;
+            else
+                ++innerImgNums;
+        }
 
         index = content.indexOf (index + 2, "![");
     }
 
-    // for html img
+    // for html img, count as external image
     index = content.indexOf (0, "<img src=");
 
     while (index != -1)
     {
-        ++imgNums;
+        ++exImgNums;
         index = content.indexOf (index + 9, "<img src=");
     }
 }
@@ -1483,18 +1492,22 @@ DocTreeViewItem* DocTreeViewItem::getRootItem (DocTreeViewItem* subItem)
 }
 
 //=================================================================================================
-void DocTreeViewItem::statis (const ValueTree& tree, int& dirNums, int& totalWords, int& totalImgs)
+void DocTreeViewItem::statis (const ValueTree& tree, 
+                              int& dirNums, 
+                              int& totalWords, 
+                              int& innerImgNums,
+                              int& exImgNums)
 {
     if (tree.getType().toString() == "doc")
     {
-        getWordsAndImgNumsInDoc (tree, totalWords, totalImgs);
+        getWordsAndImgNumsInDoc (tree, totalWords, innerImgNums, exImgNums);
     }
     else
     {
         ++dirNums;
 
         for (int i = tree.getNumChildren(); --i >= 0; )
-            statis (tree.getChild (i), dirNums, totalWords, totalImgs);
+            statis (tree.getChild (i), dirNums, totalWords, innerImgNums, exImgNums);
     }
 }
 

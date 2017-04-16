@@ -647,6 +647,8 @@ const String Md2Html::tocParse (const String& mdString)
     // process h1, h2 and h3
     for (int i = lines.size(); --i >= 0; )
     {
+        lines.getReference (i) = lines[i].trimStart();
+
         if (lines[i].substring (0, 2) == "# ")
             lines.getReference (i) = "<a href=\"#" + lines[i].substring (2) + "\">"
             + lines[i].substring (2) + "</a><br>";

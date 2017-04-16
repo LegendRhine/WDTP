@@ -1403,20 +1403,24 @@ void DocTreeViewItem::getWordsAndImgNumsInDoc (const ValueTree& tree, int& words
     const String& content (getMdFileOrDir (tree).loadFileAsString());
     words = content.removeCharacters (" ").removeCharacters (newLine).length() + words;
 
+    // for markdown img
     int index = content.indexOf (0, "![");
 
     while (index != -1)
     {
-        ++imgNums;
-        index = content.indexOf (index + 1, "![");
+        if (content.substring (index - 1, index) != "\\")
+            ++imgNums;
+
+        index = content.indexOf (index + 2, "![");
     }
 
+    // for html img
     index = content.indexOf (0, "<img src=");
 
     while (index != -1)
     {
         ++imgNums;
-        index = content.indexOf (index + 8, "<img src=");
+        index = content.indexOf (index + 9, "<img src=");
     }
 }
 

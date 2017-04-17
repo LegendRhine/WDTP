@@ -1040,12 +1040,17 @@ void MarkdownEditor::insertExternalFiles (const Array<File>& mediaFiles)
 //=================================================================================================
 void MarkdownEditor::mouseDown (const MouseEvent& e)
 {
-    if (getHighlightedText().isNotEmpty()
-        && getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
+    if (getHighlightedText ().isNotEmpty ()
+        && getHighlightedRegion ().contains (getTextIndexAt (e.x, e.y)))
+    {
         draggingSelected = true;
+        yOfViewportWhenDragging = 0;
+    }
 
     else
+    {
         TextEditor::mouseDown (e);
+    }
 }
 
 //=================================================================================================
@@ -1064,7 +1069,10 @@ void MarkdownEditor::mouseDrag (const MouseEvent& e)
         Rectangle<float> pos (cursorX + 10.f, cursorY + 12.f - getViewport()->getViewPositionY(), 
                               2.5f, cursorHeight);
 
-        draggingPosition.setRectangle (pos);        
+        draggingPosition.setRectangle (pos);
+
+        if (getViewport()->autoScroll (e.x, e.y, 30, 10))
+            yOfViewportWhenDragging = getViewport()->getViewPositionY();
     }
 
     else
@@ -1076,17 +1084,16 @@ void MarkdownEditor::mouseDrag (const MouseEvent& e)
 //=================================================================================================
 void MarkdownEditor::mouseUp (const MouseEvent& e)
 {
-    setMouseCursor (MouseCursor::IBeamCursor);
-    setCaretVisible (true);
-    draggingPosition.setRectangle (Rectangle<float> (0, 0, 0, 0));
-
     if (draggingSelected
         && !getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
     {
         SystemClipboard::copyTextToClipboard (getHighlightedText());
 
-        if (!e.mods.isCommandDown())
+        if (!e.mods.isCommandDown())  // clear the highlight selected
             insertTextAtCaret (String());
+
+        if (yOfViewportWhenDragging != 0)
+            getViewport()->setViewPosition(0, yOfViewportWhenDragging);
 
         setCaretPosition (getTextIndexAt (e.x, e.y));
         insertTextAtCaret (SystemClipboard::getTextFromClipboard());
@@ -1103,7 +1110,12 @@ void MarkdownEditor::mouseUp (const MouseEvent& e)
             setCaretPosition (getCaretPosition());
     }
 
+    setMouseCursor (MouseCursor::IBeamCursor);
+    setCaretVisible (true);
+
     draggingSelected = false;
+    yOfViewportWhenDragging = 0;
+    draggingPosition.setRectangle (Rectangle<float> (0, 0, 0, 0));
 }
 
 //=================================================================================================

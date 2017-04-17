@@ -15,8 +15,12 @@
 SwingEditor::SwingEditor()
 {
     // mark for dragging position of the selected text
-    draggingPosition.setFill (Colours::darkgrey);
+    draggingPosition.setFill (Colours::black.withAlpha (0.6f));
     addAndMakeVisible (draggingPosition);
+
+    setScrollBarThickness (10);
+    setIndents (8, 8);
+    setBorder (BorderSize<int> (1, 1, 1, 1));
 }
 
 //=================================================================================================
@@ -55,7 +59,7 @@ void SwingEditor::mouseDrag (const MouseEvent& e)
         float cursorHeight = getFont().getHeight();
 
         getCharPosition (getTextIndexAt (e.x, e.y), cursorX, cursorY, cursorHeight);
-        Rectangle<float> pos (cursorX + 10.f, cursorY + 12.f - getViewport()->getViewPositionY(),
+        Rectangle<float> pos (cursorX + 8, cursorY + 10 - getViewport()->getViewPositionY(),
                               2.5f, cursorHeight);
 
         draggingPosition.setRectangle (pos);
@@ -142,7 +146,103 @@ bool SwingEditor::keyPressed (const KeyPress& key)
         delPressed = true;
     }
 
+    // tab
+    else if (key == KeyPress (KeyPress::tabKey))
+    {
+        tabKeyInput();
+        return true;
+    }
+
+    // shift + tab (anti-indent)
+    else if (key == KeyPress (KeyPress::tabKey, ModifierKeys::shiftModifier, 0))
+    {
+        shiftTabInput();
+        return true;
+    }
+
     return TextEditor::keyPressed (key);
+}
+
+//=================================================================================================
+void SwingEditor::tabKeyInput()
+{
+    if (getHighlightedText().isEmpty())
+    {
+        const int position = getCaretPosition();
+        String content ("    ");
+        moveCaretUp (false);
+
+        while (getCaretPosition() - 1 >= 0
+               && getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())) != "\n")
+        {
+            moveCaretUp (false);
+        }
+
+        if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 2)) == "- ")
+            content += "- ";
+
+        else if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 2)) == "+ ")
+            content += "+ ";
+
+        setCaretPosition (position);
+        TextEditor::insertTextAtCaret (content);
+    }
+    else
+    {
+        StringArray content;
+        content.addLines (getHighlightedText());
+
+        for (int i = content.size(); --i >= 0; )
+            content.getReference (i) = "    " + content.getReference (i);
+
+        TextEditor::insertTextAtCaret (content.joinIntoString (newLine));
+        moveCaretRight (false, false);
+    }
+}
+
+//=================================================================================================
+void SwingEditor::shiftTabInput()
+{
+    if (getHighlightedText().isEmpty())
+    {
+        moveCaretToStartOfLine (false);
+
+        if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 4)) == "    ")
+            setHighlightedRegion (Range<int> (getCaretPosition(), getCaretPosition() + 4));
+
+        else if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 3)) == "   ")
+            setHighlightedRegion (Range<int> (getCaretPosition(), getCaretPosition() + 3));
+
+        else if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 2)) == "  ")
+            setHighlightedRegion (Range<int> (getCaretPosition(), getCaretPosition() + 2));
+
+        else if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 1)) == " ")
+            setHighlightedRegion (Range<int> (getCaretPosition(), getCaretPosition() + 1));
+
+        TextEditor::insertTextAtCaret (String());
+    }
+    else // let the selected anti-indent
+    {
+        StringArray content;
+        content.addLines (getHighlightedText());
+
+        for (int i = content.size(); --i >= 0; )
+        {
+            if (content[i].substring (0, 4) == "    ")
+                content.getReference (i) = content[i].substring (4);
+
+            else if (content[i].substring (0, 3) == "   ")
+                content.getReference (i) = content[i].substring (3);
+
+            else if (content[i].substring (0, 2) == "  ")
+                content.getReference (i) = content[i].substring (2);
+
+            else if (content[i].substring (0, 1) == " ")
+                content.getReference (i) = content[i].substring (1);
+        }
+
+        TextEditor::insertTextAtCaret (content.joinIntoString (newLine));
+    }
 }
 
 //=================================================================================================

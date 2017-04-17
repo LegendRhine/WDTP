@@ -12,7 +12,8 @@
 #define SWINGEDITOR_H_INCLUDED
 
 /** a extend text editor for drag and drop the highlight selected content,
-    auto-wrap (punctuation matching) etc.
+    auto-wrap (punctuation matching), press 'tab' for insert/indent 4 whitespaces,
+    'shift + tab' anti-indent the selected, etc.
 */
 class SwingEditor : public TextEditor,
                     public Timer
@@ -30,6 +31,7 @@ public:
     void mouseMove (const MouseEvent& e) override;
     void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails&) override;
 
+    /** tab, shift + tab */
     bool keyPressed (const KeyPress& key) override;
 
     /** auto-wrap, punctuation matching...*/
@@ -40,6 +42,9 @@ public:
 
 private:
     //=================================================================================================
+    void tabKeyInput();
+    void shiftTabInput();
+
     DrawableRectangle draggingPosition;
     String selectedForCnPunc;
     int yOfViewportWhenDragging = 0;

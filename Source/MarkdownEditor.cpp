@@ -15,13 +15,15 @@ extern PropertiesFile* systemFile;
 //=================================================================================================
 MarkdownEditor::MarkdownEditor (EditAndPreview* parent_)
     : parent (parent_),
-    fontSizeSlider (Slider::LinearHorizontal, Slider::TextBoxBelow),
-    posBeforeInputNewText (0),
-    delPressed (false)
+    fontSizeSlider (Slider::LinearHorizontal, Slider::TextBoxBelow)
 {
     fontSizeSlider.setRange (15.0, 35.0, 1.0);
     fontSizeSlider.setDoubleClickReturnValue (true, 20.0);
     fontSizeSlider.setSize (300, 60);
+
+    // mark for dragging position of the selected text
+    draggingPosition.setFill (Colours::darkred.withAlpha (0.85f));
+    addAndMakeVisible (draggingPosition);
 
     //setLineSpacing (1.35f);
 }
@@ -1033,6 +1035,63 @@ void MarkdownEditor::insertExternalFiles (const Array<File>& mediaFiles)
     }
 
     TextEditor::insertTextAtCaret (content);
+}
+
+//=================================================================================================
+void MarkdownEditor::mouseDown (const MouseEvent& e)
+{
+    if (getHighlightedText().isNotEmpty()
+        && getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
+        draggingSelected = true;
+
+    else
+        TextEditor::mouseDown (e);
+}
+
+//=================================================================================================
+void MarkdownEditor::mouseDrag (const MouseEvent& e)
+{
+    if (draggingSelected)
+    {
+        setCaretVisible (false);
+        setMouseCursor (e.mods.isCommandDown()
+                        ? MouseCursor::CopyingCursor
+                        : MouseCursor::UpDownLeftRightResizeCursor);
+    }
+
+    else
+    {
+        TextEditor::mouseDrag (e);
+    }
+}
+
+//=================================================================================================
+void MarkdownEditor::mouseUp (const MouseEvent& e)
+{
+    setMouseCursor (MouseCursor::IBeamCursor);
+    setCaretVisible (true);
+
+    if (draggingSelected
+        && !getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
+    {
+        SystemClipboard::copyTextToClipboard (getHighlightedText());
+
+        if (!e.mods.isCommandDown())
+            insertTextAtCaret (String());
+
+        setCaretPosition (getTextIndexAt (e.x, e.y));
+        insertTextAtCaret (SystemClipboard::getTextFromClipboard());
+    }
+
+    else
+    {
+        TextEditor::mouseUp (e);
+
+        if (getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
+            setCaretPosition (getCaretPosition());
+    }
+
+    draggingSelected = false;
 }
 
 //=================================================================================================

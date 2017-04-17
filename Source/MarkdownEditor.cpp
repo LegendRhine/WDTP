@@ -238,7 +238,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSeparator();
 
         menu.addItem (showTips, TRANS ("Tips/Replace") + "..." + ctrlStr + "G)", selectSomething);
-        menu.addItem (joinTips, TRANS ("Add to Tips Bank") + "...", selectSomething);
+        menu.addItem (joinTips, TRANS ("Add to Tips Bank") + "..." + ctrlStr + "F1)", selectSomething);
         menu.addSeparator();
 
         TextEditor::addPopupMenuItems (menu, e);
@@ -1207,6 +1207,12 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
             startTimer (30);
     }
 
+    // ctrl + F1 for add the selected to tips-bank
+    else if (key == KeyPress (KeyPress::F1Key, ModifierKeys::commandModifier, 0))
+    {
+        selectedAddToTipsBank();
+    }
+
     // return-key 
     else if (key == KeyPress (KeyPress::returnKey))
     {
@@ -1338,6 +1344,9 @@ void MarkdownEditor::insertTextAtCaret (const String& textToInsert)
 //=================================================================================================
 void MarkdownEditor::selectedAddToTipsBank()
 {
+    if (getHighlightedText().isEmpty())
+        return;
+
     if (parent->getCurrentDocFile().getFileName() == "tips.md"
         && parent->getCurrentDocFile().getParentDirectory().getFileName() == "docs")
         return;

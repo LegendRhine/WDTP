@@ -1064,7 +1064,7 @@ void MarkdownEditor::mouseDrag (const MouseEvent& e)
         Rectangle<float> pos (cursorX + 10.f, cursorY + 12.f - getViewport()->getViewPositionY(), 
                               2.5f, cursorHeight);
 
-        draggingPosition.setRectangle (pos);
+        draggingPosition.setRectangle (pos);        
     }
 
     else
@@ -1110,7 +1110,7 @@ void MarkdownEditor::mouseUp (const MouseEvent& e)
 void MarkdownEditor::mouseMove (const MouseEvent& e)
 {
     if (getHighlightedText().isNotEmpty()
-        && getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
+        && getHighlightedRegion().contains (getTextIndexAt (e.x - 5, e.y)))
         setMouseCursor (MouseCursor::NormalCursor);
     else
         setMouseCursor (MouseCursor::IBeamCursor);

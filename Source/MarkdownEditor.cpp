@@ -1071,7 +1071,7 @@ void MarkdownEditor::mouseDrag (const MouseEvent& e)
 
         draggingPosition.setRectangle (pos);
 
-        if (getViewport()->autoScroll (e.x, e.y, 30, 10))
+        if (getViewport()->autoScroll (e.x, e.y, 50, 20))
             yOfViewportWhenDragging = getViewport()->getViewPositionY();
     }
 

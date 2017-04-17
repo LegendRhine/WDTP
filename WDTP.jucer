@@ -34,6 +34,8 @@
         <FILE id="ColgX8" name="AudioRecorder.h" compile="0" resource="0" file="Source/SwingLibrary/AudioRecorder.h"/>
         <FILE id="mijKP1" name="MD2Html.cpp" compile="1" resource="0" file="Source/SwingLibrary/MD2Html.cpp"/>
         <FILE id="snx2Eb" name="MD2Html.h" compile="0" resource="0" file="Source/SwingLibrary/MD2Html.h"/>
+        <FILE id="X532s6" name="SwingEditor.cpp" compile="1" resource="0" file="Source/SwingLibrary/SwingEditor.cpp"/>
+        <FILE id="NOA0QZ" name="SwingEditor.h" compile="0" resource="0" file="Source/SwingLibrary/SwingEditor.h"/>
         <FILE id="xPreeF" name="SwingLookAndFeel.cpp" compile="1" resource="0"
               file="Source/SwingLibrary/SwingLookAndFeel.cpp"/>
         <FILE id="qeBKcI" name="SwingLookAndFeel.h" compile="0" resource="0"

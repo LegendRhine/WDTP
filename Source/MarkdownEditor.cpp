@@ -1041,7 +1041,8 @@ void MarkdownEditor::insertExternalFiles (const Array<File>& mediaFiles)
 void MarkdownEditor::mouseDown (const MouseEvent& e)
 {
     if (getHighlightedText().isNotEmpty()
-        && getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
+        && getHighlightedRegion().contains (getTextIndexAt (e.x, e.y))
+        && !e.mods.isPopupMenu())
     {
         draggingSelected = true;
         yOfViewportWhenDragging = 0;
@@ -1084,7 +1085,14 @@ void MarkdownEditor::mouseDrag (const MouseEvent& e)
 //=================================================================================================
 void MarkdownEditor::mouseUp (const MouseEvent& e)
 {
-    if (draggingSelected && !getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
+    if (e.mods.isPopupMenu())
+    {
+        TextEditor::mouseUp (e);
+        return;
+    }
+
+    if (draggingSelected 
+        && !getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
     {
         SystemClipboard::copyTextToClipboard (getHighlightedText());
 

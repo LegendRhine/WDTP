@@ -45,6 +45,7 @@ public:
     void mouseDrag (const MouseEvent& e) override;
     void mouseUp (const MouseEvent& e) override;
     void mouseMove (const MouseEvent& e) override;
+    void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails&) override;
 
     /** for set the font-size and color of font and backgroud */
     virtual void sliderValueChanged (Slider* slider) override;

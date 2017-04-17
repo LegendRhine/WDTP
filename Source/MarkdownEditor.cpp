@@ -184,7 +184,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         expandMark.addItem (allKeywords, TRANS ("All Keywords"));
 
         menu.addSubMenu (TRANS ("Expand Mark"), expandMark, docExists && notArchived);
-        menu.addItem (syntax, TRANS ("Text Mark Syntax and Demo..."));
+        menu.addItem (syntax, TRANS ("Text Mark Syntax and Demo...") + "  (F1)");
         menu.addSeparator();
 
         menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)", docExists && notArchived);
@@ -1186,8 +1186,14 @@ void MarkdownEditor::recordAudio()
 //=================================================================================================
 bool MarkdownEditor::keyPressed (const KeyPress& key)
 {    
+    // F1 for view the markup syntax web page
+    if (key == KeyPress (KeyPress::F1Key))
+    {
+        URL ("http://underwaysoft.com/works/wdtp/syntaxMark.html").launchInDefaultBrowser();
+    }
+
     // F3 for search the next of current selection
-    if (key == KeyPress (KeyPress::F3Key))
+    else if (key == KeyPress (KeyPress::F3Key))
     {
         searchForNext();
         return true;

@@ -14,7 +14,7 @@
 #include "SwingLibrary/SwingEditor.h"
 
 //==============================================================================
-/** for edit css, html-tpl file
+/** for edit wdtp theme files (css and html-tpl) 
 */
 class ThemeEditor : public SwingEditor,
                     public ChangeListener
@@ -24,14 +24,13 @@ public:
     ~ThemeEditor();
 
     void setFileToEdit (const File& file, bool needRegenerate);
-    const File& getCurrentFile() const                  { return currentFile; }
+    const File& getCurrentFile() const  { return currentFile; }
     void exitEditMode();
-
-    virtual void addPopupMenuItems (PopupMenu& menuToAddTo, 
-                                    const MouseEvent* mouseClickEvent) override;
 
     virtual void performPopupMenuAction (int menuItemID) override;
     virtual bool keyPressed (const KeyPress& key) override;
+    virtual void addPopupMenuItems (PopupMenu& menuToAddTo,
+                                    const MouseEvent* mouseClickEvent) override;
 
     /** set color in real-time when selected a color value. */
     virtual void changeListenerCallback (ChangeBroadcaster* source) override;

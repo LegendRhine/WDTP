@@ -40,12 +40,7 @@ public:
     bool keyPressed (const KeyPress& key) override;
     void insertExternalFiles (const Array<File>& mediaFiles);
 
-    /** for drag and drop the selected text */
-    void mouseDown (const MouseEvent& e) override;
-    void mouseDrag (const MouseEvent& e) override;
-    void mouseUp (const MouseEvent& e) override;
-    void mouseMove (const MouseEvent& e) override;
-    void mouseWheelMove (const MouseEvent& e, const MouseWheelDetails&) override;
+    
 
     /** for set the font-size and color of font and backgroud */
     virtual void sliderValueChanged (Slider* slider) override;
@@ -159,10 +154,9 @@ private:
 
     StringArray menuItems; // for popup tips
     String selectedForCnPunc;
-    DrawableRectangle draggingPosition;
 
-    int posBeforeInputNewText = 0, yOfViewportWhenDragging = 0;
-    bool delPressed = false, draggingSelected = false;
+    int posBeforeInputNewText = 0;
+    bool delPressed = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MarkdownEditor)
 };

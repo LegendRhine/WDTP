@@ -20,10 +20,7 @@ MarkdownEditor::MarkdownEditor (EditAndPreview* parent_)
     fontSizeSlider.setRange (15.0, 35.0, 1.0);
     fontSizeSlider.setDoubleClickReturnValue (true, 20.0);
     fontSizeSlider.setSize (300, 60);
-
-    // mark for dragging position of the selected text
-    draggingPosition.setFill (Colour::fromString (systemFile->getValue ("editorFontColour")).withAlpha (0.85f));
-    addAndMakeVisible (draggingPosition);
+       
 
     //setLineSpacing (1.35f);
 }
@@ -1035,113 +1032,6 @@ void MarkdownEditor::insertExternalFiles (const Array<File>& mediaFiles)
     }
 
     TextEditor::insertTextAtCaret (content);
-}
-
-//=================================================================================================
-void MarkdownEditor::mouseDown (const MouseEvent& e)
-{
-    if (getHighlightedText().isNotEmpty()
-        && getHighlightedRegion().contains (getTextIndexAt (e.x, e.y))
-        && !e.mods.isPopupMenu())
-    {
-        draggingSelected = true;
-        yOfViewportWhenDragging = 0;
-    }
-
-    else
-    {
-        TextEditor::mouseDown (e);
-    }
-}
-
-//=================================================================================================
-void MarkdownEditor::mouseDrag (const MouseEvent& e)
-{
-    if (draggingSelected)
-    {
-        setCaretVisible (false);
-        setMouseCursor (e.mods.isCommandDown() ? MouseCursor::CopyingCursor
-                        : MouseCursor::NormalCursor);
-        
-        float cursorX, cursorY;
-        float cursorHeight = getFont().getHeight();
-
-        getCharPosition (getTextIndexAt (e.x, e.y), cursorX, cursorY, cursorHeight);
-        Rectangle<float> pos (cursorX + 10.f, cursorY + 12.f - getViewport()->getViewPositionY(), 
-                              2.5f, cursorHeight);
-
-        draggingPosition.setRectangle (pos);
-
-        if (getViewport()->autoScroll (e.x, e.y, 50, 20))
-            yOfViewportWhenDragging = getViewport()->getViewPositionY();
-    }
-
-    else
-    {
-        TextEditor::mouseDrag (e);
-    }
-}
-
-//=================================================================================================
-void MarkdownEditor::mouseUp (const MouseEvent& e)
-{
-    if (e.mods.isPopupMenu())
-    {
-        TextEditor::mouseUp (e);
-        return;
-    }
-
-    if (draggingSelected 
-        && !getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
-    {
-        SystemClipboard::copyTextToClipboard (getHighlightedText());
-
-        if (!e.mods.isCommandDown())  // clear the highlight selected
-            insertTextAtCaret (String());
-
-        if (yOfViewportWhenDragging != 0)
-            getViewport()->setViewPosition (0, yOfViewportWhenDragging);
-
-        setCaretPosition (getTextIndexAt (e.x, e.y));
-        insertTextAtCaret (SystemClipboard::getTextFromClipboard());
-    }
-
-    else
-    {
-        TextEditor::mouseUp (e);        
-        const int caretPos = getCaretPosition();
-
-        if (caretPos != getHighlightedRegion().getStart()
-            && getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
-            setCaretPosition (getCaretPosition());
-    }
-
-    setMouseCursor (MouseCursor::IBeamCursor);
-    setCaretVisible (true);
-
-    draggingSelected = false;
-    yOfViewportWhenDragging = 0;
-    draggingPosition.setRectangle (Rectangle<float> (0, 0, 0, 0));
-}
-
-//=================================================================================================
-void MarkdownEditor::mouseMove (const MouseEvent& e)
-{
-    if (getHighlightedText().isNotEmpty()
-        && getHighlightedRegion().contains (getTextIndexAt (e.x - 5, e.y)))
-        setMouseCursor (MouseCursor::NormalCursor);
-
-    else
-        setMouseCursor (MouseCursor::IBeamCursor);
-}
-
-//=================================================================================================
-void MarkdownEditor::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& d)
-{
-    TextEditor::mouseWheelMove (e, d);
-
-    if (draggingSelected && getHighlightedText().isNotEmpty())
-        yOfViewportWhenDragging = getViewport()->getViewPositionY();
 }
 
 //=================================================================================================

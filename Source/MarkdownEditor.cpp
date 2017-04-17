@@ -1107,6 +1107,16 @@ void MarkdownEditor::mouseUp (const MouseEvent& e)
 }
 
 //=================================================================================================
+void MarkdownEditor::mouseMove (const MouseEvent& e)
+{
+    if (getHighlightedText().isNotEmpty()
+        && getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
+        setMouseCursor (MouseCursor::NormalCursor);
+    else
+        setMouseCursor (MouseCursor::IBeamCursor);
+}
+
+//=================================================================================================
 void MarkdownEditor::insertExpandMark (const int expandIndex)
 {
     String markStr ("[latestPublish]");

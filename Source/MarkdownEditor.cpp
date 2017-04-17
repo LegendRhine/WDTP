@@ -1050,88 +1050,6 @@ void MarkdownEditor::insertExpandMark (const int expandIndex)
 }
 
 //=================================================================================================
-void MarkdownEditor::tabKeyInput()
-{
-    if (getHighlightedText().isEmpty())
-    {
-        const int position = getCaretPosition();
-        String content ("    ");
-        moveCaretUp (false);
-
-        while (getCaretPosition() - 1 >= 0
-               && getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())) != "\n")
-        {
-            moveCaretUp (false);
-        }
-
-        if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 2)) == "- ")
-            content += "- ";
-
-        else if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 2)) == "+ ")
-            content += "+ ";
-
-        setCaretPosition (position);
-        TextEditor::insertTextAtCaret (content);
-    } 
-    else
-    {
-        StringArray content;
-        content.addLines (getHighlightedText());
-
-        for (int i = content.size(); --i >= 0; )
-            content.getReference (i) = "    " + content.getReference (i);
-
-        TextEditor::insertTextAtCaret (content.joinIntoString (newLine));
-        moveCaretRight (false, false);
-    }
-}
-
-//=================================================================================================
-void MarkdownEditor::shiftTabInput()
-{
-    if (getHighlightedText().isEmpty())
-    {
-        moveCaretToStartOfLine (false);
-
-        if (getTextInRange (Range<int>(getCaretPosition(), getCaretPosition() + 4)) == "    ")
-            setHighlightedRegion (Range<int> (getCaretPosition(), getCaretPosition() + 4));
-        
-        else if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 3)) == "   ")
-            setHighlightedRegion (Range<int> (getCaretPosition(), getCaretPosition() + 3));
-
-        else if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 2)) == "  ")
-            setHighlightedRegion (Range<int> (getCaretPosition(), getCaretPosition() + 2));
-
-        else if (getTextInRange (Range<int> (getCaretPosition(), getCaretPosition() + 1)) == " ")
-            setHighlightedRegion (Range<int> (getCaretPosition(), getCaretPosition() + 1));
-
-        TextEditor::insertTextAtCaret (String());
-    }
-    else // let the selected anti-indent
-    {
-        StringArray content;
-        content.addLines (getHighlightedText());
-
-        for (int i = content.size(); --i >= 0; )
-        {
-            if (content[i].substring (0, 4) == "    ")
-                content.getReference (i) = content[i].substring(4);
-
-            else if (content[i].substring (0, 3) == "   ")
-                content.getReference (i) = content[i].substring (3);
-
-            else if (content[i].substring (0, 2) == "  ")
-                content.getReference (i) = content[i].substring (2);
-
-            else if (content[i].substring (0, 1) == " ")
-                content.getReference (i) = content[i].substring (1);
-        }
-
-        TextEditor::insertTextAtCaret (content.joinIntoString (newLine));
-    }
-}
-
-//=================================================================================================
 void MarkdownEditor::returnKeyInput()
 {
     if (getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())) == "\n"
@@ -1267,23 +1185,9 @@ void MarkdownEditor::recordAudio()
 
 //=================================================================================================
 bool MarkdownEditor::keyPressed (const KeyPress& key)
-{
-    // tab
-    if (key == KeyPress (KeyPress::tabKey))
-    {
-        tabKeyInput();
-        return true;
-    }
-
-    // shift + tab (anti-indent)
-    else if (key == KeyPress (KeyPress::tabKey, ModifierKeys::shiftModifier, 0))
-    {
-        shiftTabInput();
-        return true;
-    }
-
+{    
     // F3 for search the next of current selection
-    else if (key == KeyPress (KeyPress::F3Key))
+    if (key == KeyPress (KeyPress::F3Key))
     {
         searchForNext();
         return true;

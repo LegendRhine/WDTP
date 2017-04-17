@@ -54,7 +54,7 @@ public:
     void autoComplete (const int index);
 
     /** show real-time tips */
-    virtual void timerCallback () override;
+    virtual void timerCallback() override;
 
 private:
     //=============================================================================================
@@ -124,9 +124,7 @@ private:
     void codeBlockFormat();
     void hybridFormat();
     void commentBlockFormat();
-
-    void tabKeyInput();
-    void shiftTabInput();
+    
     void returnKeyInput();
     void pasteForCtrlV();
     void recordAudio();

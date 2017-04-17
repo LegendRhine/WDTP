@@ -127,15 +127,15 @@ private:
 ThemeEditor::ThemeEditor (EditAndPreview* parent) :
     editAndPreview (parent)
 {
-    setFont (SwingUtilities::getFontSize() - 1.f);    
+    setFont (SwingUtilities::getFontSize());    
     setMultiLine (true, true);
     setReturnKeyStartsNewLine (true);
     setTabKeyUsedAsCharacter (true);
 
     setColour (TextEditor::focusedOutlineColourId, Colour (0x000));
-    setColour (TextEditor::textColourId, Colour (0xffd7d079));
-    setColour (CaretComponent::caretColourId, Colour (0xffd7d079).withAlpha (0.6f));
-    setColour (TextEditor::backgroundColourId, Colour (0xff222222));
+    setColour (TextEditor::textColourId, Colour (0xff202020));
+    setColour (CaretComponent::caretColourId, Colour (0xff202020).withAlpha (0.75f));
+    setColour (TextEditor::backgroundColourId, Colour (0xffcdcdcd));
     setColour (TextEditor::highlightColourId, Colours::lightskyblue);
 
     initializeTags();

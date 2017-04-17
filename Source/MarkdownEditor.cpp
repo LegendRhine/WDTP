@@ -19,8 +19,7 @@ MarkdownEditor::MarkdownEditor (EditAndPreview* parent_)
 {
     fontSizeSlider.setRange (15.0, 35.0, 1.0);
     fontSizeSlider.setDoubleClickReturnValue (true, 20.0);
-    fontSizeSlider.setSize (300, 60);
-       
+    fontSizeSlider.setSize (300, 60);  
 
     //setLineSpacing (1.35f);
 }
@@ -29,6 +28,7 @@ MarkdownEditor::MarkdownEditor (EditAndPreview* parent_)
 void MarkdownEditor::paint (Graphics& g)
 {
     TextEditor::paint (g);
+
     g.setColour (Colours::grey);
     g.drawVerticalLine (getWidth() - 1, 0, getBottom() - 0.f);
 }
@@ -456,7 +456,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (searchByBing == index)         externalSearch (searchByBing);
     else if (searchByWiki == index)         externalSearch (searchByWiki);
     else if (baiduBaike == index)           externalSearch (baiduBaike);
-    else if (showTips == index)             startTimer (showTipsBank, 50);
+    else if (showTips == index)             startTimer (30);
     else if (joinTips == index)             selectedAddToTipsBank();
 
     else if (insertMedia == index)          insertExternalFiles();
@@ -1300,7 +1300,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress ('g', ModifierKeys::commandModifier, 0))
     {
         if (getHighlightedText().isNotEmpty())
-            startTimer (showTipsBank, 50);
+            startTimer (30);
     }
 
     // return-key 
@@ -1384,14 +1384,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         popupOutlineMenu (parent, getText().replace (CharPointer_UTF8 ("\xef\xbc\x83"), "#"), true);
         return true;
     }
-
-    // for Chinese punctuation matching
-    else if (key == KeyPress::deleteKey || key == KeyPress::backspaceKey)
-    {
-        PopupMenu::dismissAllActiveMenus();
-        delPressed = true;
-    }
-
+    
     // Markup shortcut below...
     else if (key == KeyPress ('b', ModifierKeys::commandModifier, 0))    inlineFormat (formatBold);
     else if (key == KeyPress ('i', ModifierKeys::commandModifier, 0))    inlineFormat (formatItalic);
@@ -1421,7 +1414,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         }
     }
 
-    return TextEditor::keyPressed (key);
+    return SwingEditor::keyPressed (key);
 }
 
 //=================================================================================================
@@ -1430,68 +1423,12 @@ void MarkdownEditor::insertTextAtCaret (const String& textToInsert)
     if (isCurrentlyModal())
         exitModalState (0);
 
-    const String& selectedStr (getHighlightedText()); 
-    bool sthSelected = selectedStr.isNotEmpty();
-
     posBeforeInputNewText = getCaretPosition();
-    TextEditor::insertTextAtCaret (textToInsert);
-    //DBGX (selectedStr + " - " + textToInsert);
-
-    // when IME enabled, this method will be called twice and the second is empty highlighted
-    if (selectedStr.isNotEmpty())
-        selectedForCnPunc = selectedStr;
-
-    // it'll select a char when del and backspace then highlighted will be effected. 
-    // see keyPressed() about the judge of delete and backspace key
-    if (delPressed)
-        selectedForCnPunc.clear();
-
-    // ascii punctuation matching
-    if (textToInsert == "\"" || textToInsert == "\'")
-    {
-        TextEditor::insertTextAtCaret (selectedStr + textToInsert);
-        if (!sthSelected)   moveCaretLeft (false, false);
-    }
-    else if (textToInsert == "[")
-    {
-        TextEditor::insertTextAtCaret (selectedStr + "]");
-        if (!sthSelected)   moveCaretLeft (false, false);
-    }
+    SwingEditor::insertTextAtCaret (textToInsert);
     
-    else if (textToInsert == "(")
-    {
-        TextEditor::insertTextAtCaret (selectedStr + ")");
-        if (!sthSelected)   moveCaretLeft (false, false);
-    }
-    else if (textToInsert == "<")
-    {
-        TextEditor::insertTextAtCaret (selectedStr + ">");
-        if (!sthSelected)   moveCaretLeft (false, false);
-    }
-
-    // markup: `, ~, *
-    else if (sthSelected && textToInsert == "`")
-    {
-        TextEditor::insertTextAtCaret (selectedStr + textToInsert);
-    }
-    else if (sthSelected && textToInsert == "~")
-    {
-        TextEditor::insertTextAtCaret (textToInsert + selectedStr + textToInsert + textToInsert);
-    }
-    else if (sthSelected && textToInsert == "*")
-    {
-        TextEditor::insertTextAtCaret (selectedStr + textToInsert);
-        setHighlightedRegion (Range<int> (getCaretPosition() - selectedStr.length() - 1, getCaretPosition() - 1));
-    }
-
-    // chinese punctuation matching and popup tips
-    else if (textToInsert.isNotEmpty())
-    {
-        startTimer (chinesePunc, 15);
-        startTimer (showTipsBank, 50);
-    }
-
-    delPressed = false;
+    // popup tips
+    if (textToInsert.isNotEmpty())
+        startTimer (30);
 }
 
 //=================================================================================================
@@ -1580,126 +1517,58 @@ static void menuItemChosenCallback (int index, MarkdownEditor* mdEditor)
 }
 
 //=================================================================================================
-void MarkdownEditor::timerCallback (int timerID)
-{
-    if (chinesePunc == timerID)
+void MarkdownEditor::timerCallback()
+{    
+    stopTimer();
+    PopupMenu::dismissAllActiveMenus();
+    SwingEditor::timerCallback();
+    const HashMap<String, String>& tips (TipsBank::getInstance()->getTipsBank());
+
+    if (tips.size() < 1)
+        return;
+
+    // get the last 2 characters if nothing has been selected
+    String chars (getTextInRange (Range<int> (getCaretPosition() - 2, getCaretPosition())));
+
+    if (getHighlightedText().isNotEmpty())
+        chars = getHighlightedText().trim();
+
+    PopupMenu tipsMenu;
+    menuItems.clear();
+    menuItems.add (String());
+
+    for (HashMap<String, String>::Iterator itr (tips); itr.next(); )
     {
-        stopTimer (chinesePunc);
-        const Range<int> lastPosition (getCaretPosition() - 1, getCaretPosition());
-        const String& lastChar (getTextInRange (lastPosition));
-        bool puncMatched = false;
-        //DBGX (lastChar);
-
-        if (lastChar == CharPointer_UTF8 ("\xe2\x80\x9c")) // left "
+        if (itr.getKey().containsIgnoreCase (chars))
         {
-            puncMatched = true;
-            TextEditor::insertTextAtCaret (selectedForCnPunc + String (CharPointer_UTF8 ("\xe2\x80\x9d")));
+            String menuStr (itr.getValue().replace ("<br>", " "));
+
+            if (menuStr.length() > 35)
+                menuStr = menuStr.substring (0, 35) + "...";
+
+            tipsMenu.addItem (menuItems.size(), menuStr);
+            menuItems.add (itr.getValue());
         }
-
-        else if (lastChar == CharPointer_UTF8 ("\xe2\x80\x9d")) // right "
-        {
-            puncMatched = true;
-            moveCaretLeft (false, true);
-            TextEditor::insertTextAtCaret (String (CharPointer_UTF8 ("\xe2\x80\x9c")) + selectedForCnPunc
-                               + String (CharPointer_UTF8 ("\xe2\x80\x9d")));
-        }
-
-        else if (lastChar == CharPointer_UTF8 ("\xe2\x80\x98")) // left '
-        {
-            puncMatched = true;
-            TextEditor::insertTextAtCaret (selectedForCnPunc + String (CharPointer_UTF8 ("\xe2\x80\x99")));
-        }
-
-        else if (lastChar == CharPointer_UTF8 ("\xe2\x80\x99")) // right '
-        {
-            puncMatched = true;
-            moveCaretLeft (false, true);
-            TextEditor::insertTextAtCaret (String (CharPointer_UTF8 ("\xe2\x80\x98")) + selectedForCnPunc
-                               + String (CharPointer_UTF8 ("\xe2\x80\x99")));
-        }
-
-        else if (lastChar == CharPointer_UTF8 ("\xe3\x80\x90")) // [
-        {
-            puncMatched = true;
-            TextEditor::insertTextAtCaret (selectedForCnPunc + String (CharPointer_UTF8 ("\xe3\x80\x91")));
-        }
-
-        else if (lastChar == CharPointer_UTF8 ("\xe3\x80\x8a")) // <<
-        {
-            puncMatched = true;
-            TextEditor::insertTextAtCaret (selectedForCnPunc + String (CharPointer_UTF8 ("\xe3\x80\x8b")));
-        }
-
-        else if (lastChar == CharPointer_UTF8 ("\xef\xbc\x88")) // (
-        {
-            puncMatched = true;
-            TextEditor::insertTextAtCaret (selectedForCnPunc + String (CharPointer_UTF8 ("\xef\xbc\x89")));
-        }
-
-        else if (lastChar == "{") // {
-        {
-            puncMatched = true;
-            TextEditor::insertTextAtCaret (selectedForCnPunc + "}");
-        }
-
-        if (puncMatched && selectedForCnPunc.isEmpty())
-            moveCaretLeft (false, false);
-
-        selectedForCnPunc.clear();
     }
 
-    if (showTipsBank == timerID)
+    if (tipsMenu.getNumItems() > 0)
     {
-        stopTimer (showTipsBank);
-        PopupMenu::dismissAllActiveMenus();
-        const HashMap<String, String>& tips (TipsBank::getInstance()->getTipsBank());
-        
-        if (tips.size() < 1)  
-            return;
-        
-        // get the last 2 characters if nothing has been selected
-        String chars (getTextInRange (Range<int> (getCaretPosition() - 2, getCaretPosition())));
+        const Rectangle<int> posOfMenu (getCaretRectangle()
+                                        .translated (getScreenBounds().getX() + 12,
+                                                     getScreenBounds().getY() + 12 - getViewport()->getViewPositionY()));
 
-        if (getHighlightedText().isNotEmpty())
-            chars = getHighlightedText().trim();
+        tipsMenu.showMenuAsync (PopupMenu::Options().withTargetScreenArea (posOfMenu),
+                                ModalCallbackFunction::forComponent (menuItemChosenCallback, this));
 
-        PopupMenu tipsMenu;
-        menuItems.clear();
-        menuItems.add (String());
+        Desktop::getInstance().getMainMouseSource().setScreenPosition (posOfMenu.getPosition()
+                                                                         .translated (5, 35).toFloat());
 
-        for (HashMap<String, String>::Iterator itr (tips); itr.next(); )
-        {
-            if (itr.getKey().containsIgnoreCase (chars))
-            {
-                String menuStr (itr.getValue().replace ("<br>", " "));
-                
-                if (menuStr.length() > 35)
-                    menuStr = menuStr.substring (0, 35) + "...";
-                
-                tipsMenu.addItem (menuItems.size(), menuStr);
-                menuItems.add (itr.getValue());
-            }
-        }
-        
-        if (tipsMenu.getNumItems() > 0) 
-        {
-            const Rectangle<int> posOfMenu (getCaretRectangle()
-                .translated (getScreenBounds().getX() + 12,
-                             getScreenBounds().getY() + 12 - getViewport()->getViewPositionY()));
+        // for ascii char input continuously, no need do this when IME enabled
+        const String& lastChar (getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())));
 
-            tipsMenu.showMenuAsync (PopupMenu::Options().withTargetScreenArea (posOfMenu),
-                                    ModalCallbackFunction::forComponent (menuItemChosenCallback, this));
-            
-            Desktop::getInstance().getMainMouseSource().setScreenPosition (posOfMenu.getPosition()
-                                                                           .translated (5, 35).toFloat());
-
-            // for ascii char input continuously, no need do this when IME enabled
-            const String& lastChar (getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())));
-
-            if (lastChar.containsOnly ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                       "0123456789`~!@#$%^&*()-=_+\\|[{]};:'\",<.>/?"))
-                enterModalState();
-        }
+        if (lastChar.containsOnly ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                   "0123456789`~!@#$%^&*()-=_+\\|[{]};:'\",<.>/?"))
+            enterModalState();
     }
 }
 
@@ -1711,8 +1580,8 @@ void MarkdownEditor::autoComplete (const int index)
 #if JUCE_WINDOWS
         setHighlightedRegion (Range<int> (posBeforeInputNewText - 1, getCaretPosition()));
 #else
-        moveCaretLeft(false, true);
-        moveCaretLeft(false, true);
+        moveCaretLeft (false, true);
+        moveCaretLeft (false, true);
 #endif
     }
 

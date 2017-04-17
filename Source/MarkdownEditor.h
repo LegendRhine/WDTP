@@ -11,15 +11,16 @@
 #ifndef MARKDOWNEDITOR_H_INCLUDED
 #define MARKDOWNEDITOR_H_INCLUDED
 
+#include "SwingLibrary/SwingEditor.h"
+
 /** A text editor especially for Markdown input, display and edit. 
     The powerful functions totally in its right-click popup-menu and 
     some shortcuts - see its keyPressed(). 
 */
-class MarkdownEditor :  public TextEditor,
+class MarkdownEditor :  public SwingEditor,
                         public Slider::Listener,
                         public ChangeListener,
                         public FileDragAndDropTarget,
-                        public MultiTimer,
                         private ActionListener
 {
 public:
@@ -38,9 +39,7 @@ public:
 
     virtual void performPopupMenuAction (int menuItemID) override;
     bool keyPressed (const KeyPress& key) override;
-    void insertExternalFiles (const Array<File>& mediaFiles);
-
-    
+    void insertExternalFiles (const Array<File>& mediaFiles);    
 
     /** for set the font-size and color of font and backgroud */
     virtual void sliderValueChanged (Slider* slider) override;
@@ -50,13 +49,12 @@ public:
     virtual bool isInterestedInFileDrag (const StringArray& files) override;
     virtual void filesDropped (const StringArray& files, int x, int y) override;
 
-    /** auto-wrap, punctuation matching, auto-complete, show tips...*/
+    /** auto-complete, show tips...*/
     virtual void insertTextAtCaret (const String& textToInsert) override;    
     void autoComplete (const int index);
 
-    /** for Chinese punc-matching and show real-time tips */
-    virtual void timerCallback (int timerID) override;
-    enum TimerId { chinesePunc = 1, showTipsBank };
+    /** show real-time tips */
+    virtual void timerCallback () override;
 
 private:
     //=============================================================================================
@@ -86,7 +84,7 @@ private:
     };
 
     /** for click to select/unselect a keyword from keywords-table component.
-        see showAllKeywords().    */
+        see showAllKeywords(). */
     virtual void actionListenerCallback (const String& message) override;
     void showAllKeywords();
 
@@ -153,10 +151,7 @@ private:
     ScopedPointer<ColourSelectorWithPreset> bgColourSelector;
 
     StringArray menuItems; // for popup tips
-    String selectedForCnPunc;
-
     int posBeforeInputNewText = 0;
-    bool delPressed = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MarkdownEditor)
 };

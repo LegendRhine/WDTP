@@ -13,7 +13,8 @@
 
 /** a extend text editor for drag and drop the highlight selected content,
     auto-wrap (punctuation matching), press 'tab' for insert/indent 4 whitespaces,
-    'shift + tab' anti-indent the selected, etc.
+    'shift + tab' anti-indent the selected, auto append a whitespace after
+    input', ; : !', etc.
 */
 class SwingEditor : public TextEditor,
                     public Timer

@@ -286,6 +286,12 @@ void SwingEditor::insertTextAtCaret (const String& textToInsert)
         if (!sthSelected)   moveCaretLeft (false, false);
     }
 
+    // auto append a whitespace
+    else if (textToInsert == ",") TextEditor::insertTextAtCaret (" ");
+    else if (textToInsert == ";") TextEditor::insertTextAtCaret (" ");
+    else if (textToInsert == ":") TextEditor::insertTextAtCaret (" ");
+    else if (textToInsert == "!") TextEditor::insertTextAtCaret (" ");
+
     // markup: `, ~, *
     else if (sthSelected && textToInsert == "`")
     {

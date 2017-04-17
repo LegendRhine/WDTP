@@ -538,7 +538,24 @@ public:
             const String& content (atom->getTrimmedText (passwordCharacter));
 
             // simple syntax highlight
-            if (content.substring (0, 1) == "#")
+            if (content.substring (0, 1) == "#"
+                || content.substring (0, 1) == "`"
+                || content.substring (0, 1) == "("
+                || content.substring (0, 1) == ")"
+                || content.substring (0, 1) == "-"
+                || content.substring (0, 1) == "+"
+                || content.substring (0, 1) == "^"
+                || content.substring (0, 1) == "\\"
+                || content.substring (0, 1) == "<"
+                || content.substring (0, 1) == ">"
+                || content.substring (0, 1) == "["
+                || content.substring (0, 1) == "]"
+                || content.substring (0, 1) == "="
+                || content.substring (0, 1) == "/"
+                || content.substring (0, 1) == "~"
+                || content.substring (0, 1) == "|"
+                || content.substring (0, 1) == "{"
+                || content.substring (0, 1) == "}")
                 g.setColour (Colours::darkred);
 
             else if (content.substring (0, 1) == "*")

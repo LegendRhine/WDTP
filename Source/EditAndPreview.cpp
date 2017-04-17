@@ -45,11 +45,8 @@ EditAndPreview::EditAndPreview (MainContentComponent* mainComp_)
     mdEditor->setColour (TextEditor::highlightColourId, Colours::darkcyan);
     mdEditor->setFont (systemFile->getValue ("fontSize").getFloatValue());
 
-    mdEditor->setScrollBarThickness (10);
-    mdEditor->setIndents (10, 10);
     mdEditor->setVisible (false);
-    mdEditor->setBorder (BorderSize<int> (1, 1, 1, 1));
-    mdEditor->setPopupMenuEnabled (false);
+    mdEditor->setPopupMenuEnabled (false);    
 }
 
 //=========================================================================

@@ -22,7 +22,7 @@ MarkdownEditor::MarkdownEditor (EditAndPreview* parent_)
     fontSizeSlider.setSize (300, 60);
 
     // mark for dragging position of the selected text
-    draggingPosition.setFill (Colours::darkred.withAlpha (0.85f));
+    draggingPosition.setFill (Colour::fromString (systemFile->getValue ("editorFontColour")).withAlpha (0.85f));
     addAndMakeVisible (draggingPosition);
 
     //setLineSpacing (1.35f);
@@ -1056,7 +1056,15 @@ void MarkdownEditor::mouseDrag (const MouseEvent& e)
         setCaretVisible (false);
         setMouseCursor (e.mods.isCommandDown()
                         ? MouseCursor::CopyingCursor
-                        : MouseCursor::UpDownLeftRightResizeCursor);
+                        : MouseCursor::NormalCursor);
+        
+        float cursorX, cursorY;
+        float cursorHeight = getFont().getHeight();
+        getCharPosition (getTextIndexAt (e.x, e.y), cursorX, cursorY, cursorHeight);
+        Rectangle<float> pos (cursorX + 10.f, cursorY + 12.f - getViewport()->getViewPositionY(), 
+                              2.5f, cursorHeight);
+
+        draggingPosition.setRectangle (pos);
     }
 
     else
@@ -1070,6 +1078,7 @@ void MarkdownEditor::mouseUp (const MouseEvent& e)
 {
     setMouseCursor (MouseCursor::IBeamCursor);
     setCaretVisible (true);
+    draggingPosition.setRectangle (Rectangle<float> (0, 0, 0, 0));
 
     if (draggingSelected
         && !getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
@@ -1086,8 +1095,11 @@ void MarkdownEditor::mouseUp (const MouseEvent& e)
     else
     {
         TextEditor::mouseUp (e);
+        
+        const int caretPos = getCaretPosition();
 
-        if (getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
+        if (caretPos != getHighlightedRegion().getStart()
+            && getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
             setCaretPosition (getCaretPosition());
     }
 

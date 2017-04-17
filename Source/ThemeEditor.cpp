@@ -306,16 +306,9 @@ void ThemeEditor::exitEditMode()
 
 //=================================================================================================
 bool ThemeEditor::keyPressed (const KeyPress& key)
-{
-    // tab
-    if (key == KeyPress (KeyPress::tabKey))
-    {
-        insertTextAtCaret ("    ");
-        return true;
-    }
-
+{    
     // ctrl + f: search
-    else if (key == KeyPress ('f', ModifierKeys::commandModifier, 0))
+    if (key == KeyPress ('f', ModifierKeys::commandModifier, 0))
     {
         performPopupMenuAction (searchSth);
         return true;
@@ -326,65 +319,9 @@ bool ThemeEditor::keyPressed (const KeyPress& key)
     {
         performPopupMenuAction (applyIndex);
         return true;
-    }
+    }    
 
-    // English punctuation matching...
-    else if (key == KeyPress ('\'', ModifierKeys::shiftModifier, 0)) // "..."
-    {
-        const String& selectedStr (getHighlightedText());
-        insertTextAtCaret ("\"" + selectedStr + "\"");
-
-        if (selectedStr.isEmpty())
-            moveCaretLeft (false, false);
-
-        return true;
-    }
-
-    else if (key == KeyPress ('\'')) // '...'
-    {
-        const String& selectedStr (getHighlightedText());
-        insertTextAtCaret ("\'" + selectedStr + "\'");
-
-        if (selectedStr.isEmpty())
-            moveCaretLeft (false, false);
-
-        return true;
-    }
-    
-    else if (key == KeyPress ('[', ModifierKeys::shiftModifier, 0)) // '{}'
-    {
-        const String& selectedStr (getHighlightedText());
-        insertTextAtCaret ("{" + selectedStr + "}");
-
-        if (selectedStr.isEmpty())
-            moveCaretLeft (false, false);
-
-        return true;
-    }
-
-    else if (key == KeyPress ('9', ModifierKeys::shiftModifier, 0)) // '()'
-    {
-        const String& selectedStr (getHighlightedText());
-        insertTextAtCaret ("(" + selectedStr + ")");
-
-        if (selectedStr.isEmpty())
-            moveCaretLeft (false, false);
-
-        return true;
-    }
-
-    else if (key == KeyPress (',', ModifierKeys::shiftModifier, 0)) // '<>'
-    {
-        const String& selectedStr (getHighlightedText());
-        insertTextAtCaret ("<" + selectedStr + ">");
-
-        if (selectedStr.isEmpty())
-            moveCaretLeft (false, false);
-
-        return true;
-    }
-
-    return TextEditor::keyPressed (key);
+    return SwingEditor::keyPressed (key);
 }
 
 //=================================================================================================

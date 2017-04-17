@@ -11,10 +11,12 @@
 #ifndef THEMEEDITOR_H_INCLUDED
 #define THEMEEDITOR_H_INCLUDED
 
+#include "SwingLibrary/SwingEditor.h"
+
 //==============================================================================
 /** for edit css, html-tpl file
 */
-class ThemeEditor : public TextEditor,
+class ThemeEditor : public SwingEditor,
                     public ChangeListener
 {
 public:

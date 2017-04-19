@@ -83,19 +83,23 @@ void SwingEditor::mouseUp (const MouseEvent& e)
         return;
     }
 
-    if (draggingSelected
-        && !getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
+    if (draggingSelected && !getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
     {
-        SystemClipboard::copyTextToClipboard (getHighlightedText());
+        const String& draggingContent (getHighlightedText());
+        const int dropPosition = getTextIndexAt (e.x, e.y);
+        int removeNumbers = 0;
+
+        if (dropPosition > getHighlightedRegion().getEnd())
+            removeNumbers = draggingContent.length();
 
         if (!e.mods.isCommandDown())  // clear the highlight selected
             insertTextAtCaret (String());
 
-        if (yOfViewportWhenDragging != 0)
+        if (yOfViewportWhenDragging > 0)
             getViewport()->setViewPosition (0, yOfViewportWhenDragging);
 
-        setCaretPosition (getTextIndexAt (e.x, e.y));
-        insertTextAtCaret (SystemClipboard::getTextFromClipboard());
+        setCaretPosition (dropPosition - removeNumbers);
+        insertTextAtCaret (draggingContent);
     }
 
     else

@@ -87,13 +87,16 @@ void SwingEditor::mouseUp (const MouseEvent& e)
     {
         const String& draggingContent (getHighlightedText());
         const int dropPosition = getTextIndexAt (e.x, e.y);
-        int removeNumbers = 0;
+        int removeNumbers = 0;        
 
-        if (dropPosition > getHighlightedRegion().getEnd())
-            removeNumbers = draggingContent.length();
-
-        if (!e.mods.isCommandDown())  // clear the highlight selected
+        // clear the highlight selected and get the offset of drop position
+        if (!e.mods.isCommandDown())
+        {
             insertTextAtCaret (String());
+
+            if (dropPosition > getHighlightedRegion().getEnd())
+                removeNumbers = draggingContent.length();
+        }
 
         if (yOfViewportWhenDragging > 0)
             getViewport()->setViewPosition (0, yOfViewportWhenDragging);

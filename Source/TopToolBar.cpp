@@ -90,6 +90,8 @@ TopToolBar::TopToolBar (FileTreeContainer* f,
     progressBar.setColour (ProgressBar::foregroundColourId, Colours::lightskyblue);
     progressBar.setPercentageDisplay (false);
     addAndMakeVisible (progressBar);
+
+    setTooltips();
 }
 
 //=================================================================================================
@@ -458,7 +460,8 @@ void TopToolBar::popupLayoutMenu()
                   editAndPreview->setupAreaIsShowing() && hasProject);
 
     menu.addSeparator();
-    menu.addItem (3, TRANS ("Silent Mode") + ctrlStr + "D)", true, isSilentMode);
+    menu.addCommandItem (cmdManager, silentMode);
+    menu.addCommandItem (cmdManager, minimizeTheApp);
 
     const int index = menu.show();
     MainContentComponent* main = dynamic_cast<MainContentComponent*>(getParentComponent());
@@ -796,7 +799,7 @@ ApplicationCommandTarget* TopToolBar::getNextCommandTarget()
 void TopToolBar::getAllCommands (Array<CommandID>& commands)
 {
     commands.add (switchEdit);
-    commands.add (switchWidth);
+    commands.add (silentMode);
     commands.add (generateCurrent);
     commands.add (generateNeeded);
     commands.add (activeSearch);
@@ -812,9 +815,9 @@ void TopToolBar::getCommandInfo (CommandID commandID, ApplicationCommandInfo& re
         result.setInfo ("Switch mode", "Switch to preview/edit", String(), 0);
         result.addDefaultKeypress ('s', ModifierKeys::commandModifier);
     }
-    else if (switchWidth == commandID)
+    else if (silentMode == commandID)
     {
-        result.setInfo ("Switch width", "Switch width", String(), 0);
+        result.setInfo (TRANS ("Silent Mode"), "Switch width", String(), 0);
         result.addDefaultKeypress ('d', ModifierKeys::commandModifier);
     }
     else if (generateCurrent == commandID)
@@ -855,7 +858,7 @@ bool TopToolBar::perform (const InvocationInfo& info)
     switch (info.commandID)
     {
     case switchEdit:        bts[viewBt]->triggerClick();       break;
-    case switchWidth:       switchSilentMode (!isSilentMode);  break;
+    case silentMode:       switchSilentMode (!isSilentMode);  break;
     case generateCurrent:   generateCurrentPage();             break;
     case generateNeeded:    generateHtmlsIfNeeded();           break;
     case activeSearch:      searchInput->grabKeyboardFocus();  break;

@@ -118,7 +118,7 @@ public:
         setUiColor, resetUiColor, checkNewVersion, 
         wdtpUpdateList, gettingStarted, syntax, faq, feedback, 
         addExResource, showAboutDialog, exitApp,
-        switchEdit, switchWidth, activeSearch,
+        switchEdit, silentMode, activeSearch,
         minimizeTheApp
     };
 

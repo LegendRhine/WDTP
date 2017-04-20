@@ -259,7 +259,10 @@ const String SwingEditor::getCurrentParagraph() const
     const int paraStart = getText().substring (0, caretPos).lastIndexOf ("\n");
     const int paraEnd = getText().indexOf (caretPos, "\n");
 
-    if (paraStart == -1 && paraEnd == -1)
+    if (paraStart == paraEnd && paraStart != -1)
+        return String();
+
+    else if (paraStart == -1 && paraEnd == -1)
         return getText();
 
     else if (paraStart != -1 && paraEnd == -1)

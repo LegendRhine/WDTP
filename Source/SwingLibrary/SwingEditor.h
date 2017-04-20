@@ -53,7 +53,6 @@ private:
     void tabKeyInput();
     void shiftTabInput();
 
-
     DrawableRectangle draggingPosition;
     String selectedForCnPunc;
     int yOfViewportWhenDragging = 0;

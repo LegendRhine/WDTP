@@ -71,7 +71,7 @@ private:
         insertCaption, insertSeparator, insertAuthor, insertInterLink,
         formatBold, formatItalic, formatBoldAndItalic, formatHighlight,        
         codeBlock, hybridLayout, commentBlock, inlineCode, antiIndent, 
-        forceIndent, audioRecord,
+        forceIndent, audioRecord, autoSumRow,
         latestPublish, latestModify, featuredArticle, 
         allKeywords, randomArticle, allPublish, allModify,
         searchNext, searchPrev, 

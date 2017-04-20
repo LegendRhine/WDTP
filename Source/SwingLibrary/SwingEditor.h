@@ -41,6 +41,10 @@ public:
     /** for Chinese punc-matching */
     virtual void timerCallback() override;
 
+    /** auto sum all numbers of a row. 
+        the separater between each number must be whitespace or ' | '*/
+    static String autoSumOfRow (const String& rowStr);
+
 private:
     //=================================================================================================
     void tabKeyInput();

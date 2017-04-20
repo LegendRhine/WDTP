@@ -390,3 +390,23 @@ void SwingEditor::timerCallback()
     selectedForCnPunc.clear();
 }
 
+//=================================================================================================
+String SwingEditor::autoSumOfRow (const String& rowStr)
+{
+    StringArray nums;
+    nums.addTokens (rowStr, " ", String());
+    nums.removeEmptyStrings (true);
+
+    float sumNum = 0.f;
+
+    for (int i = nums.size(); --i >= 0; )
+    {
+        if (nums[i] == "|")
+            nums.remove (i);
+        else
+            sumNum += nums[i].getFloatValue();
+    }
+
+    return String (sumNum, 2);
+}
+

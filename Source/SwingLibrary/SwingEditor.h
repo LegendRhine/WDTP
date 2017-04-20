@@ -24,6 +24,7 @@ public:
     ~SwingEditor() {}
 
     void setCaretColourWhenDragging (const Colour& caretColourWhenDragging);
+    const String getCurrentParagraph() const;
 
     /** for drag and drop the selected text */
     void mouseDown (const MouseEvent& e) override;
@@ -52,7 +53,6 @@ private:
     void tabKeyInput();
     void shiftTabInput();
 
-    const String getCurrentParagraph() const;
 
     DrawableRectangle draggingPosition;
     String selectedForCnPunc;

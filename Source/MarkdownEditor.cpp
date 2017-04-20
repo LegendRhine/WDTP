@@ -185,7 +185,8 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSubMenu (TRANS ("Expand Mark"), expandMark, docExists && notArchived);
 
         PopupMenu autoSumAndAv;
-        autoSumAndAv.addItem (autoSumRow, TRANS ("Sum Numbers of This Row"));
+        autoSumAndAv.addItem (autoSumPara, TRANS ("Sum Numbers of This Paragraph"));
+        autoSumAndAv.addItem (autoAvPara, TRANS ("Average Numbers of This Paragraph"));
         menu.addSubMenu (TRANS ("Auto Sum and Average"), autoSumAndAv, docExists && notArchived);
 
         menu.addItem (syntax, TRANS ("Text Mark Syntax and Demo...") + "  (F1)");
@@ -452,7 +453,8 @@ void MarkdownEditor::performPopupMenuAction (int index)
             .launchInDefaultBrowser();
     }
 
-    else if (autoSumRow == index)           insertTextAtCaret (autoSumOfRow());
+    else if (autoSumPara == index)          insertTextAtCaret (calculateNumbersOfCurrentParagraph (true));
+    else if (autoAvPara == index)           insertTextAtCaret (calculateNumbersOfCurrentParagraph (false));
     else if (insertSeparator == index)      TextEditor::insertTextAtCaret (newLine + "---" + newLine);
     else if (pickFromAllKeywords == index)  showAllKeywords();
     else if (searchPrev == index)           searchPrevious();

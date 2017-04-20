@@ -124,6 +124,11 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (insertNormalTable, TRANS ("Normal Table") + ctrlStr + "T)");
         insertMenu.addItem (insertInterlaced, TRANS ("Interlaced Table"));
         insertMenu.addItem (insertNoborderTable, TRANS ("Frameless Table"));
+
+        PopupMenu autoSumAndAv;
+        autoSumAndAv.addItem (autoSumPara, TRANS ("Sum Numbers of This Paragraph"));
+        autoSumAndAv.addItem (autoAvPara, TRANS ("Average Numbers of This Paragraph"));
+        insertMenu.addSubMenu (TRANS ("Auto Sum and Average"), autoSumAndAv, docExists && notArchived);
         insertMenu.addSeparator();
 
         insertMenu.addItem (insertAlignCenter, TRANS ("Align Center") + ctrlStr + "N)");
@@ -182,12 +187,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         expandMark.addItem (allPublish, TRANS ("Publish List"));
         expandMark.addItem (randomArticle, TRANS ("Random Articles"));
         expandMark.addItem (allKeywords, TRANS ("All Keywords"));
-        menu.addSubMenu (TRANS ("Expand Mark"), expandMark, docExists && notArchived);
-
-        PopupMenu autoSumAndAv;
-        autoSumAndAv.addItem (autoSumPara, TRANS ("Sum Numbers of This Paragraph"));
-        autoSumAndAv.addItem (autoAvPara, TRANS ("Average Numbers of This Paragraph"));
-        menu.addSubMenu (TRANS ("Auto Sum and Average"), autoSumAndAv, docExists && notArchived);
+        menu.addSubMenu (TRANS ("Expand Mark"), expandMark, docExists && notArchived);        
 
         menu.addItem (syntax, TRANS ("Text Mark Syntax and Demo...") + "  (F1)");
         menu.addSeparator();

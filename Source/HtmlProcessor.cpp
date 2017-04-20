@@ -114,12 +114,12 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
 
         for (int i = latests.size(); --i >= 0; )
         {
-            orderedLatests.add ("<li>"
-                                + latests[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false) 
-                                + " - <span style=\"color: #009900\">"
+            orderedLatests.add ("<li><span style=\"color: #009900\">"
                                 + latests[i].upToFirstOccurrenceOf ("@@extractAllArticles@@", false, false)
-                                  .dropLastCharacters (9)
-                                + "</span></li>");
+                                .dropLastCharacters (9)
+                                + "</span> - "
+                                + latests[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false)
+                                + "</li>");
         }
 
         orderedLatests.insert (0, "<ul>");
@@ -142,12 +142,12 @@ void HtmlProcessor::parseExMdMark (const ValueTree& docTree,
 
         for (int i = latests.size(); --i >= 0; )
         {
-            orderedLatests.add ("<li>"
-                                + latests[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false)
-                                + " - <span style=\"color: #3333CC\">"
+            orderedLatests.add ("<li><span style=\"color: #3333CC\">"
                                 + latests[i].upToFirstOccurrenceOf ("@@extractAllArticles@@", false, false)
                                 .dropLastCharacters (9)
-                                + "</span></li>");
+                                + "</span> - "
+                                + latests[i].fromFirstOccurrenceOf ("@@extractAllArticles@@", false, false)
+                                + "</li>");
         }
 
         orderedLatests.insert (0, "<ul>");

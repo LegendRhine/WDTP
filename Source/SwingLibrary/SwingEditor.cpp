@@ -391,8 +391,18 @@ void SwingEditor::timerCallback()
 }
 
 //=================================================================================================
-String SwingEditor::autoSumOfRow (const String& rowStr)
+const String SwingEditor::autoSumOfRow() const
 {
+    const int caretPos = getCaretPosition();
+    const int paraStart = getText().substring (0, caretPos).lastIndexOf ("\n");
+    const int paraEnd = getText().indexOf (caretPos, "\n");
+
+    String rowStr;
+    if (paraStart == -1 && paraEnd == -1)        rowStr = getText();
+    else if (paraStart != -1 && paraEnd == -1)   rowStr = getText().substring (paraStart);
+    else if (paraStart == -1 && paraEnd != -1)   rowStr = getText().substring (0, paraEnd);
+    else        rowStr = getTextInRange (Range<int> (paraStart, paraEnd));
+
     StringArray nums;
     nums.addTokens (rowStr, " ", String());
     nums.removeEmptyStrings (true);

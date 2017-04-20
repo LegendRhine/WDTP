@@ -42,13 +42,17 @@ public:
     virtual void timerCallback() override;
 
     /** auto sum all numbers of the current row. 
-        the separater between each number must be whitespace or ' | '*/
-    const String autoSumOfRow() const;
+        the separater between each number must be whitespace or ' | '
+        @para isSum true for sum, false for average
+        */
+    const String calculateNumbersOfCurrentParagraph (const bool isSum) const;
 
 private:
     //=================================================================================================
     void tabKeyInput();
     void shiftTabInput();
+
+    const String getCurrentParagraph() const;
 
     DrawableRectangle draggingPosition;
     String selectedForCnPunc;

@@ -253,6 +253,26 @@ void SwingEditor::shiftTabInput()
 }
 
 //=================================================================================================
+const String SwingEditor::getCurrentParagraph() const
+{
+    const int caretPos = getCaretPosition();
+    const int paraStart = getText().substring (0, caretPos).lastIndexOf ("\n");
+    const int paraEnd = getText().indexOf (caretPos, "\n");
+
+    if (paraStart == -1 && paraEnd == -1)
+        return getText();
+
+    else if (paraStart != -1 && paraEnd == -1)
+        return getText().substring (paraStart);
+
+    else if (paraStart == -1 && paraEnd != -1)
+        return getText().substring (0, paraEnd);
+
+    else  
+        return getTextInRange (Range<int> (paraStart, paraEnd));
+}
+
+//=================================================================================================
 void SwingEditor::insertTextAtCaret (const String& textToInsert)
 {
     const String& selectedStr (getHighlightedText());
@@ -391,32 +411,30 @@ void SwingEditor::timerCallback()
 }
 
 //=================================================================================================
-const String SwingEditor::autoSumOfRow() const
+const String SwingEditor::calculateNumbersOfCurrentParagraph (const bool isSum) const
 {
-    const int caretPos = getCaretPosition();
-    const int paraStart = getText().substring (0, caretPos).lastIndexOf ("\n");
-    const int paraEnd = getText().indexOf (caretPos, "\n");
-
-    String rowStr;
-    if (paraStart == -1 && paraEnd == -1)        rowStr = getText();
-    else if (paraStart != -1 && paraEnd == -1)   rowStr = getText().substring (paraStart);
-    else if (paraStart == -1 && paraEnd != -1)   rowStr = getText().substring (0, paraEnd);
-    else        rowStr = getTextInRange (Range<int> (paraStart, paraEnd));
-
     StringArray nums;
-    nums.addTokens (rowStr, " ", String());
+    nums.addTokens (getCurrentParagraph(), " ", String());
     nums.removeEmptyStrings (true);
 
     float sumNum = 0.f;
+    int num = 0;
 
     for (int i = nums.size(); --i >= 0; )
     {
         if (nums[i] == "|")
+        {
             nums.remove (i);
+        }
         else
+        {
+            if (nums[i].containsAnyOf ("-.1234567890"))
+                ++num;
+
             sumNum += nums[i].getFloatValue();
+        }
     }
 
-    return String (sumNum, 2);
+    return String (isSum ? sumNum : sumNum / num, 2);
 }
 

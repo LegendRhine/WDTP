@@ -619,30 +619,42 @@ const String Md2Html::boldParse (const String& mdString)
 //=================================================================================================
 const String Md2Html::italicParse (const String& mdString)
 {
-    String resultStr (mdString);
-    int index = resultStr.indexOf (0, "*");
+    StringArray sa;
+    sa.addLines (mdString);
 
-    for (int i = 1; index != -1; ++i)
+    for (int i = sa.size(); --i >= 0; )
     {
-        if (resultStr.substring (index - 1, index) != "\\"
-            && resultStr.substring (index - 1, index) != "*"
-            && resultStr.substring (index + 1, index + 2) != "*")
+        if (sa[i].contains ("*"))
         {
-            if (i % 2 == 1)
-                resultStr = resultStr.replaceSection (index, 1, "<em>");
-            else
-                resultStr = resultStr.replaceSection (index, 1, "</em>");
-        }
-        else
-        {
-            --i;
-        }
+            String& resultStr (sa.getReference (i));
+            int index = resultStr.indexOf (0, "*");
 
-        index = resultStr.indexOf (index + 1, "*");
-    }
+            while (index != -1)
+            {
+                if (resultStr.substring (index - 1, index) != "\\"
+                    && resultStr.substring (index - 1, index) != "*"
+                    && resultStr.substring (index + 1, index + 2) != "*")
+                {
+                    const int oddIndex = index;
+                    index = resultStr.indexOf (index + 1, "*");
 
-    //DBG (resultStr);
-    return resultStr;
+                    if (index != -1
+                        && resultStr.substring (index - 1, index) != "\\"
+                        && resultStr.substring (index - 1, index) != "*"
+                        && resultStr.substring (index + 1, index + 2) != "*")
+                    {
+                        resultStr = resultStr.replaceSection (index, 1, "</em>");
+                        resultStr = resultStr.replaceSection (oddIndex, 1, "<em>");
+
+                        index = resultStr.indexOf (index + 1, "*");
+                    }
+                }
+            }
+        }
+    }    
+
+    //DBG (sa.joinIntoString (newLine));
+    return sa.joinIntoString (newLine);
 }
 
 //=================================================================================================

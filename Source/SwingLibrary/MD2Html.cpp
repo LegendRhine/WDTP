@@ -402,7 +402,9 @@ const String Md2Html::codeBlockParse (const String& mdString)
 
         const String& htmlStr ("<pre><code class=\"" + highlightStyle + "\">"
                                + mdCodeNew.replace ("```", String())
-                               .replace ("*", "_%5x|z%!##!_") // see cleanup(), prevent bold and italic parse it
+                               .replace ("*", "_%5x|z%!@@!_")   // see cleanup(), prevent parse it
+                               .replace ("#", "_%6x|z%!@@!_")   // see cleanup(), prevent parse it
+                               .replace ("---", "_%7x|z%!@@!_") // see cleanup(), prevent parse it
                                .replace ("<", "&lt;").replace (">", "&gt;")  // escape html code
                                + "</code></pre>");
 
@@ -1142,7 +1144,10 @@ const String Md2Html::cnBracketParse (const String& mdString)
 const String Md2Html::cleanUp (const String& mdString)
 {
     // transform newLine to <p> and <br>
-    String resultStr (mdString.replace ("_%5x|z%!##!_", "*") // for code parse
+    String resultStr (mdString
+                      .replace ("_%5x|z%!@@!_", "*")        // see code block parse
+                      .replace ("_%6x|z%!@@!_", "#")        // see code block parse
+                      .replace ("_%7x|z%!@@!_", "---")      // see code block parse
                       .replace (newLine + newLine, "<p>\n")
                       .replace (newLine, "<br>\n"));
 

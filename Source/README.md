@@ -133,6 +133,8 @@
 
 ### Shortcut Assign
 
+- F1: help for markup syntax
+- Ctrl + F1: add the selected content to tips-bank
 - F3: select next selection
 - Shift + F3: select previous selection
 - F5: regenerate the current page and refresh it

@@ -547,7 +547,7 @@ const String Md2Html::inlineCodeParse (const String& mdString)
             break;
 
         const String mdCode (resultStr.substring (indexStart + 1, indexEnd)
-                             .replace ("*", "_%5x|z%!##!_")
+                             .replace ("*", "_%5x|z%!@@!_")
                              .replace ("<", "&lt;"));
 
         resultStr = resultStr.replaceSection (indexStart, indexEnd - indexStart, "<" + mdCode);
@@ -647,8 +647,12 @@ const String Md2Html::italicParse (const String& mdString)
                         resultStr = resultStr.replaceSection (oddIndex, 1, "<em>");
 
                         index = resultStr.indexOf (index + 1, "*");
+                        continue;
                     }
                 }
+                
+                if (index != -1)
+                    index = resultStr.indexOf (index + 1, "*");
             }
         }
     }    

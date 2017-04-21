@@ -1422,7 +1422,7 @@ void MarkdownEditor::calculateNumbersOfCurrentParagraph (const bool isSum)
     nums.addTokens (getCurrentParagraph(), " ", String());
     nums.removeEmptyStrings (true);
 
-    float sumNum = 0.f;
+    double sumNum = 0;
     int num = 0;
 
     for (int i = nums.size(); --i >= 0; )
@@ -1436,11 +1436,16 @@ void MarkdownEditor::calculateNumbersOfCurrentParagraph (const bool isSum)
             if (nums[i].containsAnyOf ("-.1234567890"))
                 ++num;
 
-            sumNum += nums[i].getFloatValue();
+            sumNum += nums[i].getDoubleValue();
         }
     }
 
-    insertTextAtCaret (String (isSum ? sumNum : sumNum / num, 2));
+    String resultStr (isSum ? sumNum : sumNum / (num > 0 ? num : 1), 2);
+
+    if (resultStr.getLastCharacters (3) == ".00")
+        resultStr = resultStr.dropLastCharacters (3);
+
+    insertTextAtCaret (resultStr);
 }
 
 //=================================================================================================
@@ -1483,7 +1488,7 @@ void MarkdownEditor::calculateNumbersOfCurrentColumn (const bool isSum)
 
     // move caret down row by row
     int rows = 0;
-    float sums = 0.f;
+    double sums = 0;
 
     if (moveCaretDown (false) && getCaretPosition() > 0)
     {        
@@ -1502,9 +1507,9 @@ void MarkdownEditor::calculateNumbersOfCurrentColumn (const bool isSum)
                 StringArray sa;
                 sa.addTokens (getCurrentParagraph(), "|", String());
 
-                if (sa[columns].getFloatValue() != 0)
+                if (columns < sa.size() && sa[columns].getDoubleValue() != 0)
                 {
-                    sums += sa[columns].getFloatValue();
+                    sums += sa[columns].getDoubleValue();
                     ++rows;
                 }
             }
@@ -1514,8 +1519,13 @@ void MarkdownEditor::calculateNumbersOfCurrentColumn (const bool isSum)
         }
     }
 
-    setCaretPosition (currentPos);    
-    insertTextAtCaret (String (isSum ? sums : sums / (rows != 0 ? rows : 1), 2));
+    setCaretPosition (currentPos);
+    String resultStr (isSum ? sums : sums / (rows != 0 ? rows : 1), 2);
+
+    if (resultStr.getLastCharacters (3) == ".00")
+        resultStr = resultStr.dropLastCharacters (3);
+
+    insertTextAtCaret (resultStr);
 }
 
 //=================================================================================================

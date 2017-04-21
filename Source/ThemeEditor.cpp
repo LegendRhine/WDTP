@@ -173,7 +173,7 @@ void ThemeEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 
         String ctrlStr ("  (Ctrl + ");
 #if JUCE_MAC
-        strlStr = "  (cmd + ";
+        ctrlStr = "  (cmd + ";
 #endif
 
         menu.addItem (searchSth, TRANS ("Search Content") + ctrlStr + "F)");

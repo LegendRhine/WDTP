@@ -413,31 +413,3 @@ void SwingEditor::timerCallback()
     selectedForCnPunc.clear();
 }
 
-//=================================================================================================
-const String SwingEditor::calculateNumbersOfCurrentParagraph (const bool isSum) const
-{
-    StringArray nums;
-    nums.addTokens (getCurrentParagraph(), " ", String());
-    nums.removeEmptyStrings (true);
-
-    float sumNum = 0.f;
-    int num = 0;
-
-    for (int i = nums.size(); --i >= 0; )
-    {
-        if (nums[i] == "|")
-        {
-            nums.remove (i);
-        }
-        else
-        {
-            if (nums[i].containsAnyOf ("-.1234567890"))
-                ++num;
-
-            sumNum += nums[i].getFloatValue();
-        }
-    }
-
-    return String (isSum ? sumNum : sumNum / num, 2);
-}
-

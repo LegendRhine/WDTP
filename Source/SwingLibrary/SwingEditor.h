@@ -40,13 +40,7 @@ public:
     virtual void insertTextAtCaret (const String& textToInsert) override;
 
     /** for Chinese punc-matching */
-    virtual void timerCallback() override;
-
-    /** auto sum all numbers of the current row. 
-        the separater between each number must be whitespace or ' | '
-        @para isSum true for sum, false for average
-        */
-    const String calculateNumbersOfCurrentParagraph (const bool isSum) const;
+    virtual void timerCallback() override;    
 
 private:
     //=================================================================================================

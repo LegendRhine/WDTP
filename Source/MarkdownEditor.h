@@ -142,6 +142,12 @@ private:
     void inlineFormat (const int formatIndex);
     void selectedAddToTipsBank();
 
+    /** auto sum all numbers of the current row.
+    the separater between each number must be whitespace or ' | '
+    @para isSum true for sum, false for average
+    */
+    const String calculateNumbersOfCurrentParagraph (const bool isSum) const;
+
     //=============================================================================================
     EditAndPreview* parent;
     Slider fontSizeSlider;

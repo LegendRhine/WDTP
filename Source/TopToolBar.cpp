@@ -583,36 +583,30 @@ void TopToolBar::closeProject()
 //=================================================================================================
 void TopToolBar::cleanAndGenerateAll()
 {
-    const int index = AlertWindow::showYesNoCancelBox (AlertWindow::QuestionIcon,
+    if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon,
                                       TRANS ("Confirm"),
-                                      TRANS ("Cleanup all needless medias before regenerate the site?"),
-                                                       TRANS ("Regenerate Without Cleanup"),
-                                                       TRANS ("Cleanup Before Regenerate"));
-
-    if (index == 0)
-        return;
-
-    // cleanup needless medias
-    if (index == 2)
+                                      TRANS ("Cleanup all needless medias and regenerate the site?")))
+    {
         cleanNeedlessMedias (false);
 
-    // cleanup all html but medias 
-    const File& site (FileTreeContainer::projectFile.getSiblingFile ("site"));
-    Array<File> htmls;
-    site.findChildFiles (htmls, File::findFiles, true, "*.html");
+        // cleanup all html but medias 
+        const File& site (FileTreeContainer::projectFile.getSiblingFile ("site"));
+        Array<File> htmls;
+        site.findChildFiles (htmls, File::findFiles, true, "*.html");
 
-    for (int i = htmls.size(); --i >= 0; )
-        htmls[i].deleteFile();
+        for (int i = htmls.size (); --i >= 0; )
+            htmls[i].deleteFile ();
 
-    // initial progress value
-    totalItems = 0;
-    SwingUtilities::getAllChildrenNumbers (FileTreeContainer::projectTree, totalItems);
+        // initial progress value
+        totalItems = 0;
+        SwingUtilities::getAllChildrenNumbers (FileTreeContainer::projectTree, totalItems);
 
-    accumulator = 0;
-    progressValue = 0.0;
+        accumulator = 0;
+        progressValue = 0.0;
 
-    progressBar.enterModalState();
-    startThread();  // start generate..
+        progressBar.enterModalState ();
+        startThread ();  // start generate..
+    }
 }
 
 //=================================================================================================

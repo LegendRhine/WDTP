@@ -103,6 +103,7 @@ void SwingEditor::mouseUp (const MouseEvent& e)
 
         setCaretPosition (dropPosition - removeNumbers);
         insertTextAtCaret (draggingContent);
+        setHighlightedRegion(Range<int> (getCaretPosition() - draggingContent.length(), getCaretPosition()));
     }
 
     else
@@ -321,6 +322,7 @@ void SwingEditor::insertTextAtCaret (const String& textToInsert)
     else if (textToInsert == ";") TextEditor::insertTextAtCaret (" ");
     else if (textToInsert == ":") TextEditor::insertTextAtCaret (" ");
     else if (textToInsert == "!") TextEditor::insertTextAtCaret (" ");
+    else if (textToInsert == "?") TextEditor::insertTextAtCaret (" ");
 
     // markup: `, ~, *
     else if (sthSelected && textToInsert == "`")

@@ -282,8 +282,11 @@ void TopToolBar::popupSystemMenu()
 
     for (int i = 0; i < rs.size(); ++i)
     {
-        exResourceMenu.addItem (300 + i, rs[i].upToFirstOccurrenceOf ("=", false, false).trim());
-        rsPath.add (rs[i].fromFirstOccurrenceOf ("=", false, false).trim());
+        if (rs[i].contains ("="))
+        {
+            exResourceMenu.addItem (300 + i, rs[i].upToFirstOccurrenceOf ("=", false, false).trim());
+            rsPath.add (rs[i].fromFirstOccurrenceOf ("=", false, false).trim());
+        }
     }
 
     exResourceMenu.addSeparator();

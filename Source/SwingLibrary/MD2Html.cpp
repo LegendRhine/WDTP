@@ -405,6 +405,7 @@ const String Md2Html::codeBlockParse (const String& mdString)
                                .replace ("*", "_%5x|z%!@@!_")   // see cleanup(), prevent parse it
                                .replace ("#", "_%6x|z%!@@!_")   // see cleanup(), prevent parse it
                                .replace ("---", "_%7x|z%!@@!_") // see cleanup(), prevent parse it
+                               .replace ("- ", "_%8x|z%!@@!_")  // see cleanup(), prevent parse it
                                .replace ("<", "&lt;").replace (">", "&gt;")  // escape html code
                                + "</code></pre>");
 
@@ -1148,6 +1149,7 @@ const String Md2Html::cleanUp (const String& mdString)
                       .replace ("_%5x|z%!@@!_", "*")        // see code block parse
                       .replace ("_%6x|z%!@@!_", "#")        // see code block parse
                       .replace ("_%7x|z%!@@!_", "---")      // see code block parse
+                      .replace ("_%8x|z%!@@!_", "- ")       // see code block parse
                       .replace (newLine + newLine, "<p>\n")
                       .replace (newLine, "<br>\n"));
 

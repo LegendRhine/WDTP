@@ -453,8 +453,8 @@ void MarkdownEditor::performPopupMenuAction (int index)
             .launchInDefaultBrowser();
     }
 
-    else if (autoSumPara == index)          insertTextAtCaret (calculateNumbersOfCurrentParagraph (true));
-    else if (autoAvPara == index)           insertTextAtCaret (calculateNumbersOfCurrentParagraph (false));
+    else if (autoSumPara == index)          calculateNumbersOfCurrentParagraph (true);
+    else if (autoAvPara == index)           calculateNumbersOfCurrentParagraph (false);
     else if (insertSeparator == index)      TextEditor::insertTextAtCaret (newLine + "---" + newLine);
     else if (pickFromAllKeywords == index)  showAllKeywords();
     else if (searchPrev == index)           searchPrevious();
@@ -1407,7 +1407,7 @@ void MarkdownEditor::selectedAddToTipsBank()
 }
 
 //=================================================================================================
-const String MarkdownEditor::calculateNumbersOfCurrentParagraph (const bool isSum) const
+void MarkdownEditor::calculateNumbersOfCurrentParagraph (const bool isSum)
 {
     StringArray nums;
     nums.addTokens (getCurrentParagraph(), " ", String());
@@ -1431,7 +1431,75 @@ const String MarkdownEditor::calculateNumbersOfCurrentParagraph (const bool isSu
         }
     }
 
-    return String (isSum ? sumNum : sumNum / num, 2);
+    insertTextAtCaret (String (isSum ? sumNum : sumNum / num, 2));
+}
+
+//=================================================================================================
+void MarkdownEditor::calculateNumbersOfCurrentColumn (const bool isSum)
+{
+    if (!getCurrentParagraph().contains (" | "))
+        return;
+
+    if (getHighlightedText().isNotEmpty())
+        insertTextAtCaret (String());
+
+    const int currentPos = getCaretPosition();
+
+    // get current column
+    int tempPos = currentPos;
+    int columns = 0;
+    String tempChar (getTextInRange (Range<int> (--tempPos, tempPos)));
+
+    while (tempPos != 0 && tempChar != "\n")
+    {
+        tempChar = getTextInRange (Range<int> (--tempPos, tempPos));
+
+        if (tempChar == "|")
+            ++columns;
+    }
+
+    // move caret to the first table row
+    moveCaretUp (false);
+
+    while (getCurrentParagraph().trim().isNotEmpty())
+    {
+        if (getCurrentParagraph().contains ("------")
+            || getCurrentParagraph().contains ("======")
+            || getCurrentParagraph().contains ("//////")
+            || !getCurrentParagraph().contains (" | "))
+            break;
+
+        moveCaretUp (false);
+    }
+
+    // move caret down row by row
+    moveCaretDown (false);
+    int rows = 0;
+    float sums = 0.f;
+
+    while (getCurrentParagraph().trim().isNotEmpty())
+    {
+        if (getCurrentParagraph().contains ("------")
+            || getCurrentParagraph().contains ("======")
+            || getCurrentParagraph().contains ("//////")
+            || !getCurrentParagraph().contains (" | "))
+        {
+            break;
+        }
+
+        else
+        {
+            ++rows;
+            StringArray sa;
+            sa.addTokens (getCurrentParagraph(), " | ", String());
+            sums += sa[columns].getFloatValue();
+        }
+
+        moveCaretDown (false);
+    }
+
+    setCaretPosition (currentPos);
+    insertTextAtCaret (String (isSum ? sums : sums / rows, 2));
 }
 
 //=================================================================================================

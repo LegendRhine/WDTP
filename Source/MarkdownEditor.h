@@ -142,11 +142,18 @@ private:
     void inlineFormat (const int formatIndex);
     void selectedAddToTipsBank();
 
-    /** auto sum all numbers of the current row.
-    the separater between each number must be whitespace or ' | '
-    @para isSum true for sum, false for average
-    */
-    const String calculateNumbersOfCurrentParagraph (const bool isSum) const;
+    /** auto sum/average all numbers of the current paragraph.
+        the separater between each number must be whitespace or ' | '
+
+        @para isSum true for sum, false for average */
+    void calculateNumbersOfCurrentParagraph (const bool isSum);
+
+    /** auto sum/average all numbers of the current column.
+        the separater between each number must be ' | '
+        this method only for table.
+
+        @para isSum true for sum, false for average */
+    void calculateNumbersOfCurrentColumn (const bool isSum);
 
     //=============================================================================================
     EditAndPreview* parent;

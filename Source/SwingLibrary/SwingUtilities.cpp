@@ -483,6 +483,24 @@ const bool SwingUtilities::rotateImage (const File& originalImgFile,
     return false;
 }
 
+//=================================================================================================
+template<class ComponentClass>
+ComponentClass* SwingUtilities::getChildComponentOfClass (Component* parent)
+{
+    for (int i = 0; i < parent->getNumChildComponents(); ++i)
+    {
+        auto* childComp = parent->getChildComponent (i);
+
+        if (auto c = dynamic_cast<ComponentClass*> (childComp))
+            return c;
+
+        if (auto c = getChildComponentOfClass<ComponentClass> (childComp))
+            return c;
+    }
+
+    return nullptr;
+}
+
 //==============================================================================
 SwingDialog::SwingDialog (const String& description) :
     logo (ImageCache::getFromMemory (BinaryData::logo_png, BinaryData::logo_pngSize))

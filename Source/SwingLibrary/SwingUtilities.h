@@ -160,6 +160,10 @@ struct SwingUtilities
                                    const bool leftRotate90Degress,
                                    const bool deleteOriginal = true);
 
+    //=================================================================================================
+    template<class ComponentClass>
+    static ComponentClass* getChildComponentOfClass (Component* parent);
+
 };
 
 //=========================================================================

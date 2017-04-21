@@ -236,18 +236,18 @@ const String Md2Html::tableParse (const String& mdString)
 const String Md2Html::hybridParse (const String& mdString)
 {
     String resultStr (mdString);
-    int indexStart = resultStr.indexOfIgnoreCase (0, "~~~");
+    int indexStart = resultStr.indexOf (0, "~~~");
 
     while (indexStart != -1 && resultStr[indexStart - 1] != '\\')
     {
-        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 3, "~~~");
+        const int indexEnd = resultStr.indexOf (indexStart + 3, "~~~");
 
         if (indexEnd == -1)
             break;
 
         if (resultStr[indexEnd - 1] == '\\')
         {
-            indexStart = resultStr.indexOfIgnoreCase (indexStart + 3, "~~~");
+            indexStart = resultStr.indexOf (indexStart + 3, "~~~");
             continue;
         }
 
@@ -313,7 +313,7 @@ const String Md2Html::hybridParse (const String& mdString)
 
         //DBG (htmlStr);
         resultStr = resultStr.replaceSection (indexStart, contentStr.length() + 3, htmlStr);
-        indexStart = resultStr.indexOfIgnoreCase (indexStart + htmlStr.length(), "~~~");
+        indexStart = resultStr.indexOf (indexStart + htmlStr.length(), "~~~");
     }
 
     return resultStr;
@@ -338,43 +338,43 @@ const String Md2Html::identifierParse (const String& mdString)
 const String Md2Html::commentParse (const String& mdString)
 {
     String resultStr (mdString);
-    int indexStart = resultStr.indexOfIgnoreCase (0, "//////");
+    int indexStart = resultStr.indexOf (0, "//////");
 
     while (indexStart != -1)
     {
         if (resultStr.substring (indexStart - 1, indexStart) == "\\")
         {
-            indexStart = resultStr.indexOfIgnoreCase (indexStart + 6, "//////");
+            indexStart = resultStr.indexOf (indexStart + 6, "//////");
             continue;
         }
 
         // get to the row end. because more than 6 '/' at the begin might be
         int tempIndex = indexStart + 6;
 
-        while (resultStr.indexOfIgnoreCase (tempIndex + 1, "/") != -1
+        while (resultStr.indexOf (tempIndex + 1, "/") != -1
                && resultStr.substring (tempIndex, tempIndex + 1) != "\n")
             ++tempIndex;
 
-        int indexEnd = resultStr.indexOfIgnoreCase (tempIndex, "//////");
+        int indexEnd = resultStr.indexOf (tempIndex, "//////");
 
         if (indexEnd == -1)
             break;
 
         if (resultStr.substring (indexEnd - 1, indexEnd) == "\\")
         {
-            indexStart = resultStr.indexOfIgnoreCase (indexEnd + 6, "//////");
+            indexStart = resultStr.indexOf (indexEnd + 6, "//////");
             continue;
         }
         
         // get to the end. because more than 6 '/' at the end might be
         indexEnd += 6;
 
-        while (resultStr.indexOfIgnoreCase (indexEnd + 1, "/") != -1
+        while (resultStr.indexOf (indexEnd + 1, "/") != -1
                && resultStr.substring (indexEnd, indexEnd + 1) != "\n")
             ++indexEnd;
 
         resultStr = resultStr.replaceSection (indexStart, indexEnd - indexStart + 1, "<p>");
-        indexStart = resultStr.indexOfIgnoreCase (indexStart, "//////");
+        indexStart = resultStr.indexOf (indexStart, "//////");
     }
 
     //DBG (resultStr);
@@ -385,11 +385,11 @@ const String Md2Html::commentParse (const String& mdString)
 const String Md2Html::codeBlockParse (const String& mdString)
 {
     String resultStr (mdString);
-    int indexStart = resultStr.indexOfIgnoreCase (0, "```");
+    int indexStart = resultStr.indexOf (0, "```");
 
     while (indexStart != -1)
     {
-        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 4, "```");
+        const int indexEnd = resultStr.indexOf (indexStart + 4, "```");
 
         if (indexEnd == -1)
             break;
@@ -411,7 +411,7 @@ const String Md2Html::codeBlockParse (const String& mdString)
 
         //DBG (htmlStr);
         resultStr = resultStr.replaceSection (indexStart, mdCode.length(), htmlStr);
-        indexStart = resultStr.indexOfIgnoreCase (indexStart + htmlStr.length(), "```");
+        indexStart = resultStr.indexOf (indexStart + htmlStr.length(), "```");
     }
 
     return resultStr;
@@ -421,21 +421,21 @@ const String Md2Html::codeBlockParse (const String& mdString)
 const String Md2Html::endnoteParse (const String& mdString)
 {
     String resultStr (mdString);
-    int indexStart = resultStr.indexOfIgnoreCase (0, "[^");
+    int indexStart = resultStr.indexOf (0, "[^");
     int noteNumber = 0;
     StringArray notes;
 
     while (indexStart != -1)
     {
         // get note content's end index
-        int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 2, "]");
+        int indexEnd = resultStr.indexOf (indexStart + 2, "]");
 
         if (indexEnd == -1)
             break;
 
         // need to process the link mark which may inside endnote
         if (resultStr.substring (indexEnd + 1, indexEnd + 2) == "(")
-            indexEnd = resultStr.indexOfIgnoreCase (indexEnd + 2, "]");
+            indexEnd = resultStr.indexOf (indexEnd + 2, "]");
 
         if (resultStr.substring (indexStart - 1, indexStart) != "\\"
             && resultStr.substring (indexEnd - 1, indexEnd) !="\\")
@@ -457,7 +457,7 @@ const String Md2Html::endnoteParse (const String& mdString)
             }
         }
 
-        indexStart = resultStr.indexOfIgnoreCase (indexStart + 2, "[^");
+        indexStart = resultStr.indexOf (indexStart + 2, "[^");
     }
 
     if (notes.size() > 0)
@@ -477,22 +477,22 @@ const String Md2Html::endnoteParse (const String& mdString)
 const String Md2Html::postilParse (const String& mdString)
 {
     String resultStr (mdString);
-    int indexStart = resultStr.indexOfIgnoreCase (0, ")[");
+    int indexStart = resultStr.indexOf (0, ")[");
     
     while (indexStart != -1)
     {
-        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart, "]");
+        const int indexEnd = resultStr.indexOf (indexStart, "]");
 
         if (indexEnd == -1)
             break;
 
-        const int postilStart = resultStr.substring (0, indexStart).lastIndexOfIgnoreCase ("(");
+        const int postilStart = resultStr.substring (0, indexStart).lastIndexOf ("(");
 
         if (postilStart == -1 
             || resultStr.substring (postilStart - 1, postilStart) == "\\"
             || indexEnd - postilStart > 200)
         {
-            indexStart = resultStr.indexOfIgnoreCase (indexStart + 2, ")[");
+            indexStart = resultStr.indexOf (indexStart + 2, ")[");
             continue;
         }        
 
@@ -505,7 +505,7 @@ const String Md2Html::postilParse (const String& mdString)
                               + contentNeedPostil + "</span>");
 
         resultStr = resultStr.replaceSection (postilStart, indexEnd + 1 - postilStart, htmlStr);
-        indexStart = resultStr.indexOfIgnoreCase (indexStart + htmlStr.length(), ")[");
+        indexStart = resultStr.indexOf (indexStart + htmlStr.length(), ")[");
     }
 
     return resultStr;
@@ -515,7 +515,7 @@ const String Md2Html::postilParse (const String& mdString)
 const String Md2Html::inlineCodeParse (const String& mdString)
 {
     String resultStr (mdString);
-    int index = resultStr.indexOfIgnoreCase (0, "`");
+    int index = resultStr.indexOf (0, "`");
 
     for (int i = 1; index != -1; ++i)
     {
@@ -533,15 +533,15 @@ const String Md2Html::inlineCodeParse (const String& mdString)
             --i;
         }
 
-        index = resultStr.indexOfIgnoreCase (index + 1, "`");
+        index = resultStr.indexOf (index + 1, "`");
     }
 
     // for bold, italic and html code parse
-    int indexStart = resultStr.indexOfIgnoreCase (0, "<code>");
+    int indexStart = resultStr.indexOf (0, "<code>");
 
     while (indexStart != -1)
     {
-        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 6, "</code>");
+        const int indexEnd = resultStr.indexOf (indexStart + 6, "</code>");
 
         if (indexEnd == -1)
             break;
@@ -551,7 +551,7 @@ const String Md2Html::inlineCodeParse (const String& mdString)
                              .replace ("<", "&lt;"));
 
         resultStr = resultStr.replaceSection (indexStart, indexEnd - indexStart, "<" + mdCode);
-        indexStart = resultStr.indexOfIgnoreCase (indexStart + mdCode.length(), "<code>");
+        indexStart = resultStr.indexOf (indexStart + mdCode.length(), "<code>");
     }
 
     //DBG (resultStr);
@@ -562,7 +562,7 @@ const String Md2Html::inlineCodeParse (const String& mdString)
 const String Md2Html::boldAndItalicParse (const String& mdString)
 {
     String resultStr (mdString);
-    int index = resultStr.indexOfIgnoreCase (0, "***");
+    int index = resultStr.indexOf (0, "***");
 
     for (int i = 1; index != -1; ++i)
     {
@@ -580,7 +580,7 @@ const String Md2Html::boldAndItalicParse (const String& mdString)
             --i;
         }
 
-        index = resultStr.indexOfIgnoreCase (index + 3, "***");
+        index = resultStr.indexOf (index + 3, "***");
     }
 
     //DBG (resultStr);
@@ -591,7 +591,7 @@ const String Md2Html::boldAndItalicParse (const String& mdString)
 const String Md2Html::boldParse (const String& mdString)
 {
     String resultStr (mdString);
-    int index = resultStr.indexOfIgnoreCase (0, "**");
+    int index = resultStr.indexOf (0, "**");
 
     for (int i = 1; index != -1; ++i)
     {
@@ -609,7 +609,7 @@ const String Md2Html::boldParse (const String& mdString)
             --i;
         }
 
-        index = resultStr.indexOfIgnoreCase (index + 2, "**");
+        index = resultStr.indexOf (index + 2, "**");
     }
 
     //DBG (resultStr);
@@ -620,7 +620,7 @@ const String Md2Html::boldParse (const String& mdString)
 const String Md2Html::italicParse (const String& mdString)
 {
     String resultStr (mdString);
-    int index = resultStr.indexOfIgnoreCase (0, "*");
+    int index = resultStr.indexOf (0, "*");
 
     for (int i = 1; index != -1; ++i)
     {
@@ -638,7 +638,7 @@ const String Md2Html::italicParse (const String& mdString)
             --i;
         }
 
-        index = resultStr.indexOfIgnoreCase (index + 1, "*");
+        index = resultStr.indexOf (index + 1, "*");
     }
 
     //DBG (resultStr);
@@ -649,7 +649,7 @@ const String Md2Html::italicParse (const String& mdString)
 const String Md2Html::highlightParse (const String& mdString)
 {
     String resultStr (mdString);
-    int index = resultStr.indexOfIgnoreCase (0, "~~");
+    int index = resultStr.indexOf (0, "~~");
 
     for (int i = 1; index != -1; ++i)
     {
@@ -667,7 +667,7 @@ const String Md2Html::highlightParse (const String& mdString)
             --i;
         }
 
-        index = resultStr.indexOfIgnoreCase (index + 2, "~~");
+        index = resultStr.indexOf (index + 2, "~~");
     }
 
     //DBG (resultStr);
@@ -864,18 +864,18 @@ const String Md2Html::imageParse (const String& mdString)
 {
     /**< ![](media/xxx.jpg =500) */
     String resultStr (mdString);
-    int indexStart = resultStr.indexOfIgnoreCase (0, "![");
+    int indexStart = resultStr.indexOf (0, "![");
 
     while (indexStart != -1)
     {
         if (resultStr.substring (indexStart - 1, indexStart) == "\\")
         {
-            indexStart = resultStr.indexOfIgnoreCase (indexStart + 2, "![");
+            indexStart = resultStr.indexOf (indexStart + 2, "![");
             continue;
         }
 
         // get alt content
-        const int altEnd = resultStr.indexOfIgnoreCase (indexStart + 2, "](");
+        const int altEnd = resultStr.indexOf (indexStart + 2, "](");
 
         if (altEnd == -1)
             break;
@@ -883,7 +883,7 @@ const String Md2Html::imageParse (const String& mdString)
         const String& altContent (resultStr.substring (indexStart + 2, altEnd));
 
         // get img str include width
-        const int imgEnd = resultStr.indexOfIgnoreCase (altEnd + 2, ")");
+        const int imgEnd = resultStr.indexOf (altEnd + 2, ")");
 
         if (imgEnd == -1)
             break;
@@ -907,7 +907,7 @@ const String Md2Html::imageParse (const String& mdString)
                              + altContent + "\"" + widthStr + " />" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, imgEnd + 1 - indexStart, imgStr);
-        indexStart = resultStr.indexOfIgnoreCase (indexStart + imgStr.length(), "![");
+        indexStart = resultStr.indexOf (indexStart + imgStr.length(), "![");
     }
 
     return resultStr;
@@ -918,18 +918,18 @@ const String Md2Html::audioParse (const String& mdString)
 {
     /**< ~[](media/xxx.mp3) */
     String resultStr (mdString);
-    int indexStart = resultStr.indexOfIgnoreCase (0, "~[](");
+    int indexStart = resultStr.indexOf (0, "~[](");
 
     while (indexStart != -1)
     {
         if (resultStr.substring (indexStart - 1, indexStart) == "\\")
         {
-            indexStart = resultStr.indexOfIgnoreCase (indexStart + 4, "~[](");
+            indexStart = resultStr.indexOf (indexStart + 4, "~[](");
             continue;
         }
                 
         // get audio file path
-        const int audioEnd = resultStr.indexOfIgnoreCase (indexStart + 4, ")");
+        const int audioEnd = resultStr.indexOf (indexStart + 4, ")");
 
         if (audioEnd == -1)
             break;
@@ -940,7 +940,7 @@ const String Md2Html::audioParse (const String& mdString)
                                 + " preload=\"auto\" controls />" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, audioEnd + 1 - indexStart, audioStr);
-        indexStart = resultStr.indexOfIgnoreCase (indexStart + audioStr.length(), "~[](");
+        indexStart = resultStr.indexOf (indexStart + audioStr.length(), "~[](");
     }
 
     return resultStr;
@@ -951,18 +951,18 @@ const String Md2Html::videoParse (const String& mdString)
 {
     /**< @[](media/xxx.mp4 = 680) */
     String resultStr (mdString);
-    int indexStart = resultStr.indexOfIgnoreCase (0, "@[](");
+    int indexStart = resultStr.indexOf (0, "@[](");
 
     while (indexStart != -1)
     {
         if (resultStr.substring (indexStart - 1, indexStart) == "\\")
         {
-            indexStart = resultStr.indexOfIgnoreCase (indexStart + 4, "@[](");
+            indexStart = resultStr.indexOf (indexStart + 4, "@[](");
             continue;
         }
                 
         // get video str include width
-        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 4, ")");
+        const int indexEnd = resultStr.indexOf (indexStart + 4, ")");
 
         if (indexEnd == -1)
             break;
@@ -986,7 +986,7 @@ const String Md2Html::videoParse (const String& mdString)
                               + widthStr + " preload=\"auto\" controls />" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, indexEnd + 1 - indexStart, videoStr);
-        indexStart = resultStr.indexOfIgnoreCase (indexStart + videoStr.length(), "@[](");
+        indexStart = resultStr.indexOf (indexStart + videoStr.length(), "@[](");
     }
 
     return resultStr;
@@ -997,13 +997,13 @@ const String Md2Html::mdLinkParse (const String& mdString)
 {
     // [](http://xxx.com)
     String resultStr (mdString);
-    int linkPathStart = resultStr.indexOfIgnoreCase (0, "](");
+    int linkPathStart = resultStr.indexOf (0, "](");
 
     while (linkPathStart != -1)
     {
         // get alt content
         const String splitContent (resultStr.substring (0, linkPathStart));
-        const int altStart = splitContent.lastIndexOfIgnoreCase ("[");
+        const int altStart = splitContent.lastIndexOf ("[");
 
         if (altStart == -1)
             break;
@@ -1018,8 +1018,8 @@ const String Md2Html::mdLinkParse (const String& mdString)
             // for brackets in a crazy url, such as 'https://microsoft.com/hh568(v=vs.120).aspx' etc.
             bool usingBracketForSpecialUrl = (resultStr.substring (linkPathStart + 2, linkPathStart + 3) == "\"");
             int pathEnd = usingBracketForSpecialUrl 
-                ? resultStr.indexOfIgnoreCase (linkPathStart + 3, "\"")
-                : resultStr.indexOfIgnoreCase (linkPathStart + 2, ")");
+                ? resultStr.indexOf (linkPathStart + 3, "\"")
+                : resultStr.indexOf (linkPathStart + 2, ")");
 
             if (pathEnd == -1)
                 break;
@@ -1040,11 +1040,11 @@ const String Md2Html::mdLinkParse (const String& mdString)
                                                   pathEnd + (usingBracketForSpecialUrl ? 2 : 1) - altStart,
                                                   linkStr);
 
-            linkPathStart = resultStr.indexOfIgnoreCase (altStart + linkStr.length(), "](");
+            linkPathStart = resultStr.indexOf (altStart + linkStr.length(), "](");
         }
         else
         {
-            linkPathStart = resultStr.indexOfIgnoreCase (linkPathStart + 2, "](");
+            linkPathStart = resultStr.indexOf (linkPathStart + 2, "](");
         }
 
     }
@@ -1116,12 +1116,12 @@ const String Md2Html::listParse (const String& mdString, const bool isOrdered)
 const String Md2Html::cnBracketParse (const String& mdString)
 {
     String resultStr (mdString);
-    int indexStart = resultStr.indexOfIgnoreCase (0, CharPointer_UTF8 ("\xef\xbc\x88"));
+    int indexStart = resultStr.indexOf (0, CharPointer_UTF8 ("\xef\xbc\x88"));
 
     while (indexStart != -1)
     {
         // get note content's end index
-        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 1, CharPointer_UTF8 ("\xef\xbc\x89"));
+        const int indexEnd = resultStr.indexOf (indexStart + 1, CharPointer_UTF8 ("\xef\xbc\x89"));
 
         if (indexEnd == -1)
             break;
@@ -1135,7 +1135,7 @@ const String Md2Html::cnBracketParse (const String& mdString)
             resultStr = resultStr.replaceSection (indexStart + 1, content.length(), withSpan);
         }
 
-        indexStart = resultStr.indexOfIgnoreCase (indexEnd, CharPointer_UTF8 ("\xef\xbc\x88"));
+        indexStart = resultStr.indexOf (indexEnd, CharPointer_UTF8 ("\xef\xbc\x88"));
     }
     
     return resultStr;
@@ -1154,7 +1154,7 @@ const String Md2Html::cleanUp (const String& mdString)
                       .replace (newLine, "<br>\n"));
 
     // clean extra <br> when it's after any html-tag
-    int indexBr = resultStr.indexOfIgnoreCase (0, "<br>");
+    int indexBr = resultStr.indexOf (0, "<br>");
 
     while (indexBr != -1)
     {
@@ -1163,15 +1163,15 @@ const String Md2Html::cleanUp (const String& mdString)
             && resultStr.substring (indexBr - 2, indexBr) != "\">")
             resultStr = resultStr.replaceSection (indexBr, 4, newLine);
 
-        indexBr = resultStr.indexOfIgnoreCase (indexBr + 4, "<br>");
+        indexBr = resultStr.indexOf (indexBr + 4, "<br>");
     }
 
     // clean extra <p> and <br> of code-block(s)
-    int indexCodeStart = resultStr.indexOfIgnoreCase (0, "<pre><code class=");
+    int indexCodeStart = resultStr.indexOf (0, "<pre><code class=");
 
     while (indexCodeStart != -1 && indexCodeStart + 20 <= resultStr.length())
     {
-        const int indexCodeEnd = resultStr.indexOfIgnoreCase (indexCodeStart + 20, "</code></pre>");
+        const int indexCodeEnd = resultStr.indexOf (indexCodeStart + 20, "</code></pre>");
 
         if (indexCodeEnd == -1)
             break;
@@ -1180,15 +1180,15 @@ const String Md2Html::cleanUp (const String& mdString)
         const String codeHtml (mdCode.replace ("<p>", newLine).replace ("<br>", String()));
 
         resultStr = resultStr.replaceSection (indexCodeStart, mdCode.length(), codeHtml);
-        indexCodeStart = resultStr.indexOfIgnoreCase (indexCodeStart + 33, "<pre><code class=");
+        indexCodeStart = resultStr.indexOf (indexCodeStart + 33, "<pre><code class=");
     }
 
     // clean extra <p> and <br> of page's js-code (inside <body/>)
-    indexCodeStart = resultStr.indexOfIgnoreCase (0, "<script");
+    indexCodeStart = resultStr.indexOf (0, "<script");
 
     while (indexCodeStart != -1 && indexCodeStart + 8 <= resultStr.length())
     {
-        const int indexCodeEnd = resultStr.indexOfIgnoreCase (indexCodeStart + 8, "</script>");
+        const int indexCodeEnd = resultStr.indexOf (indexCodeStart + 8, "</script>");
 
         if (indexCodeEnd == -1)
             break;
@@ -1197,7 +1197,7 @@ const String Md2Html::cleanUp (const String& mdString)
         const String codeHtml (jsCode.replace ("<p>", newLine).replace ("<br>", String()));
 
         resultStr = resultStr.replaceSection (indexCodeStart, jsCode.length(), codeHtml);
-        indexCodeStart = resultStr.indexOfIgnoreCase (indexCodeStart + 17, "<script");
+        indexCodeStart = resultStr.indexOf (indexCodeStart + 17, "<script");
     }
 
     // clean up empty line in table
@@ -1259,8 +1259,8 @@ const String Md2Html::extractLinkText (const String& titleStr)
     if (result.containsIgnoreCase ("[") && result.containsIgnoreCase ("]")
         && result.containsIgnoreCase ("(") && result.containsIgnoreCase (")"))
     {
-        int indexStart = result.indexOfIgnoreCase ("[");
-        int indexEnd = result.indexOfIgnoreCase ("]");
+        int indexStart = result.indexOf ("[");
+        int indexEnd = result.indexOf ("]");
 
         result = result.substring (indexStart + 1, indexEnd);
         result = result.isEmpty() ? titleStr : result;

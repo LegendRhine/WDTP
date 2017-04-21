@@ -726,7 +726,11 @@ private:
     void insert (const String&, int insertIndex, const Font&, const Colour, UndoManager*, int newCaretPos);
     void reinsert (int insertIndex, const OwnedArray<UniformTextSection>&);
     void remove (Range<int> range, UndoManager*, int caretPositionToMoveTo);
+    
+public:
     void getCharPosition (int index, float& x, float& y, float& lineHeight) const;
+
+private:
     void updateCaretPosition();
     void updateValueFromText();
     void textWasChangedByValue();

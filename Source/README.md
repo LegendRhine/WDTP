@@ -167,3 +167,7 @@
 
 - Punctuation Matching...
 
+### 3rd Library and 3rd Lib-hacked
+- JUCE: https://juce.com
+- ASIO: https://steinberg.net
+- JUCE lib-hacked source files: Source/libHackBackup

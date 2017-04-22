@@ -105,11 +105,11 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         ctrlStr = "  (Cmd + ";
 #endif
 
-        menu.addItem (pickTitle, TRANS ("Pickup as Title"), selectSomething);
-        menu.addItem (pickDesc, TRANS ("Pickup as Description"), selectSomething);
-        menu.addItem (addKeywords, TRANS ("Add to Keywords"), selectSomething);
+        menu.addItem (pickTitle, TRANS ("Pickup as Title"), selectSomething && notArchived);
+        menu.addItem (pickDesc, TRANS ("Pickup as Description"), selectSomething && notArchived);
+        menu.addItem (addKeywords, TRANS ("Add to Keywords"), selectSomething && notArchived);
         menu.addSeparator();
-        menu.addItem (pickFromAllKeywords, TRANS ("Project Keywords Table") + "...", docExists);
+        menu.addItem (pickFromAllKeywords, TRANS ("Project Keywords Table") + "...", docExists && notArchived);
         menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)", docExists);
         menu.addSeparator();
 
@@ -248,7 +248,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addSubMenu (TRANS ("External Translate Selection"), transMenu, docExists);
         menu.addSeparator();
 
-        menu.addItem (showTips, TRANS ("Tips/Replace") + "..." + ctrlStr + "G)", selectSomething);
+        menu.addItem (showTips, TRANS ("Tips/Replace") + "..." + ctrlStr + "G)", selectSomething && notArchived);
         menu.addItem (joinTips, TRANS ("Add to Tips Bank") + "..." + ctrlStr + "F1)", selectSomething);
         menu.addSeparator();
 

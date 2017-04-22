@@ -31,10 +31,7 @@ const String Md2Html::mdStringToHtml (const String& mdString)
          || htmlContent.contains ("======") 
          || htmlContent.contains ("//////"))
         && htmlContent.contains (" | "))
-        htmlContent = tableParse (htmlContent);
-
-    if (htmlContent.contains ("[^"))
-        htmlContent = endnoteParse (htmlContent);
+        htmlContent = tableParse (htmlContent);    
 
     if (htmlContent.contains ("`"))
     {
@@ -43,6 +40,9 @@ const String Md2Html::mdStringToHtml (const String& mdString)
 
         htmlContent = inlineCodeParse (htmlContent);
     }
+
+    if (htmlContent.contains ("[^"))
+        htmlContent = endnoteParse (htmlContent);
 
     if (htmlContent.contains ("*"))
     {
@@ -402,10 +402,12 @@ const String Md2Html::codeBlockParse (const String& mdString)
 
         const String& htmlStr ("<pre><code class=\"" + highlightStyle + "\">"
                                + mdCodeNew.replace ("```", String())
-                               .replace ("*", "_%5x|z%!@@!_")   // see cleanup(), prevent parse it
-                               .replace ("#", "_%6x|z%!@@!_")   // see cleanup(), prevent parse it
+                               .replace ("*", "\\*")   // see cleanup(), prevent parse it
+                               .replace ("#", "\\#")   // see cleanup(), prevent parse it
+                               .replace ("[", "\\[")   // see cleanup(), prevent parse it
+                               .replace ("(", "\\(")   // see cleanup(), prevent parse it
+                               .replace ("- ", "\\- ") // see cleanup(), prevent parse it
                                .replace ("---", "_%7x|z%!@@!_") // see cleanup(), prevent parse it
-                               .replace ("- ", "_%8x|z%!@@!_")  // see cleanup(), prevent parse it
                                .replace ("<", "&lt;").replace (">", "&gt;")  // escape html code
                                + "</code></pre>");
 
@@ -547,7 +549,8 @@ const String Md2Html::inlineCodeParse (const String& mdString)
             break;
 
         const String mdCode (resultStr.substring (indexStart + 1, indexEnd)
-                             .replace ("*", "_%5x|z%!@@!_")
+                             .replace ("*", "\\*")
+                             .replace ("#", "\\#")
                              .replace ("<", "&lt;"));
 
         resultStr = resultStr.replaceSection (indexStart, indexEnd - indexStart, "<" + mdCode);
@@ -1162,10 +1165,6 @@ const String Md2Html::cleanUp (const String& mdString)
 {
     // transform newLine to <p> and <br>
     String resultStr (mdString
-                      .replace ("_%5x|z%!@@!_", "*")        // see code block parse
-                      .replace ("_%6x|z%!@@!_", "#")        // see code block parse
-                      .replace ("_%7x|z%!@@!_", "---")      // see code block parse
-                      .replace ("_%8x|z%!@@!_", "- ")       // see code block parse
                       .replace (newLine + newLine, "<p>\n")
                       .replace (newLine, "<br>\n"));
 
@@ -1254,6 +1253,7 @@ const String Md2Html::cleanUp (const String& mdString)
     resultStr = resultStr.replace ("<p><br>", "<p>"); 
     resultStr = resultStr.replace ("<!--<br>", "<!--");
     resultStr = resultStr.replace ("<!--<p>", "<!--");
+    resultStr = resultStr.replace ("_%7x|z%!@@!_", "---");      // see code block parse
 
     // parse [TOP]: a html-button on page for 'back to top'
     resultStr = resultStr.replace ("[TOP]", "<div class=page_navi id=right><a href=\"#top\">" 

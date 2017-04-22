@@ -1610,15 +1610,7 @@ void MarkdownEditor::timerCallback()
 
         Desktop::getInstance().getMainMouseSource().setScreenPosition (posOfMenu.getPosition()
                                                                          .translated (5, 35).toFloat());
-
-        // for ascii char input continuously, no need do this when IME enabled
-        const String& lastChar (getTextInRange (Range<int> (getCaretPosition() - 1, getCaretPosition())));
-
-        if (lastChar.containsOnly ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
-                                   "0123456789`~!@#$%^&*()-=_+\\|[{]};:'\",<.>/?"))
-        {
-            enterModalState ();
-        }
+        enterModalState();
     }
 }
 

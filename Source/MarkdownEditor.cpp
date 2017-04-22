@@ -1352,8 +1352,8 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 //=================================================================================================
 void MarkdownEditor::insertTextAtCaret (const String& textToInsert)
 {
-    if (isCurrentlyModal())
-        exitModalState (0);
+    for (int i = Component::getNumCurrentlyModalComponents(); --i >= 0; )
+        Component::getCurrentlyModalComponent (i)->exitModalState (0);
 
     posBeforeInputNewText = getCaretPosition();
     SwingEditor::insertTextAtCaret (textToInsert);
@@ -1616,7 +1616,9 @@ void MarkdownEditor::timerCallback()
 
         if (lastChar.containsOnly ("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
                                    "0123456789`~!@#$%^&*()-=_+\\|[{]};:'\",<.>/?"))
-            enterModalState();
+        {
+            enterModalState ();
+        }
     }
 }
 

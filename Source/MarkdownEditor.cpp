@@ -1201,7 +1201,7 @@ void MarkdownEditor::recordAudio()
 
 //=================================================================================================
 bool MarkdownEditor::keyPressed (const KeyPress& key)
-{    
+{
     // F1 for view the markup syntax web page
     if (key == KeyPress (KeyPress::F1Key))
     {
@@ -1222,17 +1222,22 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         return true;
     }
 
+    // ctrl + F1 for add the selected to tips-bank
+    else if (key == KeyPress (KeyPress::F1Key, ModifierKeys::commandModifier, 0))
+    {
+        selectedAddToTipsBank ();
+    }
+
+    else if ((bool)parent->getCurrentTree().getProperty ("archive"))
+    {
+        return true;
+    }
+
     // ctrl + G for show tips
     else if (key == KeyPress ('g', ModifierKeys::commandModifier, 0))
     {
         if (getHighlightedText().isNotEmpty())
             startTimer (30);
-    }
-
-    // ctrl + F1 for add the selected to tips-bank
-    else if (key == KeyPress (KeyPress::F1Key, ModifierKeys::commandModifier, 0))
-    {
-        selectedAddToTipsBank();
     }
 
     // return-key 

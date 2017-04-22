@@ -1228,6 +1228,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         selectedAddToTipsBank ();
     }
 
+    // archive doc exit here
     else if ((bool)parent->getCurrentTree().getProperty ("archive"))
     {
         return true;

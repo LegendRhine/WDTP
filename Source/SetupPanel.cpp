@@ -256,22 +256,22 @@ void SetupPanel::showDocProperties (const bool currentValuesUpdateTree,
     StringArray imgFileSa;
     Array<var> imgFileVar;
     const String mdContent (DocTreeViewItem::getMdFileOrDir (currentTree).loadFileAsString());
-    int indexStart = mdContent.indexOfIgnoreCase (0, "![");
+    int indexStart = mdContent.indexOf (0, "![");
 
     while (indexStart != -1)
     {
         // jump alt content and get img path
-        const int altEnd = mdContent.indexOfIgnoreCase (indexStart + 2, "](");
+        const int altEnd = mdContent.indexOf (indexStart + 2, "](");
         if (altEnd == -1)            break;
 
-        const int imgEnd = mdContent.indexOfIgnoreCase (altEnd + 2, ")");
+        const int imgEnd = mdContent.indexOf (altEnd + 2, ")");
         if (imgEnd == -1)            break;
 
         const String imgPath (mdContent.substring (altEnd + 2, imgEnd));
         imgFileSa.add (imgPath);
         imgFileVar.add (imgPath);
 
-        indexStart = mdContent.indexOfIgnoreCase (imgEnd + 1, "![");
+        indexStart = mdContent.indexOf (imgEnd + 1, "![");
     }
 
     docProperties.add (new ChoicePropertyComponent (*values[thumbName], TRANS ("Image File: "),

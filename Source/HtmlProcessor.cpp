@@ -408,8 +408,8 @@ void HtmlProcessor::copyDocMediasToSite (const File& mdFile,
     Array<File> docMedias;
     Array<File> htmlMedias;
 
-    int indexStart = htmlStr.indexOfIgnoreCase (0, "src=\"");
-    int indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
+    int indexStart = htmlStr.indexOf (0, "src=\"");
+    int indexEnd = htmlStr.indexOf (indexStart + 5, "\"");
 
     while (indexStart != -1 && indexEnd != -1)
     {
@@ -421,10 +421,10 @@ void HtmlProcessor::copyDocMediasToSite (const File& mdFile,
             htmlMedias.add (File (htmlMediaDirStr + File::separator + fileName));
         }
 
-        indexStart = htmlStr.indexOfIgnoreCase (indexEnd + 2, "src=\"");
+        indexStart = htmlStr.indexOf (indexEnd + 2, "src=\"");
 
         if (indexStart != -1)
-            indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
+            indexEnd = htmlStr.indexOf (indexStart + 5, "\"");
     }
 
     jassert (docMedias.size() == htmlMedias.size());

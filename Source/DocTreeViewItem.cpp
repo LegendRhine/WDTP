@@ -192,8 +192,8 @@ const int DocTreeViewItem::getHtmlMediaFiles (const File& htmlFile, Array<File>&
     if (htmlStr.trim() == String())
         return 0;
 
-    int indexStart = htmlStr.indexOfIgnoreCase (0, "src=\"");
-    int indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
+    int indexStart = htmlStr.indexOf (0, "src=\"");
+    int indexEnd = htmlStr.indexOf (indexStart + 5, "\"");
 
     while (indexStart != -1 && indexEnd != -1)
     {
@@ -204,10 +204,10 @@ const int DocTreeViewItem::getHtmlMediaFiles (const File& htmlFile, Array<File>&
         if (f.existsAsFile() && f.getSize() > 0)
             files.add (f);
 
-        indexStart = htmlStr.indexOfIgnoreCase (indexEnd + 2, "src=\"");
+        indexStart = htmlStr.indexOf (indexEnd + 2, "src=\"");
 
         if (indexStart != -1)
-            indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
+            indexEnd = htmlStr.indexOf (indexStart + 5, "\"");
     }
 
     return files.size();
@@ -225,8 +225,8 @@ const int DocTreeViewItem::getMdMediaFiles (const File& doc, Array<File>& files)
     if (htmlStr.trim().isEmpty())
         return 0;
 
-    int indexStart = htmlStr.indexOfIgnoreCase (0, "src=\"");
-    int indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
+    int indexStart = htmlStr.indexOf (0, "src=\"");
+    int indexEnd = htmlStr.indexOf (indexStart + 5, "\"");
 
     while (indexStart != -1 && indexEnd != -1)
     {
@@ -237,10 +237,10 @@ const int DocTreeViewItem::getMdMediaFiles (const File& doc, Array<File>& files)
         if (f.existsAsFile() && f.getSize() > 0)
             files.add (f);
 
-        indexStart = htmlStr.indexOfIgnoreCase (indexEnd + 2, "src=\"");
+        indexStart = htmlStr.indexOf (indexEnd + 2, "src=\"");
 
         if (indexStart != -1)
-            indexEnd = htmlStr.indexOfIgnoreCase (indexStart + 5, "\"");
+            indexEnd = htmlStr.indexOf (indexStart + 5, "\"");
     }
 
     return files.size();

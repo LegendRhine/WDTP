@@ -845,7 +845,7 @@ const String Md2Html::processByLine (const String& mdString)
 const String Md2Html::spaceLinkParse (const String& mdString)
 {
     String resultStr (mdString);
-    int indexStart = resultStr.indexOfIgnoreCase (0, " http");
+    int indexStart = resultStr.indexOf (0, " http");
 
     while (indexStart != -1)
     {
@@ -853,11 +853,11 @@ const String Md2Html::spaceLinkParse (const String& mdString)
             && resultStr.substring (indexStart + 5, indexStart + 9) != "s://"
             && resultStr.substring (indexStart + 5, indexStart + 9) != "S://")
         {
-            indexStart = resultStr.indexOfIgnoreCase (indexStart + 5, " http");
+            indexStart = resultStr.indexOf (indexStart + 5, " http");
             continue;
         }
 
-        const int indexEnd = resultStr.indexOfIgnoreCase (indexStart + 10, " ");
+        const int indexEnd = resultStr.indexOf (indexStart + 10, " ");
 
         if (indexEnd == -1)
             break;
@@ -869,7 +869,7 @@ const String Md2Html::spaceLinkParse (const String& mdString)
         if (!linkAddress.contains (newLine) && linkAddress.containsNonWhitespaceChars())
             resultStr = resultStr.replaceSection (indexStart, linkAddress.length() + 1, linkStr);
 
-        indexStart = resultStr.indexOfIgnoreCase (indexStart + linkAddress.length(), " http");
+        indexStart = resultStr.indexOf (indexStart + linkAddress.length(), " http");
     }
 
     return resultStr;

@@ -127,7 +127,7 @@ private:
 ThemeEditor::ThemeEditor (EditAndPreview* parent) :
     editAndPreview (parent)
 {
-    setFont (SwingUtilities::getFontSize());    
+    setFont (SwingUtilities::getFontSize());
     setMultiLine (true, true);
     setReturnKeyStartsNewLine (true);
     setTabKeyUsedAsCharacter (true);

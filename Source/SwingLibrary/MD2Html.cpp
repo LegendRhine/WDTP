@@ -516,29 +516,46 @@ const String Md2Html::postilParse (const String& mdString)
 //=================================================================================================
 const String Md2Html::inlineCodeParse (const String& mdString)
 {
-    String resultStr (mdString);
-    int index = resultStr.indexOf (0, "`");
+    StringArray sa;
+    sa.addLines (mdString);
 
-    for (int i = 1; index != -1; ++i)
+    for (int i = sa.size (); --i >= 0; )
     {
-        if (resultStr.substring (index - 1, index) != "\\"
-            && resultStr.substring (index - 1, index) != "`"
-            && resultStr.substring (index + 1, index + 2) != "`")
+        if (sa[i].contains ("`"))
         {
-            if (i % 2 == 1)
-                resultStr = resultStr.replaceSection (index, 1, "<code>");
-            else
-                resultStr = resultStr.replaceSection (index, 1, "</code>");
-        }
-        else
-        {
-            --i;
-        }
+            String& resultStr (sa.getReference (i));
+            int index = resultStr.indexOf (0, "`");
 
-        index = resultStr.indexOf (index + 1, "`");
+            while (index != -1)
+            {
+                if (resultStr.substring (index - 1, index) != "\\"
+                    && resultStr.substring (index - 1, index) != "`"
+                    && resultStr.substring (index + 1, index + 2) != "`")
+                {
+                    const int oddIndex = index;
+                    index = resultStr.indexOf (index + 1, "`");
+
+                    if (index != -1
+                        && resultStr.substring (index - 1, index) != "\\"
+                        && resultStr.substring (index - 1, index) != "`"
+                        && resultStr.substring (index + 1, index + 2) != "`")
+                    {
+                        resultStr = resultStr.replaceSection (index, 1, "</code>");
+                        resultStr = resultStr.replaceSection (oddIndex, 1, "<code>");
+
+                        index = resultStr.indexOf (index + 1, "`");
+                        continue;
+                    }
+                }
+
+                if (index != -1)
+                    index = resultStr.indexOf (index + 1, "`");
+            }
+        }
     }
 
     // for bold, italic and html code parse
+    String resultStr (sa.joinIntoString (newLine));
     int indexStart = resultStr.indexOf (0, "<code>");
 
     while (indexStart != -1)

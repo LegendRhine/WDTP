@@ -150,8 +150,8 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (insertThirdTitle, TRANS ("Tertiary Heading"));
         insertMenu.addSeparator();
 
-        insertMenu.addItem (insertToc, TRANS ("Table of Contents"));
-        insertMenu.addItem (insertEndnote, TRANS ("Endnote"));
+        insertMenu.addItem (insertToc, TRANS ("Table of Contents") + "  (F8)");
+        insertMenu.addItem (insertEndnote, TRANS ("Endnote") + "  (F9)");
         insertMenu.addItem (insertIdentifier, TRANS ("Identifier"));
         insertMenu.addItem (insertBackToTop, TRANS ("Back to Top"));
         insertMenu.addSeparator();
@@ -159,7 +159,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (insertCaption, TRANS ("Image/Table Caption") + ctrlStr + "P)");
         insertMenu.addItem (insertSeparator, TRANS ("Separator"));
         insertMenu.addItem (insertAuthor, TRANS ("Author") + ctrlStr + "O)");
-        insertMenu.addItem (insertTime, TRANS ("Date and Time"));
+        insertMenu.addItem (insertTime, TRANS ("Date and Time") + "  (F10)");
         insertMenu.addSeparator();
 
         const String internalLinkStr (SystemClipboard::getTextFromClipboard());
@@ -1228,10 +1228,10 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     // ctrl + F1 for add the selected to tips-bank
     else if (key == KeyPress (KeyPress::F1Key, ModifierKeys::commandModifier, 0))
     {
-        selectedAddToTipsBank ();
+        selectedAddToTipsBank();
     }
 
-    // archive doc exit here
+    /////////// archive doc exit here /////////////////////
     else if ((bool)parent->getCurrentTree().getProperty ("archive"))
     {
         return true;
@@ -1353,8 +1353,11 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress ('o', ModifierKeys::commandModifier, 0))    authorInsert();
     else if (key == KeyPress ('w', ModifierKeys::commandModifier, 0))    recordAudio();
 
-    // timeline
+    // timeline, toc, endnote, date and time
     else if (key == KeyPress (KeyPress::F7Key))        insertTimeLine();
+    else if (key == KeyPress (KeyPress::F8Key))        tocInsert();
+    else if (key == KeyPress (KeyPress::F9Key))        endnoteInsert();
+    else if (key == KeyPress (KeyPress::F10Key))       dateAndTimeInsert();
 
     // transfer the key event to tips-menu if it's showing
     else if (key == KeyPress::downKey || key == KeyPress::upKey

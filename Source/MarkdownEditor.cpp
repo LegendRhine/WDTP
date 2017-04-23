@@ -109,7 +109,8 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addItem (pickDesc, TRANS ("Pickup as Description"), selectSomething && notArchived);
         menu.addItem (addKeywords, TRANS ("Add to Keywords"), selectSomething && notArchived);
         menu.addSeparator();
-        menu.addItem (pickFromAllKeywords, TRANS ("Project Keywords Table") + "...", docExists && notArchived);
+        menu.addItem (pickFromAllKeywords, TRANS ("Project Keywords Table") + "..." + ctrlStr + "0)", 
+                      docExists && notArchived);
         menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)", docExists);
         menu.addSeparator();
 
@@ -1353,7 +1354,9 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress ('o', ModifierKeys::commandModifier, 0))    authorInsert();
     else if (key == KeyPress ('w', ModifierKeys::commandModifier, 0))    recordAudio();
 
-    // timeline, toc, endnote, date and time
+    else if (key == KeyPress ('0', ModifierKeys::commandModifier, 0))    showAllKeywords();
+
+    // timeline, toc, endnote, date and time...
     else if (key == KeyPress (KeyPress::F7Key))        insertTimeLine();
     else if (key == KeyPress (KeyPress::F8Key))        tocInsert();
     else if (key == KeyPress (KeyPress::F9Key))        endnoteInsert();

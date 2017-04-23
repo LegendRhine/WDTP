@@ -964,7 +964,7 @@ void MarkdownEditor::insertTimeLine()
         while (result.size() * interval < dur)
         {
             const int noX = result.size() * interval + iniValue;
-            const int nextNoX = noX + interval;
+            const int nextNoX = jmin (noX + interval, dur);
 
             if (unit == TRANS (" Second"))
                 result.add ("- **" + TRANS ("No.") 

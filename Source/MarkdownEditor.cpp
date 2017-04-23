@@ -164,7 +164,8 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addSeparator();
 
         const String internalLinkStr (SystemClipboard::getTextFromClipboard());
-        insertMenu.addItem (insertInterLink, TRANS ("Internal Link"), internalLinkStr.contains ("*_wdtpGetPath_*"));
+        insertMenu.addItem (insertInterLink, TRANS ("Internal Link") + ctrlStr + " V)", 
+                            internalLinkStr.contains ("*_wdtpGetPath_*"));
         menu.addSubMenu (TRANS ("Insert"), insertMenu, docExists && notArchived);
 
         PopupMenu formatMenu;

@@ -143,6 +143,15 @@
 - Ctrl + F4: average all numbers of current column (table special)
 - F5: regenerate the current page and refresh it
 - F6: regenarate all the changed docs and dirs (not the whole site)
+- F7: insert timeline
+- F8: insert table of contents (TOC)
+- F9: insert endnote
+- F10: insert date and time of current
+
+- Ctrl + 2: show keywords table of current project
+- Ctrl + 3: insert hybrid markup
+- Ctrl + 4: postil the selected text
+- Ctrl + 5: insert back to top markup
 
 - Ctrl + A: select all content (text markup syntax)
 - Ctrl + B: bold (text markup syntax)

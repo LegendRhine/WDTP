@@ -118,7 +118,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (insertMedia, TRANS ("Image/Audio/Video...") + ctrlStr + "M)");
         insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink...") + ctrlStr + "E)");
         insertMenu.addSeparator();
-        insertMenu.addItem (insertQuota, TRANS ("Quotation"));
+        insertMenu.addItem (insertQuota, TRANS ("Quotation") + "  (> )");
         insertMenu.addItem (timeLine, TRANS ("Time Line") + "..." + "  (F7)");
         insertMenu.addSeparator();
 
@@ -142,23 +142,23 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (insertAlignRight, TRANS ("Align Right") + ctrlStr + "R)");
         insertMenu.addSeparator();
 
-        insertMenu.addItem (insertUnoerderList, TRANS ("Unordered List"));
-        insertMenu.addItem (insertOrderList, TRANS ("Ordered List"));
+        insertMenu.addItem (insertUnoerderList, TRANS ("Unordered List") + "  (- )");
+        insertMenu.addItem (insertOrderList, TRANS ("Ordered List") + "  (+ )");
         insertMenu.addSeparator();
 
-        insertMenu.addItem (insertFirstTitle, TRANS ("Primary Heading"));
-        insertMenu.addItem (insertSecondTitle, TRANS ("Secondary Heading"));
-        insertMenu.addItem (insertThirdTitle, TRANS ("Tertiary Heading"));
+        insertMenu.addItem (insertFirstTitle, TRANS ("Primary Heading") + "  (# )");
+        insertMenu.addItem (insertSecondTitle, TRANS ("Secondary Heading") + "  (## )");
+        insertMenu.addItem (insertThirdTitle, TRANS ("Tertiary Heading") + "  (### )");
         insertMenu.addSeparator();
 
         insertMenu.addItem (insertToc, TRANS ("Table of Contents") + "  (F8)");
         insertMenu.addItem (insertEndnote, TRANS ("Endnote") + "  (F9)");
-        insertMenu.addItem (insertIdentifier, TRANS ("Identifier"));
+        insertMenu.addItem (insertIdentifier, TRANS ("Identifier") + "  (******)");
         insertMenu.addItem (insertBackToTop, TRANS ("Back to Top") + ctrlStr + " 5)");
         insertMenu.addSeparator();
 
         insertMenu.addItem (insertCaption, TRANS ("Image/Table Caption") + ctrlStr + "P)");
-        insertMenu.addItem (insertSeparator, TRANS ("Separator"));
+        insertMenu.addItem (insertSeparator, TRANS ("Separator") + "  (---)");
         insertMenu.addItem (insertAuthor, TRANS ("Author") + ctrlStr + "O)");
         insertMenu.addItem (insertTime, TRANS ("Date and Time") + "  (F10)");
         insertMenu.addSeparator();
@@ -171,7 +171,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         PopupMenu formatMenu;
         formatMenu.addItem (formatBold, TRANS ("Bold") + ctrlStr + "B)");
         formatMenu.addItem (formatItalic, TRANS ("Italic") + ctrlStr + "I)");
-        formatMenu.addItem (formatBoldAndItalic, TRANS ("Bold + Italic"));
+        formatMenu.addItem (formatBoldAndItalic, TRANS ("Bold + Italic") + "  (***)");
         formatMenu.addSeparator();
         formatMenu.addItem (formatHighlight, TRANS ("Highlight") + ctrlStr + "U)");
         formatMenu.addItem (formatPostil, TRANS ("Postil") + ctrlStr + "4)", selectSomething);
@@ -179,10 +179,10 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
         formatMenu.addItem (hybridLayout, TRANS ("Hybrid Layout") + ctrlStr + "3)");
-        formatMenu.addItem (commentBlock, TRANS ("Comment Block"));
+        formatMenu.addItem (commentBlock, TRANS ("Comment Block") + "  (//////)");
         formatMenu.addSeparator();
-        formatMenu.addItem (antiIndent, TRANS ("Anti-Indent"));
-        formatMenu.addItem (forceIndent, TRANS ("Force Indent"));
+        formatMenu.addItem (antiIndent, TRANS ("Anti-Indent") + "  ((+) )");
+        formatMenu.addItem (forceIndent, TRANS ("Force Indent") + "  ((-) )");
 
         menu.addSubMenu (TRANS ("Format"), formatMenu, docExists && notArchived);
 

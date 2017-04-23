@@ -154,7 +154,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (insertToc, TRANS ("Table of Contents") + "  (F8)");
         insertMenu.addItem (insertEndnote, TRANS ("Endnote") + "  (F9)");
         insertMenu.addItem (insertIdentifier, TRANS ("Identifier"));
-        insertMenu.addItem (insertBackToTop, TRANS ("Back to Top"));
+        insertMenu.addItem (insertBackToTop, TRANS ("Back to Top") + ctrlStr + " 5)");
         insertMenu.addSeparator();
 
         insertMenu.addItem (insertCaption, TRANS ("Image/Table Caption") + ctrlStr + "P)");
@@ -173,7 +173,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addItem (formatBoldAndItalic, TRANS ("Bold + Italic"));
         formatMenu.addSeparator();
         formatMenu.addItem (formatHighlight, TRANS ("Highlight") + ctrlStr + "U)");
-        formatMenu.addItem (formatPostil, TRANS ("Postil"), selectSomething);
+        formatMenu.addItem (formatPostil, TRANS ("Postil") + ctrlStr + "4)", selectSomething);
         formatMenu.addSeparator();
         formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
@@ -1356,6 +1356,8 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
     else if (key == KeyPress ('2', ModifierKeys::commandModifier, 0))    showAllKeywords();
     else if (key == KeyPress ('3', ModifierKeys::commandModifier, 0))    hybridFormat();
+    else if (key == KeyPress ('4', ModifierKeys::commandModifier, 0))    inlineFormat (formatPostil);
+    else if (key == KeyPress ('5', ModifierKeys::commandModifier, 0))    TextEditor::insertTextAtCaret (newLine + "[TOP]" + newLine);
 
     // timeline, toc, endnote, date and time...
     else if (key == KeyPress (KeyPress::F7Key))        insertTimeLine();

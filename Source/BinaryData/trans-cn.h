@@ -89,6 +89,8 @@ countries: cn
 "Time Line" = "时间轴"
 "Align Center" = "居中"
 "Align Right" = "靠右"
+"Double Line Spacing" = "双倍行间距"
+"Triple Line Spacing" = "三倍行间距"
 "Unordered List" = "无序列表"
 "Ordered List" = "有序列表"
 "Primary Heading" = "一级标题"

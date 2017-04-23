@@ -118,7 +118,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink...") + ctrlStr + "E)");
         insertMenu.addSeparator();
         insertMenu.addItem (insertQuota, TRANS ("Quotation"));
-        insertMenu.addItem (timeLine, TRANS ("Time Line") + "...");
+        insertMenu.addItem (timeLine, TRANS ("Time Line") + "..." + "  (F7)");
         insertMenu.addSeparator();
 
         insertMenu.addItem (insertNormalTable, TRANS ("Normal Table") + ctrlStr + "T)");
@@ -1337,7 +1337,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (getCurrentParagraph().contains (" | ") 
              && key == KeyPress (KeyPress::F4Key, ModifierKeys::commandModifier, 0)) 
         calculateNumbersOfCurrentColumn (false);
-    
+
     // Markup shortcut below...
     else if (key == KeyPress ('b', ModifierKeys::commandModifier, 0))    inlineFormat (formatBold);
     else if (key == KeyPress ('i', ModifierKeys::commandModifier, 0))    inlineFormat (formatItalic);
@@ -1352,6 +1352,9 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress ('p', ModifierKeys::commandModifier, 0))    captionInsert();
     else if (key == KeyPress ('o', ModifierKeys::commandModifier, 0))    authorInsert();
     else if (key == KeyPress ('w', ModifierKeys::commandModifier, 0))    recordAudio();
+
+    // timeline
+    else if (key == KeyPress (KeyPress::F7Key))        insertTimeLine();
 
     // transfer the key event to tips-menu if it's showing
     else if (key == KeyPress::downKey || key == KeyPress::upKey

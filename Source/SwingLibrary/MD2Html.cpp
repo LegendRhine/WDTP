@@ -519,7 +519,7 @@ const String Md2Html::inlineCodeParse (const String& mdString)
     StringArray sa;
     sa.addLines (mdString);
 
-    for (int i = sa.size (); --i >= 0; )
+    for (int i = sa.size(); --i >= 0; )
     {
         if (sa[i].contains ("`"))
         {

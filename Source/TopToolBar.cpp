@@ -594,8 +594,8 @@ void TopToolBar::cleanAndGenerateAll()
         Array<File> htmls;
         site.findChildFiles (htmls, File::findFiles, true, "*.html");
 
-        for (int i = htmls.size (); --i >= 0; )
-            htmls[i].deleteFile ();
+        for (int i = htmls.size(); --i >= 0; )
+            htmls[i].deleteFile();
 
         // initial progress value
         totalItems = 0;
@@ -604,8 +604,8 @@ void TopToolBar::cleanAndGenerateAll()
         accumulator = 0;
         progressValue = 0.0;
 
-        progressBar.enterModalState ();
-        startThread ();  // start generate..
+        progressBar.enterModalState();
+        startThread();  // start generate..
     }
 }
 

@@ -131,7 +131,7 @@
 	- {{blogList}}: for 'blog' index.html. Articles list. 10/page.
 	- {{bookList}}: for 'book' index.html, include dir. all in one page.
 
-### Shortcut Assign
+### Shortcut Assign (totally 48+)
 
 - F1: help for markup syntax
 - Ctrl + F1: add the selected content to tips-bank
@@ -184,7 +184,7 @@
 - Ctrl + Y: redo
 - Ctrl + Z: undo
 
-- Punctuation Matching...
+- Punctuation matching and auto popup tips menu...
 
 ### 3rd Library and 3rd Lib-hacked
 - JUCE: https://juce.com

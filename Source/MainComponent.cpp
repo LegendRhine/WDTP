@@ -212,7 +212,8 @@ void MainContentComponent::showStartTip()
 
 //=================================================================================================
 MainWindow::MainWindow (const String& name) :
-    DocumentWindow (name, Colours::lightgrey, DocumentWindow::allButtons)
+    DocumentWindow (name, Colours::lightgrey, 
+                    DocumentWindow::minimiseButton | DocumentWindow::closeButton)
 {
     setContentOwned (mainComp = new MainContentComponent(), true);
     
@@ -230,12 +231,6 @@ MainWindow::MainWindow (const String& name) :
 
     mainComp->setSearchInputVisible (false);
     mainComp->grabKeyboardFocus();
-}
-
-//=================================================================================================
-MainWindow::~MainWindow()
-{
-
 }
 
 //=================================================================================================

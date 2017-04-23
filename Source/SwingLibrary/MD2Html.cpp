@@ -1185,6 +1185,9 @@ const String Md2Html::cleanUp (const String& mdString)
                       .replace (newLine + newLine, "<p>\n")
                       .replace (newLine, "<br>\n"));
 
+    // parse linespacing
+    linespacingParse (resultStr);
+
     // clean extra <br> when it's after any html-tag
     int indexBr = resultStr.indexOf (0, "<br>");
 
@@ -1282,6 +1285,19 @@ const String Md2Html::cleanUp (const String& mdString)
 
     //DBG (resultStr);
     return resultStr;
+}
+
+//=================================================================================================
+void Md2Html::linespacingParse (String& mdString)
+{
+    if (mdString.contains ("(|)") || mdString.contains ("(||)"))
+    {
+        mdString = mdString.replace ("\\(|)", "_##@|)").replace ("\\(||)", "_###@||)")
+            .replace ("(|)", "<div style=\"height:2em;\"></div><p>")
+            .replace ("(||)", "<div style=\"height:4em;\"></div><p>");
+
+        mdString = mdString.replace ("_##@|)", "(|)").replace ("_###@||)", "(||)");
+    }
 }
 
 //=================================================================================================

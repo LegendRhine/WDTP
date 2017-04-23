@@ -140,8 +140,12 @@ private:
     /** include [TOP] parse */
     static const String cleanUp (const String& mdString);
 
+    /** '(|), (||)': increase line-spacing. 
+        NOTE: this method must be called at the begin of cleanup(). */
+    static void linespacingParse (String& mdString);
+
 public:
-        /** extract the text which first encountered in '[]'. 
+    /** extract the text which first encountered in '[]'. 
         This method could be used for title parse and outline extract    */
     static const String extractLinkText (const String& titleStr);
 

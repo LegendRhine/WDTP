@@ -135,8 +135,12 @@
 
 - F1: help for markup syntax
 - Ctrl + F1: add the selected content to tips-bank
+- F2: sum all numbers of current row
+- Ctrl + F2: average all numbers of current row
 - F3: select next selection
 - Shift + F3: select previous selection
+- F4: sum all numbers of current column (table special)
+- Ctrl + F4: average all numbers of current column (table special)
 - F5: regenerate the current page and refresh it
 - F6: regenarate all the changed docs and dirs (not the whole site)
 

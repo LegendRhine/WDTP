@@ -1202,8 +1202,11 @@ void MarkdownEditor::recordAudio()
 //=================================================================================================
 bool MarkdownEditor::keyPressed (const KeyPress& key)
 {
+    if (!parent->getCurrentDocFile().existsAsFile())
+        return true;
+
     // F1 for view the markup syntax web page
-    if (key == KeyPress (KeyPress::F1Key))
+    else if (key == KeyPress (KeyPress::F1Key))
     {
         URL ("http://underwaysoft.com/works/wdtp/syntaxMark.html").launchInDefaultBrowser();
     }

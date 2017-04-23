@@ -84,6 +84,9 @@ private:
         rotateImgLeft, rotateImgRight, syntax
     };
 
+    /** pick the selected to 'tile', 'keywords', 'description' of this doc*/
+    void pickSelectedToProperties (const int pickType);
+
     /** for click to select/unselect a keyword from keywords-table component.
         see showAllKeywords(). */
     virtual void actionListenerCallback (const String& message) override;

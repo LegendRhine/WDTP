@@ -271,25 +271,9 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 //=================================================================================================
 void MarkdownEditor::performPopupMenuAction (int index)
 {
-    if (addKeywords == index)
+    if (addKeywords == index || pickTitle == index || pickDesc == index)
     {
-        addSelectedToKeywords (getHighlightedText());
-        parent->getSetupPanel()->showDocProperties (false, parent->getCurrentTree());
-        DocTreeViewItem::needCreate (parent->getCurrentTree());
-    }
-
-    else if (pickTitle == index)
-    {
-        parent->getCurrentTree().setProperty ("title", getHighlightedText(), nullptr);
-        parent->getSetupPanel()->showDocProperties (false, parent->getCurrentTree());
-        DocTreeViewItem::needCreate (parent->getCurrentTree());
-    }
-
-    else if (pickDesc == index)
-    {
-        parent->getCurrentTree().setProperty ("description", getHighlightedText(), nullptr);
-        parent->getSetupPanel()->showDocProperties (false, parent->getCurrentTree());
-        DocTreeViewItem::needCreate (parent->getCurrentTree());
+        pickSelectedToProperties (index);
     }
 
     else if (outlineMenu == index)
@@ -1664,6 +1648,25 @@ void MarkdownEditor::autoComplete (const int index)
 
     if (!(bool)parent->getCurrentTree().getProperty ("archive"))
         TextEditor::insertTextAtCaret (menuItems[index].replace ("<br>", newLine));
+}
+
+//=================================================================================================
+void MarkdownEditor::pickSelectedToProperties (const int pickType)
+{
+    if (getHighlightedText().isNotEmpty())
+    {
+        if (pickType == addKeywords)
+            addSelectedToKeywords (getHighlightedText());
+        
+        else if (pickType == pickTitle)
+            parent->getCurrentTree().setProperty ("title", getHighlightedText(), nullptr);
+        
+        else if (pickType == pickDesc)
+            parent->getCurrentTree().setProperty ("description", getHighlightedText(), nullptr);
+
+        parent->getSetupPanel()->showDocProperties (false, parent->getCurrentTree());
+        DocTreeViewItem::needCreate (parent->getCurrentTree());
+    }
 }
 
 //=================================================================================================

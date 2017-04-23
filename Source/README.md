@@ -152,6 +152,9 @@
 - Ctrl + 3: insert hybrid markup
 - Ctrl + 4: postil the selected text
 - Ctrl + 5: insert back to top markup
+- Ctrl + 6: pick the selected text as the doc's title
+- Ctrl + 7: pick the selected text as the doc's description
+- Ctrl + 8: add the selected text to the doc's keywords list
 
 - Ctrl + A: select all content (text markup syntax)
 - Ctrl + B: bold (text markup syntax)

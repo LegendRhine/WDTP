@@ -489,8 +489,8 @@ void TopToolBar::switchSilentMode (const bool enterSilent)
     {
         const int height = getParentComponent()->getHeight();
         mainWindow->setFullScreen (false);
-        getParentComponent()->setSize (710, height);
-        getTopLevelComponent()->setCentreRelative (0.5f, 0.f);
+        getParentComponent()->setSize (730, height);
+        getTopLevelComponent()->setCentreRelative (0.5f, 0.5f);
     }
     else
     {
@@ -811,11 +811,13 @@ void TopToolBar::getCommandInfo (CommandID commandID, ApplicationCommandInfo& re
     {
         result.setInfo ("Switch mode", "Switch to preview/edit", String(), 0);
         result.addDefaultKeypress ('s', ModifierKeys::commandModifier);
+        result.setActive (bts[viewBt]->isVisible());
     }
     else if (silentMode == commandID)
     {
         result.setInfo (TRANS ("Silent Mode"), "Switch width", String(), 0);
         result.addDefaultKeypress ('d', ModifierKeys::commandModifier);
+        result.setTicked ((getParentComponent()->getWidth() < 760));
     }
     else if (generateCurrent == commandID)
     {
@@ -855,7 +857,7 @@ bool TopToolBar::perform (const InvocationInfo& info)
     switch (info.commandID)
     {
     case switchEdit:        bts[viewBt]->triggerClick();       break;
-    case silentMode:       switchSilentMode (!isSilentMode);  break;
+    case silentMode:        switchSilentMode (!isSilentMode);  break;
     case generateCurrent:   generateCurrentPage();             break;
     case generateNeeded:    generateHtmlsIfNeeded();           break;
     case activeSearch:      searchInput->grabKeyboardFocus();  break;

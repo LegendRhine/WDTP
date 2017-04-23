@@ -172,7 +172,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addItem (formatBoldAndItalic, TRANS ("Bold + Italic"));
         formatMenu.addSeparator();
         formatMenu.addItem (formatHighlight, TRANS ("Highlight") + ctrlStr + "U)");
-        formatMenu.addItem (formatPostil, TRANS ("Postil"));
+        formatMenu.addItem (formatPostil, TRANS ("Postil"), selectSomething);
         formatMenu.addSeparator();
         formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");

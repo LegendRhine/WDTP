@@ -105,9 +105,9 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         ctrlStr = "  (Cmd + ";
 #endif
 
-        menu.addItem (pickTitle, TRANS ("Pickup as Title"), selectSomething && notArchived);
-        menu.addItem (pickDesc, TRANS ("Pickup as Description"), selectSomething && notArchived);
-        menu.addItem (addKeywords, TRANS ("Add to Keywords"), selectSomething && notArchived);
+        menu.addItem (pickTitle, TRANS ("Pickup as Title") + ctrlStr + "  6)", selectSomething && notArchived);
+        menu.addItem (pickDesc, TRANS ("Pickup as Description") + ctrlStr + "  7)", selectSomething && notArchived);
+        menu.addItem (addKeywords, TRANS ("Add to Keywords") + ctrlStr + "  8)", selectSomething && notArchived);
         menu.addSeparator();
         menu.addItem (pickFromAllKeywords, TRANS ("Project Keywords Table") + "..." + ctrlStr + "2)", 
                       docExists && notArchived);
@@ -1343,6 +1343,9 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress ('3', ModifierKeys::commandModifier, 0))    hybridFormat();
     else if (key == KeyPress ('4', ModifierKeys::commandModifier, 0))    inlineFormat (formatPostil);
     else if (key == KeyPress ('5', ModifierKeys::commandModifier, 0))    TextEditor::insertTextAtCaret (newLine + "[TOP]" + newLine);
+    else if (key == KeyPress ('6', ModifierKeys::commandModifier, 0))    pickSelectedToProperties (pickTitle);
+    else if (key == KeyPress ('7', ModifierKeys::commandModifier, 0))    pickSelectedToProperties (pickDesc);
+    else if (key == KeyPress ('8', ModifierKeys::commandModifier, 0))    pickSelectedToProperties (addKeywords);
 
     // timeline, toc, endnote, date and time...
     else if (key == KeyPress (KeyPress::F7Key))        insertTimeLine();
@@ -1653,7 +1656,8 @@ void MarkdownEditor::autoComplete (const int index)
 //=================================================================================================
 void MarkdownEditor::pickSelectedToProperties (const int pickType)
 {
-    if (getHighlightedText().isNotEmpty())
+    if (getHighlightedText().isNotEmpty()
+        && !(bool)parent->getCurrentTree().getProperty ("archive"))
     {
         if (pickType == addKeywords)
             addSelectedToKeywords (getHighlightedText());

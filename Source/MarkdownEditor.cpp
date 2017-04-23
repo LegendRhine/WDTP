@@ -1508,7 +1508,7 @@ void MarkdownEditor::calculateNumbersOfCurrentColumn (const bool isSum)
     int rows = 0;
     double sums = 0;
 
-    if (moveCaretDown (false))
+    if (moveCaretDown (false) && getCaretPosition() > 0)
     {        
         while (getCurrentParagraph().trim().isNotEmpty())
         {
@@ -1516,7 +1516,6 @@ void MarkdownEditor::calculateNumbersOfCurrentColumn (const bool isSum)
                 || getCurrentParagraph().contains ("======")
                 || getCurrentParagraph().contains ("//////")
                 || !getCurrentParagraph().contains (" | ")
-                || getCaretPosition() <= 0
                 || getCaretPosition() >= getText().length() - 1)
             {
                 break;

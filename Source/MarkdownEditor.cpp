@@ -126,13 +126,13 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (insertNoborderTable, TRANS ("Frameless Table"));
 
         PopupMenu autoSumAndAv;
-        autoSumAndAv.addItem (autoSumPara, TRANS ("Sum Numbers of This Row"));
-        autoSumAndAv.addItem (autoAvPara, TRANS ("Average Numbers of This Row"));
+        autoSumAndAv.addItem (autoSumPara, TRANS ("Sum Numbers of This Row") + "  (F2)");
+        autoSumAndAv.addItem (autoAvPara, TRANS ("Average Numbers of This Row") + "  (F4)");
         autoSumAndAv.addSeparator();
 
         const bool inTable = getCurrentParagraph().contains (" | ");
-        autoSumAndAv.addItem (autoSumCol, TRANS ("Sum Numbers of This Column"), inTable);
-        autoSumAndAv.addItem (autoAvCol, TRANS ("Average Numbers of This Column"), inTable);
+        autoSumAndAv.addItem (autoSumCol, TRANS ("Sum Numbers of This Column") + ctrlStr + "F2)", inTable);
+        autoSumAndAv.addItem (autoAvCol, TRANS ("Average Numbers of This Column") + ctrlStr + "F4)", inTable);
 
         insertMenu.addSubMenu (TRANS ("Auto Sum and Average"), autoSumAndAv, docExists && notArchived);
         insertMenu.addSeparator();
@@ -1322,6 +1322,18 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         popupOutlineMenu (parent, getText().replace (CharPointer_UTF8 ("\xef\xbc\x83"), "#"), true);
         return true;
     }
+
+    // auto sum/average
+    else if (key == KeyPress (KeyPress::F2Key))     calculateNumbersOfCurrentParagraph (true);
+    else if (key == KeyPress (KeyPress::F4Key))     calculateNumbersOfCurrentParagraph (false);
+
+    else if (getCurrentParagraph().contains (" | ") 
+             && key == KeyPress (KeyPress::F2Key, ModifierKeys::commandModifier, 0)) 
+        calculateNumbersOfCurrentColumn (true);
+
+    else if (getCurrentParagraph().contains (" | ") 
+             && key == KeyPress (KeyPress::F4Key, ModifierKeys::commandModifier, 0)) 
+        calculateNumbersOfCurrentColumn (false);
     
     // Markup shortcut below...
     else if (key == KeyPress ('b', ModifierKeys::commandModifier, 0))    inlineFormat (formatBold);

@@ -109,7 +109,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         menu.addItem (pickDesc, TRANS ("Pickup as Description"), selectSomething && notArchived);
         menu.addItem (addKeywords, TRANS ("Add to Keywords"), selectSomething && notArchived);
         menu.addSeparator();
-        menu.addItem (pickFromAllKeywords, TRANS ("Project Keywords Table") + "..." + ctrlStr + "0)", 
+        menu.addItem (pickFromAllKeywords, TRANS ("Project Keywords Table") + "..." + ctrlStr + "2)", 
                       docExists && notArchived);
         menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)", docExists);
         menu.addSeparator();
@@ -177,7 +177,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addSeparator();
         formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
-        formatMenu.addItem (hybridLayout, TRANS ("Hybrid Layout"));
+        formatMenu.addItem (hybridLayout, TRANS ("Hybrid Layout") + ctrlStr + "3)");
         formatMenu.addItem (commentBlock, TRANS ("Comment Block"));
         formatMenu.addSeparator();
         formatMenu.addItem (antiIndent, TRANS ("Anti-Indent"));
@@ -1354,7 +1354,8 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress ('o', ModifierKeys::commandModifier, 0))    authorInsert();
     else if (key == KeyPress ('w', ModifierKeys::commandModifier, 0))    recordAudio();
 
-    else if (key == KeyPress ('0', ModifierKeys::commandModifier, 0))    showAllKeywords();
+    else if (key == KeyPress ('2', ModifierKeys::commandModifier, 0))    showAllKeywords();
+    else if (key == KeyPress ('3', ModifierKeys::commandModifier, 0))    hybridFormat();
 
     // timeline, toc, endnote, date and time...
     else if (key == KeyPress (KeyPress::F7Key))        insertTimeLine();

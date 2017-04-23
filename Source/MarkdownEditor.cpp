@@ -262,7 +262,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         editorSetup.addItem (fontColor, TRANS ("Font Color..."));
         editorSetup.addItem (setBackground, TRANS ("Backgroud..."));
         editorSetup.addSeparator();
-        editorSetup.addItem (resetDefault, TRANS ("Reset to Default"));
+        editorSetup.addItem (resetDefault, TRANS ("Reset to Default") + ctrlStr + "9)");
 
         menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docExists && notArchived);
     }
@@ -1346,6 +1346,7 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress ('6', ModifierKeys::commandModifier, 0))    pickSelectedToProperties (pickTitle);
     else if (key == KeyPress ('7', ModifierKeys::commandModifier, 0))    pickSelectedToProperties (pickDesc);
     else if (key == KeyPress ('8', ModifierKeys::commandModifier, 0))    pickSelectedToProperties (addKeywords);
+    else if (key == KeyPress ('9', ModifierKeys::commandModifier, 0))    resetToDefault();
 
     // timeline, toc, endnote, date and time...
     else if (key == KeyPress (KeyPress::F7Key))        insertTimeLine();

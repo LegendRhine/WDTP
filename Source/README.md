@@ -155,6 +155,7 @@
 - Ctrl + 6: pick the selected text as the doc's title
 - Ctrl + 7: pick the selected text as the doc's description
 - Ctrl + 8: add the selected text to the doc's keywords list
+- Ctrl + 9: reset the editor's font size, font and background color to system default
 
 - Ctrl + A: select all content (text markup syntax)
 - Ctrl + B: bold (text markup syntax)

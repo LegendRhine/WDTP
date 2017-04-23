@@ -64,6 +64,7 @@ private:
         insertMedia, insertHyperlink, insertQuota, timeLine,
         insertNormalTable, insertInterlaced, insertNoborderTable,
         insertAlignCenter, insertAlignRight, 
+        doubleLinespcing, tripleLinespcing,
         insertUnoerderList, insertOrderList,
         insertFirstTitle, insertSecondTitle, insertThirdTitle, 
         insertToc, insertEndnote, insertBackToTop, formatPostil,

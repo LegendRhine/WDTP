@@ -142,6 +142,10 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         insertMenu.addItem (insertAlignRight, TRANS ("Align Right") + ctrlStr + "R)");
         insertMenu.addSeparator();
 
+        insertMenu.addItem (doubleLinespcing, TRANS ("Double Line Spacing") + "  (|)");
+        insertMenu.addItem (tripleLinespcing, TRANS ("Triple Line Spacing") + "  (||)");
+        insertMenu.addSeparator();
+
         insertMenu.addItem (insertUnoerderList, TRANS ("Unordered List") + "  (- )");
         insertMenu.addItem (insertOrderList, TRANS ("Ordered List") + "  (+ )");
         insertMenu.addSeparator();
@@ -181,8 +185,8 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addItem (hybridLayout, TRANS ("Hybrid Layout") + ctrlStr + "3)");
         formatMenu.addItem (commentBlock, TRANS ("Comment Block") + "  (//////)");
         formatMenu.addSeparator();
-        formatMenu.addItem (antiIndent, TRANS ("Anti-Indent") + "  ((+) )");
-        formatMenu.addItem (forceIndent, TRANS ("Force Indent") + "  ((-) )");
+        formatMenu.addItem (antiIndent, TRANS ("Anti-Indent") + "  (+)");
+        formatMenu.addItem (forceIndent, TRANS ("Force Indent") + "  (-)");
 
         menu.addSubMenu (TRANS ("Format"), formatMenu, docExists && notArchived);
 
@@ -472,7 +476,10 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (forceIndent == index)          insertIndent (true);
     else if (insertBackToTop == index)      TextEditor::insertTextAtCaret (newLine + "[TOP]" + newLine);
     else if (insertAlignCenter == index)    alignCenterInsert();
-    else if (insertAlignRight == index)     alignRightInsert();
+    else if (insertAlignRight == index)     alignRightInsert ();
+    else if (doubleLinespcing == index)     TextEditor::insertTextAtCaret (newLine + "(|)" + newLine);
+    else if (tripleLinespcing == index)     TextEditor::insertTextAtCaret (newLine + "(||)" + newLine);
+
     else if (insertUnoerderList == index)   unorderListInsert();
     else if (insertOrderList == index)      orderListInsert();
     else if (insertFirstTitle == index)     insertTitle (1);

@@ -83,7 +83,7 @@ void SwingLookAndFeel::drawPropertyPanelSectionHeader (Graphics& g, const String
 //=================================================================================================
 Font SwingLookAndFeel::getPopupMenuFont()
 {
-    float decreaseSize = 2.f;
+    float decreaseSize = 2.5f;
 
 #if JUCE_WINDOWS
     decreaseSize = 3.f;

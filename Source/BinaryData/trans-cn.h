@@ -9,6 +9,7 @@ countries: cn
 "Congratulations" = "恭喜"
 "New Folder..." = "新建文件夹..."
 "New Document..." = "新建文档..."
+"Save As" = "另存为"
 "Pack Site Data" = "网站数据打包"
 "Pack Without Medias" = "仅打包网页"
 "Pack Without Htmls" = "仅打包媒体"
@@ -503,3 +504,4 @@ countries: cn
 "Sum Numbers of This Column" = "合计本列的所有数字"
 "Average Numbers of This Column" = "求本列数字的平均值"
 "Auto Sum and Average" = "自动合计与平均"
+"Reload the current html file in theme editor?" = "主题编辑器是否重新加载当前html文件？"

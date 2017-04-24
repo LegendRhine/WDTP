@@ -476,7 +476,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (forceIndent == index)          insertIndent (true);
     else if (insertBackToTop == index)      TextEditor::insertTextAtCaret (newLine + "[TOP]" + newLine);
     else if (insertAlignCenter == index)    alignCenterInsert();
-    else if (insertAlignRight == index)     alignRightInsert ();
+    else if (insertAlignRight == index)     alignRightInsert();
     else if (doubleLinespcing == index)     TextEditor::insertTextAtCaret (newLine + "(|)" + newLine);
     else if (tripleLinespcing == index)     TextEditor::insertTextAtCaret (newLine + "(||)" + newLine);
 

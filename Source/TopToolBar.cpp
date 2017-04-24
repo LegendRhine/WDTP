@@ -724,6 +724,16 @@ void TopToolBar::generateCurrentPage()
 
     // then let the workarea show it
     editAndPreview->switchMode (true);
+
+    // ask to reload the html content if theme editor is viewing/editing it
+    if (editAndPreview->themeEditorIsShowing()
+        && DocTreeViewItem::getHtmlFile (editAndPreview->getCurrentTree()) ==
+        editAndPreview->getEditingThemeFile())
+    {
+        if (AlertWindow::showOkCancelBox (AlertWindow::QuestionIcon, TRANS ("Confirm"),
+                                          TRANS ("Reload the current html file in theme editor?")))
+            editAndPreview->editThemeFile (editAndPreview->getEditingThemeFile(), false);
+    }
 }
 
 //=================================================================================================

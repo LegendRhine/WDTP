@@ -16,7 +16,7 @@
 SwingLookAndFeel::SwingLookAndFeel()
 {
     setDefaultSansSerifTypefaceName (SwingUtilities::getFontName());
-    Font::setFallbackFontName ("Verdana");
+    //Font::setFallbackFontName ("Verdana");
 }
 
 //=================================================================================================
@@ -94,19 +94,18 @@ Font SwingLookAndFeel::getPopupMenuFont()
 }
 
 //=================================================================================================
-/*
-void SwingLookAndFeel::drawPopupMenuItem (Graphics& g, const Rectangle<int>& area, 
+void SwingLookAndFeel::drawPopupMenuItem (Graphics& g, const Rectangle<int>& area,
                                           bool isSeparator, bool isActive, 
                                           bool isHighlighted, bool isTicked, 
                                           bool hasSubMenu, const String& text, 
-                                          const String& / *shortcutKeyText* /, 
+                                          const String& /*shortcutKeyText*/, 
                                           const Drawable* icon, 
                                           const Colour* textColour)
 {
     LookAndFeel_V2::drawPopupMenuItem (g, area, isSeparator, isActive, 
                                        isHighlighted, isTicked, hasSubMenu,
                                        text, String(), icon, textColour);
-}*/
+}
 
 //=================================================================================================
 Font SwingLookAndFeel::getAlertWindowTitleFont()

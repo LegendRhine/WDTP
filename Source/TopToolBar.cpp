@@ -817,6 +817,12 @@ void TopToolBar::getAllCommands (Array<CommandID>& commands)
 //=================================================================================================
 void TopToolBar::getCommandInfo (CommandID commandID, ApplicationCommandInfo& result)
 {
+    String ctrlStr ("  (Ctrl + ");
+
+#if JUCE_MAC
+    ctrlStr = "  (Cmd + ";
+#endif
+
     if (switchEdit == commandID)
     {
         result.setInfo ("Switch mode", "Switch to preview/edit", String(), 0);
@@ -825,36 +831,36 @@ void TopToolBar::getCommandInfo (CommandID commandID, ApplicationCommandInfo& re
     }
     else if (silentMode == commandID)
     {
-        result.setInfo (TRANS ("Silent Mode"), "Switch width", String(), 0);
+        result.setInfo (TRANS ("Silent Mode") + ctrlStr + "D)", "Switch width", String(), 0);
         result.addDefaultKeypress ('d', ModifierKeys::commandModifier);
         result.setTicked ((getParentComponent()->getWidth() < 760));
     }
     else if (generateCurrent == commandID)
     {
-        result.setInfo (TRANS ("Update Current Page"), "Update Current Page", String(), 0);
+        result.setInfo (TRANS ("Update Current Page") + "  (F5)", "Update Current Page", String(), 0);
         result.addDefaultKeypress (KeyPress::F5Key, ModifierKeys::noModifiers);
         result.setActive (bts[viewBt]->getToggleState() && editAndPreview->getCurrentDocFile().exists());
     }
     else if (generateNeeded == commandID)
     {
-        result.setInfo (TRANS ("Regenerate All Changed"), "Regenerate All Changed", String(), 0);
+        result.setInfo (TRANS ("Regenerate All Changed") + "  (F6)", "Regenerate All Changed", String(), 0);
         result.addDefaultKeypress (KeyPress::F6Key, ModifierKeys::noModifiers);
         result.setActive (fileTreeContainer->hasLoadedProject());
     }
     else if (activeSearch == commandID)
     {
-        result.setInfo (TRANS ("Active Search"), "Active Search", String(), 0);
+        result.setInfo (TRANS ("Active Search") + ctrlStr + "F)", "Active Search", String(), 0);
         result.addDefaultKeypress ('f', ModifierKeys::commandModifier);
         result.setActive (fileTreeContainer->hasLoadedProject());
     }
     else if (minimizeTheApp == commandID)
     {
-        result.setInfo (TRANS ("Hide / Minimize"), "Hide / Minimize", String(), 0);
+        result.setInfo (TRANS ("Hide / Minimize") + ctrlStr + "H)", "Hide / Minimize", String(), 0);
         result.addDefaultKeypress ('h', ModifierKeys::commandModifier);
     }
     else if (exitApp == commandID)
     {
-        result.setInfo (TRANS ("Exit"), "Exit", String(), 0);
+        result.setInfo (TRANS ("Exit") + ctrlStr + "Q)", "Exit", String(), 0);
         result.addDefaultKeypress ('q', ModifierKeys::commandModifier);
     }
 }

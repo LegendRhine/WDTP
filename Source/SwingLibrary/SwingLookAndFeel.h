@@ -34,6 +34,12 @@ public:
     
     /** popup menu */
     virtual Font getPopupMenuFont() override;
+    virtual void drawPopupMenuItem (Graphics& g, const Rectangle<int>& area,
+                                    bool isSeparator, bool isActive,
+                                    bool isHighlighted, bool isTicked,
+                                    bool hasSubMenu, const String& text,
+                                    const String& shortcutKeyText,
+                                    const Drawable *icon, const Colour *textColour) override;
     
     /** alertWindow and textButton */
     virtual Font getAlertWindowTitleFont() override;

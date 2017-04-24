@@ -34,8 +34,8 @@ const String SwingUtilities::getFontName()
 #if JUCE_WINDOWS
     return "Microsoft YaHei";
 #elif JUCE_MAC
-    //return "Microsoft YaHei";
-    return "Lantinghei SC";
+    return "Microsoft YaHei";
+    //return "Lantinghei SC";
     //return "Heiti SC";
     //return "PingFang SC";
     //return "STHeiti";

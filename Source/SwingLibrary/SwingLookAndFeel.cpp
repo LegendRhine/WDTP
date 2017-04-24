@@ -21,7 +21,7 @@ SwingLookAndFeel::SwingLookAndFeel()
 //=================================================================================================
 TextLayout SwingLookAndFeel::layoutTooltipText (const String& text, Colour colour) noexcept
 {
-    const float tooltipFontSize = SwingUtilities::getFontSize() - 3.0f;
+    const float tooltipFontSize = SwingUtilities::getFontSize() - 4.0f;
     const int maxToolTipWidth = 500;
 
     AttributedString s;
@@ -96,7 +96,7 @@ Font SwingLookAndFeel::getPopupMenuFont()
 Font SwingLookAndFeel::getAlertWindowTitleFont()
 {
 #if JUCE_MAC
-    return LookAndFeel_V3::getAlertWindowTitleFont().getHeight() + 2.f;
+    return LookAndFeel_V3::getAlertWindowTitleFont().getHeight() + 1.f;
 #elif JUCE_WINDOWS
     return LookAndFeel_V3::getAlertWindowTitleFont();
 #endif
@@ -116,7 +116,7 @@ Font SwingLookAndFeel::getAlertWindowMessageFont()
 Font SwingLookAndFeel::getTextButtonFont (TextButton& bt, int buttonHeight)
 {
 #if JUCE_MAC
-    return LookAndFeel_V3::getTextButtonFont (bt, buttonHeight).getHeight() + 2.f;
+    return LookAndFeel_V3::getTextButtonFont (bt, buttonHeight).getHeight() + 3.f;
 #elif JUCE_WINDOWS
     return LookAndFeel_V3::getTextButtonFont (bt, buttonHeight);
 #endif
@@ -125,5 +125,5 @@ Font SwingLookAndFeel::getTextButtonFont (TextButton& bt, int buttonHeight)
 //=================================================================================================
 Font SwingLookAndFeel::getAlertWindowFont()
 {
-    return getAlertWindowMessageFont().getHeight() - 0.5f;
+    return getAlertWindowMessageFont().getHeight();
 }

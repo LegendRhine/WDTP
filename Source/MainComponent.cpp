@@ -166,32 +166,10 @@ void MainContentComponent::run()
         // put it in userDocumentsDirectory
         if (url.readEntireBinaryStream (mb))
         {
-//#if JUCE_WINDOWS
             MemoryInputStream inputSteam (mb, false);
             ZipFile zip (inputSteam);
             zip.uncompressEntry (0, File::getSpecialLocation (File::userDocumentsDirectory));
             lameEncoder.setExecutePermission (true);
-/*
-#elif JUCE_MAC
-            //lameEncoder.create();
-
-            const File lameZip (lameEncoder.getSiblingFile("lame-osx.zip"));
-            lameZip.deleteFile();
-            lameZip.create();
-            
-            if (!lameZip.replaceWithData (mb.getData(), mb.getSize()))
-            {
-                lameZip.deleteFile();
-            }
-            else
-            {
-                AlertWindow::showMessageBox (AlertWindow::InfoIcon, TRANS ("Congratulations"),
-                                             TRANS ("The MP3 encoder 'lame-osx.zip' has been downloaded.")
-                                             + newLine
-                                             + TRANS ("Please double click the zip file to release it."));
-                lameZip.revealToUser();
-            }
-#endif*/
         }
     }
 }

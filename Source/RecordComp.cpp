@@ -332,7 +332,7 @@ void RecordComp::writeMp3AudioToMediaDir (const String& fileName)
 {
     if (!lameEncoder.existsAsFile())
     {
-        SHOW_MESSAGE (TRANS ("Cannot find MP3 encoder.") + newLine + newLine
+        SHOW_MESSAGE (TRANS ("Cannot find MP3 encoder.") + newLine
                       + TRANS ("Please connect internet and restart the app."));
         return;
     }

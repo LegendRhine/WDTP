@@ -371,8 +371,11 @@ void EditAndPreview::outlineGoto (const StringArray& titleStrs, const int itemIn
                                                     .fromFirstOccurrenceOf ("## ", false, false));
     }
 
-    webView->goToURL (currentUrl/* + "#" + anchorStr*/);
-    webView->goToURL("javascript:location.hash=\"" + anchorStr + "\";");
+#if JUCE_MAC
+    webView->goToURL ("javascript:location.hash=\"" + anchorStr + "\";");
+#else
+    webView->goToURL (currentUrl + "#" + anchorStr);
+#endif
     
     mdEditor->grabKeyboardFocus();
 }

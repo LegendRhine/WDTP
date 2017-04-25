@@ -166,10 +166,12 @@ void MainContentComponent::run()
         // put it in userDocumentsDirectory
         if (url.readEntireBinaryStream (mb))
         {
-#if JUCE_WINDOWS
+//#if JUCE_WINDOWS
             MemoryInputStream inputSteam (mb, false);
             ZipFile zip (inputSteam);
             zip.uncompressEntry (0, File::getSpecialLocation (File::userDocumentsDirectory));
+            lameEncoder.setExecutePermission (true);
+/*
 #elif JUCE_MAC
             //lameEncoder.create();
 
@@ -189,7 +191,7 @@ void MainContentComponent::run()
                                              + TRANS ("Please double click the zip file to release it."));
                 lameZip.revealToUser();
             }
-#endif
+#endif*/
         }
     }
 }

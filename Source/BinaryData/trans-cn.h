@@ -393,7 +393,7 @@ countries: cn
 "Archive: " = "文章归档："
 "Beginning" = "文章开头"
 "End" = "文章末尾"
-"Document Outline..." = "文档大纲..."
+"Document Outline..." = "本文大纲..."
 "Text Mark Syntax and Demo..." = "语法详解与示例..."
 "FAQ..." = "常见问题..."
 "Help" = "帮助"

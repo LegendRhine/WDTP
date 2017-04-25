@@ -335,7 +335,10 @@ void TopToolBar::popupSystemMenu()
     m.addSeparator();
 
     if (newVersionIsReady)
-        m.addItem (checkNewVersion, TRANS ("Download New Version..."), true);
+    {
+        m.addColouredItem (checkNewVersion, TRANS ("Download New Version..."), Colours::darkgreen, true);
+        m.addSeparator();
+    }
 
     // site url..
     PopupMenu siteUrls;

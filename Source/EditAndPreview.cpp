@@ -340,16 +340,18 @@ void EditAndPreview::previewCurrentDoc()
 
 //=================================================================================================
 void EditAndPreview::outlineGoto (const StringArray& titleStrs, const int itemIndex)
-{ 
+{
+    String anchorStr;
+    
     if (itemIndex == 1)
     {
         mdEditor->moveCaretToTop (false);
-        webView->goToURL (currentUrl + "#top");
+        anchorStr = "top";
     }
     else if (itemIndex == titleStrs.size() - 1)
     {
         mdEditor->moveCaretToEnd (false);
-        webView->goToURL (currentUrl + "#wdtpPageBottom");
+        anchorStr = "wdtpPageBottom";
     }
     else if (itemIndex > 0 && itemIndex < titleStrs.size() - 1)
     {
@@ -365,11 +367,13 @@ void EditAndPreview::outlineGoto (const StringArray& titleStrs, const int itemIn
         mdEditor->setCaretPosition (positionIndex);
         mdEditor->moveCaretToEndOfLine (true);
 
-        const String& jumpTo (Md2Html::extractLinkText (titleStrs[itemIndex]
-                                                        .fromFirstOccurrenceOf ("## ", false, false)));
-        webView->goToURL (currentUrl + "#" + jumpTo);
+        anchorStr = Md2Html::extractLinkText (titleStrs[itemIndex]
+                                                    .fromFirstOccurrenceOf ("## ", false, false));
     }
 
+    webView->goToURL (currentUrl/* + "#" + anchorStr*/);
+    webView->goToURL("javascript:location.hash=\"" + anchorStr + "\";");
+    
     mdEditor->grabKeyboardFocus();
 }
 

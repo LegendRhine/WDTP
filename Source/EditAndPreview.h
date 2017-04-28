@@ -97,7 +97,7 @@ private:
 
     MainContentComponent* mainComp;
 
-    ScopedPointer<TextEditor> mdEditor;
+    ScopedPointer<MarkdownEditor> mdEditor;
     ScopedPointer<WebBrowserComponent> webView;
     ScopedPointer<SetupPanel> setupPanel;
     ScopedPointer<ThemeEditor> themeEditor;

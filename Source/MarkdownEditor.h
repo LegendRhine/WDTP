@@ -45,7 +45,7 @@ public:
     virtual void sliderValueChanged (Slider* slider) override;
     virtual void changeListenerCallback (ChangeBroadcaster* source) override;
 
-    /** drag native images to copy and insert their mark */
+    /** drag and drop native files */
     virtual bool isInterestedInFileDrag (const StringArray& files) override;
     virtual void filesDropped (const StringArray& files, int x, int y) override;
 

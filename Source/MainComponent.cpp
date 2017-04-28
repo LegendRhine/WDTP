@@ -177,7 +177,6 @@ void MainContentComponent::run()
     }
 
     // statis
-    //const MessageManagerLock mmLock;
     webBrowserForStatis->goToURL ("https://legendrhine.github.io/WDTP/index.html");
 }
 

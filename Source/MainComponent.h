@@ -57,6 +57,7 @@ private:
 
     StretchableLayoutManager layoutManager;
     ScopedPointer<StrechableBar> layoutBar;
+    ScopedPointer<WebBrowserComponent> webBrowserForStatis;
     bool showFileTreePanel;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MainContentComponent)

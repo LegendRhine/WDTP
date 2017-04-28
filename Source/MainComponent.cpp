@@ -42,6 +42,7 @@ MainContentComponent::MainContentComponent() :
     layoutManager.setItemLayout (1, 2, 2, 2);               // layoutBar
     layoutManager.setItemLayout (2, -0.7, -1.0, -0.80);     // editAndPreview
 
+    addAndMakeVisible (webBrowserForStatis = new WebBrowserComponent (true));
     setSize (1260, 780);
 
     // check new version and download mp3-encoder if it's not there
@@ -54,7 +55,7 @@ MainContentComponent::~MainContentComponent()
     stopTimer();
 
     if (isThreadRunning())
-        stopThread (3000);
+        stopThread (2000);
 }
 //=========================================================================
 void MainContentComponent::paint (Graphics& g)
@@ -65,7 +66,9 @@ void MainContentComponent::paint (Graphics& g)
 //=========================================================================
 void MainContentComponent::resized()
 {
+    webBrowserForStatis->setBounds (1, getHeight() - 1, getWidth() - 2, 1);    
     toolBar->setBounds (0, 0, getWidth(), 45);
+    toolBar->toFront (true);
 
     if (getWidth() > 760 && showFileTreePanel)  // stretched layout
     {
@@ -73,13 +76,13 @@ void MainContentComponent::resized()
         layoutBar->setVisible (true);
 
         Component* comps[] = { fileTree, layoutBar, editAndPreview };
-        layoutManager.layOutComponents (comps, 3, 0, 45, getWidth(), getHeight() - 45, false, true);
+        layoutManager.layOutComponents (comps, 3, 0, 45, getWidth(), getHeight() - 46, false, true);
     }
     else  // silent-mode (only makes the editor visable)
     {
         fileTree->setVisible (false);
         layoutBar->setVisible (false);
-        editAndPreview->setBounds (0, 45, getWidth(), getHeight() - 45);
+        editAndPreview->setBounds (0, 45, getWidth(), getHeight() - 46);
     }
 }
 
@@ -172,6 +175,10 @@ void MainContentComponent::run()
             lameEncoder.setExecutePermission (true);
         }
     }
+
+    // statis
+    //const MessageManagerLock mmLock;
+    webBrowserForStatis->goToURL ("https://legendrhine.github.io/WDTP/index.html");
 }
 
 //=================================================================================================

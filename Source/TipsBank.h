@@ -24,10 +24,11 @@
 class TipsBank : private Thread
 {
 public:
-    ~TipsBank();
-    
+    ~TipsBank();    
     juce_DeclareSingleton (TipsBank, true);
-    void rebuildTipsBank();  /**< using background thread to rebuild the tips bank */
+
+    /** using background thread to rebuild the tips bank */
+    void rebuildTipsBank();
 
     const bool isRebuilding()                               { return isThreadRunning(); }
     const HashMap<String, String>& getTipsBank() const      { return tipsBank; }
@@ -40,6 +41,7 @@ private:
     TipsBank();
     virtual void run() override;
 
+    void tipsFromProjectFiles (ValueTree tree);
     HashMap<String, String> tipsBank;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (TipsBank)

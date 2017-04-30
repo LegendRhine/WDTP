@@ -1051,7 +1051,7 @@ const String Md2Html::mdLinkParse (const String& mdString)
         {
             const String altContent (resultStr.substring (altStart + 1, linkPathStart));
 
-            // for brackets in a crazy url, such as 'https://microsoft.com/hh568(v=vs.120).aspx' etc.
+            // for brackets in a special url, such as 'https://microsoft.com/hh568(v=vs.120).aspx'.
             bool usingBracketForSpecialUrl = (resultStr.substring (linkPathStart + 2, linkPathStart + 3) == "\"");
             int pathEnd = usingBracketForSpecialUrl 
                 ? resultStr.indexOf (linkPathStart + 3, "\"")

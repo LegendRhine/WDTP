@@ -50,6 +50,7 @@ void TipsBank::run()
     tipsBank.clear();
     const File& tipsFile (FileTreeContainer::projectFile.getSiblingFile ("docs").getChildFile ("tips.md"));
 
+    // from tips doc
     if (tipsFile.existsAsFile())
     {
         StringArray strs;
@@ -57,7 +58,7 @@ void TipsBank::run()
         strs.removeEmptyStrings (true);
         strs.trim();
         
-        // remain tips
+        // only extrct the content which matched tips format
         for (int i = strs.size(); --i >= 0; )
         {
             if (strs[i].substring (0, 6) != "    - " && strs[i].substring (0, 2) != "- ")
@@ -78,9 +79,30 @@ void TipsBank::run()
             const String& value (strs[i + 1]);
 
             tipsBank.set (key, value);
-        }
-
-        /*for (HashMap<String, String>::Iterator i (tipsBank); i.next();)
-            DBG (i.getKey() << " -> " << i.getValue());*/
+        }        
     }
+
+    // from project files
+    tipsFromProjectFiles (FileTreeContainer::projectTree);
+
+    /*for (HashMap<String, String>::Iterator i (tipsBank); i.next();)
+        DBG (i.getKey() << " -> " << i.getValue());*/
+}
+
+//=================================================================================================
+void TipsBank::tipsFromProjectFiles (ValueTree tree)
+{
+    String&& title (tree.getProperty ("title").toString());
+    ValueTree parentTree = tree.getParent();
+
+    while (parentTree.isValid())
+    {
+        title = parentTree.getProperty ("title").toString() + "/" + title;
+        parentTree = parentTree.getParent();
+    }
+
+    tipsBank.set (title, DocTreeViewItem::getHtmlFile (tree).getFullPathName().replace ("\\", "/"));
+
+    for (int i = tree.getNumChildren(); --i >= 0; )
+        tipsFromProjectFiles (tree.getChild (i));
 }

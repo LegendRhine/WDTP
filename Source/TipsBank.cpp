@@ -101,7 +101,10 @@ void TipsBank::tipsFromProjectFiles (ValueTree tree)
         parentTree = parentTree.getParent();
     }
 
-    tipsBank.set (title, DocTreeViewItem::getHtmlFile (tree).getFullPathName().replace ("\\", "/"));
+    String filePath (DocTreeViewItem::getHtmlFile (tree).getFullPathName());
+    filePath = filePath.fromFirstOccurrenceOf (FileTreeContainer::projectFile.getSiblingFile ("site")
+                                               .getFullPathName(), false, false);
+    tipsBank.set (title, filePath.substring (1).replace ("\\", "/"));
 
     for (int i = tree.getNumChildren(); --i >= 0; )
         tipsFromProjectFiles (tree.getChild (i));

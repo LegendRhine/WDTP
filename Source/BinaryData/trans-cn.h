@@ -420,6 +420,7 @@ countries: cn
 "A new tip has been added successful!" = "新提示添加成功!"
 "Shomehow this tip added failed." = "不知为何，没能添加此提示."
 "This tip has been there already." = "此提示已经存在，未能添加."
+"No tips for the selected text." = "智库索引中未找到所选内容."
 "Update List..." = "更新记录..."
 "Highltlight Due Docs" = "高亮选择到期文档"
 "Batch set Remind Date" = "批量设置提醒日期"

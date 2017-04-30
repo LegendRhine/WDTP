@@ -34,7 +34,8 @@ void SwingEditor::mouseDown (const MouseEvent& e)
 {
     if (getHighlightedText().isNotEmpty()
         && getHighlightedRegion().contains (getTextIndexAt (e.x, e.y))
-        && !e.mods.isPopupMenu())
+        && !e.mods.isPopupMenu()
+        && !isReadOnly())
     {
         draggingSelected = true;
         yOfViewportWhenDragging = 0;
@@ -49,7 +50,7 @@ void SwingEditor::mouseDown (const MouseEvent& e)
 //=================================================================================================
 void SwingEditor::mouseDrag (const MouseEvent& e)
 {
-    if (draggingSelected)
+    if (draggingSelected && !isReadOnly())
     {
         setCaretVisible (false);
         setMouseCursor (e.mods.isCommandDown() ? MouseCursor::CopyingCursor
@@ -80,10 +81,10 @@ void SwingEditor::mouseUp (const MouseEvent& e)
     if (e.mods.isPopupMenu())
     {
         TextEditor::mouseUp (e);
-        return;
     }
 
-    if (draggingSelected && !getHighlightedRegion().contains (getTextIndexAt (e.x, e.y)))
+    else if (draggingSelected && !getHighlightedRegion().contains (getTextIndexAt (e.x, e.y))
+             && !isReadOnly())
     {
         const String& draggingContent (getHighlightedText());
         const int dropPosition = getTextIndexAt (e.x, e.y);
@@ -128,7 +129,8 @@ void SwingEditor::mouseUp (const MouseEvent& e)
 void SwingEditor::mouseMove (const MouseEvent& e)
 {
     if (getHighlightedText().isNotEmpty()
-        && getHighlightedRegion().contains (getTextIndexAt (e.x - 5, e.y)))
+        && getHighlightedRegion().contains (getTextIndexAt (e.x - 5, e.y))
+        && !isReadOnly())
         setMouseCursor (MouseCursor::NormalCursor);
 
     else

@@ -343,6 +343,7 @@ void SetupPanel::initialValues (const bool currentValuesUpdateTree,
             currentTree.setProperty ("title", values[itsTitle]->getValue().toString().trim(), nullptr);
             DocTreeViewItem::needCreate (currentTree);
             FileTreeContainer::saveProject();
+            TipsBank::getInstance()->rebuildTipsBank();
         }
 
         else if (values[keywords]->getValue() != currentTree.getProperty ("keywords"))
@@ -448,7 +449,10 @@ void SetupPanel::resized()
 void SetupPanel::valueChanged (Value& value)
 {
     if (value.refersToSameSourceAs (*values[itsTitle]))
+    {
         currentTree.setProperty ("title", values[itsTitle]->getValue().toString().trim(), nullptr);
+        TipsBank::getInstance()->rebuildTipsBank();
+    }
 
     else if (value.refersToSameSourceAs (*values[keywords]))
         currentTree.setProperty ("keywords", values[keywords]->getValue().toString().trim()

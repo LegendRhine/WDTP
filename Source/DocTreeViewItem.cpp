@@ -651,6 +651,7 @@ void DocTreeViewItem::renameSelectedItem()
             setSelected (true, true);
 
             FileTreeContainer::saveProject();
+            TipsBank::getInstance()->rebuildTipsBank();
         }
         else
         {
@@ -776,6 +777,7 @@ void DocTreeViewItem::createNewDocument()
         const String& docName (SwingUtilities::getValidFileName (dialog.getTextEditor ("name")->getText()));
         createDoc (docName, "# ", ValueTree(), true);
         FileTreeContainer::saveProject();
+        TipsBank::getInstance()->rebuildTipsBank();
     }
 }
 
@@ -908,6 +910,7 @@ void DocTreeViewItem::createNewFolder()
         dirItem->setSelected (true, true);
 
         FileTreeContainer::saveProject();
+        TipsBank::getInstance()->rebuildTipsBank();
     }
 }
 
@@ -979,6 +982,7 @@ void DocTreeViewItem::deleteSelected()
         }
 
         FileTreeContainer::saveProject();
+        TipsBank::getInstance()->rebuildTipsBank();
     }
 }
 
@@ -1393,7 +1397,10 @@ const bool DocTreeViewItem::importExternalDocs (const Array<File>& docs,
     }
 
     if (needSaveProject)
+    {
+        TipsBank::getInstance()->rebuildTipsBank();
         return FileTreeContainer::saveProject();
+    }
 
     return needSaveProject;
 }
@@ -1660,6 +1667,7 @@ void DocTreeViewItem::moveItems (const OwnedArray<ValueTree>& items,
     }
 
     FileTreeContainer::saveProject();
+    TipsBank::getInstance()->rebuildTipsBank();
 }
 
 //=================================================================================================

@@ -46,7 +46,7 @@ MainContentComponent::MainContentComponent() :
     setSize (1260, 780);
 
     // check new version and download mp3-encoder if it's not there
-    startTimer (1000);
+    startTimer (500);
 }
 
 //=======================================================================

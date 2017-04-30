@@ -1642,7 +1642,7 @@ void MarkdownEditor::timerCallback()
                                                                          .translated (5, 35).toFloat());
         enterModalState();
     }
-    else if (getHighlightedText ().isNotEmpty ())
+    else if (getHighlightedText().isNotEmpty())
     {
         SHOW_MESSAGE (TRANS ("No tips for the selected text."));
     }

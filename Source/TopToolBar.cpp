@@ -543,6 +543,21 @@ void TopToolBar::createNewProject()
     // create 'docs' dir 
     projectFile.getSiblingFile ("docs").createDirectory();
 
+    // create tips-bank file
+    const File& tipsBankDoc (projectFile.getSiblingFile ("docs").getChildFile ("tips.md"));
+    tipsBankDoc.create();
+    tipsBankDoc.appendText ("# " + TRANS ("Tips Bank of the Project") + newLine + newLine);
+
+    ValueTree docTree ("doc");
+    docTree.setProperty ("name", tipsBankDoc.getFileNameWithoutExtension(), nullptr);
+    docTree.setProperty ("title", TRANS ("Tips Bank"), nullptr);
+    docTree.setProperty ("tplFile", "article.html", nullptr);
+    docTree.setProperty ("createDate", SwingUtilities::getTimeStringWithSeparator (
+        SwingUtilities::getCurrentTimeString(), true), nullptr);
+    docTree.setProperty ("hide", true, nullptr);
+      
+    p.addChild (docTree, 0, nullptr);
+
     // save the new project file and load it
     if (SwingUtilities::writeValueTreeToFile (p, projectFile, true))
     {

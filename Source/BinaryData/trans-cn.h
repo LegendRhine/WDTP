@@ -411,6 +411,7 @@ countries: cn
 "Wikipedia..." = "维基百科..."
 "Baidu Baike..." = "百度百科..."
 "Tips Bank" = "智库"
+"Tips Bank of the Project" = "本项目的智库文档"
 "Rebuild Tips Bank" = "重建智库"
 "Tips/Replace" = "提示与替换"
 "Add to Tips Bank" = "加入智库"

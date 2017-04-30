@@ -947,14 +947,15 @@ void TopToolBar::packProject()
     
     for (int i = docFiles.size(); --i >= 0; )
     {
-        if (docFiles[i].getFileName() != "desktop.ini" && docFiles[i].getFileName() != ".DS_Store")
+        if (docFiles[i].getFileName() != "desktop.ini" 
+            && docFiles[i].getFileName() != ".DS_Store")
             builder.addFile (docFiles[i], 9, 
                              docFiles[i].getFullPathName().fromFirstOccurrenceOf (rootPath, false, false));
     }
     
     // add current themes
-    const String themeStr ("themes" + 
-                           File::separatorString + FileTreeContainer::projectTree.getProperty ("render").toString());
+    const String themeStr ("themes" + File::separatorString 
+                           + FileTreeContainer::projectTree.getProperty ("render").toString());
     const File& themeDir (projectFile.getSiblingFile (themeStr));
 
     Array<File> themeFiles;
@@ -962,8 +963,10 @@ void TopToolBar::packProject()
 
     for (int j = themeFiles.size(); --j >= 0; )
     {
-        if (themeFiles[j].getFileName() != "desktop.ini" && themeFiles[j].getFileName() != ".DS_Store")
-            builder.addFile (themeFiles[j], 9, themeStr + File::separatorString + themeFiles[j].getFileName());
+        if (themeFiles[j].getFileName() != "desktop.ini" 
+            && themeFiles[j].getFileName() != ".DS_Store")
+            builder.addFile (themeFiles[j], 9, 
+                             themeStr + File::separatorString + themeFiles[j].getFileName());
     }
 
     // add add-in dir and all its files
@@ -989,10 +992,13 @@ void TopToolBar::packProject()
 
     // to get the date string ("-2017-0209-0508-16") for zip's file name
     String packDate (SwingUtilities::getCurrentTimeString());
-    packDate = "-" + packDate.replaceSection (4, 0, "-").replaceSection (9, 0, "-").replaceSection (14, 0, "-");
+    packDate = "-" + packDate.replaceSection (4, 0, "-")
+                             .replaceSection (9, 0, "-")
+                             .replaceSection (14, 0, "-");
 
     // write to zip file
-    const File packZipFile (projectFile.getSiblingFile (projectFile.getFileNameWithoutExtension() + packDate + ".wpck"));
+    const File packZipFile (projectFile.getSiblingFile (projectFile.getFileNameWithoutExtension()
+                                                        + packDate + ".wpck"));
     packZipFile.deleteFile();
     packZipFile.create();
 

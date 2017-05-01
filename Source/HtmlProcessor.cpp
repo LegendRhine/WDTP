@@ -40,7 +40,11 @@ void HtmlProcessor::renderHtmlContent (const ValueTree& docTree,
     if ((bool)docTree.getProperty ("showKeywords"))
     {
         const String keywordsToInsert (newLine + "> " + TRANS ("Keywords: ") + keywords);
-        const int insertIndex = mdStrWithoutAbbrev.indexOf (0, "\n");
+        int insertIndex = mdStrWithoutAbbrev.indexOf (0, "\n");
+
+        if (insertIndex == -1)  // this doc only has one line and no '\n'
+            insertIndex = mdStrWithoutAbbrev.length();
+
         mdStrWithoutAbbrev = mdStrWithoutAbbrev.replaceSection (insertIndex, 0, keywordsToInsert);
     }
     

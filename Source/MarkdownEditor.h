@@ -167,7 +167,6 @@ private:
     ScopedPointer<ColourSelectorWithPreset> bgColourSelector;
 
     StringArray menuItems; // for popup tips
-    int posBeforeInputNewText = 0;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MarkdownEditor)
 };

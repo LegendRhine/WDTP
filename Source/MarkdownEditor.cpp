@@ -1384,7 +1384,6 @@ void MarkdownEditor::insertTextAtCaret (const String& textToInsert)
     for (int i = Component::getNumCurrentlyModalComponents(); --i >= 0; )
         Component::getCurrentlyModalComponent (i)->exitModalState (0);
 
-    posBeforeInputNewText = getCaretPosition();
     SwingEditor::insertTextAtCaret (textToInsert);
     
     // popup tips
@@ -1642,9 +1641,10 @@ void MarkdownEditor::timerCallback()
                                                                          .translated (5, 35).toFloat());
         enterModalState();
     }
-    else if (getHighlightedText().isNotEmpty())
+    else
     {
-        SHOW_MESSAGE (TRANS ("No tips for the selected text."));
+        if (getHighlightedText().isNotEmpty())
+            SHOW_MESSAGE (TRANS ("No tips for the selected text."));
     }
 }
 
@@ -1653,16 +1653,14 @@ void MarkdownEditor::autoComplete (const int index)
 {
     if (getHighlightedText().isEmpty())
     {
-#if JUCE_WINDOWS
-        setHighlightedRegion (Range<int> (posBeforeInputNewText - 1, getCaretPosition()));
-#else
         moveCaretLeft (false, true);
         moveCaretLeft (false, true);
-#endif
     }
 
     if (!(bool)parent->getCurrentTree().getProperty ("archive"))
+    {
         TextEditor::insertTextAtCaret (menuItems[index].replace ("<br>", newLine));
+    }
 }
 
 //=================================================================================================

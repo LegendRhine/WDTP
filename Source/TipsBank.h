@@ -29,13 +29,16 @@ public:
 
     /** using background thread to rebuild the tips bank */
     void rebuildTipsBank();
+    void cleanupTipsBank()     { tipsBank.clear(); }
 
-    const bool isRebuilding()                               { return isThreadRunning(); }
+    const bool isRebuilding() const                         { return isThreadRunning(); }
     const HashMap<String, String>& getTipsBank() const      { return tipsBank; }
-    void cleanupTipsBank()                                  { tipsBank.clear(); }
 
     /** nothing would be done and return false if the name (key) has been there already. */
     const bool addNewTip (const String& name, const String& content);
+
+    /** return true if any key of the tips bank contains the para (no need fully ematched) */
+    const bool hasThisKey (const String& keyStr) const;
     
 private:
     TipsBank();

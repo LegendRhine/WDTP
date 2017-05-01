@@ -1387,7 +1387,7 @@ void MarkdownEditor::insertTextAtCaret (const String& textToInsert)
     SwingEditor::insertTextAtCaret (textToInsert);
 
     // popup tips
-    if (textToInsert.isNotEmpty ())
+    if (textToInsert.isNotEmpty())
     {
         stopTimer();
         startTimer (30);
@@ -1604,14 +1604,43 @@ void MarkdownEditor::timerCallback()
     SwingEditor::timerCallback();
     const HashMap<String, String>& tips (TipsBank::getInstance()->getTipsBank());
     
-    // get the last 2 characters if nothing has been selected
-    String chars (getTextInRange (Range<int> (getCaretPosition() - 2, getCaretPosition())));
+    String chars;
 
     if (getHighlightedText().isNotEmpty())
+    {
         chars = getHighlightedText().trim();
+    }
+    else
+    {
+        // from the last 2 characters if nothing has been selected
+        tipKeyNumber = 2;
+        const int caretPos = getCaretPosition();
+        chars = getTextInRange (Range<int> (caretPos - tipKeyNumber, caretPos));
 
-    if (chars.contains (" "))
-        return;
+        if (chars.contains (" ") || chars.trim().isEmpty())
+            return;
+
+        bool needPlusOne = true;
+
+        while (TipsBank::getInstance()->hasThisKey (chars))
+        {
+            ++tipKeyNumber;
+
+            if (chars.contains ("\n") || (caretPos - tipKeyNumber < 0))
+            {
+                needPlusOne = false;
+                break;
+            }
+
+            chars = getTextInRange (Range<int> (caretPos - tipKeyNumber, caretPos));
+            //DBGX (chars);
+        }
+
+        if (needPlusOne)
+            chars = getTextInRange (Range<int> (caretPos - tipKeyNumber + 1, caretPos));
+
+        tipKeyNumber = chars.length();
+    }    
 
     PopupMenu tipsMenu;
     menuItems.clear();
@@ -1656,8 +1685,8 @@ void MarkdownEditor::autoComplete (const int index)
 {
     if (getHighlightedText().isEmpty())
     {
-        moveCaretLeft (false, true);
-        moveCaretLeft (false, true);
+        while (--tipKeyNumber >= 0)
+            moveCaretLeft (false, true);
     }
 
     if (!(bool)parent->getCurrentTree().getProperty ("archive"))

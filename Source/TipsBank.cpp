@@ -45,6 +45,18 @@ const bool TipsBank::addNewTip (const String& name, const String& content)
 }
 
 //=================================================================================================
+const bool TipsBank::hasThisKey (const String& keyStr) const
+{
+    for (HashMap<String, String>::Iterator itr (tipsBank); itr.next(); )
+    {
+        if (itr.getKey().contains (keyStr))
+            return true;
+    }
+
+    return false;
+}
+
+//=================================================================================================
 void TipsBank::run()
 {
     tipsBank.clear();

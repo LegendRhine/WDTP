@@ -1609,6 +1609,9 @@ void MarkdownEditor::timerCallback()
     if (getHighlightedText().isNotEmpty())
     {
         chars = getHighlightedText().trim();
+
+        if (chars.length() < 2)
+            return;
     }
     else
     {
@@ -1620,7 +1623,7 @@ void MarkdownEditor::timerCallback()
         if (chars.contains (" ") || chars.trim().isEmpty())
             return;
 
-        bool needPlusOne = true;
+        bool needPlusOne = false;
 
         while (TipsBank::getInstance()->hasThisKey (chars))
         {
@@ -1633,6 +1636,7 @@ void MarkdownEditor::timerCallback()
             }
 
             chars = getTextInRange (Range<int> (caretPos - tipKeyNumber, caretPos));
+            needPlusOne = true;
             //DBGX (chars);
         }
 
@@ -1640,7 +1644,7 @@ void MarkdownEditor::timerCallback()
             chars = getTextInRange (Range<int> (caretPos - tipKeyNumber + 1, caretPos));
 
         tipKeyNumber = chars.length();
-    }    
+    }
 
     PopupMenu tipsMenu;
     menuItems.clear();

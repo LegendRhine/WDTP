@@ -498,7 +498,7 @@ countries: cn
 " Year " = "年"
 "No." = "第"
 "This doc has no any secondary and tertiary heading" = "此文档尚未设置二级标题和三级标题"
-"The tip's name must more than 1 character" = "提示名称至少需要两个字符"
+"The tip's name must more than 1 valid character" = "提示名称至少需要两个有效字符"
 "Sum Numbers of This Row" = "合计本行的所有数字"
 "Average Numbers of This Row" = "求本行数字的平均值"
 "Sum Numbers of This Column" = "合计本列的所有数字"

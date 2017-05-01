@@ -1419,9 +1419,9 @@ void MarkdownEditor::selectedAddToTipsBank()
         {
             const String& tipName (dialog.getTextEditor ("name")->getText().trim());
 
-            if (tipName.length() < 2)
+            if (tipName.trim().length() < 2)
             {
-                SHOW_MESSAGE (TRANS ("The tip's name must more than 1 character"));
+                SHOW_MESSAGE (TRANS ("The tip's name must more than 1 valid character"));
                 return;
             }
 

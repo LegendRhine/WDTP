@@ -1659,7 +1659,29 @@ void MarkdownEditor::autoComplete (const int index)
 
     if (!(bool)parent->getCurrentTree().getProperty ("archive"))
     {
-        TextEditor::insertTextAtCaret (menuItems[index].replace ("<br>", newLine));
+        String&& strForInsert (menuItems[index].replace ("<br>", newLine));
+
+        // internal link
+        if (strForInsert.substring (0, 2) == "@ ")
+        {
+            strForInsert = strForInsert.substring (2);
+            strForInsert = HtmlProcessor::getRelativePathToRoot (DocTreeViewItem::getHtmlFile(parent->getCurrentTree()))
+                + strForInsert;
+            String title;
+
+            for (HashMap<String, String>::Iterator i (TipsBank::getInstance()->getTipsBank()); i.next();)
+            {
+                if (i.getValue() == menuItems[index])
+                {
+                    title = i.getKey().fromLastOccurrenceOf ("/", false, false);
+                    break;
+                }
+            }
+
+            strForInsert = "[" + title + "](" + strForInsert + ")";
+        }
+
+        TextEditor::insertTextAtCaret (strForInsert);
     }
 }
 

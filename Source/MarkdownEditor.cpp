@@ -1625,6 +1625,7 @@ void MarkdownEditor::timerCallback()
 
         bool needPlusOne = false;
 
+        // matching forward..
         while (TipsBank::getInstance()->hasThisKey (chars))
         {
             ++tipKeyNumber;
@@ -1646,6 +1647,7 @@ void MarkdownEditor::timerCallback()
         tipKeyNumber = chars.length();
     }
 
+    // tips menu..
     PopupMenu tipsMenu;
     menuItems.clear();
     menuItems.add (String());
@@ -1673,6 +1675,7 @@ void MarkdownEditor::timerCallback()
         tipsMenu.showMenuAsync (PopupMenu::Options().withTargetScreenArea (posOfMenu),
                                 ModalCallbackFunction::forComponent (menuItemChosenCallback, this));
 
+        // auto select the first item
         Desktop::getInstance().getMainMouseSource().setScreenPosition (posOfMenu.getPosition()
                                                                          .translated (5, 35).toFloat());
         enterModalState();
@@ -1849,7 +1852,7 @@ void MarkdownEditor::subtractFromKeywords (const String& keyword)
 //=================================================================================================
 void MarkdownEditor::searchPrevious()
 {
-    // make sure continue to search when modified the previous search result
+    // make sure continue to search after modified the previous search result
     if (getHighlightedText().isNotEmpty())
     {
         SystemClipboard::copyTextToClipboard (getHighlightedText());

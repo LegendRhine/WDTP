@@ -10,12 +10,12 @@
 
 #include "WdtpHeader.h"
 
-// global objects which be managed in mainApplication class 
+// global objects, managed in mainApplication class 
 PropertiesFile* systemFile              = nullptr;
 ApplicationCommandManager* cmdManager   = nullptr;
 
-AudioFormatManager* formatManager = nullptr;
-AudioDeviceManager* deviceManager = nullptr;
+AudioFormatManager* formatManager       = nullptr;
+AudioDeviceManager* deviceManager       = nullptr;
 
 //==============================================================================
 class WDTPApplication : public JUCEApplication

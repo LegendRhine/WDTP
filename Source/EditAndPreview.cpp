@@ -466,7 +466,7 @@ const bool EditAndPreview::saveCurrentDocIfChanged()
             setupPanel->showDocProperties (false, docOrDirTree);
             returnValue = FileTreeContainer::saveProject();
 
-            // rebuild tips bank
+            // rebuild tips bank id needed
             if (docOrDirFile.getFileName() == "tips.md" 
                 && docOrDirFile.getParentDirectory().getFileName() == "docs")
             {

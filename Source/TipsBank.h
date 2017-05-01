@@ -37,7 +37,7 @@ public:
     /** nothing would be done and return false if the name (key) has been there already. */
     const bool addNewTip (const String& name, const String& content);
 
-    /** return true if any key of the tips bank contains the para (no need fully ematched) */
+    /** return true if any key of the tips bank contains the para (not and no need fully matched) */
     const bool hasThisKey (const String& keyStr) const;
     
 private:

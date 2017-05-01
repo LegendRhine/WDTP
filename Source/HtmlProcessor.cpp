@@ -346,7 +346,7 @@ const String HtmlProcessor::getSiteLink (const File &htmlFile)
     const String& rootPathLink (getRelativePathToRoot (htmlFile) + "index.html");
     const String& siteTitle (FileTreeContainer::projectTree.getProperty ("title").toString());
 
-    return "<a href=\"" + rootPathLink + "\">" + siteTitle.upToFirstOccurrenceOf (" ", false, true) + "</a>";
+    return "<a href=\"" + rootPathLink + "\">" + siteTitle.upToFirstOccurrenceOf (" ", false, false) + "</a>";
 }
 
 //=================================================================================================
@@ -587,8 +587,8 @@ const String HtmlProcessor::extractKeywordsOfDocs (const ValueTree& dirTree)
     // remove duplicates and remain the last which include "-x (times)"
     for (int i = keywordsArray.size(); --i >= 1; )
     {
-        if (keywordsArray[i].upToLastOccurrenceOf ("--", false, true).compareIgnoreCase (
-            keywordsArray[i - 1].upToLastOccurrenceOf ("--", false, true)) == 0)
+        if (keywordsArray[i].upToLastOccurrenceOf ("--", false, false).compareIgnoreCase (
+            keywordsArray[i - 1].upToLastOccurrenceOf ("--", false, false)) == 0)
         {
             keywordsArray.remove (i - 1);
         }
@@ -599,8 +599,8 @@ const String HtmlProcessor::extractKeywordsOfDocs (const ValueTree& dirTree)
     {
         for (int j = 0; j < keywordsArray.size() - 1; ++j)
         {
-            if (keywordsArray[j].fromLastOccurrenceOf ("--", false, true).getIntValue() <
-                keywordsArray[j + 1].fromLastOccurrenceOf ("--", false, true).getIntValue())
+            if (keywordsArray[j].fromLastOccurrenceOf ("--", false, false).getIntValue() <
+                keywordsArray[j + 1].fromLastOccurrenceOf ("--", false, false).getIntValue())
             {
                 const String str (keywordsArray[j]);
                 keywordsArray.getReference (j) = keywordsArray[j + 1];
@@ -645,7 +645,7 @@ const String HtmlProcessor::getKeywordsLinks (const String& rootPath)
     for (int i = kws.size(); --i >= 0; )
     {
         if (kws[i].contains ("--"))
-            kws.getReference (i) = kws[i].upToFirstOccurrenceOf ("--", false, true);
+            kws.getReference (i) = kws[i].upToFirstOccurrenceOf ("--", false, false);
 
         kws.getReference (i) = kws[i].replace (CharPointer_UTF8 ("\xef\xbc\x88"), " (")
             .replace (CharPointer_UTF8 ("\xef\xbc\x89"), ")");  // Chinese '(' and ')'
@@ -1116,7 +1116,7 @@ const String HtmlProcessor::getSiteNavi (const ValueTree& docTree)
         String text (parent.getProperty ("title").toString());
 
         if (parent.getType().toString() == "wdtpProject")
-            text = text.upToFirstOccurrenceOf (" ", false, true);
+            text = text.upToFirstOccurrenceOf (" ", false, false);
 
         navi = "<a href=\"" + path + "index.html\">" + text + "</a>/" + navi;
         path += "../";
@@ -1263,8 +1263,8 @@ const String HtmlProcessor::getAdStr (const String& text, const File& htmlFile)
     for (int i = 0; i < orignalText.size(); ++i)
     {
         const String& imgName (getRelativePathToRoot (htmlFile) + "add-in/"
-                               + orignalText[i].upToFirstOccurrenceOf (" ", false, true));
-        const String& link (orignalText[i].fromFirstOccurrenceOf (" ", false, true));
+                               + orignalText[i].upToFirstOccurrenceOf (" ", false, false));
+        const String& link (orignalText[i].fromFirstOccurrenceOf (" ", false, false));
         links.add ("<a href=\"" + link + "\" target=\"_blank\"><img src=\"" + imgName + "\"></a><br>");
     }
 
@@ -1477,8 +1477,8 @@ const StringArray HtmlProcessor::getBlogList (const ValueTree& dirTree)
     for (int i = filesLinkStr.size(); --i >= 0; )
     {
         filesLinkStr.getReference (i) = filesLinkStr[i].substring (12); // remove "dir/doc @_^_#_%_@"
-        const String dateStr (filesLinkStr[i].upToFirstOccurrenceOf ("@_^_#_%_@", false, true));        
-        const String descStr (filesLinkStr[i].fromLastOccurrenceOf ("@_^_#_%_@", false, true));
+        const String dateStr (filesLinkStr[i].upToFirstOccurrenceOf ("@_^_#_%_@", false, false));        
+        const String descStr (filesLinkStr[i].fromLastOccurrenceOf ("@_^_#_%_@", false, false));
         const String titleStr (filesLinkStr[i].substring (dateStr.length() + 9).dropLastCharacters (descStr.length() + 9));
 
         linkStr.add (titleStr);

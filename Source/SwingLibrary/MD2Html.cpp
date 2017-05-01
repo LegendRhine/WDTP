@@ -1120,7 +1120,7 @@ const String Md2Html::listParse (const String& mdString, const bool isOrdered)
             if (nextLine.substring (0, 6) != nestTag)
                 postfix = nestedEnd;
 
-            currentLine = prefix + "    <li>" + currentLine.fromFirstOccurrenceOf (nestTag, false, true) + "</li>" + postfix;
+            currentLine = prefix + "    <li>" + currentLine.fromFirstOccurrenceOf (nestTag, false, false) + "</li>" + postfix;
         }
         else if (currentLine.substring (0, 2) == listTag)
         {
@@ -1132,7 +1132,7 @@ const String Md2Html::listParse (const String& mdString, const bool isOrdered)
                 && nextLine.substring (0, 6) != nestTag)
                 postfix = listEnd;
 
-            currentLine = prefix + "<li>" + currentLine.fromFirstOccurrenceOf (listTag, false, true) + "</li>" + postfix;
+            currentLine = prefix + "<li>" + currentLine.fromFirstOccurrenceOf (listTag, false, false) + "</li>" + postfix;
         }
 
         if ((currentLine.substring (0, 8) == "    <li>"

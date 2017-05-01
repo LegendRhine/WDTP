@@ -1385,10 +1385,13 @@ void MarkdownEditor::insertTextAtCaret (const String& textToInsert)
         Component::getCurrentlyModalComponent (i)->exitModalState (0);
 
     SwingEditor::insertTextAtCaret (textToInsert);
-    
+
     // popup tips
-    if (textToInsert.isNotEmpty())
+    if (textToInsert.isNotEmpty ())
+    {
+        stopTimer();
         startTimer (30);
+    }
 }
 
 //=================================================================================================
@@ -1600,15 +1603,15 @@ void MarkdownEditor::timerCallback()
     PopupMenu::dismissAllActiveMenus();
     SwingEditor::timerCallback();
     const HashMap<String, String>& tips (TipsBank::getInstance()->getTipsBank());
-
-    if (tips.size() < 1)
-        return;
-
+    
     // get the last 2 characters if nothing has been selected
     String chars (getTextInRange (Range<int> (getCaretPosition() - 2, getCaretPosition())));
 
     if (getHighlightedText().isNotEmpty())
         chars = getHighlightedText().trim();
+
+    if (chars.contains (" "))
+        return;
 
     PopupMenu tipsMenu;
     menuItems.clear();

@@ -1827,7 +1827,27 @@ void TextEditor::mouseDoubleClick (const MouseEvent& e)
         {
             // (note the slight bodge here - it's because iswalnum only checks for alphabetic chars in the current locale)
             const juce_wchar c = t [tokenEnd];
-            if (CharacterFunctions::isLetterOrDigit (c) || c > 128)
+            const String s (t.substring (tokenEnd, tokenEnd + 1));
+            DBG (s);
+
+            if (CharacterFunctions::isLetterOrDigit (c)
+                && s != String (CharPointer_UTF8 ("\xef\xbc\x8c"))  // chinese ','
+                && s != String (CharPointer_UTF8 ("\xe3\x80\x82"))  // chinese '.'
+                && s != String (CharPointer_UTF8 ("\xe2\x80\xa6"))  // chinese '...'
+                && s != String (CharPointer_UTF8 ("\xe2\x80\x94"))  // chinese '-'
+                && s != String (CharPointer_UTF8 ("\xe3\x80\x81"))  // chinese '` (Chinese Comma)'
+                && s != String (CharPointer_UTF8 ("\xe3\x80\x8a"))  // chinese '<<'
+                && s != String (CharPointer_UTF8 ("\xe3\x80\x8b"))  // chinese '>>'
+                && s != String (CharPointer_UTF8 ("\xef\xbc\x9b"))  // chinese ';'
+                && s != String (CharPointer_UTF8 ("\xef\xbc\x9a"))  // chinese ':'
+                && s != String (CharPointer_UTF8 ("\xef\xbc\x9f"))  // chinese '?'
+                && s != String (CharPointer_UTF8 ("\xef\xbc\x81"))  // chinese '!'
+                && s != String (CharPointer_UTF8 ("\xe2\x80\x9c"))  // chinese '"'
+                && s != String (CharPointer_UTF8 ("\xe2\x80\x9d"))  // chinese '"'
+                && s != String (CharPointer_UTF8 ("\xef\xbc\x88"))  // chinese '('
+                && s != String (CharPointer_UTF8 ("\xef\xbc\x89"))  // chinese ')'
+                && s != String (CharPointer_UTF8 ("\xc2\xb7"))  // chinese '` (Dot)'
+                )
                 ++tokenEnd;
             else
                 break;
@@ -1839,7 +1859,26 @@ void TextEditor::mouseDoubleClick (const MouseEvent& e)
         {
             // (note the slight bodge here - it's because iswalnum only checks for alphabetic chars in the current locale)
             const juce_wchar c = t [tokenStart - 1];
-            if (CharacterFunctions::isLetterOrDigit (c) || c > 128)
+            const String s (t.substring (tokenStart - 1, tokenStart));
+
+            if (CharacterFunctions::isLetterOrDigit (c)
+                && s != String (CharPointer_UTF8 ("\xef\xbc\x8c"))  // chinese ','
+                && s != String (CharPointer_UTF8 ("\xe3\x80\x82"))  // chinese '.'
+                && s != String (CharPointer_UTF8 ("\xe2\x80\xa6"))  // chinese '...'
+                && s != String (CharPointer_UTF8 ("\xe2\x80\x94"))  // chinese '-'
+                && s != String (CharPointer_UTF8 ("\xe3\x80\x81"))  // chinese '` (Chinese Comma)'
+                && s != String (CharPointer_UTF8 ("\xe3\x80\x8a"))  // chinese '<<'
+                && s != String (CharPointer_UTF8 ("\xe3\x80\x8b"))  // chinese '>>'
+                && s != String (CharPointer_UTF8 ("\xef\xbc\x9b"))  // chinese ';'
+                && s != String (CharPointer_UTF8 ("\xef\xbc\x9a"))  // chinese ':'
+                && s != String (CharPointer_UTF8 ("\xef\xbc\x9f"))  // chinese '?'
+                && s != String (CharPointer_UTF8 ("\xef\xbc\x81"))  // chinese '!'
+                && s != String (CharPointer_UTF8 ("\xe2\x80\x9c"))  // chinese '"'
+                && s != String (CharPointer_UTF8 ("\xe2\x80\x9d"))  // chinese '"'
+                && s != String (CharPointer_UTF8 ("\xef\xbc\x88"))  // chinese '('
+                && s != String (CharPointer_UTF8 ("\xef\xbc\x89"))  // chinese ')'
+                && s != String (CharPointer_UTF8 ("\xc2\xb7"))  // chinese '` (Dot)'
+                )
                 --tokenStart;
             else
                 break;

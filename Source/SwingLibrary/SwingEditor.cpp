@@ -326,16 +326,12 @@ void SwingEditor::insertTextAtCaret (const String& textToInsert)
     else if (textToInsert == "!") TextEditor::insertTextAtCaret (" ");
     else if (textToInsert == "?") TextEditor::insertTextAtCaret (" ");
 
-    // markup: `, ~, *
-    else if (sthSelected && textToInsert == "`")
+    // markup: `, *
+    else if (sthSelected && (textToInsert == "`"))
     {
         TextEditor::insertTextAtCaret (selectedStr + textToInsert);
-    }
-    else if (sthSelected && textToInsert == "~")
-    {
-        TextEditor::insertTextAtCaret (textToInsert + selectedStr + textToInsert + textToInsert);
-    }
-    else if (sthSelected && textToInsert == "*")
+    }    
+    else if (sthSelected && (textToInsert == "*"))
     {
         TextEditor::insertTextAtCaret (selectedStr + textToInsert);
         setHighlightedRegion (Range<int> (getCaretPosition() - selectedStr.length() - 1, getCaretPosition() - 1));
@@ -410,6 +406,12 @@ void SwingEditor::timerCallback()
         puncMatched = true;
         TextEditor::insertTextAtCaret (selectedForCnPunc + "}");
     }
+
+    else if (selectedForCnPunc.isNotEmpty() && (lastChar == "~"))
+    {
+        TextEditor::insertTextAtCaret (lastChar + selectedForCnPunc + lastChar + lastChar);
+    }
+
 
     if (puncMatched && selectedForCnPunc.isEmpty())
         moveCaretLeft (false, false);

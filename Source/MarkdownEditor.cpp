@@ -1717,7 +1717,12 @@ void MarkdownEditor::autoComplete (const int index)
                 }
             }
 
-            strForInsert = "[" + title + "](" + strForInsert + ")";
+            // for Chinese '<<' and '>>', italic of English
+            if (systemFile->getValue ("language") == "1")
+                strForInsert =  String (CharPointer_UTF8 ("[\xe3\x80\x8a"))
+                + title + String (CharPointer_UTF8 ("\xe3\x80\x8b](")) + strForInsert + ")";
+            else
+                strForInsert = "[*" + title + "*](" + strForInsert + ")";
         }
 
         TextEditor::insertTextAtCaret (strForInsert);

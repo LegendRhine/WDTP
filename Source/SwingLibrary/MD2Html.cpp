@@ -1280,6 +1280,12 @@ const String Md2Html::cleanUp (const String& mdString)
                                    + TRANS ("Back to Top") + "</a></div>");
     resultStr = resultStr.replace ("@@##ToTOPOfThePage##@@", "[TOP]");
 
+    // font-size, color, font-name
+    resultStr = resultStr.replace ("<size=", "<span style=font-size:")
+        .replace ("<color=", "<span style=color:")
+        .replace ("<name=", "<span style=font-family:")
+        .replace ("</>", "</span>");
+
     // for scroll to bottom
     resultStr += newLine + "<span id=\"wdtpPageBottom\"></span>";
 

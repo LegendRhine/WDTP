@@ -1285,7 +1285,7 @@ const String Md2Html::cleanUp (const String& mdString)
     {
         resultStr = resultStr.replace ("<size=", "<span style=font-size:")
             .replace ("<color=", "<span style=color:")
-            .replace ("<name=", "<span style=font-family:")
+            .replace ("<font=", "<span style=font-family:")
             .replace ("</>", "</span>");
     }
 

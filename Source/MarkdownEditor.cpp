@@ -1387,7 +1387,7 @@ void MarkdownEditor::insertTextAtCaret (const String& textToInsert)
     SwingEditor::insertTextAtCaret (textToInsert);
 
     // popup tips
-    if (textToInsert.isNotEmpty())
+    if (textToInsert.isNotEmpty() && textToInsert != "*")
     {
         stopTimer();
         startTimer (30);

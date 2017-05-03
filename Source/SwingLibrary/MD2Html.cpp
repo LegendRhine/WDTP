@@ -1181,7 +1181,7 @@ const String Md2Html::cnBracketParse (const String& mdString)
 const String Md2Html::cleanUp (const String& mdString)
 {
     // transform newLine to <p> and <br>
-    String resultStr (mdString
+    String&& resultStr (mdString
                       .replace (newLine + newLine, "<p>\n")
                       .replace (newLine, "<br>\n"));
 
@@ -1281,10 +1281,13 @@ const String Md2Html::cleanUp (const String& mdString)
     resultStr = resultStr.replace ("@@##ToTOPOfThePage##@@", "[TOP]");
 
     // font-size, color, font-name
-    resultStr = resultStr.replace ("<size=", "<span style=font-size:")
-        .replace ("<color=", "<span style=color:")
-        .replace ("<name=", "<span style=font-family:")
-        .replace ("</>", "</span>");
+    if (resultStr.contains ("</>"))
+    {
+        resultStr = resultStr.replace ("<size=", "<span style=font-size:")
+            .replace ("<color=", "<span style=color:")
+            .replace ("<name=", "<span style=font-family:")
+            .replace ("</>", "</span>");
+    }
 
     // for scroll to bottom
     resultStr += newLine + "<span id=\"wdtpPageBottom\"></span>";

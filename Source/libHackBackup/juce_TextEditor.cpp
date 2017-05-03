@@ -1828,7 +1828,7 @@ void TextEditor::mouseDoubleClick (const MouseEvent& e)
             // (note the slight bodge here - it's because iswalnum only checks for alphabetic chars in the current locale)
             const juce_wchar c = t [tokenEnd];
             const String s (t.substring (tokenEnd, tokenEnd + 1));
-            DBG (s);
+            //DBG (s);
 
             if (CharacterFunctions::isLetterOrDigit (c)
                 && s != String (CharPointer_UTF8 ("\xef\xbc\x8c"))  // chinese ','

@@ -81,7 +81,7 @@ void SwingUtilities::fixWindowsRegistry()
                      "FeatureControl\\FEATURE_BROWSER_EMULATION\\";
 
     // build the full path to the key
-    const String key = keypath + JUCEApplication::getInstance()->getApplicationName() + ".exe";
+    const String key = keypath + File::getSpecialLocation (File::currentExecutableFile).getFileName();
 
     // this is the value we want
 	// see: https://msdn.microsoft.com/en-us/library/ee330730(v=vs.85).aspx

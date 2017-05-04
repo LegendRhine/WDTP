@@ -1216,13 +1216,13 @@ void HtmlProcessor::getPreviousTree (const ValueTree& oTree,
 {
     // prevent createDate is empty
     if (result.getProperty ("createDate").toString() == String())
-        result.setProperty ("createDate", 1, nullptr);
+        result.setProperty ("createDate", "2000.01.01 00:00:00", nullptr);
 
     if (oTree.getType().toString() == "doc" && !(bool)oTree.getProperty ("isMenu"))
     {
         if ((oTree.getProperty ("createDate").toString() < tree.getProperty ("createDate").toString())
             && (oTree.getProperty ("createDate").toString() > result.getProperty ("createDate").toString())
-            && !(bool)oTree.getProperty ("hide"))
+            && !(bool)oTree.getProperty ("hide") && oTree.getProperty ("name").toString() != "index")
             result = oTree;
     }
 
@@ -1237,13 +1237,13 @@ void HtmlProcessor::getNextTree (const ValueTree& oTree,
 {
     // prevent createDate is empty
     if (result.getProperty ("createDate").toString() == String())
-        result.setProperty ("createDate", 3, nullptr);
+        result.setProperty ("createDate", "2100.01.01 00:00:00", nullptr);
 
     if (oTree.getType().toString() == "doc" && !(bool)oTree.getProperty ("isMenu"))
     {
         if ((oTree.getProperty ("createDate").toString() > tree.getProperty ("createDate").toString())
             && (oTree.getProperty ("createDate").toString() < result.getProperty ("createDate").toString())
-            && !(bool)oTree.getProperty ("hide"))
+            && !(bool)oTree.getProperty ("hide") && oTree.getProperty ("name").toString() != "index")
             result = oTree;
     }
 

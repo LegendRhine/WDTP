@@ -42,14 +42,23 @@ void MarkdownEditor::popupOutlineMenu (EditAndPreview* editAndPreview,
     sentences.addLines (editorContent);
     sentences.removeEmptyStrings (true);
 
+    // remove code block content
+    bool shouldDeleThisRow = false;
+
+    for (int i = sentences.size(); --i >= 0; )
+    {
+        if (sentences[i].trimStart().substring (0, 3) == "```")
+            shouldDeleThisRow = !shouldDeleThisRow;
+
+        if (shouldDeleThisRow)
+            sentences.remove (i);
+    }
+
     // only remain the sencond and third title
     for (int i = sentences.size(); --i >= 0; )
     {
-        if (sentences[i].trimStart().substring (0, 3) == "## "
-            || sentences[i].trimStart().substring (0, 4) == "### ")
-            continue;
-
-        else
+        if (sentences[i].trimStart().substring (0, 3) != "## "
+            && sentences[i].trimStart().substring (0, 4) != "### ")
             sentences.remove (i);
     }
 

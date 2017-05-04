@@ -1531,7 +1531,7 @@ const String HtmlProcessor::getBookList (const ValueTree& dirTree)
 //=========================================================================
 const String HtmlProcessor::getCopyrightInfo()
 {
-    return "<p><hr>\n"
+    return "<p>\n"
         "<table id=\"copyright\"><tr><td id=\"copyright\">" +
         FileTreeContainer::projectTree.getProperty ("copyright").toString() +
         "</td><td id=\"copyright\" align=\"right\">Powered by "

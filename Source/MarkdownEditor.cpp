@@ -1053,6 +1053,13 @@ void MarkdownEditor::insertExternalFiles (const Array<File>& mediaFiles)
 }
 
 //=================================================================================================
+void MarkdownEditor::mouseUp (const MouseEvent& e)
+{
+    ctrlGpressed = false;
+    SwingEditor::mouseUp (e);
+}
+
+//=================================================================================================
 void MarkdownEditor::insertExpandMark (const int expandIndex)
 {
     String markStr ("[latestPublish]");

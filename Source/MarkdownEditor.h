@@ -39,7 +39,10 @@ public:
 
     virtual void performPopupMenuAction (int menuItemID) override;
     bool keyPressed (const KeyPress& key) override;
-    void insertExternalFiles (const Array<File>& mediaFiles);    
+    void insertExternalFiles (const Array<File>& mediaFiles);
+
+    /** prevent popup tips menu after drag and drop selected text*/
+    virtual void mouseUp (const MouseEvent& e) override;
 
     /** for set the font-size and color of font and backgroud */
     virtual void sliderValueChanged (Slider* slider) override;

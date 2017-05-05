@@ -1243,7 +1243,10 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress ('g', ModifierKeys::commandModifier, 0))
     {
         if (getHighlightedText().isNotEmpty())
+        {
+            ctrlGpressed = true;
             startTimer (30);
+        }
     }
 
     // return-key 
@@ -1691,9 +1694,11 @@ void MarkdownEditor::timerCallback()
     }
     else
     {
-        if (getHighlightedText().isNotEmpty())
+        if (getHighlightedText().isNotEmpty() && ctrlGpressed)
             SHOW_MESSAGE (TRANS ("No tips for the selected text."));
     }
+    
+    ctrlGpressed = false;
 }
 
 //=================================================================================================

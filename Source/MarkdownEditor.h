@@ -168,6 +168,7 @@ private:
 
     StringArray menuItems; // for popup tips
     int tipKeyNumber = 2;
+    bool ctrlGpressed = false;
 
     JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR (MarkdownEditor)
 };

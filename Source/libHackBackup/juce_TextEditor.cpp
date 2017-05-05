@@ -1830,7 +1830,7 @@ void TextEditor::mouseDoubleClick (const MouseEvent& e)
             const String s (t.substring (tokenEnd, tokenEnd + 1));
             //DBG (s);
 
-            if (CharacterFunctions::isLetterOrDigit (c)
+            if ((CharacterFunctions::isLetterOrDigit (c) || c > 128)
                 && s != String (CharPointer_UTF8 ("\xef\xbc\x8c"))  // chinese ','
                 && s != String (CharPointer_UTF8 ("\xe3\x80\x82"))  // chinese '.'
                 && s != String (CharPointer_UTF8 ("\xe2\x80\xa6"))  // chinese '...'
@@ -1861,7 +1861,7 @@ void TextEditor::mouseDoubleClick (const MouseEvent& e)
             const juce_wchar c = t [tokenStart - 1];
             const String s (t.substring (tokenStart - 1, tokenStart));
 
-            if (CharacterFunctions::isLetterOrDigit (c)
+            if ((CharacterFunctions::isLetterOrDigit (c) || c > 128)
                 && s != String (CharPointer_UTF8 ("\xef\xbc\x8c"))  // chinese ','
                 && s != String (CharPointer_UTF8 ("\xe3\x80\x82"))  // chinese '.'
                 && s != String (CharPointer_UTF8 ("\xe2\x80\xa6"))  // chinese '...'

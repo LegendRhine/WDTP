@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<JUCERPROJECT id="iAHZG1" name="WDTP" projectType="guiapp" version="0.9.0428"
+<JUCERPROJECT id="iAHZG1" name="WDTP" projectType="guiapp" version="0.9.0505"
               bundleIdentifier="com.yourcompany.WDTP" includeBinaryInAppConfig="1"
               jucerVersion="4.3.1" userNotes="" companyName="UnderwaySoft"
               companyWebsite="http://www.underwaySoft.com" companyEmail="underwaySoft@126.com">
@@ -102,7 +102,7 @@
                        isDebug="1" optimisation="1" targetName="wdtp" binaryPath="Application/Debug"
                        headerPath="C:\Develop\SDK\Include\asio" libraryPath="" useRuntimeLibDLL="0"/>
         <CONFIGURATION name="Release" winWarningLevel="4" generateManifest="1" winArchitecture="x64"
-                       isDebug="0" optimisation="3" targetName="wdtp" binaryPath="Application/Release"
+                       isDebug="0" optimisation="2" targetName="wdtp" binaryPath="Application/Release"
                        libraryPath="" useRuntimeLibDLL="0" headerPath="C:\Develop\SDK\Include\asio"/>
       </CONFIGURATIONS>
       <MODULEPATHS>

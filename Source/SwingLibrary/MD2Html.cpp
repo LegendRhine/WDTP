@@ -24,14 +24,14 @@ const String Md2Html::mdStringToHtml (const String& mdString)
     if (htmlContent.contains (")["))
         htmlContent = postilParse (htmlContent);
 
-    if (htmlContent.contains ("//////"))
-        htmlContent = commentParse (htmlContent);
-
     if ((htmlContent.contains ("------") 
          || htmlContent.contains ("======") 
          || htmlContent.contains ("//////"))
         && htmlContent.contains (" | "))
-        htmlContent = tableParse (htmlContent);    
+        htmlContent = tableParse (htmlContent);
+
+    if (htmlContent.contains ("//////"))
+        htmlContent = commentParse (htmlContent);
 
     if (htmlContent.contains ("`"))
     {

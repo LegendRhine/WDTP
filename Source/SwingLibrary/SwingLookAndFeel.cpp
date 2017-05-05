@@ -111,7 +111,7 @@ void SwingLookAndFeel::drawPopupMenuItem (Graphics& g, const Rectangle<int>& are
 Font SwingLookAndFeel::getAlertWindowTitleFont()
 {
 #if JUCE_MAC
-    return LookAndFeel_V3::getAlertWindowTitleFont().getHeight() + 1.f;
+    return LookAndFeel_V3::getAlertWindowTitleFont().getHeight();
 #elif JUCE_WINDOWS
     return LookAndFeel_V3::getAlertWindowTitleFont();
 #endif
@@ -121,7 +121,7 @@ Font SwingLookAndFeel::getAlertWindowTitleFont()
 Font SwingLookAndFeel::getAlertWindowMessageFont()
 {
 #if JUCE_MAC
-    return LookAndFeel_V3::getAlertWindowMessageFont().getHeight() + 3.f;
+    return LookAndFeel_V3::getAlertWindowMessageFont().getHeight() + 2.f;
 #elif JUCE_WINDOWS
     return LookAndFeel_V3::getAlertWindowMessageFont();
 #endif
@@ -131,7 +131,7 @@ Font SwingLookAndFeel::getAlertWindowMessageFont()
 Font SwingLookAndFeel::getTextButtonFont (TextButton& bt, int buttonHeight)
 {
 #if JUCE_MAC
-    return LookAndFeel_V3::getTextButtonFont (bt, buttonHeight).getHeight() + 3.f;
+    return LookAndFeel_V3::getTextButtonFont (bt, buttonHeight).getHeight() + 2.f;
 #elif JUCE_WINDOWS
     return LookAndFeel_V3::getTextButtonFont (bt, buttonHeight);
 #endif

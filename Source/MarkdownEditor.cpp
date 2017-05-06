@@ -1401,10 +1401,9 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         exitModalState (0);
 
         if (Component::getCurrentlyModalComponent() != nullptr)
-        {
-            Component::getCurrentlyModalComponent()->keyPressed (key);
-            return true;
-        }
+            return Component::getCurrentlyModalComponent()->keyPressed (key);
+        else
+            return SwingEditor::keyPressed (key);
     }
 
     else

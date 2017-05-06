@@ -186,17 +186,24 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         formatMenu.addItem (formatItalic, TRANS ("Italic") + ctrlStr + "I)");
         formatMenu.addItem (formatBoldAndItalic, TRANS ("Bold + Italic") + "  (***)");
         formatMenu.addSeparator();
+
+        formatMenu.addItem (fontName, TRANS ("Font Name"));
+        formatMenu.addItem (textSize, TRANS ("Text Size"));
+        formatMenu.addItem (textColor, TRANS ("Text Color"));
+        formatMenu.addSeparator();
+
         formatMenu.addItem (formatHighlight, TRANS ("Highlight") + ctrlStr + "U)");
         formatMenu.addItem (formatPostil, TRANS ("Postil") + ctrlStr + "4)", selectSomething);
         formatMenu.addSeparator();
+        
         formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
         formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
         formatMenu.addItem (hybridLayout, TRANS ("Hybrid Layout") + ctrlStr + "3)");
         formatMenu.addItem (commentBlock, TRANS ("Comment Block") + "  (//////)");
         formatMenu.addSeparator();
+        
         formatMenu.addItem (antiIndent, TRANS ("Anti-Indent") + "  (+)");
         formatMenu.addItem (forceIndent, TRANS ("Force Indent") + "  (-)");
-
         menu.addSubMenu (TRANS ("Format"), formatMenu, docExists && notArchived);
 
         PopupMenu expandMark;
@@ -204,6 +211,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         expandMark.addItem (latestModify, TRANS ("Latest Modified"));
         expandMark.addItem (featuredArticle, TRANS ("Featured Articles"));
         expandMark.addSeparator();
+
         expandMark.addItem (allModify, TRANS ("Modify List"));
         expandMark.addItem (allPublish, TRANS ("Publish List"));
         expandMark.addItem (randomArticle, TRANS ("Random Articles"));
@@ -212,7 +220,6 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
 
         menu.addItem (syntax, TRANS ("Text Mark Syntax and Demo...") + "  (F1)");
         menu.addSeparator();
-
         menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)", docExists && notArchived);
 
         PopupMenu exEdit;
@@ -260,6 +267,7 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
         PopupMenu transMenu;
         transMenu.addItem (transByGoogle, TRANS ("Google Translate") + "...", selectSomething);
         transMenu.addItem (transByBaidu, TRANS ("Baidu Translate") + "...", selectSomething);
+
         menu.addSubMenu (TRANS ("External Translate Selection"), transMenu, docExists);
         menu.addSeparator();
 
@@ -483,6 +491,7 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (insertQuota == index)          quotaInsert();
     else if (antiIndent == index)           insertIndent (false);
     else if (forceIndent == index)          insertIndent (true);
+
     else if (insertBackToTop == index)      TextEditor::insertTextAtCaret (newLine + "[TOP]" + newLine);
     else if (insertAlignCenter == index)    alignCenterInsert();
     else if (insertAlignRight == index)     alignRightInsert();
@@ -508,6 +517,10 @@ void MarkdownEditor::performPopupMenuAction (int index)
     else if (formatHighlight == index)      inlineFormat (formatHighlight);
     else if (formatPostil == index)         inlineFormat (formatPostil);
     else if (inlineCode == index)           inlineFormat (inlineCode);
+    else if (fontName == index)             inlineFormat (fontName);
+    else if (textSize == index)             inlineFormat (textSize);
+    else if (textColor == index)            inlineFormat (textColor);
+
     else if (codeBlock == index)            codeBlockFormat();
     else if (hybridLayout == index)         hybridFormat();
     else if (commentBlock == index)         commentBlockFormat();
@@ -687,16 +700,30 @@ void MarkdownEditor::inlineFormat (const int format)
 
     if (format == formatBold)
         content = "**" + content + "**";
+
     else if (format == formatItalic)
         content = "*" + content + "*";
+
     else if (format == formatBoldAndItalic)
         content = "***" + content + "***";
+
     else if (format == formatHighlight)
         content = "~~" + content + "~~";
+
     else if (format == formatPostil)
         content = "(" + content + ")[]";
+
     else if (format == inlineCode)
         content = "`" + content + "`";
+
+    else if (format == fontName)
+        content = "<font=KaiTi>" + content + "</>";
+
+    else if (format == textSize)
+        content = "<size=120%>" + content + "</>";
+
+    else if (format == textColor)
+        content = "<color=red>" + content + "</>";
 
     TextEditor::insertTextAtCaret (content);
 
@@ -704,13 +731,21 @@ void MarkdownEditor::inlineFormat (const int format)
     {
         moveCaretLeft (false, false);
 
-        if (format == formatBold || format == formatHighlight 
-            || format == formatBoldAndItalic || format == formatPostil)
+        if (format == formatBold 
+            || format == formatHighlight
+            || format == formatBoldAndItalic 
+            || format == formatPostil
+            || format == fontName
+            || format == textSize
+            || format == textColor)
             moveCaretLeft (false, false);
 
-        // here must another 'if' instead of 'else if' because 
-        // the caret should move left thrice for '***' and '()[]' (postil)
-        if (format == formatBoldAndItalic || format == formatPostil)
+        // here must another 'if' instead of 'else if'
+        if (format == formatBoldAndItalic 
+            || format == formatPostil
+            || format == fontName 
+            || format == textSize 
+            || format == textColor)
             moveCaretLeft (false, false);
     }
     else

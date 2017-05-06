@@ -1216,7 +1216,7 @@ void HtmlProcessor::getPreviousTree (const ValueTree& oTree,
 {
     // prevent createDate is empty
     if (result.getProperty ("createDate").toString() == String())
-        result.setProperty ("createDate", "2000.01.01 00:00:00", nullptr);
+        result.setProperty ("createDate", "0001.01.01 00:00:00", nullptr);
 
     if (oTree.getType().toString() == "doc" && !(bool)oTree.getProperty ("isMenu"))
     {
@@ -1237,7 +1237,7 @@ void HtmlProcessor::getNextTree (const ValueTree& oTree,
 {
     // prevent createDate is empty
     if (result.getProperty ("createDate").toString() == String())
-        result.setProperty ("createDate", "2100.01.01 00:00:00", nullptr);
+        result.setProperty ("createDate", "3000.01.01 00:00:00", nullptr);
 
     if (oTree.getType().toString() == "doc" && !(bool)oTree.getProperty ("isMenu"))
     {

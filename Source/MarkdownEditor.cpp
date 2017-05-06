@@ -1394,8 +1394,8 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
     else if (key == KeyPress (KeyPress::F10Key))       dateAndTimeInsert();
 
     // transfer the key event to tips-menu if it's showing
-    else if (key == KeyPress::downKey || key == KeyPress::upKey
-             || key == KeyPress::leftKey || key == KeyPress::rightKey 
+    else if (key == KeyPress::downKey 
+             || key == KeyPress::upKey
              || key == KeyPress::escapeKey)
     {
         exitModalState (0);

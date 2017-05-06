@@ -149,11 +149,16 @@ ThemeEditor::~ThemeEditor()
 //=================================================================================================
 void ThemeEditor::setFileToEdit (const File& file, bool needRegeneratePage)
 {
-    currentFile = file;
-    jassert (currentFile.existsAsFile());
-
-    setText (currentFile.loadFileAsString(), false);
-    needRegenerate = needRegeneratePage;
+    if (file.existsAsFile())
+    {
+        currentFile = file;
+        setText (currentFile.loadFileAsString(), false);
+        needRegenerate = needRegeneratePage;
+    }
+    else
+    {
+        SHOW_MESSAGE (TRANS ("The file doesn't exist!"));
+    }
 }
 
 //=================================================================================================

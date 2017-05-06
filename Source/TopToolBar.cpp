@@ -380,6 +380,11 @@ void TopToolBar::popupSystemMenu()
             editAndPreview->editThemeFile (fileTreeContainer->projectFile.getSiblingFile ("site")
                                            .getChildFile ("add-in").getChildFile ("style.css"), false);
         }
+        else if (index == 201)
+        {
+            editAndPreview->editThemeFile (fileTreeContainer->projectFile.getSiblingFile ("site")
+                                           .getChildFile ("add-in").getChildFile ("style-full.css"), false);
+        }
         else
         {
             Array<File> files;
@@ -1201,9 +1206,12 @@ void TopToolBar::createThemeFilesMenu (PopupMenu& menu, const int baseId)
         menu.addItem (importLogo, TRANS ("Set Project Logo") + "...", true);
         menu.addSeparator();
 
-        menu.addItem (baseId, TRANS ("Global Stylesheet"), true, 
+        menu.addItem (baseId, TRANS ("Global Stylesheet") + TRANS ("-Normal"), true, 
                       (editAndPreview->themeEditorIsShowing() && 
                       editAndPreview->getEditingThemeFile().getFileName() == "style.css"));
+        menu.addItem (baseId + 1, TRANS ("Global Stylesheet") + TRANS ("-Full"), true,
+            (editAndPreview->themeEditorIsShowing() &&
+             editAndPreview->getEditingThemeFile().getFileName() == "style-full.css"));
         menu.addSeparator();
 
         Array<File> files;
@@ -1212,7 +1220,7 @@ void TopToolBar::createThemeFilesMenu (PopupMenu& menu, const int baseId)
         dirOfRender.findChildFiles (files, File::findFiles, false, "*.html");
 
         for (int i = 0; i < files.size(); ++i)
-            menu.addItem (baseId + i + 1, files[i].getFileName(), true, 
+            menu.addItem (baseId + i + 2, files[i].getFileName(), true, 
                           (editAndPreview->themeEditorIsShowing() && editAndPreview->getEditingThemeFile() == files[i]));
     }
 }

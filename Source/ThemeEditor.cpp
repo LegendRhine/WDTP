@@ -166,7 +166,7 @@ void ThemeEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
     const String& beforeStart (getTextInRange (Range<int> (selectStart - 1, selectStart)));
     const String& afterEnd (getTextInRange (Range<int> (selectEnd, selectEnd + 1)));
 
-    if (e->mods.isPopupMenu() && fileExists)
+    if (fileExists)
     {
         TextEditor::addPopupMenuItems (menu, e);
         menu.addSeparator();

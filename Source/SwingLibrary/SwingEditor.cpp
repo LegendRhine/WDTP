@@ -147,6 +147,13 @@ void SwingEditor::mouseWheelMove (const MouseEvent& e, const MouseWheelDetails& 
 }
 
 //=================================================================================================
+static void textEditorMenuCallback (int menuResult, SwingEditor* editor)
+{
+    if (editor != nullptr && menuResult != 0)
+        editor->performPopupMenuAction (menuResult);
+}
+
+//=================================================================================================
 bool SwingEditor::keyPressed (const KeyPress& key)
 {
     // for Chinese punctuation matching
@@ -154,6 +161,16 @@ bool SwingEditor::keyPressed (const KeyPress& key)
     {
         PopupMenu::dismissAllActiveMenus();
         delPressed = true;
+    }
+
+    // ctrl + ~: popup menu
+    else if (key == KeyPress ('`', ModifierKeys::commandModifier, 0))
+    {
+        PopupMenu menu;
+        addPopupMenuItems (menu, nullptr);
+        menu.showMenuAsync (PopupMenu::Options(),
+                            ModalCallbackFunction::forComponent (textEditorMenuCallback, this));
+        return true;
     }
 
     // tab

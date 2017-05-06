@@ -106,187 +106,184 @@ void MarkdownEditor::addPopupMenuItems (PopupMenu& menu, const MouseEvent* e)
     const bool selectSomething = getHighlightedText().isNotEmpty();
     const bool notArchived = !(bool)parent->getCurrentTree().getProperty ("archive");
 
-    if (e->mods.isPopupMenu())
-    {
-        String ctrlStr ("  (Ctrl + ");
+    String ctrlStr ("  (Ctrl + ");
 
 #if JUCE_MAC
-        ctrlStr = "  (Cmd + ";
+    ctrlStr = "  (Cmd + ";
 #endif
 
-        menu.addItem (pickTitle, TRANS ("Pickup as Title") + ctrlStr + "  6)", selectSomething && notArchived);
-        menu.addItem (pickDesc, TRANS ("Pickup as Description") + ctrlStr + "  7)", selectSomething && notArchived);
-        menu.addItem (addKeywords, TRANS ("Add to Keywords") + ctrlStr + "  8)", selectSomething && notArchived);
-        menu.addSeparator();
-        menu.addItem (pickFromAllKeywords, TRANS ("Project Keywords Table") + "..." + ctrlStr + "2)", 
-                      docExists && notArchived);
-        menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)", docExists);
-        menu.addSeparator();
+    menu.addItem (pickTitle, TRANS ("Pickup as Title") + ctrlStr + "  6)", selectSomething && notArchived);
+    menu.addItem (pickDesc, TRANS ("Pickup as Description") + ctrlStr + "  7)", selectSomething && notArchived);
+    menu.addItem (addKeywords, TRANS ("Add to Keywords") + ctrlStr + "  8)", selectSomething && notArchived);
+    menu.addSeparator();
+    menu.addItem (pickFromAllKeywords, TRANS ("Project Keywords Table") + "..." + ctrlStr + "2)",
+                  docExists && notArchived);
+    menu.addItem (outlineMenu, TRANS ("Document Outline...") + ctrlStr + "J)", docExists);
+    menu.addSeparator();
 
-        PopupMenu insertMenu;
-        insertMenu.addItem (insertMedia, TRANS ("Image/Audio/Video...") + ctrlStr + "M)");
-        insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink...") + ctrlStr + "E)");
-        insertMenu.addSeparator();
-        insertMenu.addItem (insertQuota, TRANS ("Quotation") + "  (> )");
-        insertMenu.addItem (timeLine, TRANS ("Time Line") + "..." + "  (F7)");
-        insertMenu.addSeparator();
+    PopupMenu insertMenu;
+    insertMenu.addItem (insertMedia, TRANS ("Image/Audio/Video...") + ctrlStr + "M)");
+    insertMenu.addItem (insertHyperlink, TRANS ("Hyperlink...") + ctrlStr + "E)");
+    insertMenu.addSeparator();
+    insertMenu.addItem (insertQuota, TRANS ("Quotation") + "  (> )");
+    insertMenu.addItem (timeLine, TRANS ("Time Line") + "..." + "  (F7)");
+    insertMenu.addSeparator();
 
-        insertMenu.addItem (insertNormalTable, TRANS ("Normal Table") + ctrlStr + "T)");
-        insertMenu.addItem (insertInterlaced, TRANS ("Interlaced Table"));
-        insertMenu.addItem (insertNoborderTable, TRANS ("Frameless Table"));
+    insertMenu.addItem (insertNormalTable, TRANS ("Normal Table") + ctrlStr + "T)");
+    insertMenu.addItem (insertInterlaced, TRANS ("Interlaced Table"));
+    insertMenu.addItem (insertNoborderTable, TRANS ("Frameless Table"));
 
-        PopupMenu autoSumAndAv;
-        autoSumAndAv.addItem (autoSumPara, TRANS ("Sum Numbers of This Row") + "  (F2)");
-        autoSumAndAv.addItem (autoAvPara, TRANS ("Average Numbers of This Row") + "  (F4)");
-        autoSumAndAv.addSeparator();
+    PopupMenu autoSumAndAv;
+    autoSumAndAv.addItem (autoSumPara, TRANS ("Sum Numbers of This Row") + "  (F2)");
+    autoSumAndAv.addItem (autoAvPara, TRANS ("Average Numbers of This Row") + "  (F4)");
+    autoSumAndAv.addSeparator();
 
-        const bool inTable = getCurrentParagraph().contains (" | ");
-        autoSumAndAv.addItem (autoSumCol, TRANS ("Sum Numbers of This Column") + ctrlStr + "F2)", inTable);
-        autoSumAndAv.addItem (autoAvCol, TRANS ("Average Numbers of This Column") + ctrlStr + "F4)", inTable);
+    const bool inTable = getCurrentParagraph().contains (" | ");
+    autoSumAndAv.addItem (autoSumCol, TRANS ("Sum Numbers of This Column") + ctrlStr + "F2)", inTable);
+    autoSumAndAv.addItem (autoAvCol, TRANS ("Average Numbers of This Column") + ctrlStr + "F4)", inTable);
 
-        insertMenu.addSubMenu (TRANS ("Auto Sum and Average"), autoSumAndAv, docExists && notArchived);
-        insertMenu.addSeparator();
+    insertMenu.addSubMenu (TRANS ("Auto Sum and Average"), autoSumAndAv, docExists && notArchived);
+    insertMenu.addSeparator();
 
-        insertMenu.addItem (insertAlignCenter, TRANS ("Align Center") + ctrlStr + "N)");
-        insertMenu.addItem (insertAlignRight, TRANS ("Align Right") + ctrlStr + "R)");
-        insertMenu.addSeparator();
+    insertMenu.addItem (insertAlignCenter, TRANS ("Align Center") + ctrlStr + "N)");
+    insertMenu.addItem (insertAlignRight, TRANS ("Align Right") + ctrlStr + "R)");
+    insertMenu.addSeparator();
 
-        insertMenu.addItem (doubleLinespcing, TRANS ("Double Line Spacing") + "  (|)");
-        insertMenu.addItem (tripleLinespcing, TRANS ("Triple Line Spacing") + "  (||)");
-        insertMenu.addSeparator();
+    insertMenu.addItem (doubleLinespcing, TRANS ("Double Line Spacing") + "  (|)");
+    insertMenu.addItem (tripleLinespcing, TRANS ("Triple Line Spacing") + "  (||)");
+    insertMenu.addSeparator();
 
-        insertMenu.addItem (insertUnoerderList, TRANS ("Unordered List") + "  (- )");
-        insertMenu.addItem (insertOrderList, TRANS ("Ordered List") + "  (+ )");
-        insertMenu.addSeparator();
+    insertMenu.addItem (insertUnoerderList, TRANS ("Unordered List") + "  (- )");
+    insertMenu.addItem (insertOrderList, TRANS ("Ordered List") + "  (+ )");
+    insertMenu.addSeparator();
 
-        insertMenu.addItem (insertFirstTitle, TRANS ("Primary Heading") + "  (# )");
-        insertMenu.addItem (insertSecondTitle, TRANS ("Secondary Heading") + "  (## )");
-        insertMenu.addItem (insertThirdTitle, TRANS ("Tertiary Heading") + "  (### )");
-        insertMenu.addSeparator();
+    insertMenu.addItem (insertFirstTitle, TRANS ("Primary Heading") + "  (# )");
+    insertMenu.addItem (insertSecondTitle, TRANS ("Secondary Heading") + "  (## )");
+    insertMenu.addItem (insertThirdTitle, TRANS ("Tertiary Heading") + "  (### )");
+    insertMenu.addSeparator();
 
-        insertMenu.addItem (insertToc, TRANS ("Table of Contents") + "  (F8)");
-        insertMenu.addItem (insertEndnote, TRANS ("Endnote") + "  (F9)");
-        insertMenu.addItem (insertIdentifier, TRANS ("Identifier") + "  (******)");
-        insertMenu.addItem (insertBackToTop, TRANS ("Back to Top") + ctrlStr + " 5)");
-        insertMenu.addSeparator();
+    insertMenu.addItem (insertToc, TRANS ("Table of Contents") + "  (F8)");
+    insertMenu.addItem (insertEndnote, TRANS ("Endnote") + "  (F9)");
+    insertMenu.addItem (insertIdentifier, TRANS ("Identifier") + "  (******)");
+    insertMenu.addItem (insertBackToTop, TRANS ("Back to Top") + ctrlStr + " 5)");
+    insertMenu.addSeparator();
 
-        insertMenu.addItem (insertCaption, TRANS ("Image/Table Caption") + ctrlStr + "P)");
-        insertMenu.addItem (insertSeparator, TRANS ("Separator") + "  (---)");
-        insertMenu.addItem (insertAuthor, TRANS ("Author") + ctrlStr + "O)");
-        insertMenu.addItem (insertTime, TRANS ("Date and Time") + "  (F10)");
-        insertMenu.addSeparator();
+    insertMenu.addItem (insertCaption, TRANS ("Image/Table Caption") + ctrlStr + "P)");
+    insertMenu.addItem (insertSeparator, TRANS ("Separator") + "  (---)");
+    insertMenu.addItem (insertAuthor, TRANS ("Author") + ctrlStr + "O)");
+    insertMenu.addItem (insertTime, TRANS ("Date and Time") + "  (F10)");
+    insertMenu.addSeparator();
 
-        const String internalLinkStr (SystemClipboard::getTextFromClipboard());
-        insertMenu.addItem (insertInterLink, TRANS ("Internal Link") + ctrlStr + " V)", 
-                            internalLinkStr.contains ("*_wdtpGetPath_*"));
-        menu.addSubMenu (TRANS ("Insert"), insertMenu, docExists && notArchived);
+    const String internalLinkStr (SystemClipboard::getTextFromClipboard());
+    insertMenu.addItem (insertInterLink, TRANS ("Internal Link") + ctrlStr + " V)",
+                        internalLinkStr.contains ("*_wdtpGetPath_*"));
+    menu.addSubMenu (TRANS ("Insert"), insertMenu, docExists && notArchived);
 
-        PopupMenu formatMenu;
-        formatMenu.addItem (formatBold, TRANS ("Bold") + ctrlStr + "B)");
-        formatMenu.addItem (formatItalic, TRANS ("Italic") + ctrlStr + "I)");
-        formatMenu.addItem (formatBoldAndItalic, TRANS ("Bold + Italic") + "  (***)");
-        formatMenu.addSeparator();
+    PopupMenu formatMenu;
+    formatMenu.addItem (formatBold, TRANS ("Bold") + ctrlStr + "B)");
+    formatMenu.addItem (formatItalic, TRANS ("Italic") + ctrlStr + "I)");
+    formatMenu.addItem (formatBoldAndItalic, TRANS ("Bold + Italic") + "  (***)");
+    formatMenu.addSeparator();
 
-        formatMenu.addItem (fontName, TRANS ("Font Name"));
-        formatMenu.addItem (textSize, TRANS ("Text Size"));
-        formatMenu.addItem (textColor, TRANS ("Text Color"));
-        formatMenu.addSeparator();
+    formatMenu.addItem (fontName, TRANS ("Font Name"));
+    formatMenu.addItem (textSize, TRANS ("Text Size"));
+    formatMenu.addItem (textColor, TRANS ("Text Color"));
+    formatMenu.addSeparator();
 
-        formatMenu.addItem (formatHighlight, TRANS ("Highlight") + ctrlStr + "U)");
-        formatMenu.addItem (formatPostil, TRANS ("Postil") + ctrlStr + "4)", selectSomething);
-        formatMenu.addSeparator();
-        
-        formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
-        formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
-        formatMenu.addItem (hybridLayout, TRANS ("Hybrid Layout") + ctrlStr + "3)");
-        formatMenu.addItem (commentBlock, TRANS ("Comment Block") + "  (//////)");
-        formatMenu.addSeparator();
-        
-        formatMenu.addItem (antiIndent, TRANS ("Anti-Indent") + "  (+)");
-        formatMenu.addItem (forceIndent, TRANS ("Force Indent") + "  (-)");
-        menu.addSubMenu (TRANS ("Format"), formatMenu, docExists && notArchived);
+    formatMenu.addItem (formatHighlight, TRANS ("Highlight") + ctrlStr + "U)");
+    formatMenu.addItem (formatPostil, TRANS ("Postil") + ctrlStr + "4)", selectSomething);
+    formatMenu.addSeparator();
 
-        PopupMenu expandMark;
-        expandMark.addItem (latestPublish, TRANS ("Latest Publish"));
-        expandMark.addItem (latestModify, TRANS ("Latest Modified"));
-        expandMark.addItem (featuredArticle, TRANS ("Featured Articles"));
-        expandMark.addSeparator();
+    formatMenu.addItem (inlineCode, TRANS ("Code Inline") + ctrlStr + "L)");
+    formatMenu.addItem (codeBlock, TRANS ("Code Block") + ctrlStr + "K)");
+    formatMenu.addItem (hybridLayout, TRANS ("Hybrid Layout") + ctrlStr + "3)");
+    formatMenu.addItem (commentBlock, TRANS ("Comment Block") + "  (//////)");
+    formatMenu.addSeparator();
 
-        expandMark.addItem (allModify, TRANS ("Modify List"));
-        expandMark.addItem (allPublish, TRANS ("Publish List"));
-        expandMark.addItem (randomArticle, TRANS ("Random Articles"));
-        expandMark.addItem (allKeywords, TRANS ("All Keywords"));
-        menu.addSubMenu (TRANS ("Expand Mark"), expandMark, docExists && notArchived);        
+    formatMenu.addItem (antiIndent, TRANS ("Anti-Indent") + "  (+)");
+    formatMenu.addItem (forceIndent, TRANS ("Force Indent") + "  (-)");
+    menu.addSubMenu (TRANS ("Format"), formatMenu, docExists && notArchived);
 
-        menu.addItem (syntax, TRANS ("Text Mark Syntax and Demo...") + "  (F1)");
-        menu.addSeparator();
-        menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)", docExists && notArchived);
+    PopupMenu expandMark;
+    expandMark.addItem (latestPublish, TRANS ("Latest Publish"));
+    expandMark.addItem (latestModify, TRANS ("Latest Modified"));
+    expandMark.addItem (featuredArticle, TRANS ("Featured Articles"));
+    expandMark.addSeparator();
 
-        PopupMenu exEdit;
-        const bool selectedMediaFile = (getSelectedMediaType() != -1);
-        const bool selectedImgFile = (getSelectedMediaType() == 0);
-        bool canEdit = false;
+    expandMark.addItem (allModify, TRANS ("Modify List"));
+    expandMark.addItem (allPublish, TRANS ("Publish List"));
+    expandMark.addItem (randomArticle, TRANS ("Random Articles"));
+    expandMark.addItem (allKeywords, TRANS ("All Keywords"));
+    menu.addSubMenu (TRANS ("Expand Mark"), expandMark, docExists && notArchived);
 
-        if ((getSelectedMediaType() == 1 && systemFile->getValue ("audioEditor").isNotEmpty())
-            || (getSelectedMediaType() == 0 && systemFile->getValue ("imageEditor").isNotEmpty()))
-            canEdit = true;
+    menu.addItem (syntax, TRANS ("Text Mark Syntax and Demo...") + "  (F1)");
+    menu.addSeparator();
+    menu.addItem (audioRecord, TRANS ("Audio Record") + "..." + ctrlStr + "W)", docExists && notArchived);
 
-        exEdit.addItem (convertToJpg, TRANS ("Convert to JPG Format"),
-            (getSelectedFileName().getLastCharacters (4) == ".png"
-             || getSelectedFileName().getLastCharacters (4) == ".PNG"));
+    PopupMenu exEdit;
+    const bool selectedMediaFile = (getSelectedMediaType() != -1);
+    const bool selectedImgFile = (getSelectedMediaType() == 0);
+    bool canEdit = false;
 
-        exEdit.addItem (transparentImg, TRANS ("Transparentize Background"), selectedImgFile);
-        exEdit.addSeparator();
+    if ((getSelectedMediaType() == 1 && systemFile->getValue ("audioEditor").isNotEmpty())
+        || (getSelectedMediaType() == 0 && systemFile->getValue ("imageEditor").isNotEmpty()))
+        canEdit = true;
 
-        exEdit.addItem (rotateImgLeft, TRANS ("Rotate Left 90 Degress"), selectedImgFile);
-        exEdit.addItem (rotateImgRight, TRANS ("Rotate Right 90 Degress"), selectedImgFile);
-        exEdit.addSeparator();
+    exEdit.addItem (convertToJpg, TRANS ("Convert to JPG Format"),
+        (getSelectedFileName().getLastCharacters (4) == ".png"
+         || getSelectedFileName().getLastCharacters (4) == ".PNG"));
 
-        exEdit.addItem (threeQuarterWidth, TRANS ("Width Decrease a Quarter"), selectedImgFile);
-        exEdit.addItem (halfWidth, TRANS ("Half Width"), selectedImgFile);
-        exEdit.addSeparator();
+    exEdit.addItem (transparentImg, TRANS ("Transparentize Background"), selectedImgFile);
+    exEdit.addSeparator();
 
-        exEdit.addItem (editMediaByExEditor, TRANS ("Edit by External Editor") + "...", canEdit);
-        exEdit.addItem (setExEditorForMedia, TRANS ("Specify External Editor") + "...", selectedMediaFile);
+    exEdit.addItem (rotateImgLeft, TRANS ("Rotate Left 90 Degress"), selectedImgFile);
+    exEdit.addItem (rotateImgRight, TRANS ("Rotate Right 90 Degress"), selectedImgFile);
+    exEdit.addSeparator();
 
-        menu.addSubMenu (TRANS ("Edit Media File"), exEdit, docExists && notArchived);
-        menu.addSeparator();
+    exEdit.addItem (threeQuarterWidth, TRANS ("Width Decrease a Quarter"), selectedImgFile);
+    exEdit.addItem (halfWidth, TRANS ("Half Width"), selectedImgFile);
+    exEdit.addSeparator();
 
-        // search
-        menu.addItem (searchNext, TRANS ("Search Next Selection") + "  (F3)", selectSomething);
-        menu.addItem (searchPrev, TRANS ("Search Prev Selection") + "  (Shift + F3)", selectSomething);
+    exEdit.addItem (editMediaByExEditor, TRANS ("Edit by External Editor") + "...", canEdit);
+    exEdit.addItem (setExEditorForMedia, TRANS ("Specify External Editor") + "...", selectedMediaFile);
 
-        PopupMenu exSearch;
-        exSearch.addItem (searchByGoogle, "Google...", selectSomething);
-        exSearch.addItem (searchByBing, TRANS ("Bing..."), selectSomething);
-        exSearch.addItem (searchByWiki, TRANS ("Wikipedia..."), selectSomething);
-        exSearch.addItem (baiduBaike, TRANS ("Baidu Baike..."), selectSomething);
-        menu.addSubMenu (TRANS ("External Search Selection"), exSearch, docExists); 
-        
-        // trans
-        PopupMenu transMenu;
-        transMenu.addItem (transByGoogle, TRANS ("Google Translate") + "...", selectSomething);
-        transMenu.addItem (transByBaidu, TRANS ("Baidu Translate") + "...", selectSomething);
+    menu.addSubMenu (TRANS ("Edit Media File"), exEdit, docExists && notArchived);
+    menu.addSeparator();
 
-        menu.addSubMenu (TRANS ("External Translate Selection"), transMenu, docExists);
-        menu.addSeparator();
+    // search
+    menu.addItem (searchNext, TRANS ("Search Next Selection") + "  (F3)", selectSomething);
+    menu.addItem (searchPrev, TRANS ("Search Prev Selection") + "  (Shift + F3)", selectSomething);
 
-        menu.addItem (showTips, TRANS ("Tips/Replace") + "..." + ctrlStr + "G)", selectSomething && notArchived);
-        menu.addItem (joinTips, TRANS ("Add to Tips Bank") + "..." + ctrlStr + "F1)", selectSomething);
-        menu.addSeparator();
+    PopupMenu exSearch;
+    exSearch.addItem (searchByGoogle, "Google...", selectSomething);
+    exSearch.addItem (searchByBing, TRANS ("Bing..."), selectSomething);
+    exSearch.addItem (searchByWiki, TRANS ("Wikipedia..."), selectSomething);
+    exSearch.addItem (baiduBaike, TRANS ("Baidu Baike..."), selectSomething);
+    menu.addSubMenu (TRANS ("External Search Selection"), exSearch, docExists);
 
-        TextEditor::addPopupMenuItems (menu, e);
-        menu.addSeparator();
+    // trans
+    PopupMenu transMenu;
+    transMenu.addItem (transByGoogle, TRANS ("Google Translate") + "...", selectSomething);
+    transMenu.addItem (transByBaidu, TRANS ("Baidu Translate") + "...", selectSomething);
 
-        PopupMenu editorSetup;
-        editorSetup.addItem (fontSize, TRANS ("Font Size..."));
-        editorSetup.addItem (fontColor, TRANS ("Font Color..."));
-        editorSetup.addItem (setBackground, TRANS ("Backgroud..."));
-        editorSetup.addSeparator();
-        editorSetup.addItem (resetDefault, TRANS ("Reset to Default") + ctrlStr + "9)");
+    menu.addSubMenu (TRANS ("External Translate Selection"), transMenu, docExists);
+    menu.addSeparator();
 
-        menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docExists && notArchived);
-    }
+    menu.addItem (showTips, TRANS ("Tips/Replace") + "..." + ctrlStr + "G)", selectSomething && notArchived);
+    menu.addItem (joinTips, TRANS ("Add to Tips Bank") + "..." + ctrlStr + "F1)", selectSomething);
+    menu.addSeparator();
+
+    TextEditor::addPopupMenuItems (menu, e);
+    menu.addSeparator();
+
+    PopupMenu editorSetup;
+    editorSetup.addItem (fontSize, TRANS ("Font Size..."));
+    editorSetup.addItem (fontColor, TRANS ("Font Color..."));
+    editorSetup.addItem (setBackground, TRANS ("Backgroud..."));
+    editorSetup.addSeparator();
+    editorSetup.addItem (resetDefault, TRANS ("Reset to Default") + ctrlStr + "9)");
+
+    menu.addSubMenu (TRANS ("Editor Setup"), editorSetup, docExists && notArchived);
 }
 
 //=================================================================================================

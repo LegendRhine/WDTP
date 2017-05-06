@@ -148,6 +148,7 @@
 - F9: insert endnote
 - F10: insert date and time of current
 
+- Ctrl + ~: popup right click menu (both for md editor and theme editor)
 - Ctrl + 2: show keywords table of current project
 - Ctrl + 3: insert hybrid markup
 - Ctrl + 4: postil the selected text

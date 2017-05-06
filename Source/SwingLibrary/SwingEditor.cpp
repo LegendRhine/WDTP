@@ -163,8 +163,8 @@ bool SwingEditor::keyPressed (const KeyPress& key)
         delPressed = true;
     }
 
-    // ctrl + ~: popup menu
-    else if (key == KeyPress ('`', ModifierKeys::commandModifier, 0))
+    // ctrl + 1: popup menu
+    else if (key == KeyPress ('1', ModifierKeys::commandModifier, 0))
     {
         PopupMenu menu;
         addPopupMenuItems (menu, nullptr);

@@ -1248,35 +1248,22 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
     // F1 for view the markup syntax web page
     else if (key == KeyPress (KeyPress::F1Key))
-    {
         URL ("http://underwaysoft.com/works/wdtp/syntaxMark.html").launchInDefaultBrowser();
-    }
 
     // F3 for search the next of current selection
-    else if (key == KeyPress (KeyPress::F3Key))
-    {
-        searchForNext();
-        return true;
-    }
+    else if (key == KeyPress (KeyPress::F3Key))        searchForNext();
 
     // Shift + F3 for search the previous of current selection
     else if (key == KeyPress (KeyPress::F3Key, ModifierKeys::shiftModifier, 0))
-    {
         searchPrevious();
-        return true;
-    }
-
+    
     // ctrl + F1 for add the selected to tips-bank
     else if (key == KeyPress (KeyPress::F1Key, ModifierKeys::commandModifier, 0))
-    {
         selectedAddToTipsBank();
-    }
-
+    
     /////////// archive doc exit here /////////////////////
     else if ((bool)parent->getCurrentTree().getProperty ("archive"))
-    {
         return true;
-    }
 
     // ctrl + G for show tips
     else if (key == KeyPress ('g', ModifierKeys::commandModifier, 0))
@@ -1298,8 +1285,6 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
             Component::getCurrentlyModalComponent()->keyPressed (key);
         else
             returnKeyInput();
-
-        return true;
     }
 
     // ctrl + return: insert new paragraph above the current paragraph
@@ -1319,11 +1304,8 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
 
     // ctrl + v: paste
     else if (key == KeyPress ('v', ModifierKeys::commandModifier, 0))
-    {
         pasteForCtrlV();
-        return true;
-    }
-
+    
     // cut/copy the current paragraph when selected nothing
     else if (key == KeyPress ('x', ModifierKeys::commandModifier, 0)
              || key == KeyPress ('c', ModifierKeys::commandModifier, 0))
@@ -1367,7 +1349,6 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         HtmlProcessor::createArticleHtml (parent->getCurrentTree(), true);
 
         popupOutlineMenu (parent, getText().replace (CharPointer_UTF8 ("\xef\xbc\x83"), "#"), true);
-        return true;
     }
 
     // auto sum/average
@@ -1426,7 +1407,10 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
         }
     }
 
-    return SwingEditor::keyPressed (key);
+    else
+        return SwingEditor::keyPressed (key);
+    
+    return true;
 }
 
 //=================================================================================================

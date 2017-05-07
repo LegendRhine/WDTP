@@ -107,7 +107,7 @@ void TipsBank::tipsFromProjectFiles (ValueTree tree)
     String&& title (tree.getProperty ("title").toString());
     ValueTree parentTree = tree.getParent();
 
-    while (parentTree.isValid())
+    while (parentTree.isValid() && parentTree.getType().toString() == "dir")
     {
         title = parentTree.getProperty ("title").toString() + "/" + title;
         parentTree = parentTree.getParent();

@@ -1406,6 +1406,14 @@ bool MarkdownEditor::keyPressed (const KeyPress& key)
             return SwingEditor::keyPressed (key);
     }
 
+    else if (key == KeyPress::leftKey || key == KeyPress::rightKey)
+    {
+        for (int i = Component::getNumCurrentlyModalComponents(); --i >= 0; )
+            Component::getCurrentlyModalComponent (i)->exitModalState (0);
+
+        return SwingEditor::keyPressed (key);
+    }
+
     else
         return SwingEditor::keyPressed (key);
     

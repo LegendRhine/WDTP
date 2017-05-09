@@ -456,7 +456,7 @@ void TopToolBar::systemMenuPerform (const int index)
 //=================================================================================================
 void TopToolBar::popupLayoutMenu()
 {
-    const bool isSilentMode = (getParentComponent()->getWidth() < 760);
+    const bool isSilentMode = (getParentComponent()->getWidth() < 740);
     const bool hasProject = fileTreeContainer->projectTree.isValid();
     String ctrlStr ("  (Ctrl + ");
 
@@ -497,7 +497,7 @@ void TopToolBar::switchSilentMode (const bool enterSilent)
     {
         const int height = getParentComponent()->getHeight();
         mainWindow->setFullScreen (false);
-        getParentComponent()->setSize (730, height);
+        getParentComponent()->setSize (700, height);
         getTopLevelComponent()->setCentreRelative (0.5f, 0.5f);
     }
     else
@@ -856,7 +856,7 @@ void TopToolBar::getCommandInfo (CommandID commandID, ApplicationCommandInfo& re
     {
         result.setInfo (TRANS ("Silent Mode") + ctrlStr + "D)", "Switch width", String(), 0);
         result.addDefaultKeypress ('d', ModifierKeys::commandModifier);
-        result.setTicked ((getParentComponent()->getWidth() < 760));
+        result.setTicked ((getParentComponent()->getWidth() < 740));
     }
     else if (generateCurrent == commandID)
     {
@@ -891,7 +891,7 @@ void TopToolBar::getCommandInfo (CommandID commandID, ApplicationCommandInfo& re
 //=================================================================================================
 bool TopToolBar::perform (const InvocationInfo& info)
 {
-    const bool isSilentMode = (getParentComponent()->getWidth() < 760);
+    const bool isSilentMode = (getParentComponent()->getWidth() < 740);
 
     switch (info.commandID)
     {

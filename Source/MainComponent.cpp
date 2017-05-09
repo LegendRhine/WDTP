@@ -70,7 +70,7 @@ void MainContentComponent::resized()
     toolBar->setBounds (0, 0, getWidth(), 45);
     toolBar->toFront (true);
 
-    if (getWidth() > 760 && showFileTreePanel)  // stretched layout
+    if (getWidth() > 740 && showFileTreePanel)  // stretched layout
     {
         fileTree->setVisible (true);
         layoutBar->setVisible (true);

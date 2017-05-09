@@ -140,7 +140,7 @@ countries: cn
 "Something wrong during create this folder\'s index.html." = "生成此目录的index网页时出现错误."
 "Back to Top" = "返回顶部"
 "Upper Level" = "返回上一级"
-"Create Time: " = "创建时间: "
+"Create Time: " = "创作时间: "
 "Last Modified: " = "最后修改: "
 "Prev: " = "上一篇: "
 "Next: " = "下一篇: "

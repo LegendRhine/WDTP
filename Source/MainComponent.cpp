@@ -43,7 +43,7 @@ MainContentComponent::MainContentComponent() :
     layoutManager.setItemLayout (2, -0.7, -1.0, -0.80);     // editAndPreview
 
     addAndMakeVisible (webBrowserForStatis = new WebBrowserComponent (true));
-    setSize (1260, 780);
+    setSize (1000, 740);
 
     // check new version and download mp3-encoder if it's not there
     startTimer (500);
@@ -211,6 +211,7 @@ MainWindow::MainWindow (const String& name) :
     setResizable (true, false);
     setResizeLimits (640, 480, 3200, 2400);
     setUsingNativeTitleBar (true);
+    setCentreRelative (0.5f, 0.5f);
 
     setFullScreen (true);
     setVisible (true);

@@ -131,7 +131,7 @@
 	- {{blogList}}: for 'blog' index.html. Articles list. 10/page.
 	- {{bookList}}: for 'book' index.html, include dir. all in one page.
 
-### Shortcut Assign (totally 48+)
+### Shortcut Assign (totally 49+)
 
 - F1: help for markup syntax
 - Ctrl + F1: add the selected content to tips-bank

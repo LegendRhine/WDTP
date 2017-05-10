@@ -392,7 +392,7 @@ void TopToolBar::popupSystemMenu()
             const File& dirOfRender (FileTreeContainer::projectFile.getSiblingFile ("themes").getChildFile (currentRender));
             dirOfRender.findChildFiles (files, File::findFiles, false, "*.html");
 
-            editAndPreview->editThemeFile (files[index - 200 - 1], true);
+            editAndPreview->editThemeFile (files[index - 200 - 2], true);
         }
     }
 
@@ -426,7 +426,6 @@ void TopToolBar::systemMenuPerform (const int index)
     else if (index == setUiColor)       setUiColour();
     else if (index == resetUiColor)     resetUiColour();
     else if (index == setupAudio)       setupAudioDevice();
-
     else if (index == addExResource)    setExternalResource();
 
     else if (index == checkNewVersion)  URL ("http://underwaySoft.com/works/wdtp/download.html").launchInDefaultBrowser();

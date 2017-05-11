@@ -828,14 +828,14 @@ const String Md2Html::processByLine (const String& mdString)
 
         // align
         else if (currentLine.trimStart().substring (0, 4) == "(^) ")
-            currentLine = "<div style=\"text-align:center;\">" + currentLine.trim().substring (4) + "</div>";
+            currentLine = "<div style=\"text-indent:-1em; text-align:center;\">" + currentLine.trim().substring (4) + "</div>";
 
         else if (currentLine.trimStart().substring (0, 4) == "(>) ")
             currentLine = "<div style=\"text-align:right;\">" + currentLine.trim().substring (4) + "</div>";
 
         // diagram description
         else if (currentLine.trimStart().substring (0, 3) == "^^ ")
-            currentLine = "<h5 style=\"text-align:center;\">" + currentLine.trim().substring (3) + "</h5></div>";
+            currentLine = "<h5 style=\"text-indent:-1em; text-align:center;\">" + currentLine.trim().substring (3) + "</h5></div>";
 
         // indent (it might be inside a table)
         else if (currentLine.trimStart().substring (0, 4) == "(+) ")
@@ -939,7 +939,7 @@ const String Md2Html::imageParse (const String& mdString)
                 widthStr = " width=\"" + String (widthValueStr.getIntValue()) + "\"";
         }
 
-        const String& imgStr ("<div style=\"text-align:center;\"><img src=\"" + imgPath + "\" title=\""
+        const String& imgStr ("<div style=\"text-indent:-1em; text-align:center;\"><img src=\"" + imgPath + "\" title=\""
                              + altContent + "\"" + widthStr + " />" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, imgEnd + 1 - indexStart, imgStr);

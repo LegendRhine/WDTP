@@ -1095,7 +1095,7 @@ const String HtmlProcessor::getSiteMenu (const ValueTree& tree)
                     }
                 }
 
-                menuHtmlStr.add ("</li></ul>");
+                menuHtmlStr.add ("</ul>");
             }
         }
     }

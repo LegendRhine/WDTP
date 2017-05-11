@@ -810,14 +810,14 @@ const String Md2Html::processByLine (const String& mdString)
                  || currentLine.trimStart().substring (0, 4) ==
                  CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83\xef\xbc\x83 "))
             currentLine = "<h3 id=\"" + extractLinkText (currentLine.trim().substring (4)) + "\">"
-                + currentLine.trim().substring (4) + "</h3>";
+            + currentLine.trim().substring (4) + "</h3>";
 
         // <h2> anchor
         else if (currentLine.trimStart().substring (0, 3) == "## "
                  || currentLine.trimStart().substring (0, 3) ==
                  CharPointer_UTF8 ("\xef\xbc\x83\xef\xbc\x83 "))
             currentLine = "<h2 id=\"" + extractLinkText (currentLine.trim().substring (3)) + "\">"
-                + currentLine.trim().substring (3) + "</h2><hr>";
+            + currentLine.trim().substring (3) + "</h2><hr>";
 
         // <h1> anchor
         else if (currentLine.trimStart().substring (0, 2) == "# "
@@ -828,14 +828,14 @@ const String Md2Html::processByLine (const String& mdString)
 
         // align
         else if (currentLine.trimStart().substring (0, 4) == "(^) ")
-            currentLine = "<div align=center>" + currentLine.trim().substring (4) + "</div>";
+            currentLine = "<div style=\"text-align:center;\">" + currentLine.trim().substring (4) + "</div>";
 
         else if (currentLine.trimStart().substring (0, 4) == "(>) ")
-            currentLine = "<div align=right>" + currentLine.trim().substring (4) + "</div>";
+            currentLine = "<div style=\"text-align:right;\">" + currentLine.trim().substring (4) + "</div>";
 
         // diagram description
         else if (currentLine.trimStart().substring (0, 3) == "^^ ")
-            currentLine = "<h5 align=center>" + currentLine.trim().substring (3) + "</h5></div>";
+            currentLine = "<h5 style=\"text-align:center;\">" + currentLine.trim().substring (3) + "</h5></div>";
 
         // indent (it might be inside a table)
         else if (currentLine.trimStart().substring (0, 4) == "(+) ")
@@ -939,7 +939,7 @@ const String Md2Html::imageParse (const String& mdString)
                 widthStr = " width=\"" + String (widthValueStr.getIntValue()) + "\"";
         }
 
-        const String& imgStr ("<div align=center><img src=\"" + imgPath + "\" title=\""
+        const String& imgStr ("<div style=\"text-align:center;\"><img src=\"" + imgPath + "\" title=\""
                              + altContent + "\"" + widthStr + " />" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, imgEnd + 1 - indexStart, imgStr);
@@ -972,7 +972,7 @@ const String Md2Html::audioParse (const String& mdString)
 
         const String& audioPath (resultStr.substring (indexStart + 4, audioEnd).trim());
 
-        const String& audioStr ("<div align=center><audio src=\"" + audioPath + "\""
+        const String& audioStr ("<div style=\"text-align:center;\"><audio src=\"" + audioPath + "\""
                                 + " preload=\"auto\" controls />" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, audioEnd + 1 - indexStart, audioStr);
@@ -1018,7 +1018,7 @@ const String Md2Html::videoParse (const String& mdString)
                 widthStr = " width=\"" + String (widthValueStr.getIntValue()) + "\"";
         }
 
-        const String& videoStr ("<div align=center><video src=\"" + videoPath + "\""
+        const String& videoStr ("<div style=\"text-align:center;\"><video src=\"" + videoPath + "\""
                               + widthStr + " preload=\"auto\" controls />" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, indexEnd + 1 - indexStart, videoStr);

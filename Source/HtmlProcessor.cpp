@@ -667,11 +667,11 @@ const String HtmlProcessor::getKeywordsLinks (const String& rootPath)
                 + kws[i]
                 + "</a></li>";
 
-            kws.getReference (i) = "<td align=center><ul>" + kws[i] + "</ul></td>";
+            kws.getReference (i) = "<td style=\"text-align:center;\"><ul>" + kws[i] + "</ul></td>";
         }
         else
         {
-            kws.getReference (i) = "<td align=center><ul><li><a>" + kws[i]
+            kws.getReference (i) = "<td style=\"text-align:center;\"><ul><li><a>" + kws[i]
                 + " (" + String (trees.size()) + ")" + "</a><ul>";
 
             for (int j = trees.size(); --j >= 0; )
@@ -825,7 +825,7 @@ void HtmlProcessor::processTplTags (const ValueTree& docOrDirTree,
     // title of this index.html
     if (tplStr.contains ("{{titleOfDir}}"))
     {
-        tplStr = tplStr.replace ("{{titleOfDir}}", "<div align=center><h1>"
+        tplStr = tplStr.replace ("{{titleOfDir}}", "<div style=\"text-align:center;\"><h1>"
                                  + docOrDirTree.getProperty ("title").toString()
                                  + "</h1></div>" + newLine);
     }
@@ -887,7 +887,7 @@ void HtmlProcessor::processTplTags (const ValueTree& docOrDirTree,
     if (tplStr.contains ("{{contentDesc}}"))
     {
         String descStr (docOrDirTree.getProperty ("description").toString());
-        descStr = "<div  align=\"center\"><blockquote>" + descStr + "</blockquote></div>";
+        descStr = "<div style=\"text-align:center;\"><blockquote>" + descStr + "</blockquote></div>";
         tplStr = tplStr.replace ("{{contentDesc}}", descStr);
     }
 
@@ -1445,7 +1445,7 @@ void HtmlProcessor::getBlogListHtmlStr (const ValueTree& tree,
             }
 
             // description
-            str += tree.getProperty ("description").toString() + "<div class=readMore align=right>"
+            str += tree.getProperty ("description").toString() + "<div class=readMore style=\"text-align:right;\">"
                 + "<a href=\"" + path + "\">" + TRANS ("Read More") + "</a></div>";
 
             linkStr.add (str);
@@ -1534,7 +1534,7 @@ const String HtmlProcessor::getCopyrightInfo()
     return "<p>\n"
         "<table id=\"copyright\"><tr><td id=\"copyright\">" +
         FileTreeContainer::projectTree.getProperty ("copyright").toString() +
-        "</td><td id=\"copyright\" align=\"right\">Powered by "
+        "</td><td id=\"copyright\" style=\"text-align:right;\">Powered by "
         "<a href=\"http://underwaySoft.com/works/wdtp/index.html\""
         " target=\"_blank\">" + TRANS ("WDTP") + "</a> </td></tr></table>";
 }

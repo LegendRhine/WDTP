@@ -142,9 +142,9 @@ const String Md2Html::tableParse (const String& mdString)
             String firstColumnAlign (">");  // default for left
 
             if (prevLine.trimStart().substring (0, 3) == "(>)")
-                firstColumnAlign = " align=right>";
+                firstColumnAlign = " style=\"text-align:right;\">";
             else if (prevLine.trimStart().substring (0, 3) == "(^)")
-                firstColumnAlign = " align=center>";
+                firstColumnAlign = " style=\"text-align:center;\">";
 
             // get align marks for other columns
             StringArray alignArray;
@@ -153,9 +153,9 @@ const String Md2Html::tableParse (const String& mdString)
             while (alignIndex != -1)
             {
                 if (prevLine.substring (alignIndex + 3, alignIndex + 6) == "(>)")
-                    alignArray.add (" align=right>");
+                    alignArray.add (" style=\"text-align:right;\">");
                 else if (prevLine.substring (alignIndex + 3, alignIndex + 6) == "(^)")
-                    alignArray.add (" align=center>");
+                    alignArray.add (" style=\"text-align:center;\">");
                 else
                     alignArray.add (">");
 
@@ -465,7 +465,7 @@ const String Md2Html::endnoteParse (const String& mdString)
     if (notes.size() > 0)
     {
         notes.insert (0, "**" + TRANS ("Endnote(s): ") + "**");
-        notes.insert (1, "<ol><div class=endnote>");
+        notes.insert (1, "<div class=endnote><ol>");
         notes.add ("</ol></div>");
 
         resultStr = resultStr.trimEnd() + newLine + "----" + newLine;
@@ -591,9 +591,9 @@ const String Md2Html::boldAndItalicParse (const String& mdString)
             && resultStr.substring (index + 3, index + 4) != "*")
         {
             if (i % 2 == 1)
-                resultStr = resultStr.replaceSection (index, 2, "<em><strong>");
+                resultStr = resultStr.replaceSection (index, 3, "<em><strong>");
             else
-                resultStr = resultStr.replaceSection (index, 2, "</strong></em>");
+                resultStr = resultStr.replaceSection (index, 3, "</strong></em>");
         }
         else
         {
@@ -835,7 +835,7 @@ const String Md2Html::processByLine (const String& mdString)
 
         // diagram description
         else if (currentLine.trimStart().substring (0, 3) == "^^ ")
-            currentLine = "<h5 style=\"text-indent:-1em; text-align:center;\">" + currentLine.trim().substring (3) + "</h5></div>";
+            currentLine = "<h5 style=\"text-indent:-1em; text-align:center;\">" + currentLine.trim().substring (3) + "</h5>";
 
         // indent (it might be inside a table)
         else if (currentLine.trimStart().substring (0, 4) == "(+) ")
@@ -973,7 +973,7 @@ const String Md2Html::audioParse (const String& mdString)
         const String& audioPath (resultStr.substring (indexStart + 4, audioEnd).trim());
 
         const String& audioStr ("<div style=\"text-align:center;\"><audio src=\"" + audioPath + "\""
-                                + " preload=\"auto\" controls />" + "</div>");
+                                + " preload=\"auto\" controls>" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, audioEnd + 1 - indexStart, audioStr);
         indexStart = resultStr.indexOf (indexStart + audioStr.length(), "~[](");
@@ -1019,7 +1019,7 @@ const String Md2Html::videoParse (const String& mdString)
         }
 
         const String& videoStr ("<div style=\"text-align:center;\"><video src=\"" + videoPath + "\""
-                              + widthStr + " preload=\"auto\" controls />" + "</div>");
+                              + widthStr + " preload=\"auto\" controls>" + "</div>");
 
         resultStr = resultStr.replaceSection (indexStart, indexEnd + 1 - indexStart, videoStr);
         indexStart = resultStr.indexOf (indexStart + videoStr.length(), "@[](");
